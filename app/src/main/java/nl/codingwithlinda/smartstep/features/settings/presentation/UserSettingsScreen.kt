@@ -118,9 +118,9 @@ fun UserSettingsScreen(
                     }
                 }
             }
-
-            Text(text = "Weight: $weight")
             Text(text = "Height: $height")
+            Text(text = "Weight: $weight")
+
         }
     }
 }
