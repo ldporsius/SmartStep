@@ -16,7 +16,11 @@ class UserSettingsViewModel(
     private val _userSettings = MutableStateFlow<UserSettings>(UserSettings())
     val userSettings = _userSettings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), UserSettings())
 
-
+    fun skip(){
+        viewModelScope.launch {
+            userSettingsRepo.skip()
+        }
+    }
 
     init {
         viewModelScope.launch {
