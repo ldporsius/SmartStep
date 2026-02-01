@@ -40,7 +40,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
 
         }
         else if (!it){
-            backStack.retainAll (listOf(UserSettingsRoute))
+            backStack.add(UserSettingsRoute)
         }
         else {
             backStack.remove(UserSettingsRoute)
