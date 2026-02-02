@@ -36,7 +36,8 @@ import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import kotlin.math.roundToInt
 
 @Composable
-fun HeightInchesComponent(modifier: Modifier = Modifier) {
+fun HeightInchesComponent(
+    modifier: Modifier = Modifier) {
 
 
     var feetSelectionPosition by remember { mutableStateOf(0f) }
