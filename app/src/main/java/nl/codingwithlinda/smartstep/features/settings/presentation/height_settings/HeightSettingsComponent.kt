@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.settings.presentation
+package nl.codingwithlinda.smartstep.features.settings.presentation.height_settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
@@ -51,25 +52,7 @@ fun HeightSettingsComponent(
                 }
             }
         }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .verticalScroll(rememberScrollState(
-                    initial = value
-                )),
-            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
-        ) {
 
-            range.onEach {
-                Text(
-                    text = it.toString(),
-                    modifier = Modifier.clickable {
-                        onValueChange(it)
-                    }
-                )
-            }
-        }
 
         Row {
             TextButton(
