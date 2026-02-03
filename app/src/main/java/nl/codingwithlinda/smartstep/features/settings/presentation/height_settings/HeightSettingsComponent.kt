@@ -31,7 +31,6 @@ fun HeightSettingsComponent(
     onValueChange: (ActionUnitInput) -> Unit,
     modifier: Modifier = Modifier) {
 
-   // var selectedIndex by remember { mutableStateOf(value) }
 
     val options = listOf<UnitSystemUnits>(
         UnitSystemUnits.CM,

@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.height_settings
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -46,7 +48,7 @@ fun ScrollableHeightInputComponent(
     modifier: Modifier = Modifier) {
 
 
-    var selectionPosition by remember { mutableStateOf(0f) }
+    var listValuesYOffset by remember { mutableStateOf(0f) }
     var selectedValue by remember { mutableStateOf(defaultValue) }
 
     var valueTextHeight: Int by remember {
@@ -61,21 +63,10 @@ fun ScrollableHeightInputComponent(
     }
 
     val indexInList = values.indexOf(selectedValue)
-    val visibleRange =( (indexInList - 5).coerceAtLeast(0)..(indexInList + 5).coerceAtMost(values.size) ).toList()
-
 
     LaunchedEffect(valueTextHeight){
-        println("centerY = $centerY")
-        println("valueTextHeight = $valueTextHeight")
-        println("indexInList = $indexInList")
-        val indexInVisibleRange = visibleRange.indexOf(indexInList)
-        println("indexInVisibleRange = $indexInVisibleRange")
 
-        selectionPosition = centerY - valueTextHeight.toFloat() * indexInList
-
-        println("selectedValue = $selectedValue")
-        println("selectionPosition = $selectionPosition")
-
+        listValuesYOffset = centerY - valueTextHeight.toFloat() * indexInList
     }
 
     Box(modifier = modifier
@@ -105,14 +96,14 @@ fun ScrollableHeightInputComponent(
                 )
                 .width(IntrinsicSize.Max)
                 .offset{
-                    IntOffset(0, (selectionPosition.toInt())
+                    IntOffset(0, (listValuesYOffset.toInt())
                         .coerceIn( minOffsetY, maxOffsetY))
                 }
                 .pointerInput(Unit){
                     detectVerticalDragGestures(
                         onDragEnd = {
 
-                            YOffset = (selectionPosition).toInt()
+                            YOffset = (listValuesYOffset).toInt()
 
 
                             try {
@@ -143,7 +134,7 @@ fun ScrollableHeightInputComponent(
                             }
                         },
                         onVerticalDrag = { change, dragAmount ->
-                            selectionPosition += dragAmount
+                            listValuesYOffset += dragAmount
 
                         }
                     )
@@ -152,19 +143,32 @@ fun ScrollableHeightInputComponent(
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
             values.onEach { value ->
+
+
+                var boxPosition by remember { mutableStateOf(0f) }
                 Box(
                     modifier = Modifier
                         .size(48.dp)
                         .onGloballyPositioned{
-                            //valueTextHeight = it.size.height
+                           boxPosition = it.positionInRoot().y
                         }
-                        .border(Dp.Hairline, Color.Black),
+                        ,
                     contentAlignment = androidx.compose.ui.Alignment.Center
 
                 ) {
+                    val visibilityRange = IntRange((centerY - 4 * valueTextHeight).toInt(),
+                        (centerY + 5 * valueTextHeight).toInt()
+                    )
+                    val visible = boxPosition.roundToInt() in visibilityRange
+
+                    val visibleAnimation = animateFloatAsState(
+                        targetValue = if ( visible) 1f else 0f,
+                        animationSpec = androidx.compose.animation.core.tween(300)
+                    )
                     Text(
                         "$value",
                         textAlign = TextAlign.Center,
+                        color = Color.Black.copy(alpha = visibleAnimation.value)
                     )
                 }
             }
