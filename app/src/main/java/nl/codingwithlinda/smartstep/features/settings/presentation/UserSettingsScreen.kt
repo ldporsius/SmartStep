@@ -36,6 +36,7 @@ import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsComponent
+import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
 
 
 @Composable
@@ -46,7 +47,8 @@ fun UserSettingsRoot(
         factory = viewModelFactory {
             initializer {
                 UserSettingsViewModel(
-                    userSettingsRepo = PreferencesUserSettingsRepo(dataStoreSettings)
+                    userSettingsRepo = PreferencesUserSettingsRepo(dataStoreSettings),
+                    heightUnitConverter = HeightUnitConverter()
                 )
             }
         }
