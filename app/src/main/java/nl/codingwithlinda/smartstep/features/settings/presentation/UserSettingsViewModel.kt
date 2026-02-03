@@ -32,21 +32,21 @@ class UserSettingsViewModel(
     fun onUnitChange(unit: UnitSystemUnits){
         _unitChoice.value = unit
 
-            when(unit){
-                UnitSystemUnits.CM -> {
-                    _heightUiState.update {
-                        HeightSettingUiState.SI(cm = userSettings.value.height)
-                    }
+        when(unit){
+            UnitSystemUnits.CM -> {
+                _heightUiState.update {
+                    HeightSettingUiState.SI(cm = userSettings.value.height)
                 }
+            }
 
-                UnitSystemUnits.FEET_INCHES -> {
-                    val (feet, inches) = heightUnitConverter.toUi(userSettings.value.height.toDouble())
-                    _heightUiState.update {
-                        HeightSettingUiState.Imperial(feet = feet.toInt(), inches = inches.toInt())
-                    }
+            UnitSystemUnits.FEET_INCHES -> {
+                val (feet, inches) = heightUnitConverter.toUi(userSettings.value.height.toDouble())
+                _heightUiState.update {
+                    HeightSettingUiState.Imperial(feet = feet.toInt(), inches = inches.toInt())
                 }
             }
         }
+    }
 
 
     fun handleHeightInput(actionUnitInput: ActionUnitInput){
