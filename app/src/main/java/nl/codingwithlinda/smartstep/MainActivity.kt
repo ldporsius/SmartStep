@@ -24,7 +24,6 @@ import nl.codingwithlinda.smartstep.navigation.MainNavGraph
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
 
         var isChecking = true
 
@@ -36,6 +35,7 @@ class MainActivity : ComponentActivity() {
                     isChecking
                 }
             }
+        enableEdgeToEdge()
 
 
         lifecycleScope.launch {
@@ -46,12 +46,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SmartStepTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
-                ) {
+
                     MainNavGraph()
-                }
+
             }
         }
     }

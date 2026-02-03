@@ -20,10 +20,12 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionUnitInput
+import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.toUi
 
 @Composable
 fun HeightSettingsComponent(
+    uiState: HeightSettingUiState,
     unitChoice: UnitSystemUnits,
     onUnitChange: (UnitSystemUnits) -> Unit,
     onValueChange: (ActionUnitInput) -> Unit,
@@ -54,11 +56,11 @@ fun HeightSettingsComponent(
             }
         }
 
-        when(unitChoice){
-            UnitSystemUnits.CM -> {
+        when(uiState){
+            is HeightSettingUiState.SI -> {
                 ScrollableHeightInputComponent(
                     label = unitChoice.toUi().asString(),
-                    defaultValue = 170,
+                    defaultValue = uiState.cm,
                     values = List(51){
                         it + 160
                     },
@@ -68,17 +70,17 @@ fun HeightSettingsComponent(
                     modifier = Modifier,
                 )
             }
-            UnitSystemUnits.FEET_INCHES -> {
+            is HeightSettingUiState.Imperial -> {
                 HeightFeetInchesComponent(
                     feetComponent = {
                         ScrollableHeightInputComponent(
                             label = "ft",
-                            defaultValue = 5,
+                            defaultValue = uiState.feet,
                             values = List(11){
                                 it
                             },
                             onValueChange = {
-                                onValueChange(ActionUnitInput.FeetInput(it))
+                                onValueChange(ActionUnitInput.ImperialInput(feet = it, inches = uiState.inches))
                             },
                             modifier = Modifier,
                         )
@@ -86,12 +88,12 @@ fun HeightSettingsComponent(
                     inchesComponent = {
                         ScrollableHeightInputComponent(
                             label = "in",
-                            defaultValue = 8,
+                            defaultValue = uiState.inches,
                             values = List(11){
                                 it
                             },
                             onValueChange = {
-                                onValueChange(ActionUnitInput.InchesInput(it))
+                                onValueChange(ActionUnitInput.ImperialInput(feet = uiState.feet, inches = it))
                             },
                             modifier = Modifier,
                         )
@@ -122,6 +124,7 @@ private fun PreviewHeightSettingsComponent() {
 
     SmartStepTheme {
         HeightSettingsComponent(
+            uiState = HeightSettingUiState.Imperial(feet = 5, inches = 9),
             onValueChange = {},
             modifier = Modifier.fillMaxSize(),
             unitChoice = unitChoice,

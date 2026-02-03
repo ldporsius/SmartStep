@@ -25,7 +25,6 @@ import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    modifier: Modifier = Modifier
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()

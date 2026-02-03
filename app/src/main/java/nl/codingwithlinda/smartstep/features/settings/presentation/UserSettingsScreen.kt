@@ -36,6 +36,8 @@ import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsComponent
+import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionUnitInput
+import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
 
 
@@ -56,9 +58,13 @@ fun UserSettingsRoot(
 
     UserSettingsScreen(
         modifier = modifier,
+        uiState = settingsViewModel.heightUiState.collectAsStateWithLifecycle().value,
         unitChoice = settingsViewModel.unitChoice.collectAsStateWithLifecycle().value,
         onUnitChange = {
             settingsViewModel.onUnitChange(it)
+        },
+        actionUnitInput = {
+            settingsViewModel.handleHeightInput(it)
         },
         userSettings = settingsViewModel.userSettings.collectAsStateWithLifecycle().value,
         actionSkip = actionSkip
@@ -69,8 +75,10 @@ fun UserSettingsRoot(
 @Composable
 fun UserSettingsScreen(
     userSettings: UserSettings,
+    uiState: HeightSettingUiState,
     unitChoice: UnitSystemUnits,
     onUnitChange: (UnitSystemUnits) -> Unit,
+    actionUnitInput: (ActionUnitInput) -> Unit,
     actionSkip: () -> Unit,
     modifier: Modifier = Modifier) {
 
@@ -130,7 +138,6 @@ fun UserSettingsScreen(
                                 isGenderExpanded = false
                             }
                         )
-
                     }
                 }
             }
@@ -153,11 +160,14 @@ fun UserSettingsScreen(
         ) {
             Surface {
                 HeightSettingsComponent(
+                    uiState = uiState,
                     unitChoice = unitChoice,
                     onUnitChange = {
                         onUnitChange(it)
                     },
-                    onValueChange = {},
+                    onValueChange = {
+                        actionUnitInput(it)
+                    },
                     modifier = Modifier
                 )
             }
@@ -171,7 +181,9 @@ fun UserSettingsScreen(
 private fun PreviewUserSettingsScreen() {
     SmartStepTheme {
         UserSettingsScreen(
+            uiState = HeightSettingUiState.Imperial(feet = 5, inches = 9),
             userSettings = UserSettings(),
+            actionUnitInput = {},
             actionSkip = {},
             modifier = Modifier.fillMaxSize(),
             unitChoice = UnitSystemUnits.FEET_INCHES,

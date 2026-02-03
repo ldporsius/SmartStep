@@ -10,6 +10,9 @@ activityCompose = "1.12.3"
 composeBom = "2024.09.00"
 nav3Core = "1.0.0"
 core-splashscreen = "1.0.0"
+coroutines-test = "1.8.1"
+assertk = "0.28.1"
+turbine = "1.1.0"
 
 
 [libraries]
@@ -32,6 +35,10 @@ androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runt
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
 #splashscreen
 core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "core-splashscreen" }
+
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
+assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 
 
 [plugins]

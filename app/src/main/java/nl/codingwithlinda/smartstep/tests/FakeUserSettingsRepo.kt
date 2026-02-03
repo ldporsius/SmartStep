@@ -1,0 +1,29 @@
+package nl.codingwithlinda.smartstep.tests
+
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
+import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+
+class FakeUserSettingsRepo: UserSettingsRepo {
+    override suspend fun loadSettings(): UserSettings {
+        return UserSettings()
+    }
+
+    override suspend fun saveSettings(settings: UserSettings) {
+
+    }
+
+    override suspend fun skip() {
+
+    }
+
+    override suspend fun loadSkip(): Boolean {
+        return false
+    }
+
+    override val skippedObservable: Flow<Boolean>
+        get() = flow {
+            emit(false)
+        }
+}
