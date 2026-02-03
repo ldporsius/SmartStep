@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,15 +38,19 @@ import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import kotlin.math.roundToInt
 
 @Composable
-fun HeightInchesComponent(
+fun ScrollableHeightInputComponent(
+    label: String,
+    defaultValue: Int,
+    values: List<Int>,
+    onValueChange: (Int) -> Unit,
     modifier: Modifier = Modifier) {
 
 
-    var feetSelectionPosition by remember { mutableStateOf(0f) }
-    var selectedFeetValue by remember { mutableStateOf(5) }
+    var selectionPosition by remember { mutableStateOf(0f) }
+    var selectedValue by remember { mutableStateOf(defaultValue) }
 
-    var feetTextHeight: Int by remember {
-        mutableStateOf(0)
+    var valueTextHeight: Int by remember {
+        mutableStateOf(126)
     }
 
     var centerY by remember {
@@ -54,12 +60,22 @@ fun HeightInchesComponent(
         mutableStateOf(0)
     }
 
+    val indexInList = values.indexOf(selectedValue)
+    val visibleRange =( (indexInList - 5).coerceAtLeast(0)..(indexInList + 5).coerceAtMost(values.size) ).toList()
 
-    LaunchedEffect(Unit){
-        println("selectedFeetValue = $selectedFeetValue")
-        println("feetTextHeight = $feetTextHeight")
-        feetSelectionPosition = centerY - feetTextHeight * selectedFeetValue
-        println("feetSelectionPosition = $feetSelectionPosition")
+
+    LaunchedEffect(valueTextHeight){
+        println("centerY = $centerY")
+        println("valueTextHeight = $valueTextHeight")
+        println("indexInList = $indexInList")
+        val indexInVisibleRange = visibleRange.indexOf(indexInList)
+        println("indexInVisibleRange = $indexInVisibleRange")
+
+        selectionPosition = centerY - valueTextHeight.toFloat() * indexInList
+
+        println("selectedValue = $selectedValue")
+        println("selectionPosition = $selectionPosition")
+
     }
 
     Box(modifier = modifier
@@ -73,69 +89,89 @@ fun HeightInchesComponent(
             .background(Color.LightGray)
             .align(androidx.compose.ui.Alignment.Center)
             .onGloballyPositioned(){
-                feetSelectionPosition = it.positionInParent().y
                 centerY = it.positionInParent().y
-                println("centerY = $centerY")
             }
         )
 
+        val minOffsetY = centerY.toInt() - valueTextHeight * (values.size-1)
+        val maxOffsetY = (centerY).toInt()
 
         Column(
             modifier = Modifier
                 .fillMaxHeight()
+                .verticalScroll(
+                    state = rememberScrollState(),
+                    enabled = false
+                )
                 .width(IntrinsicSize.Max)
                 .offset{
-                    val minOffsetY = centerY.toInt() - (10 * feetTextHeight )
-                    val maxOffsetY = (centerY).toInt()
-
-                    IntOffset(0, (feetSelectionPosition.toInt())
+                    IntOffset(0, (selectionPosition.toInt())
                         .coerceIn( minOffsetY, maxOffsetY))
                 }
                 .pointerInput(Unit){
                     detectVerticalDragGestures(
                         onDragEnd = {
-                            val minOffsetY = centerY.toInt() - (10 * feetTextHeight )
-                            val maxOffsetY = (centerY).toInt()
 
-                            YOffset = (feetSelectionPosition).toInt()
-                                .coerceIn( minOffsetY, maxOffsetY)
+                            YOffset = (selectionPosition).toInt()
 
-                            // Calculate normalized position (0 to 1)
-                            val normalizedPosition = 1f - ((YOffset - minOffsetY).toFloat() / (maxOffsetY - minOffsetY).toFloat())
-                            println("normalizedPosition = $normalizedPosition")
 
-                            selectedFeetValue = (normalizedPosition * 10).roundToInt()
+                            try {
+                                println("centerY = $centerY")
+                                println("minOffsetY = $minOffsetY")
+                                println("maxOffsetY = $maxOffsetY")
+                                println("YOffset = $YOffset")
 
-                            println("selectedFeetValue = $selectedFeetValue")
+                                val listHeightPix = values.size * valueTextHeight
+
+                                // Calculate normalized position (0 to 1)
+                                val normalizedPosition =
+                                    1f - ((YOffset - minOffsetY).toFloat() / (maxOffsetY - minOffsetY).toFloat())
+                                println("normalizedPosition = $normalizedPosition")
+
+
+                                val selectedIndex = (normalizedPosition * values.size)
+                                    .roundToInt()
+                                    .coerceIn(0, values.size - 1)
+                                println("selectedIndex = $selectedIndex")
+
+                                selectedValue = values[selectedIndex]
+                                println("selectedValue = $selectedValue")
+
+                                onValueChange(selectedValue)
+                            }catch (e: Exception){
+                                e.printStackTrace()
+                            }
                         },
                         onVerticalDrag = { change, dragAmount ->
-                            feetSelectionPosition += dragAmount
+                            selectionPosition += dragAmount
+
                         }
                     )
                 }
             ,
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
-            (0..10).onEach { feet ->
+            values.onEach { value ->
                 Box(
                     modifier = Modifier
                         .size(48.dp)
                         .onGloballyPositioned{
-                            feetTextHeight = it.size.height
+                            //valueTextHeight = it.size.height
                         }
                         .border(Dp.Hairline, Color.Black),
                     contentAlignment = androidx.compose.ui.Alignment.Center
 
                 ) {
                     Text(
-                        "$feet",
+                        "$value",
                         textAlign = TextAlign.Center,
                     )
                 }
             }
         }
 
-        Text("ft",
+        Text(
+            label,
             modifier = Modifier
                 .align(Alignment.CenterEnd)
         )
@@ -148,7 +184,11 @@ fun HeightInchesComponent(
 @Composable
 private fun PreviewHeightInchesComponent() {
     SmartStepTheme {
-        HeightInchesComponent(
+        ScrollableHeightInputComponent(
+            label = "ft",
+            defaultValue = 5,
+            values = (0..10).toList(),
+            onValueChange = {},
             modifier = Modifier.fillMaxHeight()
 
         )

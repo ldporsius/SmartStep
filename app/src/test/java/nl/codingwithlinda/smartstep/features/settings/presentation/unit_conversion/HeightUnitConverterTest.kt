@@ -50,4 +50,13 @@ class HeightUnitConverterTest {
         assertEquals("0", result.second, )
     }
 
+    @Test
+    fun `test feet inches from ui`(){
+        val feet = "5"
+        val inches = "9"
+        val result = heightConverter.fromUi(feet, inches)
+        assertEquals(175.0, result, 0.5)
+
+    }
+
 }
