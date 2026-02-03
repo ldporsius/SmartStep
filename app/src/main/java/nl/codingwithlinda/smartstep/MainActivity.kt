@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        println("--- BUILD CONFIG INFO: VERSION CODE = ${Build.VERSION.SDK_INT}")
         var isChecking = true
 
         val viewModel = ShouldShowSettingsViewModel(userSettingsRepo)
@@ -38,18 +37,14 @@ class MainActivity : ComponentActivity() {
 
 
         lifecycleScope.launch {
-           viewModel.isChecking.collect{
-               isChecking = it
-           }
+            viewModel.isChecking.collect{
+                isChecking = it
+            }
         }
 
         setContent {
             SmartStepTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
-                        MainNavGraph()
-                    }
-                }
+                MainNavGraph()
             }
         }
     }

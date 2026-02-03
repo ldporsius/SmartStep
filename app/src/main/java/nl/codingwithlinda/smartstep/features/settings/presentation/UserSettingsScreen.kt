@@ -48,6 +48,7 @@ fun UserSettingsRoot(
     )
 
     UserSettingsScreen(
+        modifier = modifier,
         userSettings = settingsViewModel.userSettings.collectAsStateWithLifecycle().value,
         actionSkip = actionSkip
     )
