@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -22,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
@@ -30,7 +33,9 @@ import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.d
 import nl.codingwithlinda.smartstep.core.data.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.model.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
+import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsComponent
 
 
 @Composable
@@ -49,6 +54,10 @@ fun UserSettingsRoot(
 
     UserSettingsScreen(
         modifier = modifier,
+        unitChoice = settingsViewModel.unitChoice.collectAsStateWithLifecycle().value,
+        onUnitChange = {
+            settingsViewModel.onUnitChange(it)
+        },
         userSettings = settingsViewModel.userSettings.collectAsStateWithLifecycle().value,
         actionSkip = actionSkip
     )
@@ -58,12 +67,16 @@ fun UserSettingsRoot(
 @Composable
 fun UserSettingsScreen(
     userSettings: UserSettings,
+    unitChoice: UnitSystemUnits,
+    onUnitChange: (UnitSystemUnits) -> Unit,
     actionSkip: () -> Unit,
     modifier: Modifier = Modifier) {
 
 
     var pickedGender by remember { mutableStateOf(userSettings.gender) }
     var isGenderExpanded by remember { mutableStateOf(false) }
+    var shouldShowHeightDialog by remember { mutableStateOf(false) }
+
 
     Column(
         modifier = modifier,
@@ -71,7 +84,7 @@ fun UserSettingsScreen(
     ) {
         Box(
             modifier = Modifier.fillMaxWidth(),
-            contentAlignment = androidx.compose.ui.Alignment.Center
+            contentAlignment = Alignment.Center
         ) {
 
                 Text(text = "My profile",
@@ -119,11 +132,36 @@ fun UserSettingsScreen(
                     }
                 }
             }
-            Text(text = "Height: $height")
+            Box(
+                modifier = Modifier.clickable(){
+                    shouldShowHeightDialog = !shouldShowHeightDialog
+                }
+            ){
+                Text(text = "Height: $height")
+            }
+
             Text(text = "Weight: $weight")
 
         }
     }
+
+    if (shouldShowHeightDialog){
+        Dialog(
+            onDismissRequest = { shouldShowHeightDialog = false }
+        ) {
+            Surface {
+                HeightSettingsComponent(
+                    unitChoice = unitChoice,
+                    onUnitChange = {
+                        onUnitChange(it)
+                    },
+                    onValueChange = {},
+                    modifier = Modifier
+                )
+            }
+        }
+    }
+
 }
 
 @Preview
@@ -133,7 +171,9 @@ private fun PreviewUserSettingsScreen() {
         UserSettingsScreen(
             userSettings = UserSettings(),
             actionSkip = {},
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            unitChoice = UnitSystemUnits.FEET_INCHES,
+            onUnitChange = {}
         )
 
     }

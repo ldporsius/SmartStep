@@ -24,10 +24,8 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversi
 
 @Composable
 fun HeightSettingsComponent(
-    range: IntRange,
     unitChoice: UnitSystemUnits,
     onUnitChange: (UnitSystemUnits) -> Unit,
-    value: Int,
     onValueChange: (ActionUnitInput) -> Unit,
     modifier: Modifier = Modifier) {
 
@@ -124,8 +122,6 @@ private fun PreviewHeightSettingsComponent() {
 
     SmartStepTheme {
         HeightSettingsComponent(
-            range = 50..250,
-            value = 180,
             onValueChange = {},
             modifier = Modifier.fillMaxSize(),
             unitChoice = unitChoice,
