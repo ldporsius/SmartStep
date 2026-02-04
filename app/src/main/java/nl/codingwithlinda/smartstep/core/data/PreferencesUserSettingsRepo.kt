@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.map
 import nl.codingwithlinda.smartstep.core.domain.model.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 
 class PreferencesUserSettingsRepo(
     private val dataStore: DataStore<Preferences>
@@ -22,9 +23,7 @@ class PreferencesUserSettingsRepo(
     val USER_SETTINGS_WEIGHT = intPreferencesKey("user_weight")
     val USER_SETTINGS_HEIGHT = intPreferencesKey("user_height")
     val USER_SETTINGS_SKIP = booleanPreferencesKey("user_skip")
-
-
-
+    val USER_SETTINGS_UNIT_SYSTEM = stringPreferencesKey("user_unit_system")
 
     override suspend fun loadSettings(): UserSettings {
         dataStore.data.firstOrNull() ?: return UserSettings()
@@ -37,7 +36,7 @@ class PreferencesUserSettingsRepo(
             val height = it[USER_SETTINGS_HEIGHT] ?: UserSettings().height
 
 
-            UserSettings(gender, weight, height)
+            UserSettings(gender = gender, weight = weight, height= height)
             }
         return settings
     }
@@ -81,4 +80,21 @@ class PreferencesUserSettingsRepo(
         get() = dataStore.data.map {
             it[USER_SETTINGS_SKIP] ?: false
         }
+
+    override suspend fun saveUnitSystem(systemUnits: UnitSystemUnits) {
+        dataStore.edit {
+            it[USER_SETTINGS_UNIT_SYSTEM] = systemUnits.toString()
+        }
+    }
+
+    override val unitSystemObservable: Flow<UnitSystemUnits>
+       = dataStore.data.map {
+           it[USER_SETTINGS_UNIT_SYSTEM] ?: UnitSystemUnits.SI.toString()
+       }.map {
+          when(it){
+              UnitSystemUnits.SI.toString() -> UnitSystemUnits.SI
+              UnitSystemUnits.IMPERIAL.toString() -> UnitSystemUnits.IMPERIAL
+              else -> UnitSystemUnits.SI
+          }
+    }
 }

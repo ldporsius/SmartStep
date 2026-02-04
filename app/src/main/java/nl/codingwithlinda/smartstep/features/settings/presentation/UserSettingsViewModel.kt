@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -22,35 +23,32 @@ class UserSettingsViewModel(
 
     val userSettingsState = userSettingsRepo.userSettingsObservable.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UserSettings())
 
-    private val _heightInput = MutableStateFlow(userSettingsState.value.height)
+    private val _heightInput = MutableStateFlow(0)
 
-    private val _unitChoice = MutableStateFlow<UnitSystemUnits>(UnitSystemUnits.FEET_INCHES)
-    val unitChoice = _unitChoice.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UnitSystemUnits.FEET_INCHES)
 
-    private val _heightUiState = MutableStateFlow<HeightSettingUiState>(HeightSettingUiState.Imperial(feet = 5, inches = 7))
-    val heightUiState = _heightUiState.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HeightSettingUiState.Imperial(feet = 5, inches = 7))
+    private val _heightUiState = MutableStateFlow<HeightSettingUiState>(HeightSettingUiState.SI(_heightInput.value))
+    val heightUiState = _heightUiState.combine(_heightInput){ heightUiState, input ->
+        heightUiState.valueCm = input
+        heightUiState
+    }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000),
+        _heightUiState.value)
 
     fun onUnitChange(unit: UnitSystemUnits){
-        _unitChoice.update {
-            unit
-        }
-
         when(unit){
-            UnitSystemUnits.CM -> {
+            is UnitSystemUnits.SI -> {
                 val currentHeightCm = _heightInput.value
                 println("--- USERSETTINGSVIEWMODEL --- SI selected. currentHeightCm: $currentHeightCm")
                 _heightUiState.update {
-                    HeightSettingUiState.SI(cm = _heightInput.value)
+                    HeightSettingUiState.SI(valueCm = currentHeightCm)
                 }
             }
 
-            UnitSystemUnits.FEET_INCHES -> {
+            is UnitSystemUnits.IMPERIAL -> {
                 val currentHeightCm = _heightInput.value
                 println("--- USERSETTINGSVIEWMODEL --- Imperial selected. currentHeightCm: $currentHeightCm")
-                val (feet, inches) = heightUnitConverter.toImperial(currentHeightCm.toDouble())
-                println("--- USERSETTINGSVIEWMODEL --- converted ${currentHeightCm} to feet: $feet inches: $inches")
                 _heightUiState.update {
-                    HeightSettingUiState.Imperial(feet = feet.toInt(), inches = inches.toInt())
+                    HeightSettingUiState.Imperial(valueCm = currentHeightCm)
                 }
             }
         }
@@ -65,19 +63,16 @@ class UserSettingsViewModel(
                 _heightInput.update {
                     actionUnitInput.cm
                 }
-                _heightUiState.update {
-                    HeightSettingUiState.SI(cm = actionUnitInput.cm)
-                }
+
                 println("--- USERSETTINGSVIEWMODEL --- value userSettings height after update: ${_heightInput.value}")
             }
+
             is ActionUnitInput.ImperialInput ->{
                 println("--- USERSETTINGSVIEWMODEL --- imperial input: feet: ${actionUnitInput.feet} , inches:${actionUnitInput.inches}")
-                val update = heightUnitConverter.fromUi(actionUnitInput.feet.toString(), actionUnitInput.inches.toString())
+
+                val update = heightUnitConverter.toSI(actionUnitInput.feet, actionUnitInput.inches)
                 _heightInput.update {
                     update.toInt()
-                }
-                _heightUiState.update {
-                    HeightSettingUiState.Imperial(feet = actionUnitInput.feet, inches = actionUnitInput.inches)
                 }
             }
 
@@ -98,6 +93,7 @@ class UserSettingsViewModel(
     init {
         viewModelScope.launch {
             userSettingsRepo.loadSettings().also {settings ->
+                println("--- LOADED SETTINGS FROM REPO: $settings")
                 _heightInput.update {
                     settings.height
                 }

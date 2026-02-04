@@ -26,7 +26,7 @@ class HeightUnitConverter {
         return Pair(feet.toString(), roundedInches.toString())
     }
 
-    fun fromUi(feet: String, inches: String): Double {
+    fun toSI(feet: Int, inches: Int): Double {
         val totalInches = feet.toDouble() * inchesToFeet.factorToFeet + inches.toDouble()
         return totalInches / cmToInches.factorToInches  // ✅ Divide to go back to cm
     }

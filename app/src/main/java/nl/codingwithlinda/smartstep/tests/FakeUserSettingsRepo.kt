@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 
 class FakeUserSettingsRepo: UserSettingsRepo {
     override suspend fun loadSettings(): UserSettings {
@@ -31,4 +32,13 @@ class FakeUserSettingsRepo: UserSettingsRepo {
         get() = flow {
             emit(UserSettings())
         }
+
+    override suspend fun saveUnitSystem(systemUnits: UnitSystemUnits) {
+       ///
+    }
+
+    override val unitSystemObservable: Flow<UnitSystemUnits>
+    =flow {
+        emit(UnitSystemUnits.SI)
+    }
 }

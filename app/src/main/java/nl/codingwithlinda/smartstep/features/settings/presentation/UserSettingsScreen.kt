@@ -36,7 +36,7 @@ import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.d
 import nl.codingwithlinda.smartstep.core.data.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.model.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.LengthUnits
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.design.ui.theme.white
@@ -65,9 +65,8 @@ fun UserSettingsRoot(
         modifier = modifier,
         userSettings = settingsViewModel.userSettingsState.collectAsStateWithLifecycle().value,
         heightUiState = settingsViewModel.heightUiState.collectAsStateWithLifecycle().value,
-        unitChoice = settingsViewModel.unitChoice.collectAsStateWithLifecycle().value,
         onUnitChange = {
-            settingsViewModel.onUnitChange(it)
+            settingsViewModel.onUnitChange(it.system)
         },
         actionUnitInput = {
             settingsViewModel.handleHeightInput(it)
@@ -81,8 +80,7 @@ fun UserSettingsRoot(
 fun UserSettingsScreen(
     userSettings: UserSettings,
     heightUiState: HeightSettingUiState,
-    unitChoice: UnitSystemUnits,
-    onUnitChange: (UnitSystemUnits) -> Unit,
+    onUnitChange: (LengthUnits) -> Unit,
     actionUnitInput: (ActionUnitInput) -> Unit,
     actionSkip: () -> Unit,
     modifier: Modifier = Modifier) {
@@ -209,7 +207,6 @@ fun UserSettingsScreen(
             ) {
                 HeightSettingsComponent(
                     uiState = heightUiState,
-                    unitChoice = unitChoice,
                     onUnitChange = {
                         onUnitChange(it)
                     },
@@ -239,11 +236,10 @@ private fun PreviewUserSettingsScreen() {
     SmartStepTheme {
         UserSettingsScreen(
             userSettings = UserSettings(),
-            heightUiState = HeightSettingUiState.Imperial(feet = 5, inches = 9),
+            heightUiState = HeightSettingUiState.SI(175),
             actionUnitInput = {},
             actionSkip = {},
             modifier = Modifier.fillMaxSize(),
-            unitChoice = UnitSystemUnits.FEET_INCHES,
             onUnitChange = {}
         )
 
