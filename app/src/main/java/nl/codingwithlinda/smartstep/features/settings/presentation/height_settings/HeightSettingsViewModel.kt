@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -14,7 +13,7 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
-import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionUnitInput
+import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
 
@@ -45,32 +44,12 @@ class HeightSettingsViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000),
         HeightSettingUiState.SI(0))
 
-    fun onUnitChange(unit: UnitSystemUnits){
-        viewModelScope.launch(NonCancellable) {
-            userSettingsRepo.saveUnitSystem(unit)
-            println("--- USERSETTINGSVIEWMODEL --- saved unitsystem in repo: $unit")
-            /*when (unit) {
-                is UnitSystemUnits.SI -> {
-                    val currentHeightCm = _heightInput.value
-                    println("--- USERSETTINGSVIEWMODEL --- SI selected. currentHeightCm: $currentHeightCm")
-
-                }
-
-                is UnitSystemUnits.IMPERIAL -> {
-                    val currentHeightCm = _heightInput.value
-                    println("--- USERSETTINGSVIEWMODEL --- Imperial selected. currentHeightCm: $currentHeightCm")
-                    _heightUiState.update {
-                        HeightSettingUiState.Imperial(valueCm = currentHeightCm)
-                    }
-                }
-            }*/
-        }
-    }
 
 
-    fun handleHeightInput(actionUnitInput: ActionUnitInput){
-        when(actionUnitInput){
-            is ActionUnitInput.CmInput -> {
+
+    fun handleHeightInput(actionUnitInput: ActionHeightInput){
+        when(actionUnitInput) {
+            is ActionHeightInput.CmInput -> {
                 println("--- USERSETTINGSVIEWMODEL --- cm input: ${actionUnitInput.cm}")
 
                 _heightInput.update {
@@ -80,7 +59,7 @@ class HeightSettingsViewModel(
                 println("--- USERSETTINGSVIEWMODEL --- value userSettings height after update: ${_heightInput.value}")
             }
 
-            is ActionUnitInput.ImperialInput ->{
+            is ActionHeightInput.ImperialInput -> {
                 println("--- USERSETTINGSVIEWMODEL --- imperial input: feet: ${actionUnitInput.feet} , inches:${actionUnitInput.inches}")
 
                 val update = heightUnitConverter.toSI(actionUnitInput.feet, actionUnitInput.inches)
@@ -89,13 +68,19 @@ class HeightSettingsViewModel(
                 }
             }
 
-            is ActionUnitInput.ActionSave -> {
+            is ActionHeightInput.ActionSave -> {
                 viewModelScope.launch(NonCancellable) {
                     val currentHeight = _heightInput.value
                     val userSettings = UserSettings(
                         height = currentHeight,
                     )
                     userSettingsRepo.saveSettings(userSettings)
+                }
+            }
+
+            is ActionHeightInput.ChangeUnitSystem -> {
+                viewModelScope.launch(NonCancellable) {
+                    userSettingsRepo.saveUnitSystem(actionUnitInput.system)
                 }
             }
         }

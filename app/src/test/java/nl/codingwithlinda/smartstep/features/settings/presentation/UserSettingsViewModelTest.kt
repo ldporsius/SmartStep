@@ -11,7 +11,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsViewModel
-import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionUnitInput
+import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
 import nl.codingwithlinda.smartstep.tests.FakeUserSettingsRepo
@@ -47,12 +47,12 @@ class UserSettingsViewModelTest {
             val item0 = awaitItem()
             assertTrue(item0 is HeightSettingUiState.SI)
 
-            viewModel.onUnitChange(UnitSystemUnits.SI)
+            viewModel.handleHeightInput(ActionHeightInput.ChangeUnitSystem(UnitSystemUnits.SI))
 
             val item1 = awaitItem()
             assertTrue(item1 is HeightSettingUiState.SI)
 
-            viewModel.handleHeightInput(ActionUnitInput.CmInput(180))
+            viewModel.handleHeightInput(ActionHeightInput.CmInput(180))
 
 
             val item2 = awaitItem()
@@ -62,7 +62,7 @@ class UserSettingsViewModelTest {
                 }
             }
 
-            viewModel.onUnitChange(UnitSystemUnits.IMPERIAL)
+            viewModel.handleHeightInput(ActionHeightInput.ChangeUnitSystem(UnitSystemUnits.IMPERIAL))
 
             val item3 = awaitItem()
             println("item3: $item3")

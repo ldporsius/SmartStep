@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
@@ -36,22 +34,27 @@ import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.d
 import nl.codingwithlinda.smartstep.core.data.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.model.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.LengthUnits
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.design.ui.theme.white
+import nl.codingwithlinda.smartstep.features.settings.presentation.common.SettingsDialog
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsComponent
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsViewModel
-import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionUnitInput
+import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
+import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.WeightUnitConverter
+import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.WeightSettingViewModel
+import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.WeightSettingsScreen
+import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
+import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
 
 
 @Composable
 fun UserSettingsRoot(
     actionSkip: () -> Unit,
     modifier: Modifier = Modifier) {
-    val settingsViewModel = viewModel<HeightSettingsViewModel>(
+    val heightSettingsViewModel = viewModel<HeightSettingsViewModel>(
         factory = viewModelFactory {
             initializer {
                 HeightSettingsViewModel(
@@ -61,16 +64,28 @@ fun UserSettingsRoot(
             }
         }
     )
+    val weightSettingsViewModel = viewModel<WeightSettingViewModel>(
+        factory = viewModelFactory{
+            initializer {
+                WeightSettingViewModel(
+                    userSettingsRepo = PreferencesUserSettingsRepo(dataStoreSettings),
+                    weightUnitConverter = WeightUnitConverter()
+                )
+            }
+        }
+    )
+
 
     UserSettingsScreen(
         modifier = modifier,
-        userSettings = settingsViewModel.userSettingsState.collectAsStateWithLifecycle().value,
-        heightUiState = settingsViewModel.heightUiState.collectAsStateWithLifecycle().value,
-        onUnitChange = {
-            settingsViewModel.onUnitChange(it.system)
+        userSettings = heightSettingsViewModel.userSettingsState.collectAsStateWithLifecycle().value,
+        heightUiState = heightSettingsViewModel.heightUiState.collectAsStateWithLifecycle().value,
+        weightUiState = weightSettingsViewModel.weightUiState.collectAsStateWithLifecycle().value,
+        actionHeightInput = {
+            heightSettingsViewModel.handleHeightInput(it)
         },
-        actionUnitInput = {
-            settingsViewModel.handleHeightInput(it)
+        actionWeightInput = {
+            weightSettingsViewModel.onAction(it)
         },
         actionSkip = actionSkip
     )
@@ -81,8 +96,9 @@ fun UserSettingsRoot(
 fun UserSettingsScreen(
     userSettings: UserSettings,
     heightUiState: HeightSettingUiState,
-    onUnitChange: (LengthUnits) -> Unit,
-    actionUnitInput: (ActionUnitInput) -> Unit,
+    weightUiState: WeightSettingUiState,
+    actionHeightInput: (ActionHeightInput) -> Unit,
+    actionWeightInput: (ActionWeightInput) -> Unit,
     actionSkip: () -> Unit,
     modifier: Modifier = Modifier) {
 
@@ -90,144 +106,157 @@ fun UserSettingsScreen(
     var pickedGender by remember { mutableStateOf(Gender.FEMALE) }
     var isGenderExpanded by rememberSaveable { mutableStateOf(false) }
     var shouldShowHeightDialog by remember { mutableStateOf(false) }
+    var shouldShowWeightDialog by remember { mutableStateOf(false) }
 
 
     Surface {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Text(
-                text = "My profile",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
-            )
-
-            TextButton(
-                onClick = { actionSkip() },
-                modifier = Modifier.align(Alignment.TopEnd)
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
             ) {
-                Text("Skip")
+
+                Text(
+                    text = "My profile",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier
+                )
+
+                TextButton(
+                    onClick = { actionSkip() },
+                    modifier = Modifier.align(Alignment.TopEnd)
+                ) {
+                    Text("Skip")
+                }
+
             }
 
-        }
+            Text(text = "This information helps calculate your activity more accurately.")
 
-        Text(text = "This information helps calculate your activity more accurately.")
+            with(userSettings) {
 
-        with(userSettings) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .background(
+                            color = white,
+                            shape = MaterialTheme.shapes.medium
+                        )
+                        .padding(16.dp)
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .background(
-                        color = white,
-                        shape = MaterialTheme.shapes.medium
-                    )
-                    .padding(16.dp)
-
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    ExposedDropdownMenuBox(
-                        expanded = isGenderExpanded,
-                        onExpandedChange = {
-                            isGenderExpanded = it
-                        },
-
-                        ) {
-
-                        SettingBoxComponent(
-                            label = "Gender",
-                            modifier = Modifier.clickable(
-                                onClick = { isGenderExpanded = true }
-                            )
-                        ) {
-                            Text(text = "$pickedGender",
-                                modifier = Modifier
-                                    .menuAnchor(MenuAnchorType.PrimaryNotEditable)
-                            )
-                        }
-
-                        ExposedDropdownMenu(
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        ExposedDropdownMenuBox(
                             expanded = isGenderExpanded,
-                            onDismissRequest = { isGenderExpanded = false }
-                        ) {
-                            Gender.entries.forEach {
-                                DropdownMenuItem(
-                                    text = { Text(text = it.name) },
-                                    onClick = {
-                                        pickedGender = it
-                                        isGenderExpanded = false
-                                    }
+                            onExpandedChange = {
+                                isGenderExpanded = it
+                            },
+
+                            ) {
+
+                            SettingBoxComponent(
+                                label = "Gender",
+                                modifier = Modifier.clickable(
+                                    onClick = { isGenderExpanded = true }
+                                )
+                            ) {
+                                Text(text = "$pickedGender",
+                                    modifier = Modifier
+                                        .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                                 )
                             }
+
+                            ExposedDropdownMenu(
+                                expanded = isGenderExpanded,
+                                onDismissRequest = { isGenderExpanded = false }
+                            ) {
+                                Gender.entries.forEach {
+                                    DropdownMenuItem(
+                                        text = { Text(text = it.name) },
+                                        onClick = {
+                                            pickedGender = it
+                                            isGenderExpanded = false
+                                        }
+                                    )
+                                }
+                            }
                         }
-                    }
-                    with(heightUiState) {
+                        with(heightUiState) {
+                            SettingBoxComponent(
+                                label = "Height",
+                                action = { shouldShowHeightDialog = !shouldShowHeightDialog },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Text(text = heightUiState.toUi().asString())
+                            }
+                        }
                         SettingBoxComponent(
-                            label = "Height",
-                            action = { shouldShowHeightDialog = !shouldShowHeightDialog },
+                            label = "Weight",
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            Text(text = heightUiState.toUi().asString())
+                            Text(text = "$weight")
                         }
                     }
-                    SettingBoxComponent(
-                        label = "Weight",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Text(text = "$weight")
-                    }
                 }
-            }
 
+            }
         }
-    }
     }
 
 
     if (shouldShowHeightDialog){
-        Dialog(
-            onDismissRequest = { shouldShowHeightDialog = false }
-        ) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(.5f),
-                shape = MaterialTheme.shapes.medium
-            ) {
-                HeightSettingsComponent(
-                    uiState = heightUiState,
-                    onUnitChange = {
-                        onUnitChange(it)
-                    },
-                    onValueChange = {
-                        actionUnitInput(it)
-                    },
-                    onCancel = {
-                        shouldShowHeightDialog = false
-                    },
+        shouldShowWeightDialog = false
+        SettingsDialog(
+            onDismiss = { shouldShowHeightDialog = false }
+        ){
+            HeightSettingsComponent(
+                uiState = heightUiState,
+                action = {
+                    actionHeightInput(it)
+                },
+                onCancel = {
+                    shouldShowHeightDialog = false
+                },
 
-                    onSave = {
-                        shouldShowHeightDialog = false
-                        actionUnitInput(ActionUnitInput.ActionSave)
+                onSave = {
+                    shouldShowHeightDialog = false
+                    actionHeightInput(ActionHeightInput.ActionSave)
 
-                    },
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+                },
+                modifier = Modifier.padding(16.dp)
+            )
         }
     }
+    if (shouldShowWeightDialog){
+        SettingsDialog(onDismiss = { shouldShowWeightDialog = false }) {
+            WeightSettingsScreen(
+                uiState = weightUiState,
+                action = {
+                    actionWeightInput(it)
+                },
+                onSave = {
+                    shouldShowWeightDialog = false
+                    actionWeightInput(ActionWeightInput.Save)
+
+                },
+                onCancel = {
+                    shouldShowWeightDialog = false
+
+                },
+                modifier = Modifier
+            )
+        }
+    }
+
 
 }
 
@@ -238,10 +267,11 @@ private fun PreviewUserSettingsScreen() {
         UserSettingsScreen(
             userSettings = UserSettings(),
             heightUiState = HeightSettingUiState.SI(175),
-            actionUnitInput = {},
+            weightUiState = WeightSettingUiState.SI(100),
+            actionHeightInput = {},
+            actionWeightInput = {},
             actionSkip = {},
             modifier = Modifier.fillMaxSize(),
-            onUnitChange = {}
         )
 
     }

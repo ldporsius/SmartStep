@@ -9,7 +9,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.WeightUnitConverter
-import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingAction
+import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
 import nl.codingwithlinda.smartstep.tests.FakeUserSettingsRepo
 import org.junit.After
@@ -43,11 +43,11 @@ class WeightSettingViewModelTest {
         viewModel.weightUiState.test {
             assertEquals(awaitItem(), WeightSettingUiState.SI(0))
 
-            viewModel.onAction(WeightSettingAction.KgInput(100))
+            viewModel.onAction(ActionWeightInput.KgInput(100))
 
             assertEquals(awaitItem(), WeightSettingUiState.SI(100))
 
-            viewModel.onAction(WeightSettingAction.ChangeSystem(UnitSystemUnits.IMPERIAL))
+            viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystemUnits.IMPERIAL))
 
 
             val item1 = awaitItem()

@@ -1,6 +1,5 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings
 
-import android.R.attr.action
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.NonCancellable
@@ -12,7 +11,7 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.WeightUnitConverter
-import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingAction
+import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
 
 class WeightSettingViewModel(
@@ -38,17 +37,17 @@ class WeightSettingViewModel(
             }
         }
     }
-    fun onAction(action: WeightSettingAction) {
+    fun onAction(action: ActionWeightInput) {
         when (action) {
-            is WeightSettingAction.KgInput -> {
+            is ActionWeightInput.KgInput -> {
                 _weightInput.value = action.kg
             }
 
-            is WeightSettingAction.PoundsInput -> {
+            is ActionWeightInput.PoundsInput -> {
                 _weightInput.value = weightUnitConverter.toSI(action.pounds)
             }
 
-            is WeightSettingAction.Save -> {
+            is ActionWeightInput.Save -> {
                 viewModelScope.launch(NonCancellable) {
                     userSettingsRepo.loadSettings().copy(
                         weight = _weightInput.value
@@ -57,7 +56,7 @@ class WeightSettingViewModel(
                     }
                 }
             }
-            is WeightSettingAction.ChangeSystem -> {
+            is ActionWeightInput.ChangeSystem -> {
                 viewModelScope.launch(NonCancellable) {
                     userSettingsRepo.saveUnitSystem(action.system)
                 }
