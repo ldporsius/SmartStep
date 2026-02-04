@@ -200,6 +200,7 @@ fun UserSettingsScreen(
                         }
                         SettingBoxComponent(
                             label = "Weight",
+                            action = { shouldShowWeightDialog = !shouldShowWeightDialog },
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {

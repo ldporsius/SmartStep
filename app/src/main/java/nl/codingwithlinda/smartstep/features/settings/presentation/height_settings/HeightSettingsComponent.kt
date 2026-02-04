@@ -3,7 +3,13 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.height_setti
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.LengthUnits
@@ -39,7 +45,7 @@ fun HeightSettingsComponent(
         title = "Height",
         subtitle = "Used to calculate distance"
         )
-        val selectableLengths = SelectableUnitsLengthUi()
+       /* val selectableLengths = remember { SelectableUnitsLengthUi()}
         SystemUnitSelector(
             options = selectableLengths.units.map {
                 it.toUi().asString()
@@ -53,20 +59,22 @@ fun HeightSettingsComponent(
                 //onUnitChange(selectableLengths.units[it])
             }
 
-        )
-        /*SingleChoiceSegmentedButtonRow (
+        )*/
+        SingleChoiceSegmentedButtonRow (
             modifier = Modifier.fillMaxWidth(),
         ){
             options.forEachIndexed { index, option ->
                 SegmentedButton(
                     shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
-                    onClick = { onUnitChange(option) },
+                    onClick = {
+                        action(ActionHeightInput.ChangeUnitSystem(option.system))
+                    },
                     selected = option.system == uiState.system,
                 ) {
                     Text(text = option.toUi().asString())
                 }
             }
-        }*/
+        }
 
         Box(modifier = Modifier.weight(1f)) {
             when (uiState) {
