@@ -60,18 +60,18 @@ class HeightUnitConverterTest {
 
     @Test
     fun `test feet inches from ui`(){
-        val feet = "5"
-        val inches = "9"
-        val result = heightConverter.fromUi(feet, inches)
+        val feet = 5
+        val inches = 9
+        val result = heightConverter.toSI(feet, inches)
         assertEquals(175.0, result, 0.5)
 
     }
 
     @Test
     fun `test (5,11)feet inches returns 180cm`(){
-        val feet = "5"
-        val inches = "11"
-        val result = heightConverter.fromUi(feet, inches)
+        val feet = 5
+        val inches = 11
+        val result = heightConverter.toSI(feet, inches)
         assertEquals(180.0, result, 0.5)
 
     }

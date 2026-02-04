@@ -1,0 +1,67 @@
+package nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings
+
+import android.R.attr.action
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.WeightUnitConverter
+import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingAction
+import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
+
+class WeightSettingViewModel(
+    private val userSettingsRepo: UserSettingsRepo,
+    private val weightUnitConverter: WeightUnitConverter
+): ViewModel(){
+    private val _weightInput = MutableStateFlow(0)
+
+    private val system = userSettingsRepo.unitSystemObservable
+
+    val weightUiState = _weightInput.combine(system) { input, system ->
+        when (system) {
+            is UnitSystemUnits.SI -> WeightSettingUiState.SI(input)
+            is UnitSystemUnits.IMPERIAL -> WeightSettingUiState.Imperial(input)
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WeightSettingUiState.SI(0))
+
+
+    init {
+        viewModelScope.launch {
+            userSettingsRepo.loadSettings().also {
+                _weightInput.value = it.weight
+            }
+        }
+    }
+    fun onAction(action: WeightSettingAction) {
+        when (action) {
+            is WeightSettingAction.KgInput -> {
+                _weightInput.value = action.kg
+            }
+
+            is WeightSettingAction.PoundsInput -> {
+                _weightInput.value = weightUnitConverter.toSI(action.pounds)
+            }
+
+            is WeightSettingAction.Save -> {
+                viewModelScope.launch(NonCancellable) {
+                    userSettingsRepo.loadSettings().copy(
+                        weight = _weightInput.value
+                    ).also {
+                        userSettingsRepo.saveSettings(it)
+                    }
+                }
+            }
+            is WeightSettingAction.ChangeSystem -> {
+                viewModelScope.launch(NonCancellable) {
+                    userSettingsRepo.saveUnitSystem(action.system)
+                }
+            }
+        }
+    }
+}

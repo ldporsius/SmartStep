@@ -1,11 +1,13 @@
-package nl.codingwithlinda.smartstep.features.settings.presentation
+package nl.codingwithlinda.smartstep.features.settings.presentation.height_settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,41 +18,52 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.height_settin
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
 
-class UserSettingsViewModel(
+class HeightSettingsViewModel(
     private val userSettingsRepo: UserSettingsRepo,
     private val heightUnitConverter: HeightUnitConverter
 ): ViewModel() {
 
-    val userSettingsState = userSettingsRepo.userSettingsObservable.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UserSettings())
+    val userSettingsState = userSettingsRepo.userSettingsObservable.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000), UserSettings()
+    )
 
     private val _heightInput = MutableStateFlow(0)
 
+    private val unitSystemPrefs = userSettingsRepo.unitSystemObservable.onEach {
+        println("--- USERSETTINGSVIEWMODEL --- unitSystemPrefs: $it")
 
-    private val _heightUiState = MutableStateFlow<HeightSettingUiState>(HeightSettingUiState.SI(_heightInput.value))
-    val heightUiState = _heightUiState.combine(_heightInput){ heightUiState, input ->
-        heightUiState.valueCm = input
-        heightUiState
     }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000),
-        _heightUiState.value)
+
+    val heightUiState = unitSystemPrefs.combine(_heightInput){ system, input ->
+
+        when(system){
+            is UnitSystemUnits.SI -> HeightSettingUiState.SI(valueCm = input)
+            is UnitSystemUnits.IMPERIAL -> HeightSettingUiState.Imperial(valueCm = input)
+        }.also {
+            println("--- USERSETTINGSVIEWMODEL --- heightUiState changes in combine flow: $it")
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000),
+        HeightSettingUiState.SI(0))
 
     fun onUnitChange(unit: UnitSystemUnits){
-        when(unit){
-            is UnitSystemUnits.SI -> {
-                val currentHeightCm = _heightInput.value
-                println("--- USERSETTINGSVIEWMODEL --- SI selected. currentHeightCm: $currentHeightCm")
-                _heightUiState.update {
-                    HeightSettingUiState.SI(valueCm = currentHeightCm)
-                }
-            }
+        viewModelScope.launch(NonCancellable) {
+            userSettingsRepo.saveUnitSystem(unit)
+            println("--- USERSETTINGSVIEWMODEL --- saved unitsystem in repo: $unit")
+            /*when (unit) {
+                is UnitSystemUnits.SI -> {
+                    val currentHeightCm = _heightInput.value
+                    println("--- USERSETTINGSVIEWMODEL --- SI selected. currentHeightCm: $currentHeightCm")
 
-            is UnitSystemUnits.IMPERIAL -> {
-                val currentHeightCm = _heightInput.value
-                println("--- USERSETTINGSVIEWMODEL --- Imperial selected. currentHeightCm: $currentHeightCm")
-                _heightUiState.update {
-                    HeightSettingUiState.Imperial(valueCm = currentHeightCm)
                 }
-            }
+
+                is UnitSystemUnits.IMPERIAL -> {
+                    val currentHeightCm = _heightInput.value
+                    println("--- USERSETTINGSVIEWMODEL --- Imperial selected. currentHeightCm: $currentHeightCm")
+                    _heightUiState.update {
+                        HeightSettingUiState.Imperial(valueCm = currentHeightCm)
+                    }
+                }
+            }*/
         }
     }
 

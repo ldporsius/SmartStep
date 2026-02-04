@@ -41,6 +41,7 @@ import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.design.ui.theme.white
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsComponent
+import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsViewModel
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionUnitInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
@@ -50,10 +51,10 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversi
 fun UserSettingsRoot(
     actionSkip: () -> Unit,
     modifier: Modifier = Modifier) {
-    val settingsViewModel = viewModel<UserSettingsViewModel>(
+    val settingsViewModel = viewModel<HeightSettingsViewModel>(
         factory = viewModelFactory {
             initializer {
-                UserSettingsViewModel(
+                HeightSettingsViewModel(
                     userSettingsRepo = PreferencesUserSettingsRepo(dataStoreSettings),
                     heightUnitConverter = HeightUnitConverter()
                 )
