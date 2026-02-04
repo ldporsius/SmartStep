@@ -54,7 +54,7 @@ fun HeightSettingsComponent(
                     shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
 
                     onClick = { onUnitChange(option) },
-                    selected = option == uiState.system,
+                    selected = option.system == uiState.system,
                 ) {
                     Text(text = option.toUi().asString())
                 }

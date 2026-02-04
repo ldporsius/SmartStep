@@ -120,7 +120,7 @@ fun ScrollableHeightInputComponent(
                                 println("normalizedPosition = $normalizedPosition")
 
 
-                                val selectedIndex = (normalizedPosition * values.size)
+                                val selectedIndex = (normalizedPosition * (values.size - 1))
                                     .roundToInt()
                                     .coerceIn(0, values.size - 1)
                                 println("selectedIndex = $selectedIndex")
@@ -143,16 +143,16 @@ fun ScrollableHeightInputComponent(
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
             values.onEach { value ->
-
-
                 var boxPosition by remember { mutableStateOf(0f) }
                 Box(
                     modifier = Modifier
                         .size(48.dp)
                         .onGloballyPositioned{
-                           boxPosition = it.positionInRoot().y
+                            boxPosition = it.positionInRoot().y
+                            valueTextHeight = it.size.height
+
                         }
-                        ,
+                    ,
                     contentAlignment = androidx.compose.ui.Alignment.Center
 
                 ) {
