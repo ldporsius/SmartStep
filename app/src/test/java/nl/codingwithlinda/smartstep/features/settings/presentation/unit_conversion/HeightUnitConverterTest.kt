@@ -42,6 +42,14 @@ class HeightUnitConverterTest {
         assertEquals("9", result.second, )
     }
     @Test
+    fun `test 180 cm returns pair of (5,11)`(){
+        val value = 180.toDouble()
+        val result = heightConverter.toUi(value)
+
+        assertEquals("5", result.first, )
+        assertEquals("11", result.second, )
+    }
+    @Test
     fun `test 183 cm returns pair of (6,0)`(){
         val value = 183.toDouble()
         val result = heightConverter.toUi(value)
@@ -56,6 +64,15 @@ class HeightUnitConverterTest {
         val inches = "9"
         val result = heightConverter.fromUi(feet, inches)
         assertEquals(175.0, result, 0.5)
+
+    }
+
+    @Test
+    fun `test (5,11)feet inches returns 180cm`(){
+        val feet = "5"
+        val inches = "11"
+        val result = heightConverter.fromUi(feet, inches)
+        assertEquals(180.0, result, 0.5)
 
     }
 

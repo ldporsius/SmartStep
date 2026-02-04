@@ -20,27 +20,37 @@ class UserSettingsViewModel(
     private val heightUnitConverter: HeightUnitConverter
 ): ViewModel() {
 
-    private val _userSettings = MutableStateFlow<UserSettings>(UserSettings())
-    val userSettings = _userSettings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), UserSettings())
+    private val userSettingsInitial = UserSettings()
 
+    private val _userSettings = MutableStateFlow<UserSettings>(userSettingsInitial)
+    val userSettings = _userSettings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), userSettingsInitial)
+
+    private val _heightInput = MutableStateFlow(userSettingsInitial.height)
     private val _unitChoice = MutableStateFlow<UnitSystemUnits>(UnitSystemUnits.FEET_INCHES)
     val unitChoice = _unitChoice.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UnitSystemUnits.FEET_INCHES)
 
-    private val _heightUiState = MutableStateFlow<HeightSettingUiState>(HeightSettingUiState.Imperial(feet = 5, inches = 9))
-    val heightUiState = _heightUiState.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HeightSettingUiState.Imperial(feet = 5, inches = 9))
+    private val _heightUiState = MutableStateFlow<HeightSettingUiState>(HeightSettingUiState.Imperial(feet = 5, inches = 7))
+    val heightUiState = _heightUiState.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HeightSettingUiState.Imperial(feet = 5, inches = 7))
 
     fun onUnitChange(unit: UnitSystemUnits){
-        _unitChoice.value = unit
+        _unitChoice.update {
+            unit
+        }
 
         when(unit){
             UnitSystemUnits.CM -> {
+                val currentHeightCm = _heightInput.value
+                println("--- USERSETTINGSVIEWMODEL --- SI selected. currentHeightCm: $currentHeightCm")
                 _heightUiState.update {
-                    HeightSettingUiState.SI(cm = userSettings.value.height)
+                    HeightSettingUiState.SI(cm = _heightInput.value)
                 }
             }
 
             UnitSystemUnits.FEET_INCHES -> {
-                val (feet, inches) = heightUnitConverter.toUi(userSettings.value.height.toDouble())
+                val currentHeightCm = _heightInput.value
+                println("--- USERSETTINGSVIEWMODEL --- Imperial selected. currentHeightCm: $currentHeightCm")
+                val (feet, inches) = heightUnitConverter.toUi(currentHeightCm.toDouble())
+                println("--- USERSETTINGSVIEWMODEL --- converted ${currentHeightCm} to feet: $feet inches: $inches")
                 _heightUiState.update {
                     HeightSettingUiState.Imperial(feet = feet.toInt(), inches = inches.toInt())
                 }
@@ -52,15 +62,30 @@ class UserSettingsViewModel(
     fun handleHeightInput(actionUnitInput: ActionUnitInput){
         when(actionUnitInput){
             is ActionUnitInput.CmInput -> {
+                println("--- USERSETTINGSVIEWMODEL --- cm input: ${actionUnitInput.cm}")
+                val currentWeight = userSettings.value.weight
+                val currentGender = userSettings.value.gender
+
+                _heightInput.update {
+                    actionUnitInput.cm
+                }
                 _userSettings.update {
-                    it.copy(height = actionUnitInput.cm)
+                    UserSettings(
+                        gender = currentGender,
+                        weight = currentWeight,
+                        height = actionUnitInput.cm)
                 }
                 _heightUiState.update {
                     HeightSettingUiState.SI(cm = actionUnitInput.cm)
                 }
+                println("--- USERSETTINGSVIEWMODEL --- value userSettings height after update: ${userSettings.value.height}")
             }
             is ActionUnitInput.ImperialInput ->{
+                println("--- USERSETTINGSVIEWMODEL --- imperial input: feet: ${actionUnitInput.feet} , inches:${actionUnitInput.inches}")
                 val update = heightUnitConverter.fromUi(actionUnitInput.feet.toString(), actionUnitInput.inches.toString())
+                _heightInput.update {
+                    update.toInt()
+                }
                 _userSettings.update {
                     it.copy(height = update.toInt())
                 }

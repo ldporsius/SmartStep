@@ -2,13 +2,19 @@ package nl.codingwithlinda.smartstep.features.settings.presentation
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.cash.turbine.test
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsViewModel
+import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionUnitInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
 import nl.codingwithlinda.smartstep.tests.FakeUserSettingsRepo
@@ -28,8 +34,8 @@ class UserSettingsViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         viewModel = UserSettingsViewModel(
-                repo,
-        HeightUnitConverter()
+            repo,
+            HeightUnitConverter()
         )
     }
 
@@ -39,10 +45,39 @@ class UserSettingsViewModelTest {
     }
 
     @Test
-    fun `test UserSettingsViewModel - zzz`()= runTest(testDispatcher){
+    fun `test UserSettingsViewModel - userSettings are updated after sytem choice`() = runTest(testDispatcher){
         viewModel.heightUiState.test {
             val item0 = awaitItem()
             assertTrue(item0 is HeightSettingUiState.Imperial)
+
+            viewModel.onUnitChange(UnitSystemUnits.CM)
+
+            val item1 = awaitItem()
+            assertTrue(item1 is HeightSettingUiState.SI)
+
+            assertThat(viewModel.userSettings.value.height).isEqualTo(170)
+
+            viewModel.handleHeightInput(ActionUnitInput.CmInput(180))
+
+
+            val item2 = awaitItem()
+            assertTrue(item2 is HeightSettingUiState.SI).also {
+                with(item2 as HeightSettingUiState.SI){
+                    assertThat(cm).isEqualTo(180)
+                }
+            }
+
+            viewModel.onUnitChange(UnitSystemUnits.FEET_INCHES)
+
+            val item3 = awaitItem()
+            assertTrue(item3 is HeightSettingUiState.Imperial).also{
+                with(item3 as HeightSettingUiState.Imperial){
+
+                    assertThat(feet).isEqualTo(5)
+                    assertThat(inches).isEqualTo(11)
+                }
+            }
+
         }
     }
 

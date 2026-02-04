@@ -71,12 +71,13 @@ fun HeightSettingsComponent(
                 )
             }
             is HeightSettingUiState.Imperial -> {
+                println("--- HEIGHTSETTINGSCOMPONENT --- imperial uiState: $uiState")
                 HeightFeetInchesComponent(
                     feetComponent = {
                         ScrollableHeightInputComponent(
                             label = "ft",
                             defaultValue = uiState.feet,
-                            values = List(11){
+                            values = List(8){
                                 it
                             },
                             onValueChange = {
@@ -89,7 +90,7 @@ fun HeightSettingsComponent(
                         ScrollableHeightInputComponent(
                             label = "in",
                             defaultValue = uiState.inches,
-                            values = List(11){
+                            values = List(13){
                                 it
                             },
                             onValueChange = {
