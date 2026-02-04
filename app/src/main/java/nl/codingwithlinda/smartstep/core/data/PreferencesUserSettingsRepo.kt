@@ -63,6 +63,20 @@ class PreferencesUserSettingsRepo(
 
     }
 
+    override val userSettingsObservable: Flow<UserSettings>
+        get() = dataStore.data.map {
+            val gender = it[USER_SETTINGS_GENDER]?.let { gender ->
+                Gender.valueOf(gender)
+            }?: Gender.FEMALE
+
+            UserSettings(
+                gender = gender,
+                weight = it[USER_SETTINGS_WEIGHT] ?: UserSettings().weight,
+                height = it[USER_SETTINGS_HEIGHT] ?: UserSettings().height
+
+            )
+        }
+
     override val skippedObservable: Flow<Boolean>
         get() = dataStore.data.map {
             it[USER_SETTINGS_SKIP] ?: false

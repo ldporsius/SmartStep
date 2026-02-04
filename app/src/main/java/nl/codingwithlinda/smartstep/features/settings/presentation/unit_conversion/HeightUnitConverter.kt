@@ -16,7 +16,7 @@ class HeightUnitConverter {
     }
 
 
-    fun toUi(from: Double): Pair<String, String>{
+    fun toImperial(from: Double): Pair<String, String>{
         val feet_inches = convert(from)
 
         val feet = floor( feet_inches).toInt()

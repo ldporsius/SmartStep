@@ -26,4 +26,9 @@ class FakeUserSettingsRepo: UserSettingsRepo {
         get() = flow {
             emit(false)
         }
+
+    override val userSettingsObservable: Flow<UserSettings>
+        get() = flow {
+            emit(UserSettings())
+        }
 }

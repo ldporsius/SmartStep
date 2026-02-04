@@ -10,7 +10,7 @@ class HeightUnitConverterTest {
     @Test
     fun `test zero cm returns pair of (0,0)`(){
         val value = 0.toDouble()
-        val result = heightConverter.toUi(value)
+        val result = heightConverter.toImperial(value)
 
         assertTrue(result.first.equals("0"))
         assertTrue(result.second.equals("0"))
@@ -19,7 +19,7 @@ class HeightUnitConverterTest {
     @Test
     fun `test one cm returns pair of (0,0)`(){
         val value = 1.toDouble()
-        val result = heightConverter.toUi(value)
+        val result = heightConverter.toImperial(value)
 
         assertTrue(result.first.equals("0"))
         assertTrue(result.second.equals("0"))
@@ -28,7 +28,7 @@ class HeightUnitConverterTest {
     @Test
     fun `test 175 cm returns pair of (5,9)`(){
         val value = 175.toDouble()
-        val result = heightConverter.toUi(value)
+        val result = heightConverter.toImperial(value)
 
         assertEquals("5", result.first, )
         assertEquals("9", result.second, )
@@ -36,7 +36,7 @@ class HeightUnitConverterTest {
     @Test
     fun `test 176 cm returns pair of (5,9)`(){
         val value = 176.toDouble()
-        val result = heightConverter.toUi(value)
+        val result = heightConverter.toImperial(value)
 
         assertEquals("5", result.first, )
         assertEquals("9", result.second, )
@@ -44,7 +44,7 @@ class HeightUnitConverterTest {
     @Test
     fun `test 180 cm returns pair of (5,11)`(){
         val value = 180.toDouble()
-        val result = heightConverter.toUi(value)
+        val result = heightConverter.toImperial(value)
 
         assertEquals("5", result.first, )
         assertEquals("11", result.second, )
@@ -52,7 +52,7 @@ class HeightUnitConverterTest {
     @Test
     fun `test 183 cm returns pair of (6,0)`(){
         val value = 183.toDouble()
-        val result = heightConverter.toUi(value)
+        val result = heightConverter.toImperial(value)
 
         assertEquals("6", result.first, )
         assertEquals("0", result.second, )

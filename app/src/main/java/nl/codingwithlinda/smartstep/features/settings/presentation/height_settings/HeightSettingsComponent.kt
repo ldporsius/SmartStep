@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.height_settings
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,8 @@ fun HeightSettingsComponent(
     unitChoice: UnitSystemUnits,
     onUnitChange: (UnitSystemUnits) -> Unit,
     onValueChange: (ActionUnitInput) -> Unit,
+    onCancel: () -> Unit = {},
+    onSave: () -> Unit = {},
     modifier: Modifier = Modifier) {
 
 
@@ -40,6 +43,9 @@ fun HeightSettingsComponent(
         modifier = modifier,
         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
     ) {
+
+        Text(text = "Height", style = androidx.compose.material3.MaterialTheme.typography.titleLarge)
+        Text(text = "Used to calculate distance")
 
         SingleChoiceSegmentedButtonRow (
             modifier = Modifier.fillMaxWidth(),
@@ -56,61 +62,83 @@ fun HeightSettingsComponent(
             }
         }
 
-        when(uiState){
-            is HeightSettingUiState.SI -> {
-                ScrollableHeightInputComponent(
-                    label = unitChoice.toUi().asString(),
-                    defaultValue = uiState.cm,
-                    values = List(51){
-                        it + 160
-                    },
-                    onValueChange = {
-                        onValueChange(ActionUnitInput.CmInput(it))
-                    },
-                    modifier = Modifier,
-                )
-            }
-            is HeightSettingUiState.Imperial -> {
-                println("--- HEIGHTSETTINGSCOMPONENT --- imperial uiState: $uiState")
-                HeightFeetInchesComponent(
-                    feetComponent = {
-                        ScrollableHeightInputComponent(
-                            label = "ft",
-                            defaultValue = uiState.feet,
-                            values = List(8){
-                                it
-                            },
-                            onValueChange = {
-                                onValueChange(ActionUnitInput.ImperialInput(feet = it, inches = uiState.inches))
-                            },
-                            modifier = Modifier,
-                        )
-                    },
-                    inchesComponent = {
-                        ScrollableHeightInputComponent(
-                            label = "in",
-                            defaultValue = uiState.inches,
-                            values = List(13){
-                                it
-                            },
-                            onValueChange = {
-                                onValueChange(ActionUnitInput.ImperialInput(feet = uiState.feet, inches = it))
-                            },
-                            modifier = Modifier,
-                        )
-                    }
-                )
+        Box(modifier = Modifier.weight(1f)) {
+            when (uiState) {
+                is HeightSettingUiState.SI -> {
+                    ScrollableHeightInputComponent(
+                        label = unitChoice.toUi().asString(),
+                        defaultValue = uiState.cm,
+                        values = List(51) {
+                            it + 160
+                        },
+                        onValueChange = {
+                            onValueChange(ActionUnitInput.CmInput(it))
+                        },
+                        modifier = Modifier,
+                    )
+                }
+
+                is HeightSettingUiState.Imperial -> {
+                    println("--- HEIGHTSETTINGSCOMPONENT --- imperial uiState: $uiState")
+                    HeightFeetInchesComponent(
+                        feetComponent = {
+                            ScrollableHeightInputComponent(
+                                label = "ft",
+                                defaultValue = uiState.feet,
+                                values = List(8) {
+                                    it
+                                },
+                                onValueChange = {
+                                    onValueChange(
+                                        ActionUnitInput.ImperialInput(
+                                            feet = it,
+                                            inches = uiState.inches
+                                        )
+                                    )
+                                },
+                                modifier = Modifier,
+                            )
+                        },
+                        inchesComponent = {
+                            ScrollableHeightInputComponent(
+                                label = "in",
+                                defaultValue = uiState.inches,
+                                values = List(13) {
+                                    it
+                                },
+                                onValueChange = {
+                                    onValueChange(
+                                        ActionUnitInput.ImperialInput(
+                                            feet = uiState.feet,
+                                            inches = it
+                                        )
+                                    )
+                                },
+                                modifier = Modifier,
+                            )
+                        }
+                    )
+                }
             }
         }
 
 
-        Row {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+            ,
+            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.End
+        ) {
             TextButton(
-                onClick = {  }
+                onClick = {
+                    onCancel()
+                }
             ) {
                 Text("Cancel")
             }
-            TextButton( onClick = {}
+            TextButton( onClick = {
+                onSave()
+            }
             ) {
                 Text("OK")
             }

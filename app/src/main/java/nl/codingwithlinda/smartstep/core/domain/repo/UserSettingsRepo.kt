@@ -7,6 +7,7 @@ interface UserSettingsRepo {
     suspend fun loadSettings(): UserSettings
     suspend fun saveSettings(settings: UserSettings)
 
+    val userSettingsObservable : Flow<UserSettings>
     suspend fun skip()
     suspend fun loadSkip(): Boolean
 
