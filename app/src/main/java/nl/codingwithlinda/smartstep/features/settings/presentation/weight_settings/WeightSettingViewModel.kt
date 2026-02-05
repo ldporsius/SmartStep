@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
-import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.WeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
 

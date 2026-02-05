@@ -2,11 +2,11 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.weight_setti
 
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
-import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.WeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
 
 interface WeightSettingUiState {
     data class Imperial(val kg: Int,): WeightSettingUiState{
-        val converter = WeightUnitConverter()
+        val converter = WeightUnitConverter
         val pounds = converter.toImperial(kg.toDouble())
         override val system: UnitSystemUnits
             get() = UnitSystemUnits.IMPERIAL

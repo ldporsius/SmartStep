@@ -9,15 +9,11 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.LengthUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogHeader
-import nl.codingwithlinda.smartstep.features.settings.presentation.common.SelectableUnitsWeightUi
-import nl.codingwithlinda.smartstep.features.settings.presentation.common.SystemUnitSelector
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.ScrollableHeightInputComponent
-import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.toUi
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
@@ -25,6 +21,8 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settin
 @Composable
 fun WeightSettingsScreen(
     uiState: WeightSettingUiState,
+    valuesKg: List<Int>,
+    valuesPounds: List<Int>,
     action: (ActionWeightInput) -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit,
@@ -64,9 +62,7 @@ fun WeightSettingsScreen(
                     ScrollableHeightInputComponent(
                         label = "kg",
                         defaultValue = uiState.kg,
-                        values = List(200) {
-                            it + 10
-                        },
+                        values = valuesKg,
                         onValueChange = {
                             action(ActionWeightInput.KgInput(it))
                         },
@@ -77,9 +73,7 @@ fun WeightSettingsScreen(
                     ScrollableHeightInputComponent(
                         label = "lbs",
                         defaultValue = uiState.pounds,
-                        values = List(300) {
-                            it + 40
-                        },
+                        values = valuesPounds,
                         onValueChange = {
                             action(ActionWeightInput.PoundsInput(it))
                         }

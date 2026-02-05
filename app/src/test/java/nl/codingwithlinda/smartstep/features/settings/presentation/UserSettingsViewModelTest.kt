@@ -13,7 +13,8 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsViewModel
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
-import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
+import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.tests.FakeUserSettingsRepo
 import org.junit.After
 import org.junit.Assert.*
@@ -31,8 +32,9 @@ class UserSettingsViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         viewModel = HeightSettingsViewModel(
-            repo,
-            HeightUnitConverter()
+            userSettingsRepo = repo,
+            memento = UserSettingsMemento,
+            heightUnitConverter = HeightUnitConverter
         )
     }
 
@@ -79,7 +81,7 @@ class UserSettingsViewModelTest {
 
     @Test
     fun `test UserSettingsViewModel - uiState data class is updated after cm input`() = runTest {
-        viewModel.heightSettingsUiState.test {
+        viewModel.heightUiState.test {
             val item0 = awaitItem()
             assertTrue(item0 is HeightSettingUiState.SI)
             viewModel.handleHeightInput(ActionHeightInput.CmInput(180))

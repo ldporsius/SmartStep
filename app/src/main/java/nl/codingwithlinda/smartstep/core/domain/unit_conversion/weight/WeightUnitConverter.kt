@@ -1,8 +1,8 @@
-package nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion
+package nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight
 
 import kotlin.math.roundToInt
 
-class WeightUnitConverter {
+object WeightUnitConverter {
 
     val kgToPounds = 2.20462
 

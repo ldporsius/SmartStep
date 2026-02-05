@@ -47,8 +47,10 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.height_settin
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsViewModel
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
-import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
-import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.WeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.WeightSettingViewModel
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.WeightSettingsScreen
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
@@ -78,7 +80,7 @@ fun UserSettingsRoot(
                 HeightSettingsViewModel(
                     userSettingsRepo = userSettingsRepo,
                     memento = UserSettingsMemento,
-                    heightUnitConverter = HeightUnitConverter()
+                    heightUnitConverter = HeightUnitConverter
                 )
             }
         }
@@ -89,7 +91,7 @@ fun UserSettingsRoot(
                 WeightSettingViewModel(
                     userSettingsRepo = userSettingsRepo,
                     memento = UserSettingsMemento,
-                    weightUnitConverter = WeightUnitConverter()
+                    weightUnitConverter = WeightUnitConverter
                 )
             }
         }
@@ -259,6 +261,8 @@ fun UserSettingsScreen(
         SettingsDialog(onDismiss = { shouldShowWeightDialog = false }) {
             WeightSettingsScreen(
                 uiState = weightUiState,
+                valuesKg = weightRangeKg.toList(),
+                valuesPounds = weightRangePounds,
                 action = {
                     actionWeightInput(it)
                 },

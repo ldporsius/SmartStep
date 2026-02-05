@@ -16,7 +16,7 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
-import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
 
 class HeightSettingsViewModel(
     private val userSettingsRepo: UserSettingsRepo,

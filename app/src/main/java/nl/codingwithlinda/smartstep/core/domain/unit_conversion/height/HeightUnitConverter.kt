@@ -1,11 +1,11 @@
-package nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion
+package nl.codingwithlinda.smartstep.core.domain.unit_conversion.height
 
 import nl.codingwithlinda.smartstep.core.data.unit_conversion.CmToInchesConverter
 import nl.codingwithlinda.smartstep.core.data.unit_conversion.InchesToFeetConverter
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
-class HeightUnitConverter {
+object HeightUnitConverter {
 
     val cmToInches = CmToInchesConverter()
     val inchesToFeet = InchesToFeetConverter()
@@ -19,7 +19,7 @@ class HeightUnitConverter {
     fun toImperial(from: Double): Pair<String, String>{
         val feet_inches = convert(from)
 
-        val feet = floor( feet_inches).toInt()
+        val feet = floor(feet_inches).toInt()
 
         val inches = cmToInches.convert(from) - inchesToFeet.factorToFeet * feet
         val roundedInches = (inches).roundToInt()

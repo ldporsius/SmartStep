@@ -1,11 +1,12 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion
 
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
 import org.junit.Assert.*
 import org.junit.Test
 
 class HeightUnitConverterTest {
 
-    val heightConverter = HeightUnitConverter()
+    val heightConverter = HeightUnitConverter
 
     @Test
     fun `test zero cm returns pair of (0,0)`(){

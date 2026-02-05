@@ -2,12 +2,12 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.height_setti
 
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
-import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
 
 interface HeightSettingUiState {
     data class Imperial(override var valueCm: Int): HeightSettingUiState {
 
-        val res = HeightUnitConverter().toImperial(valueCm.toDouble())
+        val res = HeightUnitConverter.toImperial(valueCm.toDouble())
 
         val feet = res.first.toInt()
         val inches = res.second.toInt()
