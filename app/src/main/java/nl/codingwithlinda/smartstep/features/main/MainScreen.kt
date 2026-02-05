@@ -14,10 +14,12 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.navigation.NavigationController
 import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
@@ -70,7 +72,11 @@ fun MainScreen(
                             )
                         }
 
-                    }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors().copy(
+                        containerColor = Color.Transparent
+
+                    )
                 )
             }
 
