@@ -10,12 +10,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.WeightUnitConverter
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
 
 class WeightSettingViewModel(
     private val userSettingsRepo: UserSettingsRepo,
+    private val memento: UserSettingsMemento,
     private val weightUnitConverter: WeightUnitConverter
 ): ViewModel(){
     private val _weightInput = MutableStateFlow(0)
@@ -49,11 +51,9 @@ class WeightSettingViewModel(
 
             is ActionWeightInput.Save -> {
                 viewModelScope.launch(NonCancellable) {
-                    userSettingsRepo.loadSettings().copy(
-                        weight = _weightInput.value
-                    ).also {
-                        userSettingsRepo.saveSettings(it)
-                    }
+                    val currentWeight = _weightInput.value
+                    val userSettings = memento.restoreLast().copy(weight = currentWeight)
+                    memento.save(userSettings)
                 }
             }
             is ActionWeightInput.ChangeSystem -> {

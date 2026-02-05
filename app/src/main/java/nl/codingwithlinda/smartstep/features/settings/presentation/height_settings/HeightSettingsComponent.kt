@@ -45,21 +45,6 @@ fun HeightSettingsComponent(
         title = "Height",
         subtitle = "Used to calculate distance"
         )
-       /* val selectableLengths = remember { SelectableUnitsLengthUi()}
-        SystemUnitSelector(
-            options = selectableLengths.units.map {
-                it.toUi().asString()
-            },
-            isOptionSelected = {
-                it == selectableLengths.currentSelection
-            },
-            onClick = {
-                selectableLengths.currentSelection = it
-                action(ActionHeightInput.ChangeUnitSystem(selectableLengths.units[it].system))
-                //onUnitChange(selectableLengths.units[it])
-            }
-
-        )*/
         SingleChoiceSegmentedButtonRow (
             modifier = Modifier.fillMaxWidth(),
         ){

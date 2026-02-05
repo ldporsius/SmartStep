@@ -14,6 +14,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import nl.codingwithlinda.smartstep.core.domain.model.Gender
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.SettingBoxComponent
@@ -38,7 +40,11 @@ fun GenderComponent(
         SettingBoxComponent(
             label = "Gender",
             action = { isGenderExpanded = true },
-            modifier = Modifier .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+            modifier = Modifier
+                .semantics(){
+                    contentDescription = "Gender"
+                }
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
         ) {
             Text(text = currentGender.toUi().asString(),
                 modifier = Modifier

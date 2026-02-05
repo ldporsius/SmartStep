@@ -13,12 +13,14 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.HeightUnitConverter
 
 class HeightSettingsViewModel(
     private val userSettingsRepo: UserSettingsRepo,
+    private val memento: UserSettingsMemento,
     private val heightUnitConverter: HeightUnitConverter
 ): ViewModel() {
 
@@ -32,13 +34,16 @@ class HeightSettingsViewModel(
         println("--- USERSETTINGSVIEWMODEL --- unitSystemPrefs: $it")
     }
 
-    ////////////////// TESTING //////////////////////
-    private val _heightSettingsUiState = MutableStateFlow<HeightSettingUiState>(HeightSettingUiState.SI(0))
-    val heightSettingsUiState = _heightSettingsUiState.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(5000), HeightSettingUiState.SI(0)
-    )
-    ////////////// END TESTING //////////////////////////////////////
-
+    init {
+        viewModelScope.launch {
+            userSettingsRepo.loadSettings().also {settings ->
+                println("--- LOADED SETTINGS FROM REPO: $settings")
+                _heightInput.update {
+                    settings.height
+                }
+            }
+        }
+    }
     val heightUiState = unitSystemPrefs.combine(_heightInput){ system, input ->
         when(system){
             is UnitSystemUnits.SI -> HeightSettingUiState.SI(valueCm = input)
@@ -60,14 +65,6 @@ class HeightSettingsViewModel(
                     println("--- USERSETTINGSVIEWMODEL --- value userSettings height after update: ${_heightInput.value}")
                 }
 
-                /////////// ASSUMING WE ARE UPDATING THE MUTABLE STATE FLOW DIRECTLY ////////////
-                val update = HeightSettingUiState.SI(valueCm = actionUnitInput.cm)
-                val old = _heightSettingsUiState.value
-                println("--- USERSETTINGSVIEWMODEL --- old is same instance as new: ${old.equals(update)}")
-                _heightSettingsUiState.update { uiState ->
-                    update
-                }
-                ///////////////// END ASSUMING WE ARE UPDATING THE MUTABLE STATE FLOW DIRECTLY //////////////////
             }
 
             is ActionHeightInput.ImperialInput -> {
@@ -82,10 +79,9 @@ class HeightSettingsViewModel(
             is ActionHeightInput.ActionSave -> {
                 viewModelScope.launch(NonCancellable) {
                     val currentHeight = _heightInput.value
-                    val userSettings = UserSettings(
-                        height = currentHeight,
-                    )
-                    userSettingsRepo.saveSettings(userSettings)
+                    val userSettings = memento.restoreLast().copy(height = currentHeight)
+                    memento.save(userSettings)
+                    //userSettingsRepo.saveSettings(userSettings)
                 }
             }
 
@@ -99,14 +95,5 @@ class HeightSettingsViewModel(
 
 
 
-    init {
-        viewModelScope.launch {
-            userSettingsRepo.loadSettings().also {settings ->
-                println("--- LOADED SETTINGS FROM REPO: $settings")
-                _heightInput.update {
-                    settings.height
-                }
-            }
-        }
-    }
+
 }

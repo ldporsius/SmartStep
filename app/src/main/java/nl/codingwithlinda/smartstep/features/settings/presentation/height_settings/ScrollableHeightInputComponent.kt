@@ -31,6 +31,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -89,6 +91,9 @@ fun ScrollableHeightInputComponent(
 
         Column(
             modifier = Modifier
+                .semantics(){
+                    contentDescription = "scroll to pick height"
+                }
                 .fillMaxHeight()
                 .verticalScroll(
                     state = rememberScrollState(),

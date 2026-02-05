@@ -21,18 +21,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.domain.model.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.design.ui.theme.white
+import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.SettingBoxComponent
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.SettingsDialog
 import nl.codingwithlinda.smartstep.features.settings.presentation.gender_settings.GenderComponent
@@ -60,7 +65,9 @@ fun UserSettingsRoot(
         factory = viewModelFactory {
             initializer {
                 GenderSettingsViewModel(
-                    userSettingsRepo = userSettingsRepo
+                    userSettingsRepo = userSettingsRepo,
+                    memento = UserSettingsMemento
+
                 )
             }
         }
@@ -70,6 +77,7 @@ fun UserSettingsRoot(
             initializer {
                 HeightSettingsViewModel(
                     userSettingsRepo = userSettingsRepo,
+                    memento = UserSettingsMemento,
                     heightUnitConverter = HeightUnitConverter()
                 )
             }
@@ -80,6 +88,7 @@ fun UserSettingsRoot(
             initializer {
                 WeightSettingViewModel(
                     userSettingsRepo = userSettingsRepo,
+                    memento = UserSettingsMemento,
                     weightUnitConverter = WeightUnitConverter()
                 )
             }
@@ -102,7 +111,15 @@ fun UserSettingsRoot(
             weightSettingsViewModel.onAction(it)
         },
         actionSkip = actionSkip,
-        actionStart = {}
+        actionStart = {
+          SmartStepApplication.applicationScope.launch {
+              val userSettings = UserSettingsMemento.restoreLast()
+              userSettingsRepo.saveSettings(userSettings)
+
+              actionSkip()
+          }
+
+        }
     )
 
 }
@@ -179,6 +196,9 @@ fun UserSettingsScreen(
                             label = "Height",
                             action = { shouldShowHeightDialog = !shouldShowHeightDialog },
                             modifier = Modifier
+                                .semantics{
+                                    contentDescription = "Height"
+                                }
                                 .fillMaxWidth()
                         ) {
                             Text(text = heightUiState.toUi().asString())
@@ -255,8 +275,6 @@ fun UserSettingsScreen(
             )
         }
     }
-
-
 }
 
 @Preview
