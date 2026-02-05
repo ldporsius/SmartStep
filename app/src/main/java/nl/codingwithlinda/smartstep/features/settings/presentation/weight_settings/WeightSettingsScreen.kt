@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings
 
+import android.R.attr.onClick
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +10,8 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow
@@ -44,7 +47,10 @@ fun WeightSettingsScreen(
             modifier = Modifier.fillMaxWidth(),
         ){
             options.forEachIndexed { index, option ->
-                SegmentedButton(
+                SegmentedButton(modifier = Modifier
+                    .semantics(){
+                        contentDescription = "option$index"
+                    },
                     shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
                     onClick = {
                         action(ActionWeightInput.ChangeSystem(option.system))

@@ -3,11 +3,13 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.weight_setti
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.maxWeightPounds
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.minWeightPounds
 
 interface WeightSettingUiState {
     data class Imperial(val kg: Int,): WeightSettingUiState{
         val converter = WeightUnitConverter
-        val pounds = converter.toImperial(kg.toDouble())
+        val pounds = converter.toImperial(kg.toDouble()).coerceIn(minWeightPounds, maxWeightPounds)
         override val system: UnitSystemUnits
             get() = UnitSystemUnits.IMPERIAL
 
