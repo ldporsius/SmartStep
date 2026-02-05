@@ -25,13 +25,12 @@ fun SettingBoxComponent(
     label: String = "",
     action: () -> Unit = {},
     content: @Composable () -> Unit,
-    ) {
+) {
 
     Box(modifier = modifier.
-        clickable(){
-            action()
-        }
-        .background(color = MaterialTheme.colorScheme.secondaryContainer, shape = MaterialTheme.shapes.medium)
+    clickable(){
+        action()
+    }.background(color = MaterialTheme.colorScheme.secondaryContainer, shape = MaterialTheme.shapes.medium)
 
 
     ){
@@ -47,15 +46,8 @@ fun SettingBoxComponent(
                 content()
             }
 
-            IconButton(
-                onClick = {
-                    action()
-                },
-            ) {
-                Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null)
-            }
+            Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null)
+
         }
-
-
     }
 }

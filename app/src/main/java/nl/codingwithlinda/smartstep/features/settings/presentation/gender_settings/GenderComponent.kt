@@ -1,6 +1,5 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.gender_settings
 
-import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenuItem
@@ -39,11 +38,10 @@ fun GenderComponent(
         SettingBoxComponent(
             label = "Gender",
             action = { isGenderExpanded = true },
-            modifier = Modifier
+            modifier = Modifier .menuAnchor(MenuAnchorType.PrimaryNotEditable)
         ) {
             Text(text = currentGender.toUi().asString(),
                 modifier = Modifier
-                    .menuAnchor(MenuAnchorType.PrimaryNotEditable)
             )
         }
 
