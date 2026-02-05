@@ -18,8 +18,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import nl.codingwithlinda.smartstep.core.domain.model.Gender
-import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
+import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
+import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento

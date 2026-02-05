@@ -1,7 +1,7 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.gender_settings
 
 import nl.codingwithlinda.smartstep.R
-import nl.codingwithlinda.smartstep.core.domain.model.Gender
+import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
 
 fun Gender.toUi(): UiText{

@@ -15,7 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
-import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
+import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches

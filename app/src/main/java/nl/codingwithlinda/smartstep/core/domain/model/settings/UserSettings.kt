@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.core.domain.model
+package nl.codingwithlinda.smartstep.core.domain.model.settings
 
 data class UserSettings(
     val gender: Gender = Gender.FEMALE,

@@ -31,8 +31,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.core.domain.model.Gender
-import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
+import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
+import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme

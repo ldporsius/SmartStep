@@ -16,7 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import nl.codingwithlinda.smartstep.core.domain.model.Gender
+import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.SettingBoxComponent
 

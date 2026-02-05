@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
-import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
+import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 

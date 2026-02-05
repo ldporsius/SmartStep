@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.core.domain.model.UserSettings
+import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
