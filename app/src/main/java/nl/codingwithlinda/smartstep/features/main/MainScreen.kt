@@ -20,7 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.navigation.NavigationController
 import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
 
@@ -67,7 +69,7 @@ fun MainScreen(
 
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Menu,
+                                painter = painterResource(R.drawable.menu_burger_square_1),
                                 contentDescription = "Menu"
                             )
                         }
