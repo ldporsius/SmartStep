@@ -16,10 +16,10 @@
       <SelectionState runConfigName="UserSettingsScreenTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testUserSettingsScreen_updateStart()">
+      <SelectionState runConfigName="testWeightSettingsScreen()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testWeightSettingsScreen()">
+      <SelectionState runConfigName="testHeightSettingsComponent()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

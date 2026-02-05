@@ -3,14 +3,18 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.height_setti
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeightFeet
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeightInches
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.minHeightFeet
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.minHeightInches
 
 interface HeightSettingUiState {
     data class Imperial(override var valueCm: Int): HeightSettingUiState {
 
         val res = HeightUnitConverter.toImperial(valueCm.toDouble())
 
-        val feet = res.first.toInt()
-        val inches = res.second.toInt()
+        val feet = res.first.coerceIn(minHeightFeet, maxHeightFeet)
+        val inches = res.second.coerceIn(minHeightInches, maxHeightInches)
 
 
         override fun toUi() : UiText {

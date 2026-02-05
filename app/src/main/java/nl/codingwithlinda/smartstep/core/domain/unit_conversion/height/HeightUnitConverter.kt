@@ -16,14 +16,14 @@ object HeightUnitConverter {
     }
 
 
-    fun toImperial(from: Double): Pair<String, String>{
+    fun toImperial(from: Double): Pair<Int, Int>{
         val feet_inches = convert(from)
 
         val feet = floor(feet_inches).toInt()
 
         val inches = cmToInches.convert(from) - inchesToFeet.factorToFeet * feet
         val roundedInches = (inches).roundToInt()
-        return Pair(feet.toString(), roundedInches.toString())
+        return Pair(feet, roundedInches)
     }
 
     fun toSI(feet: Int, inches: Int): Double {

@@ -173,7 +173,11 @@ fun ScrollableHeightInputComponent(
                     Text(
                         "$value",
                         textAlign = TextAlign.Center,
-                        color = Color.Black.copy(alpha = visibleAnimation.value)
+                        color = Color.Black.copy(alpha = visibleAnimation.value),
+                        modifier = Modifier.
+                        semantics {
+                            contentDescription = "value $label"
+                        }
                     )
                 }
             }

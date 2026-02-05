@@ -9,16 +9,18 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.LengthUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogHeader
-import nl.codingwithlinda.smartstep.features.settings.presentation.common.SelectableUnitsLengthUi
-import nl.codingwithlinda.smartstep.features.settings.presentation.common.SystemUnitSelector
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.toUi
@@ -26,6 +28,9 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversi
 @Composable
 fun HeightSettingsComponent(
     uiState: HeightSettingUiState,
+    rangeCm: List<Int>,
+    rangeFeet: List<Int>,
+    rangeInches: List<Int>,
     action: (ActionHeightInput) -> Unit,
     onCancel: () -> Unit = {},
     onSave: () -> Unit = {},
@@ -67,9 +72,7 @@ fun HeightSettingsComponent(
                     ScrollableHeightInputComponent(
                         label = "cm",
                         defaultValue = uiState.valueCm,
-                        values = List(51) {
-                            it + 160
-                        },
+                        values = rangeCm,
                         onValueChange = {
                             action(ActionHeightInput.CmInput(it))
                         },
@@ -84,9 +87,7 @@ fun HeightSettingsComponent(
                             ScrollableHeightInputComponent(
                                 label = "ft",
                                 defaultValue = uiState.feet,
-                                values = List(8) {
-                                    it
-                                },
+                                values = rangeFeet,
                                 onValueChange = {
                                     action(
                                         ActionHeightInput.ImperialInput(
@@ -95,16 +96,17 @@ fun HeightSettingsComponent(
                                         )
                                     )
                                 },
-                                modifier = Modifier,
+                                modifier = Modifier
+                                    .semantics {
+                                        contentDescription = "feet"
+                                    }
                             )
                         },
                         inchesComponent = {
                             ScrollableHeightInputComponent(
                                 label = "in",
                                 defaultValue = uiState.inches,
-                                values = List(12) {
-                                    it
-                                },
+                                values = rangeInches,
                                 onValueChange = {
                                     action(
                                         ActionHeightInput.ImperialInput(
@@ -113,7 +115,9 @@ fun HeightSettingsComponent(
                                         )
                                     )
                                 },
-                                modifier = Modifier,
+                                modifier = Modifier.semantics{
+                                    contentDescription = "inches"
+                                },
                             )
                         }
                     )
@@ -135,6 +139,9 @@ private fun PreviewHeightSettingsComponent() {
     SmartStepTheme {
         HeightSettingsComponent(
             uiState = HeightSettingUiState.Imperial(175),
+            rangeCm = heightsCm.toList(),
+            rangeFeet = heightsFeet.toList(),
+            rangeInches = heightsInches.toList(),
             action = {},
             modifier = Modifier.fillMaxSize(),
 

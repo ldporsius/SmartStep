@@ -48,6 +48,9 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.height_settin
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
@@ -241,6 +244,9 @@ fun UserSettingsScreen(
         ){
             HeightSettingsComponent(
                 uiState = heightUiState,
+                rangeCm = heightsCm.toList(),
+                rangeFeet = heightsFeet.toList(),
+                rangeInches = heightsInches.toList(),
                 action = {
                     actionHeightInput(it)
                 },
