@@ -39,9 +39,13 @@ class UserSettingsScreenTest {
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     lateinit var usersettingsRepo: UserSettingsRepo
 
+    val robot = TestUserScreenRobot(composeRule)
+
     @Before
     fun setUp() {
         usersettingsRepo = FakeUserSettingsRepo()
+        UserSettingsMemento.clear()
+        UserSettingsMemento.save(UserSettings())
         composeRule.setContent {
             SmartStepTheme {
                 UserSettingsRoot(
@@ -56,68 +60,56 @@ class UserSettingsScreenTest {
 
     @After
     fun tearDown() {
-
+        UserSettingsMemento.clear()
     }
 
     @Test
-    fun testUserSettingsScreen() = runBlocking{
+    fun testUserSettingsScreen_updateStart() = runBlocking{
         composeRule.waitUntilExactlyOneExists(
             isRoot()
         )
 
         assertTrue(UserSettingsMemento.restoreLast() == UserSettings())
 
-        composeRule.onNode(
-            hasContentDescription("Gender") and hasClickAction()
-        ).performClick()
-        composeRule.waitUntilExactlyOneExists(
-            hasText("Man")
-        ).also {
-            composeRule.onNodeWithText("Man").performClick()
-        }
-        composeRule.awaitIdle()
+        assertEquals(UserSettingsMemento.restoreLast().gender, Gender.FEMALE)
+        robot.pickGender()
         assertEquals(UserSettingsMemento.restoreLast().gender, Gender.MALE)
 
-        composeRule.onNode(
-            hasContentDescription("Height") and hasClickAction()
-        ).performClick()
-
-        composeRule.waitUntilExactlyOneExists(
-            hasText("170")
-        )
-
-        composeRule.onNode(
-            hasContentDescription("scroll to pick height")
-        ).assertIsDisplayed()
-            //these values happen to yield 177
-            .performTouchInput {
-                try {
-                    swipeUp(500f , 100f, 2000)
-                }catch (e: Exception){
-                    e.printStackTrace()
-                }
-        }
-
-        composeRule.waitUntilExactlyOneExists(
-            hasText("180")
-        )
-        composeRule.awaitIdle()
-        composeRule.onNodeWithText("OK").performClick()
-        composeRule.awaitIdle()
-
+        robot.pickHeight().pressOK()
         assertEquals(UserSettingsMemento.restoreLast().height, 177)
 
+        robot.pressStart()
 
-        composeRule.onNodeWithText("Skip").performClick()
         composeRule.awaitIdle()
+
+        with(usersettingsRepo.loadSettings()){
+            assertEquals(gender, Gender.MALE)
+            assertEquals(height, 177)
+        }
+
+
+    }
+    @Test
+    fun testUserSettingsScreen_updateSkipped() = runBlocking{
+        composeRule.waitUntilExactlyOneExists(
+            isRoot()
+        )
+
+        assertTrue(UserSettingsMemento.restoreLast() == UserSettings())
+
+        assertEquals(UserSettingsMemento.restoreLast().gender, Gender.FEMALE)
+        robot.pickGender()
+        assertEquals(UserSettingsMemento.restoreLast().gender, Gender.MALE)
+
+        robot.pickHeight().pressOK()
+        assertEquals(UserSettingsMemento.restoreLast().height, 177)
+
+        robot.pressSkip()
+
         with(usersettingsRepo.loadSettings()){
             assertEquals(gender, Gender.FEMALE)
             assertEquals(height, 170)
         }
-
-
-        delay(5000)
-
 
 
     }

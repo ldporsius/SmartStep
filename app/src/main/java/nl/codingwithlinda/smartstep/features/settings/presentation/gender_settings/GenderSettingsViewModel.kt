@@ -18,7 +18,6 @@ class GenderSettingsViewModel(
                 viewModelScope.launch {
                     memento.restoreLast().copy(gender = action.gender).also {
                         memento.save(it)
-                        userSettingsRepo.saveSettings(it)
                     }
                 }
             }
