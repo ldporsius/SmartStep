@@ -77,4 +77,20 @@ class UserSettingsViewModelTest {
         }
     }
 
+    @Test
+    fun `test UserSettingsViewModel - uiState data class is updated after cm input`() = runTest {
+        viewModel.heightSettingsUiState.test {
+            val item0 = awaitItem()
+            assertTrue(item0 is HeightSettingUiState.SI)
+            viewModel.handleHeightInput(ActionHeightInput.CmInput(180))
+            val item1 = awaitItem()
+
+            assertTrue(item1 is HeightSettingUiState.SI).also {
+                with(item1 as HeightSettingUiState.SI){
+                    assertThat(this.valueCm).isEqualTo(180)
+                }
+            }
+        }
+    }
+
 }

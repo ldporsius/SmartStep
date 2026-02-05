@@ -30,11 +30,16 @@ class HeightSettingsViewModel(
 
     private val unitSystemPrefs = userSettingsRepo.unitSystemObservable.onEach {
         println("--- USERSETTINGSVIEWMODEL --- unitSystemPrefs: $it")
-
     }
 
-    val heightUiState = unitSystemPrefs.combine(_heightInput){ system, input ->
+    ////////////////// TESTING //////////////////////
+    private val _heightSettingsUiState = MutableStateFlow<HeightSettingUiState>(HeightSettingUiState.SI(0))
+    val heightSettingsUiState = _heightSettingsUiState.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000), HeightSettingUiState.SI(0)
+    )
+    ////////////// END TESTING //////////////////////////////////////
 
+    val heightUiState = unitSystemPrefs.combine(_heightInput){ system, input ->
         when(system){
             is UnitSystemUnits.SI -> HeightSettingUiState.SI(valueCm = input)
             is UnitSystemUnits.IMPERIAL -> HeightSettingUiState.Imperial(valueCm = input)
@@ -44,9 +49,6 @@ class HeightSettingsViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000),
         HeightSettingUiState.SI(0))
 
-
-
-
     fun handleHeightInput(actionUnitInput: ActionHeightInput){
         when(actionUnitInput) {
             is ActionHeightInput.CmInput -> {
@@ -54,9 +56,18 @@ class HeightSettingsViewModel(
 
                 _heightInput.update {
                     actionUnitInput.cm
+                }.also {
+                    println("--- USERSETTINGSVIEWMODEL --- value userSettings height after update: ${_heightInput.value}")
                 }
 
-                println("--- USERSETTINGSVIEWMODEL --- value userSettings height after update: ${_heightInput.value}")
+                /////////// ASSUMING WE ARE UPDATING THE MUTABLE STATE FLOW DIRECTLY ////////////
+                val update = HeightSettingUiState.SI(valueCm = actionUnitInput.cm)
+                val old = _heightSettingsUiState.value
+                println("--- USERSETTINGSVIEWMODEL --- old is same instance as new: ${old.equals(update)}")
+                _heightSettingsUiState.update { uiState ->
+                    update
+                }
+                ///////////////// END ASSUMING WE ARE UPDATING THE MUTABLE STATE FLOW DIRECTLY //////////////////
             }
 
             is ActionHeightInput.ImperialInput -> {

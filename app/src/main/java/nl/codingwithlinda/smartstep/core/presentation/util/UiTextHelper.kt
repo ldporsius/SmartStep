@@ -9,6 +9,6 @@ fun UiText.asString(): String{
     val context = LocalContext.current
     return when(this){
         is UiText.DynamicText -> this.text
-        is UiText.StringResourceText -> context.getString(this.resId, this.args)
+        is UiText.StringResourceText -> context.getString(this.resId, *args)
     }
 }

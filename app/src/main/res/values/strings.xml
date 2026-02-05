@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">SmartStep</string>
+    <string name="app_name" translatable="false">SmartStep</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
 </resources>

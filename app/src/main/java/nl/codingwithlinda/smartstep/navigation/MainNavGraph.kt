@@ -28,6 +28,7 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dataStoreSettings
 import nl.codingwithlinda.smartstep.core.data.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
@@ -78,6 +79,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
 
                 UserSettingsRoute -> NavEntry(UserSettingsRoute) {
                     UserSettingsRoot(
+                        userSettingsRepo = SmartStepApplication.userSettingsRepo,
                         modifier = Modifier.safeContentPadding(),
                         actionSkip = {
                             shouldShowSettingsViewModel.skip()
