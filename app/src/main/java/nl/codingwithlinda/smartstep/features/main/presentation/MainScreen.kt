@@ -1,9 +1,8 @@
-package nl.codingwithlinda.smartstep.features.main
+package nl.codingwithlinda.smartstep.features.main.presentation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -83,9 +82,14 @@ fun MainScreen(
             }
 
         ) {
-            Box(modifier = Modifier.padding(it)) {
-                Text("this is the main screen")
-
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
+                contentAlignment = androidx.compose.ui.Alignment.Center) {
+                DailyStepCard(
+                    stepsTaken = 1000,
+                    dailyGoal = 2000
+                )
             }
         }
 
