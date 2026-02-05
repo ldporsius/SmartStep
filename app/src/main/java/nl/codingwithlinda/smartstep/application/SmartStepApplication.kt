@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.core.data.PreferencesUserSettingsRepo
+import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 

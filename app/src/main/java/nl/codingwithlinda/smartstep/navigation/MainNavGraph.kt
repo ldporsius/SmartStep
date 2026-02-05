@@ -30,7 +30,7 @@ import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dataStoreSettings
-import nl.codingwithlinda.smartstep.core.data.PreferencesUserSettingsRepo
+import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.main.MainScreen
 import nl.codingwithlinda.smartstep.features.main.ShouldShowSettingsViewModel

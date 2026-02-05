@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.core.data
+package nl.codingwithlinda.smartstep.core.data.repo
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -36,7 +36,7 @@ class PreferencesUserSettingsRepo(
             val height = it[USER_SETTINGS_HEIGHT] ?: UserSettings().height
 
 
-            UserSettings(gender = gender, weight = weight, height= height)
+            UserSettings(gender = gender, weight = weight, height = height)
             }
         return settings
     }
