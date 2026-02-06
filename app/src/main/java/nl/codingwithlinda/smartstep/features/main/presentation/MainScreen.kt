@@ -10,6 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
@@ -24,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -44,9 +46,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
 import nl.codingwithlinda.smartstep.features.main.navigation.FixStepProblemNavItem
 import nl.codingwithlinda.smartstep.features.main.navigation.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.MainNavDrawer
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalPicker
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.BackgroundAccessRecommendedDialog
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
@@ -194,15 +198,21 @@ fun MainScreen(
             }
 
         }
-        val actions = navItemHandler.actions.collectAsStateWithLifecycle(null).value
+        val actions = navItemHandler.actions.collectAsStateWithLifecycle(MainNavAction.NA).value
 
-        var shouldShowBottomSheet2 by remember(actions) { mutableStateOf(actions != null) }
+        val shouldShowBottomSheet2 by remember(actions) { mutableStateOf(actions != MainNavAction.NA) }
 
+        val sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true
+        )
 
         if (shouldShowBottomSheet2) {
             ModalBottomSheet(
+                sheetState = sheetState,
                 onDismissRequest = {
-                    shouldShowBottomSheet2 = false
+
+                    navItemHandler.handleAction(MainNavAction.NA)
+
                 }
             ) {
 
@@ -231,7 +241,16 @@ fun MainScreen(
                         }
 
                         MainNavAction.DAILY_STEP_GOAL -> {
-                            Text("Daily step goal")
+                            DailyStepGoalPicker(
+                                goals = stepGoalRange,
+                                selectedGoal = 1000,
+                                onGoalSelected = {
+
+                                },
+                                modifier = Modifier
+                                    .height(480.dp)
+
+                            )
                         }
 
                         MainNavAction.EXIT -> {
