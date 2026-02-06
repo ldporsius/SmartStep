@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,10 +18,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.design.ui.theme.textPrimary
+import nl.codingwithlinda.smartstep.design.ui.theme.textSecondary
 
 
 @Composable
-fun BodySensorsPermissionRationaleDialog(
+fun BackgroundAccessRecommendedDialog(
     onClick: () -> Unit,
     modifier: Modifier) {
     Column(
@@ -28,13 +30,16 @@ fun BodySensorsPermissionRationaleDialog(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Image(painter = painterResource(R.drawable.running), contentDescription = "image_track")
+       Text("Background access recommended",
+           style = MaterialTheme.typography.titleLarge,
+           fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+           textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(48.dp))
 
         Text(
-            "To count your steps, SmartStep needs access to your motion sensors.",
+            "Background access helps Smart Step track your activity more reliably.",
             textAlign = TextAlign.Center,
-            color = textPrimary
+            color = textSecondary
         )
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -42,7 +47,7 @@ fun BodySensorsPermissionRationaleDialog(
             Button(onClick = {
                 onClick()
             }) {
-                Text("Allow access")
+                Text("Continue")
             }
 
     }
