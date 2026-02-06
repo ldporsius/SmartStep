@@ -37,13 +37,6 @@ class MainScreenTest {
     @Before
     fun setUp() {
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-//        val packageName = InstrumentationRegistry.getInstrumentation().targetContext.packageName
-//        println("revoking permission for packageName: $packageName")
-//
-//        InstrumentationRegistry.getInstrumentation().uiAutomation.revokeRuntimePermission(
-//            packageName,
-//            Manifest.permission.BODY_SENSORS,
-//        )
 
     }
 
@@ -55,7 +48,7 @@ class MainScreenTest {
             packageName,
             Manifest.permission.BODY_SENSORS,
         )
-        device.executeShellCommand("pm clear $packageName")
+        //device.executeShellCommand("pm clear $packageName")
     }
 
     @Test

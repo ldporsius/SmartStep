@@ -7,6 +7,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,13 +35,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.BodySensorsPermissionDeclinedDialogProvider
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.BodySensorsPermissionRationaleDialogProvider
+import nl.codingwithlinda.smartstep.core.presentation.util.openAppSettings
+import nl.codingwithlinda.smartstep.features.main.presentation.permissions.BodySensorsPermissionDeclinedDialog
+import nl.codingwithlinda.smartstep.features.main.presentation.permissions.BodySensorsPermissionRationaleDialog
 import nl.codingwithlinda.smartstep.navigation.NavigationController
 import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
 
@@ -51,15 +55,13 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     val context = LocalActivity.current
 
-    var timesPermissionAsked by rememberSaveable { mutableStateOf(0) }
     var shouldShowRationaleBodySensors by remember { mutableStateOf(false) }
     var permissionBodySensorsDeclined by remember { mutableStateOf(false) }
 
     val showPermissionDialog = shouldShowRationaleBodySensors || permissionBodySensorsDeclined
 
-
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {granted->
-        println("---- timesPermissionAsked: $timesPermissionAsked, granted: $granted")
+
         if (granted){
             //continue asking for background activity permissions
             shouldShowRationaleBodySensors = false
@@ -69,14 +71,13 @@ fun MainScreen(
             //find out if permanently declined
             context?.let {
                 shouldShowRationaleBodySensors =
-                    shouldShowRequestPermissionRationale(context, Manifest.permission.BODY_SENSORS) || timesPermissionAsked == 0
-                permissionBodySensorsDeclined = !shouldShowRationaleBodySensors && timesPermissionAsked > 0
+                    shouldShowRequestPermissionRationale(context, Manifest.permission.BODY_SENSORS)
+                permissionBodySensorsDeclined = !shouldShowRationaleBodySensors
 
                 println("---- shouldShowRationaleBodySensors: $shouldShowRationaleBodySensors")
                 println("---- permissionBodySensorsDeclined: $permissionBodySensorsDeclined")
             }
         }
-        timesPermissionAsked++
     }
 
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -153,7 +154,6 @@ fun MainScreen(
                         .semantics {
                             contentDescription = "Daily Step Card"
                         }
-
                 )
             }
 
@@ -165,14 +165,28 @@ fun MainScreen(
                     }
                 ) {
                     if (permissionBodySensorsDeclined){
-                        BodySensorsPermissionDeclinedDialogProvider().Description()
+                        BodySensorsPermissionDeclinedDialog(
+                            onClick = {
+                                context?.let {
+                                    it.openAppSettings()
+                                    shouldShowRationaleBodySensors = false
+                                    permissionBodySensorsDeclined = false
+                                }
+                            },
+                            modifier = Modifier
+                                .width(480.dp)
+                                .padding(48.dp)
+                        )
                     }
                     else if (shouldShowRationaleBodySensors){
-                        BodySensorsPermissionRationaleDialogProvider(
+                        BodySensorsPermissionRationaleDialog(
                             onClick = {
                                 permissionLauncher.launch(Manifest.permission.BODY_SENSORS)
-                            }
-                        ).Description()
+                            },
+                            modifier = Modifier
+                                .width(480.dp)
+                                .padding(48.dp)
+                        )
                     }
                 }
             }
