@@ -1,6 +1,9 @@
 package nl.codingwithlinda.smartstep.features.main.presentation
 
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -23,12 +26,17 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -36,9 +44,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
+import nl.codingwithlinda.smartstep.features.main.navigation.FixStepProblemNavItem
+import nl.codingwithlinda.smartstep.features.main.navigation.MainNavAction
+import nl.codingwithlinda.smartstep.features.main.navigation.MainNavDrawer
+import nl.codingwithlinda.smartstep.features.main.presentation.permissions.BackgroundAccessRecommendedDialog
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.isIgnoringBatteryOptimizations
+import nl.codingwithlinda.smartstep.features.main.presentation.state.MainNavItemHandler
 import nl.codingwithlinda.smartstep.navigation.NavigationController
 import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
 
@@ -107,26 +120,21 @@ fun MainScreen(
         }
     }
 
+    val isIgnoringBatteryOptimizations = context?.let { isIgnoringBatteryOptimizations(context)} ?: false
 
-    ModalNavigationDrawer(
+    val navItemHandler = MainNavItemHandler
+    MainNavDrawer(
         drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-                drawerState = drawerState
-            ) {
-                NavigationDrawerItem(
-                    label = { Text("Settings") },
-                    selected = false,
-                    onClick = {
-                        NavigationController.navigateTo(UserSettingsRoute)
-                        scope.launch {
-                            drawerState.close()
-                        }
-
-                    }
-                )
-            }
-        }
+        scope = scope,
+        mainNavActionController = navItemHandler,
+        items = listOf(
+            FixStepProblemNavItem(
+                title = "Fix step problem",
+                shouldShowInDrawer = {
+                    isIgnoringBatteryOptimizations
+                }
+            )
+        )
     ) {
 
         Scaffold(
@@ -162,22 +170,22 @@ fun MainScreen(
                 contentAlignment = androidx.compose.ui.Alignment.Center) {
 
 
-                        DailyStepCard(
-                            stepsTaken = 1000,
-                            dailyGoal = 2000,
-                            modifier = Modifier
-                                .semantics {
-                                    contentDescription = "Daily Step Card"
-                                }
-                        )
-                    }
+                DailyStepCard(
+                    stepsTaken = 1000,
+                    dailyGoal = 2000,
+                    modifier = Modifier
+                        .semantics {
+                            contentDescription = "Daily Step Card"
+                        }
+                )
             }
+        }
 
         val shouldShowBottomSheet = permissionsViewModel.shouldShowBottomSheet.collectAsStateWithLifecycle().value
         if (shouldShowBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = {
-                   // permissionsViewModel.setPermissionGranted(PermissionUiState.NA)
+                    // permissionsViewModel.setPermissionGranted(PermissionUiState.NA)
                 }
             ) {
                 permissionsViewModel.BottomSheetContent(
@@ -186,6 +194,53 @@ fun MainScreen(
             }
 
         }
+        val actions = navItemHandler.actions.collectAsStateWithLifecycle(null).value
 
-    }
+        var shouldShowBottomSheet2 by remember(actions) { mutableStateOf(actions != null) }
+
+
+        if (shouldShowBottomSheet2) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    shouldShowBottomSheet2 = false
+                }
+            ) {
+
+                    when (actions) {
+                        MainNavAction.NA -> {
+                            Text("NA")
+                        }
+
+                        MainNavAction.BACKGROUND_ACCESS_RECOMMENDED -> {
+                            BackgroundAccessRecommendedDialog(
+                                onClick = {
+                                    val intent = Intent(
+                                        Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                                    ).apply {
+                                        data = android.net.Uri.parse("package:${context?.packageName}")
+
+                                    }
+                                    val intent1 = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS).apply {
+                                        data = Uri.parse("package:${context?.packageName}")
+                                    }
+                                    batteryOptimizeLauncher.launch(intent1)
+                                },
+                                modifier = Modifier
+                                    .padding(48.dp)
+                            )
+                        }
+
+                        MainNavAction.DAILY_STEP_GOAL -> {
+                            Text("Daily step goal")
+                        }
+
+                        MainNavAction.EXIT -> {
+                            Text("Exit")
+                        }
+                        else -> Unit
+                    }
+                }
+            }
+        }
+
 }
