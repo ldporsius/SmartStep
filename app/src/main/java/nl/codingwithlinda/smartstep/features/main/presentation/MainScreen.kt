@@ -1,9 +1,6 @@
 package nl.codingwithlinda.smartstep.features.main.presentation
 
 import android.Manifest
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -44,7 +41,6 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.Permi
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.isIgnoringBatteryOptimizations
 import nl.codingwithlinda.smartstep.navigation.NavigationController
 import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
-import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,7 +98,7 @@ fun MainScreen(
 
         val observer = LifecycleEventObserver { _, event ->
             if (event == androidx.lifecycle.Lifecycle.Event.ON_START) {
-                permissionLauncher.launch(android.Manifest.permission.BODY_SENSORS)
+                permissionLauncher.launch(android.Manifest.permission.ACTIVITY_RECOGNITION)
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)

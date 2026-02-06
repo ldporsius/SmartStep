@@ -31,6 +31,7 @@ import nl.codingwithlinda.smartstep.core.presentation.util.openAppSettings
 
 class PermissionsViewModel: ViewModel() {
     private val actionBackgroundIntent = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+    val permissionsNeeded = listOf(Manifest.permission.ACTIVITY_RECOGNITION)
 
     val permissionUiState = MutableStateFlow(PermissionUiState.NA)
     fun setPermissionState(uiState: PermissionUiState) {
