@@ -22,24 +22,24 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.MainActivity
 import nl.codingwithlinda.smartstep.R
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.BodySensorsPermissionDialogProvider
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDialog
+import nl.codingwithlinda.smartstep.features.main.presentation.permissions.BodySensorsPermissionDeclinedDialogProvider
+import nl.codingwithlinda.smartstep.features.main.presentation.permissions.BodySensorsPermissionRationaleDialogProvider
 import nl.codingwithlinda.smartstep.navigation.NavigationController
 import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
 
@@ -51,6 +51,7 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     val context = LocalActivity.current
 
+    var timesPermissionAsked by rememberSaveable { mutableStateOf(0) }
     var shouldShowRationaleBodySensors by remember { mutableStateOf(false) }
     var permissionBodySensorsDeclined by remember { mutableStateOf(false) }
 
@@ -58,7 +59,7 @@ fun MainScreen(
 
 
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {granted->
-
+        println("---- timesPermissionAsked: $timesPermissionAsked, granted: $granted")
         if (granted){
             //continue asking for background activity permissions
             shouldShowRationaleBodySensors = false
@@ -68,12 +69,14 @@ fun MainScreen(
             //find out if permanently declined
             context?.let {
                 shouldShowRationaleBodySensors =
-                    shouldShowRequestPermissionRationale(context, Manifest.permission.BODY_SENSORS)
-                permissionBodySensorsDeclined = !shouldShowRationaleBodySensors
+                    shouldShowRequestPermissionRationale(context, Manifest.permission.BODY_SENSORS) || timesPermissionAsked == 0
+                permissionBodySensorsDeclined = !shouldShowRationaleBodySensors && timesPermissionAsked > 0
+
+                println("---- shouldShowRationaleBodySensors: $shouldShowRationaleBodySensors")
+                println("---- permissionBodySensorsDeclined: $permissionBodySensorsDeclined")
             }
-
         }
-
+        timesPermissionAsked++
     }
 
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -119,9 +122,9 @@ fun MainScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                    scope.launch {
-                                        drawerState.open()
-                                    }
+                                scope.launch {
+                                    drawerState.open()
+                                }
                             }
 
                         ) {
@@ -145,7 +148,12 @@ fun MainScreen(
                 contentAlignment = androidx.compose.ui.Alignment.Center) {
                 DailyStepCard(
                     stepsTaken = 1000,
-                    dailyGoal = 2000
+                    dailyGoal = 2000,
+                    modifier = Modifier
+                        .semantics {
+                            contentDescription = "Daily Step Card"
+                        }
+
                 )
             }
 
@@ -156,13 +164,16 @@ fun MainScreen(
                         permissionBodySensorsDeclined = false
                     }
                 ) {
-                    PermissionDialog(
-                        permissionDialogProvider = BodySensorsPermissionDialogProvider(),
-                        isPermanentlyDeclined = permissionBodySensorsDeclined,
-                        grantPermission = {
-                            permissionLauncher.launch(android.Manifest.permission.BODY_SENSORS)
-                        }
-                    )
+                    if (permissionBodySensorsDeclined){
+                        BodySensorsPermissionDeclinedDialogProvider().Description()
+                    }
+                    else if (shouldShowRationaleBodySensors){
+                        BodySensorsPermissionRationaleDialogProvider(
+                            onClick = {
+                                permissionLauncher.launch(Manifest.permission.BODY_SENSORS)
+                            }
+                        ).Description()
+                    }
                 }
             }
         }

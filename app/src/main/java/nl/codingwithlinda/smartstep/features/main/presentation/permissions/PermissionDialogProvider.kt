@@ -1,5 +1,8 @@
 package nl.codingwithlinda.smartstep.features.main.presentation.permissions
 
+import androidx.compose.runtime.Composable
+
 interface PermissionDialogProvider {
-    fun description(isPermanentlyDeclined: Boolean): String
+    @Composable
+    fun Description()
 }

@@ -1,8 +1,8 @@
 package nl.codingwithlinda.smartstep.navigation
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,16 +37,16 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
             }
         }
     )
-    val navTarget = shouldShowSettingsViewModel.shouldShowSettings.collectAsStateWithLifecycle().value
+    val shouldShowSettings = shouldShowSettingsViewModel.shouldShowSettings.collectAsStateWithLifecycle().value
 
-    AnimatedContent(navTarget) {
-        if (it == null) {
-            //this is intended to avoid flickering screens
-        }
-        else if (!it){
+    when(shouldShowSettings) {
+        null -> Unit
+        false -> {
+            backStack.remove(StartRoute)
             backStack.add(UserSettingsRoute)
         }
-        else {
+
+       true -> {
             backStack.add(MainRoute)
             backStack.retainAll(listOf(MainRoute))
         }
@@ -58,7 +58,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
         entryProvider = {
             when (it) {
                 StartRoute -> NavEntry(StartRoute) {
-
+                    Text("...")
                 }
 
                 UserSettingsRoute -> NavEntry(UserSettingsRoute) {
