@@ -18,7 +18,7 @@ fun DailyStepGoalPicker(
     val nestedScrollConn = rememberNestedScrollInteropConnection()
     LazyColumn(
         modifier = modifier
-            .nestedScroll(nestedScrollConn)
+            //.nestedScroll(nestedScrollConn)
     ) {
         items(goals){
             goal ->

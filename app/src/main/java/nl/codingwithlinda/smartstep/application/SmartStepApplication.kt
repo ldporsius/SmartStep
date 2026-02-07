@@ -2,6 +2,9 @@ package nl.codingwithlinda.smartstep.application
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
+import android.provider.Settings
+import androidx.core.net.toUri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -20,6 +23,8 @@ class SmartStepApplication: Application() {
     companion object {
         lateinit var dataStoreSettings: DataStore<Preferences>
         lateinit var userSettingsRepo: UserSettingsRepo
+        lateinit var batteryIntent: Intent
+        lateinit var _applicationContext: Context
 
         val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -30,11 +35,16 @@ class SmartStepApplication: Application() {
         dataStoreSettings = applicationContext.dataStore
         userSettingsRepo = PreferencesUserSettingsRepo(dataStoreSettings)
 
-       applicationScope.launch {
-           userSettingsRepo.loadSettings().run {
-               UserSettingsMemento.save(this)
-           }
-       }
+        _applicationContext = this
+        applicationScope.launch {
+            userSettingsRepo.loadSettings().run {
+                UserSettingsMemento.save(this)
+            }
+        }
+        batteryIntent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS).apply {
+            data = "package:nl.codingwithlinda.smartstep".toUri()
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
     }
 
 }
