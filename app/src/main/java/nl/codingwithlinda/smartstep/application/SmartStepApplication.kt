@@ -23,7 +23,6 @@ class SmartStepApplication: Application() {
     companion object {
         lateinit var dataStoreSettings: DataStore<Preferences>
         lateinit var userSettingsRepo: UserSettingsRepo
-        lateinit var batteryIntent: Intent
         lateinit var _applicationContext: Context
 
         val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -41,10 +40,7 @@ class SmartStepApplication: Application() {
                 UserSettingsMemento.save(this)
             }
         }
-        batteryIntent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS).apply {
-            data = "package:nl.codingwithlinda.smartstep".toUri()
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
+
     }
 
 }

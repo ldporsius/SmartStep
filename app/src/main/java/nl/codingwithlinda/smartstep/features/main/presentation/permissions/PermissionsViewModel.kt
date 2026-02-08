@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -59,11 +60,18 @@ class PermissionsViewModel: ViewModel() {
                 BackgroundAccessRecommendedDialog(
                     onClick = {
                         context?.let {
-                            val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                                data = Uri.parse("package:${context.packageName}")
-                            }
+                            try {
+                                val intent =
+                                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                        data = Uri.parse("package:${context.packageName}")
+                                    }
 
-                            batteryOptimizeLauncher.launch(intent)
+                                batteryOptimizeLauncher.launch(intent)
+                            }catch (e: Exception){
+                                context.let {
+                                    Toast.makeText(it, "Could not handle intent ignore battery optimizations", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                     },
                     modifier = Modifier

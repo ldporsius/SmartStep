@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -109,12 +110,18 @@ fun MainScreen(
     }
 
 
+    var shouldShowFixBatteryInDrawer by remember { mutableStateOf(false) }
+
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
 
         val observer = LifecycleEventObserver { _, event ->
             if (event == androidx.lifecycle.Lifecycle.Event.ON_START) {
                 permissionLauncher.launch(android.Manifest.permission.ACTIVITY_RECOGNITION)
+                val isIgnoringBatteryOptimizations = activity?.let {
+                    isIgnoringBatteryOptimizations(it)} ?: false
+                shouldShowFixBatteryInDrawer = !isIgnoringBatteryOptimizations
+
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -123,7 +130,6 @@ fun MainScreen(
         }
     }
 
-    val isIgnoringBatteryOptimizations = activity?.let { isIgnoringBatteryOptimizations(it)} ?: false
 
     val navItemHandler = MainNavItemHandler
     MainNavDrawer(
@@ -134,7 +140,7 @@ fun MainScreen(
             FixStepProblemNavItem(
                 title = "Fix step problem",
                 shouldShowInDrawer = {
-                    !isIgnoringBatteryOptimizations
+                    shouldShowFixBatteryInDrawer
                 }
             )
         )
@@ -200,27 +206,15 @@ fun MainScreen(
         }
         val actions = navItemHandler.actions.collectAsStateWithLifecycle(MainNavAction.NA).value
 
-        val shouldShowBottomSheet2 by remember(actions) { mutableStateOf(actions != MainNavAction.NA) }
-
         val sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = true
         )
 
 
         when (actions) {
-            MainNavAction.NA -> {
-                Text("NA")
-            }
+            MainNavAction.NA -> Unit
 
             MainNavAction.BACKGROUND_ACCESS_RECOMMENDED -> {
-                /*BackgroundAccessRecommendedDialog(
-                    onClick = {
-                        val intent=SmartStepApplication.batteryIntent
-                        batteryOptimizeLauncher.launch(intent)
-                    },
-                    modifier = Modifier
-                        .padding(48.dp)
-                )*/
                 permissionsViewModel.setPermissionState(PermissionUiState.BACKGROUND_ACCESS_RECOMMENDED)
             }
 
