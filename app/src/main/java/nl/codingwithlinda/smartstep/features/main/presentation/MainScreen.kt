@@ -1,6 +1,7 @@
 package nl.codingwithlinda.smartstep.features.main.presentation
 
 import android.Manifest
+import android.R.attr.onClick
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -43,6 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.domain.util.MessageFromAnywhere
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.main.navigation.FixStepProblemNavItem
@@ -50,6 +52,7 @@ import nl.codingwithlinda.smartstep.features.main.navigation.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.MainNavDrawer
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalComponent
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.exit.ExitDialog
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.isIgnoringBatteryOptimizations
@@ -180,8 +183,6 @@ fun MainScreen(
                     .padding(it),
                 contentAlignment = Alignment.Center
             ) {
-
-
                 DailyStepCard(
                     stepsTaken = dailyStepGoalViewModel.stepsTaken.collectAsStateWithLifecycle().value,
                     dailyGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
@@ -216,7 +217,15 @@ fun MainScreen(
                     }
 
                     MainNavAction.EXIT -> {
-                        Text("Exit")
+                        ExitDialog(
+                            onDismiss = {
+                                navItemHandler.handleAction(MainNavAction.NA)
+                            },
+                            onClick = {
+                                activity?.finishAffinity()
+                                SmartStepApplication.killAll()
+                            }
+                        )
                     }
                 }
             }

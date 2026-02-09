@@ -60,7 +60,7 @@ class DailyStepGoalViewModel(
     }
 
     fun saveGoal(goal: Int){
-        SmartStepApplication.applicationScope.launch {
+        appScope.launch {
             DailyStepGoalCreator.create(goal = goal).let {
                 dailyStepRepo.saveDailyStepGoal(it)
             }

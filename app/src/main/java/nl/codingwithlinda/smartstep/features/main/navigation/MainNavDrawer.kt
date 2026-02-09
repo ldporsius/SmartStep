@@ -5,6 +5,7 @@ import android.R.attr.onClick
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -14,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.design.ui.theme.primary
+import nl.codingwithlinda.smartstep.design.ui.theme.textPrimary
 import nl.codingwithlinda.smartstep.navigation.NavigationController
 import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
 
@@ -25,8 +28,6 @@ fun MainNavDrawer(
     mainNavActionController: MainNavActionController,
     content: @Composable () -> Unit
 ) {
-
-
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -51,6 +52,7 @@ fun MainNavDrawer(
                     }
                 }
 
+                HorizontalDivider()
                 NavigationDrawerItem(
                     label = { Text("Step goal") },
                     selected = false,
@@ -62,16 +64,31 @@ fun MainNavDrawer(
                         }
                     }
                 )
+                HorizontalDivider()
                 NavigationDrawerItem(
-                        label = { Text("Personal settings") },
-                selected = false,
-                onClick = {
-                    NavigationController.navigateTo(UserSettingsRoute)
-                    scope.launch {
-                        drawerState.close()
+                    label = { Text("Personal settings") },
+                    selected = false,
+                    onClick = {
+                        NavigationController.navigateTo(UserSettingsRoute)
+                        scope.launch {
+                            drawerState.close()
+                        }
                     }
-                }
                 )
+                HorizontalDivider()
+                NavigationDrawerItem(
+                    label = {
+                        Text("Exit",
+                        color = primary) },
+                    selected = false,
+                    onClick = {
+                        mainNavActionController.handleAction(MainNavAction.EXIT)
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    }
+                )
+
             }
         }
     ){
