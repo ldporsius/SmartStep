@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -146,7 +147,10 @@ fun UserSettingsScreen(
     var shouldShowWeightDialog by remember { mutableStateOf(false) }
 
 
-    Surface {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
         Column(
             modifier = modifier,
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -287,7 +291,7 @@ fun UserSettingsScreen(
     }
 }
 
-@Preview
+@Preview(device = "spec:width=1280dp,height=800dp,dpi=240")
 @Composable
 private fun PreviewUserSettingsScreen() {
     SmartStepTheme {
@@ -300,7 +304,7 @@ private fun PreviewUserSettingsScreen() {
             actionWeightInput = {},
             actionSkip = {},
             actionStart = {},
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.width(480.dp),
         )
 
     }

@@ -1,10 +1,12 @@
 package nl.codingwithlinda.smartstep.navigation
 
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
@@ -78,12 +80,14 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                 UserSettingsRoute -> NavEntry(UserSettingsRoute) {
                     UserSettingsRoot(
                         userSettingsRepo = SmartStepApplication.userSettingsRepo,
-                        modifier = Modifier.safeContentPadding(),
+                        modifier = Modifier
+                            .safeContentPadding()
+                            .width(480.dp),
                         actionSkip = {
                             shouldShowSettingsViewModel.skip()
                             backStack.add(MainRoute)
                             backStack.retainAll(listOf(MainRoute))
-                        }
+                        },
                     )
                 }
 
