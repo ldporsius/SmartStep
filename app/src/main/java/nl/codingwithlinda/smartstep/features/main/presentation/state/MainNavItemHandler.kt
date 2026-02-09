@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.features.main.presentation.state
 import android.app.Activity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -10,6 +11,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.features.main.navigation.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalComponent
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalPickerContainer
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.exit.ExitDialog
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
@@ -36,21 +38,27 @@ fun MainScreenDecorator(
         }
 
         MainNavAction.DAILY_STEP_GOAL -> {
-            with(parent){
-                DailyStepGoalComponent(
-                    selectedGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
-                    onSelected = {
-                        dailyStepGoalViewModel.setGoal(it)
-                    },
-                    onSave = {
-                        dailyStepGoalViewModel.saveGoal(it)
-                        navItemHandler.handleAction(MainNavAction.NA)
-                    },
-                    onDismiss = {
-                        navItemHandler.handleAction(MainNavAction.NA)
-                    },
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                )
+            with(parent) {
+                DailyStepGoalPickerContainer(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                ) {
+                    DailyStepGoalComponent(
+                        selectedGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
+                        onSelected = {
+                            dailyStepGoalViewModel.setGoal(it)
+                        },
+                        onSave = {
+                            dailyStepGoalViewModel.saveGoal(it)
+                            navItemHandler.handleAction(MainNavAction.NA)
+                        },
+                        onDismiss = {
+                            navItemHandler.handleAction(MainNavAction.NA)
+                        },
+                        modifier = Modifier
+                    )
+                }
             }
         }
 

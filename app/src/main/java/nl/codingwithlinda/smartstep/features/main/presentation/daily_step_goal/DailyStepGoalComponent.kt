@@ -27,18 +27,8 @@ fun DailyStepGoalComponent(
     onDismiss: ()->Unit,
     modifier: Modifier = Modifier) {
 
-    Box(
-        modifier = modifier
-    ) {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(480.dp)
-
-            , shape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5)
-        ) {
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = modifier
             ) {
 
                 Row(
@@ -80,6 +70,5 @@ fun DailyStepGoalComponent(
                     Text("Cancel")
                 }
             }
-        }
-    }
+
 }
