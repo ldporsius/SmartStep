@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
@@ -29,9 +30,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.window.Dialog
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -194,21 +198,39 @@ fun MainScreen(
             }
 
 
-            val shouldShowBottomSheet =
-                permissionsViewModel.shouldShowBottomSheet.collectAsStateWithLifecycle().value
-            if (shouldShowBottomSheet) {
-                ModalBottomSheet(
-                    onDismissRequest = {
-                        permissionsViewModel.setPermissionState(PermissionUiState.NA)
-                        navItemHandler.handleAction(MainNavAction.NA)
+            val density = LocalDensity.current.density
+            val isLargeScreen = LocalWindowInfo.current.containerSize.width > 840 * density
+            val shouldShowUserInteraction =
+                permissionsViewModel.shouldShowUserInteraction.collectAsStateWithLifecycle().value
+            if (shouldShowUserInteraction) {
+                if (isLargeScreen){
+                    Dialog(
+                        onDismissRequest = {
+                            permissionsViewModel.setPermissionState(PermissionUiState.NA)
+                            navItemHandler.handleAction(MainNavAction.NA)
+                        }
+                    ) {
+                        Surface {
+                            permissionsViewModel.BottomSheetContent(
+                                batteryOptimizeLauncher = batteryOptimizeLauncher,
+                                permissionLauncher = permissionLauncher
+                            )
+                        }
                     }
-                ) {
-                    permissionsViewModel.BottomSheetContent(
-                        batteryOptimizeLauncher = batteryOptimizeLauncher,
-                        permissionLauncher = permissionLauncher
-                    )
                 }
-
+                else {
+                    ModalBottomSheet(
+                        onDismissRequest = {
+                            permissionsViewModel.setPermissionState(PermissionUiState.NA)
+                            navItemHandler.handleAction(MainNavAction.NA)
+                        }
+                    ) {
+                        permissionsViewModel.BottomSheetContent(
+                            batteryOptimizeLauncher = batteryOptimizeLauncher,
+                            permissionLauncher = permissionLauncher
+                        )
+                    }
+                }
             }
 
         }

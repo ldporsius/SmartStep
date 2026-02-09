@@ -1,20 +1,15 @@
 package nl.codingwithlinda.smartstep.features.main.presentation.permissions
 
 import android.Manifest
-import android.R.attr.onClick
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
-import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -31,8 +26,6 @@ import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.smartstep.core.presentation.util.openAppSettings
 
 class PermissionsViewModel: ViewModel() {
-   // private val actionBackgroundIntent = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-   // val permissionsNeeded = listOf(Manifest.permission.ACTIVITY_RECOGNITION)
 
     val permissionUiState = MutableStateFlow(PermissionUiState.NA)
     fun setPermissionState(uiState: PermissionUiState) {
@@ -41,7 +34,7 @@ class PermissionsViewModel: ViewModel() {
         }
     }
 
-    val shouldShowBottomSheet = permissionUiState.map {
+    val shouldShowUserInteraction = permissionUiState.map {
         it != PermissionUiState.NA
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 

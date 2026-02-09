@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.core.data.repo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.DailyStepCountDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.DailyStepGoalDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toDomain
@@ -51,10 +52,8 @@ class DailyStepRepoRoomImpl(
             list.map {
                 it.toDomain()
             }
-        }.map {
-            it.last()
+        }.mapNotNull {
+            it.lastOrNull()
         }
-
-
 
 }
