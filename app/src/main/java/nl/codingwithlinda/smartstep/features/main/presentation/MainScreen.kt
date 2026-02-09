@@ -1,16 +1,14 @@
 package nl.codingwithlinda.smartstep.features.main.presentation
 
 import android.Manifest
-import android.content.Intent
-import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
@@ -18,12 +16,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.ModalBottomSheetDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -31,28 +27,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
-import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
-import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
+import nl.codingwithlinda.smartstep.core.domain.util.MessageFromAnywhere
+import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.main.navigation.FixStepProblemNavItem
 import nl.codingwithlinda.smartstep.features.main.navigation.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.MainNavDrawer
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalPicker
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.BackgroundAccessRecommendedDialog
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalComponent
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.isIgnoringBatteryOptimizations
@@ -61,6 +58,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.state.MainNavItem
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
+     dailyStepGoalViewModel: DailyStepGoalViewModel
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -83,6 +81,7 @@ fun MainScreen(
             }
             permissionsViewModel.setPermissionState(PermissionUiState.NA)
         }
+
     val permissionLauncher: ManagedActivityResultLauncher<String, Boolean> = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
 
         if (granted) {
@@ -116,8 +115,8 @@ fun MainScreen(
     DisposableEffect(lifecycleOwner) {
 
         val observer = LifecycleEventObserver { _, event ->
-            if (event == androidx.lifecycle.Lifecycle.Event.ON_START) {
-                permissionLauncher.launch(android.Manifest.permission.ACTIVITY_RECOGNITION)
+            if (event == Lifecycle.Event.ON_START) {
+                permissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
                 val isIgnoringBatteryOptimizations = activity?.let {
                     isIgnoringBatteryOptimizations(it)} ?: false
                 shouldShowFixBatteryInDrawer = !isIgnoringBatteryOptimizations
@@ -132,6 +131,8 @@ fun MainScreen(
 
 
     val navItemHandler = MainNavItemHandler
+    val actions = navItemHandler.actions.collectAsStateWithLifecycle(MainNavAction.NA).value
+
     MainNavDrawer(
         drawerState = drawerState,
         scope = scope,
@@ -173,80 +174,82 @@ fun MainScreen(
             }
 
         ) {
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
-                contentAlignment = androidx.compose.ui.Alignment.Center) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it),
+                contentAlignment = Alignment.Center
+            ) {
 
+                var stepMsg by remember { mutableStateOf("") }
+                ObserveAsEvents(MessageFromAnywhere.msgChannel) {
+                    stepMsg = it
+                }
+                Box(modifier = Modifier
+                    .align (TopCenter)
+                    .fillMaxWidth()
+                    .background(Color.Red.copy(.3f))
+                ){
+                    Text(stepMsg)
+                }
 
                 DailyStepCard(
-                    stepsTaken = 1000,
-                    dailyGoal = 2000,
+                    stepsTaken = dailyStepGoalViewModel.stepsTaken.collectAsStateWithLifecycle().value,
+                    dailyGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
                     modifier = Modifier
                         .semantics {
                             contentDescription = "Daily Step Card"
                         }
                 )
-            }
-        }
 
-        val shouldShowBottomSheet = permissionsViewModel.shouldShowBottomSheet.collectAsStateWithLifecycle().value
-        if (shouldShowBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = {
-                    permissionsViewModel.setPermissionState(PermissionUiState.NA)
-                    navItemHandler.handleAction(MainNavAction.NA)
+                when (actions) {
+                    MainNavAction.NA -> Unit
+
+                    MainNavAction.BACKGROUND_ACCESS_RECOMMENDED -> {
+                        permissionsViewModel.setPermissionState(PermissionUiState.BACKGROUND_ACCESS_RECOMMENDED)
+                    }
+
+                    MainNavAction.DAILY_STEP_GOAL -> {
+                        DailyStepGoalComponent(
+                            selectedGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
+                            onSelected = {
+                                dailyStepGoalViewModel.setGoal(it)
+                            },
+                            onSave = {
+                                dailyStepGoalViewModel.saveGoal(it)
+                                navItemHandler.handleAction(MainNavAction.NA)
+                            },
+                            onDismiss = {
+                                navItemHandler.handleAction(MainNavAction.NA)
+                            },
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                        )
+                    }
+
+                    MainNavAction.EXIT -> {
+                        Text("Exit")
+                    }
                 }
-            ) {
-                permissionsViewModel.BottomSheetContent(
-                    batteryOptimizeLauncher = batteryOptimizeLauncher,
-                    permissionLauncher = permissionLauncher)
             }
 
-        }
-        val actions = navItemHandler.actions.collectAsStateWithLifecycle(MainNavAction.NA).value
 
-        val sheetState = rememberModalBottomSheetState(
-            skipPartiallyExpanded = true
-        )
-
-
-        when (actions) {
-            MainNavAction.NA -> Unit
-
-            MainNavAction.BACKGROUND_ACCESS_RECOMMENDED -> {
-                permissionsViewModel.setPermissionState(PermissionUiState.BACKGROUND_ACCESS_RECOMMENDED)
-            }
-
-            MainNavAction.DAILY_STEP_GOAL -> {
-
+            val shouldShowBottomSheet =
+                permissionsViewModel.shouldShowBottomSheet.collectAsStateWithLifecycle().value
+            if (shouldShowBottomSheet) {
                 ModalBottomSheet(
-                    sheetState = sheetState,
                     onDismissRequest = {
+                        permissionsViewModel.setPermissionState(PermissionUiState.NA)
                         navItemHandler.handleAction(MainNavAction.NA)
-
-                    },
+                    }
                 ) {
-                    DailyStepGoalPicker(
-                        goals = stepGoalRange,
-                        selectedGoal = 1000,
-                        onGoalSelected = {
-
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(480.dp)
-
+                    permissionsViewModel.BottomSheetContent(
+                        batteryOptimizeLauncher = batteryOptimizeLauncher,
+                        permissionLauncher = permissionLauncher
                     )
                 }
-            }
 
-            MainNavAction.EXIT -> {
-                Text("Exit")
             }
 
         }
     }
-
-
 }

@@ -1,6 +1,6 @@
 [versions]
 agp = "8.12.0-alpha06"
-kotlin = "2.0.21"
+kotlin = "2.3.10"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -13,6 +13,8 @@ core-splashscreen = "1.0.0"
 coroutines-test = "1.8.1"
 assertk = "0.28.1"
 turbine = "1.1.0"
+room = "2.8.4"
+ksp = "2.3.5"
 
 
 [libraries]
@@ -39,6 +41,9 @@ core-splashscreen = { group = "androidx.core", name = "core-splashscreen", versi
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
+#room
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room"}
+room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "room"}
 
 
 [plugins]
@@ -46,5 +51,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
 
 

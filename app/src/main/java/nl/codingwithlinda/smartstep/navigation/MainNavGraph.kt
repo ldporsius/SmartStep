@@ -15,9 +15,11 @@ import androidx.navigation3.ui.NavDisplay
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dataStoreSettings
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
+import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.main.ShouldShowSettingsViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +54,20 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
         }
     }
 
+    val dailyStepGoalViewModel = viewModel<DailyStepGoalViewModel>(
+        factory = viewModelFactory {
+            initializer {
+                DailyStepGoalViewModel(
+                    dailyStepRepo = SmartStepApplication.dailyStepRepo,
+                    stepTracker = StepTrackerImpl(
+                        context = SmartStepApplication._applicationContext,
+                        scope = SmartStepApplication.applicationScope
+                    )
+                )
+            }
+        }
+    )
+
     NavDisplay(
         backStack = backStack,
         modifier = modifier,
@@ -74,7 +90,9 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                 }
 
                 MainRoute -> NavEntry(MainRoute) {
-                    MainScreen()
+                    MainScreen(
+                        dailyStepGoalViewModel = dailyStepGoalViewModel
+                    )
                 }
 
                 else -> error("Unknown route")
