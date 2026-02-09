@@ -57,6 +57,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.Permi
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.isIgnoringBatteryOptimizations
 import nl.codingwithlinda.smartstep.features.main.presentation.state.MainNavItemHandler
+import nl.codingwithlinda.smartstep.features.main.presentation.state.MainScreenDecorator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -192,42 +193,13 @@ fun MainScreen(
                         }
                 )
 
-                when (actions) {
-                    MainNavAction.NA -> Unit
-
-                    MainNavAction.BACKGROUND_ACCESS_RECOMMENDED -> {
-                        permissionsViewModel.setPermissionState(PermissionUiState.BACKGROUND_ACCESS_RECOMMENDED)
-                    }
-
-                    MainNavAction.DAILY_STEP_GOAL -> {
-                        DailyStepGoalComponent(
-                            selectedGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
-                            onSelected = {
-                                dailyStepGoalViewModel.setGoal(it)
-                            },
-                            onSave = {
-                                dailyStepGoalViewModel.saveGoal(it)
-                                navItemHandler.handleAction(MainNavAction.NA)
-                            },
-                            onDismiss = {
-                                navItemHandler.handleAction(MainNavAction.NA)
-                            },
-                            modifier = Modifier.align(Alignment.BottomCenter)
-                        )
-                    }
-
-                    MainNavAction.EXIT -> {
-                        ExitDialog(
-                            onDismiss = {
-                                navItemHandler.handleAction(MainNavAction.NA)
-                            },
-                            onClick = {
-                                activity?.finishAffinity()
-                                SmartStepApplication.killAll()
-                            }
-                        )
-                    }
-                }
+                MainScreenDecorator(
+                    mainNavAction = actions,
+                    navItemHandler = navItemHandler,
+                    permissionsViewModel = permissionsViewModel,
+                    dailyStepGoalViewModel = dailyStepGoalViewModel,
+                    parent = this
+                )
             }
 
 
