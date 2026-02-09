@@ -181,17 +181,6 @@ fun MainScreen(
                 contentAlignment = Alignment.Center
             ) {
 
-                var stepMsg by remember { mutableStateOf("") }
-                ObserveAsEvents(MessageFromAnywhere.msgChannel) {
-                    stepMsg = it
-                }
-                Box(modifier = Modifier
-                    .align (TopCenter)
-                    .fillMaxWidth()
-                    .background(Color.Red.copy(.3f))
-                ){
-                    Text(stepMsg)
-                }
 
                 DailyStepCard(
                     stepsTaken = dailyStepGoalViewModel.stepsTaken.collectAsStateWithLifecycle().value,
