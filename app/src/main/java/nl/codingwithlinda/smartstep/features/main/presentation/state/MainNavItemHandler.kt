@@ -5,6 +5,8 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +18,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.features.main.navigation.MainNavAction
+import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.ShowBackgroundAccessDialog
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalComponent
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalPickerContainer
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
@@ -27,11 +30,11 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.Permi
 val MainNavItemHandler = MainBottomSheetController()
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreenDecorator(
     mainNavAction: MainNavAction,
     navItemHandler: MainBottomSheetController = MainNavItemHandler,
-    permissionsViewModel: PermissionsViewModel,
     dailyStepGoalViewModel: DailyStepGoalViewModel,
     parent: BoxScope
 
@@ -60,7 +63,41 @@ fun MainScreenDecorator(
         MainNavAction.NA -> Unit
 
         MainNavAction.BACKGROUND_ACCESS_RECOMMENDED -> {
-            permissionsViewModel.setPermissionState(PermissionUiState.BACKGROUND_ACCESS_RECOMMENDED)
+            with(parent) {
+                if (isLargeScreen){
+                    Dialog(
+                        onDismissRequest = {
+                            navItemHandler.handleAction(MainNavAction.NA)
+                        }
+                    ) {
+                        Surface(
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            ShowBackgroundAccessDialog(
+                                visible = true,
+                                onDismiss = {
+                                    navItemHandler.handleAction(MainNavAction.NA)
+                                }
+                            )
+                        }
+                    }
+                }
+                else{
+                    ModalBottomSheet(
+                        onDismissRequest = {
+                            navItemHandler.handleAction(MainNavAction.NA)
+                        }
+                    ) {
+                        ShowBackgroundAccessDialog(
+                            visible = true,
+                            onDismiss = {
+                                navItemHandler.handleAction(MainNavAction.NA)
+                            }
+                        )
+                    }
+                }
+
+            }
         }
 
         MainNavAction.DAILY_STEP_GOAL -> {

@@ -42,8 +42,20 @@ class DailyStepRepoRoomImpl(
         }.firstOrNull() ?: emptyList()
     }
 
-    override suspend fun saveStepCount(stepCount: DailyStepCount) {
-        val entity = stepCount.toEntity(userId)
+    override suspend fun saveStepCount(_stepCount: DailyStepCount) {
+        val latestCount = dailyStepCountDao.getDailyStepCount().firstOrNull()?.maxByOrNull {
+            it.date
+        }
+        val isUpdateToday = latestCount?.date == _stepCount.date
+        val entity = if (isUpdateToday){
+            latestCount.copy(
+                stepCount = latestCount.stepCount + _stepCount.stepCount
+            )
+        }else{
+            _stepCount.toEntity(userId)
+        }
+
+
         dailyStepCountDao.saveDailyStepCount(entity)
     }
 

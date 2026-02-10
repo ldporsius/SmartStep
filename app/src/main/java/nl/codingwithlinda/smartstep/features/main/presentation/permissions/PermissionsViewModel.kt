@@ -1,15 +1,8 @@
 package nl.codingwithlinda.smartstep.features.main.presentation.permissions
 
-import android.Manifest
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.PowerManager
-import android.provider.Settings
-import android.widget.Toast
 import androidx.activity.compose.LocalActivity
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -39,50 +32,29 @@ class PermissionsViewModel: ViewModel() {
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
 
+
     @Composable
     fun BottomSheetContent(
-        permissionLauncher: ManagedActivityResultLauncher<String, Boolean>,
-        batteryOptimizeLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+       requestActivityRegocnition: () -> Unit
+
     ) {
 
         val context = LocalActivity.current
         val state: PermissionUiState = this.permissionUiState.collectAsStateWithLifecycle().value
         when (state) {
             PermissionUiState.NA -> Unit
-            PermissionUiState.BACKGROUND_ACCESS_RECOMMENDED -> {
-                BackgroundAccessRecommendedDialog(
-                    onClick = {
-                        context?.let {
-                            try {
-                                val intent =
-                                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                                        data = Uri.parse("package:${context.packageName}")
-                                    }
 
-                                batteryOptimizeLauncher.launch(intent)
-                            }catch (e: Exception){
-                                context.let {
-                                    Toast.makeText(it, "Could not handle intent ignore battery optimizations", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
-                    },
-                    modifier = Modifier
-                        .width(480.dp)
-                        .padding(48.dp)
-                )
-            }
-            PermissionUiState.DENIED -> {
+            PermissionUiState.DENIED_ACTIVITY_RECOGNITION -> {
                 BodySensorsPermissionRationaleDialog(
                     onClick = {
-                        permissionLauncher.launch(Manifest.permission.BODY_SENSORS)
+                        requestActivityRegocnition()
                     },
                     modifier = Modifier
                         .width(480.dp)
                         .padding(48.dp)
                 )
             }
-            PermissionUiState.DENIED_PERMANENTLY -> {
+            PermissionUiState.DENIED_ACTIVITY_RECOGNITION_PERMANENTLY -> {
                 BodySensorsPermissionDeclinedDialog(
                     onClick = {
                         context?.openAppSettings()
@@ -92,11 +64,8 @@ class PermissionsViewModel: ViewModel() {
                         .padding(48.dp)
                 )
             }
+            else -> Unit
         }
     }
 }
 
-fun isIgnoringBatteryOptimizations(context: Context): Boolean {
-    val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-    return powerManager.isIgnoringBatteryOptimizations(context.packageName)
-}

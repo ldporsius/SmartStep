@@ -9,17 +9,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepGoalCreator
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 
 class DailyStepGoalViewModel(
     private val appScope: CoroutineScope,
     private val dailyStepRepo: DailyStepRepo,
-    private val stepTracker: StepTracker
+
 ): ViewModel() {
 
 
@@ -27,19 +24,13 @@ class DailyStepGoalViewModel(
     val goal = _goal.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 1)
 
 
-    val stepsTaken = dailyStepRepo.stepCount.map {
+    val stepCount = dailyStepRepo.stepCount.map {
         it.stepCount
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
 
     init {
-        appScope.launch {
-            stepTracker.initialize()
-            stepTracker.stepsTaken.collect {
-                val update = stepsTaken.value + it
-                dailyStepRepo.saveStepCount(DailyStepCountCreator.create(update))
-            }
-        }
+
         viewModelScope.launch {
             dailyStepRepo.getDailyStepGoalsForUser().also {
                 val now = System.currentTimeMillis()

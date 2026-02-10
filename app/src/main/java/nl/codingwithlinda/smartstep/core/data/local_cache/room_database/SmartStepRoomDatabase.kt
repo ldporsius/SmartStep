@@ -1,18 +1,27 @@
 package nl.codingwithlinda.smartstep.core.data.local_cache.room_database
 
-import android.app.Application
+import android.content.Context
 import androidx.room.Room
 
-class SmartStepRoomDatabase(
-    private val context: Application
+object SmartStepRoomDatabase {
+    @Volatile
+    private var dbInstance : SmartStepDatabase? = null
 
-) {
+    @Synchronized
+    fun getInstance(context: Context): SmartStepDatabase{
 
-    val db = Room.databaseBuilder<SmartStepDatabase>(
-        context,
-        SmartStepDatabase::class.java,
-        SmartStepDatabase.databaseName
-    ).fallbackToDestructiveMigration(false)
-        .build()
+        return dbInstance ?: synchronized(this){
+            val db = Room.databaseBuilder<SmartStepDatabase>(
+                context,
+                SmartStepDatabase::class.java,
+                SmartStepDatabase.databaseName
+            ).fallbackToDestructiveMigration(false)
+                .build()
 
+
+            dbInstance = db
+            dbInstance!!
+
+        }
+    }
 }

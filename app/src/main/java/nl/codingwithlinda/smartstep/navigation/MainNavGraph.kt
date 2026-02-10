@@ -17,10 +17,9 @@ import androidx.navigation3.ui.NavDisplay
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dataStoreSettings
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
-import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
-import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.main.ShouldShowSettingsViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
 
@@ -47,7 +46,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
         null -> Unit
         false -> {
             backStack.remove(StartRoute)
-            backStack.add(UserSettingsRoute)
+            backStack.add(UserSettingsOnboardingRoute)
         }
 
        true -> {
@@ -62,7 +61,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                 DailyStepGoalViewModel(
                     appScope = SmartStepApplication.applicationScope,
                     dailyStepRepo = SmartStepApplication.dailyStepRepo,
-                    stepTracker = SmartStepApplication.stepTracker
+
                 )
             }
         }
@@ -77,6 +76,19 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                     Text("...")
                 }
 
+                UserSettingsOnboardingRoute -> NavEntry(UserSettingsRoute) {
+                    UserSettingsRoot(
+                        userSettingsRepo = SmartStepApplication.userSettingsRepo,
+                        modifier = Modifier
+                            .safeContentPadding()
+                            .width(480.dp),
+                        actionSkip = {
+                            shouldShowSettingsViewModel.skip()
+                            backStack.add(MainRoute)
+                            backStack.retainAll(listOf(MainRoute))
+                        },
+                    )
+                }
                 UserSettingsRoute -> NavEntry(UserSettingsRoute) {
                     UserSettingsRoot(
                         userSettingsRepo = SmartStepApplication.userSettingsRepo,

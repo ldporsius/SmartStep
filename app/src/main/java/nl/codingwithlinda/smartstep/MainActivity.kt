@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.userSettingsRepo
+import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.main.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.navigation.MainNavGraph
@@ -39,7 +41,7 @@ class MainActivity : ComponentActivity() {
 
 
         lifecycleScope.launch {
-            viewModel.isChecking.collect{
+            viewModel.isChecking.collect {
                 isChecking = it
             }
         }
@@ -47,9 +49,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             SmartStepTheme {
 
-                    MainNavGraph()
+                MainNavGraph()
 
             }
         }
+
+
+        val trackerIntent = Intent(this, StepTrackerService::class.java).apply {
+            action = StepTrackerService.ACTION_START
+        }
+        startService(trackerIntent)
+
     }
 }

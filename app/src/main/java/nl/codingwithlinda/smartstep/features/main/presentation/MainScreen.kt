@@ -1,8 +1,7 @@
 package nl.codingwithlinda.smartstep.features.main.presentation
 
-import android.Manifest
+import android.os.Build
 import androidx.activity.compose.LocalActivity
-import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -36,7 +35,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.window.Dialog
-import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -44,20 +42,24 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
+import nl.codingwithlinda.smartstep.core.presentation.util.BuildVersionNeedsPermission
+import nl.codingwithlinda.smartstep.core.presentation.util.PermissionCode
+import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
 import nl.codingwithlinda.smartstep.features.main.navigation.FixStepProblemNavItem
 import nl.codingwithlinda.smartstep.features.main.navigation.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.MainNavDrawer
+import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.isIgnoringBatteryOptimizations
+import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.state.MainNavItemHandler
 import nl.codingwithlinda.smartstep.features.main.presentation.state.MainScreenDecorator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-     dailyStepGoalViewModel: DailyStepGoalViewModel
+    dailyStepGoalViewModel: DailyStepGoalViewModel
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -65,45 +67,30 @@ fun MainScreen(
     val context = LocalContext.current
 
     val permissionsViewModel = viewModel<PermissionsViewModel>()
+    val navItemHandler = MainNavItemHandler
+    val actions = navItemHandler.actions.collectAsStateWithLifecycle(MainNavAction.NA).value
 
-    val batteryOptimizeLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-
-            println("--- BATTERY OPTIMIZE LAUNCHER RETURNED WITH RESULT: ${it.resultCode}, ${it.data}")
-            when(it.resultCode){
-                0 -> {
-                    //not granted
-                }
-                else -> {
-                    //granted
-                }
-            }
-            permissionsViewModel.setPermissionState(PermissionUiState.NA)
+    val permissionsLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { resultMap ->
+        val allGranted = resultMap.all {
+            it.value
         }
-
-    val permissionLauncher: ManagedActivityResultLauncher<String, Boolean> = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-
-        if (granted) {
-            //continue asking for background activity permissions
+        if(allGranted){
+            permissionsViewModel.setPermissionState(PermissionUiState.NA)
             val isIgnoringBatteryOptimizations = activity?.let { isIgnoringBatteryOptimizations(context)} ?: false
             println("isIgnoringBatteryOptimizations: $isIgnoringBatteryOptimizations")
             if (!isIgnoringBatteryOptimizations) {
-                permissionsViewModel.setPermissionState(PermissionUiState.BACKGROUND_ACCESS_RECOMMENDED)
+                navItemHandler.handleAction(MainNavAction.BACKGROUND_ACCESS_RECOMMENDED)
             }
+        }
+        resultMap.filter {
+            it.value == false
+        }.toList().firstOrNull()?.let {
+            val perm = it.first
+            val uiState = activity?.toPermissionUiState(perm) ?: PermissionUiState.NA
 
-
-        } else {
-            //find out if permanently declined
-            activity?.let {ac->
-                val shouldShowRationaleBodySensors =
-                    shouldShowRequestPermissionRationale(ac, Manifest.permission.BODY_SENSORS)
-
-                if (shouldShowRationaleBodySensors) {
-                    permissionsViewModel.setPermissionState(PermissionUiState.DENIED)
-                } else {
-                    permissionsViewModel.setPermissionState(PermissionUiState.DENIED_PERMANENTLY)
-                }
-            }
+            permissionsViewModel.setPermissionState(uiState)
         }
     }
 
@@ -115,7 +102,12 @@ fun MainScreen(
 
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_START) {
-                permissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
+                permissionsPerBuild(Build.VERSION.SDK_INT).let {requiredPerms ->
+                    permissionsLauncher.launch(
+                        requiredPerms.toTypedArray()
+                    )
+                }
+
                 val isIgnoringBatteryOptimizations = activity?.let {
                     isIgnoringBatteryOptimizations(it)} ?: false
                 shouldShowFixBatteryInDrawer = !isIgnoringBatteryOptimizations
@@ -129,8 +121,6 @@ fun MainScreen(
     }
 
 
-    val navItemHandler = MainNavItemHandler
-    val actions = navItemHandler.actions.collectAsStateWithLifecycle(MainNavAction.NA).value
 
     MainNavDrawer(
         drawerState = drawerState,
@@ -180,7 +170,7 @@ fun MainScreen(
                 contentAlignment = Alignment.Center
             ) {
                 DailyStepCard(
-                    stepsTaken = dailyStepGoalViewModel.stepsTaken.collectAsStateWithLifecycle().value,
+                    stepsTaken = dailyStepGoalViewModel.stepCount.collectAsStateWithLifecycle().value,
                     dailyGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
                     modifier = Modifier
                         .semantics {
@@ -191,7 +181,6 @@ fun MainScreen(
                 MainScreenDecorator(
                     mainNavAction = actions,
                     navItemHandler = navItemHandler,
-                    permissionsViewModel = permissionsViewModel,
                     dailyStepGoalViewModel = dailyStepGoalViewModel,
                     parent = this
                 )
@@ -212,8 +201,11 @@ fun MainScreen(
                     ) {
                         Surface {
                             permissionsViewModel.BottomSheetContent(
-                                batteryOptimizeLauncher = batteryOptimizeLauncher,
-                                permissionLauncher = permissionLauncher
+                                requestActivityRegocnition = {
+                                    if (BuildVersionNeedsPermission(PermissionCode.ACTIVITY_RECOGNITION)){
+                                        permissionsLauncher.launch(permissionsPerBuild(Build.VERSION.SDK_INT).toTypedArray())
+                                    }
+                                }
                             )
                         }
                     }
@@ -226,8 +218,11 @@ fun MainScreen(
                         }
                     ) {
                         permissionsViewModel.BottomSheetContent(
-                            batteryOptimizeLauncher = batteryOptimizeLauncher,
-                            permissionLauncher = permissionLauncher
+                            requestActivityRegocnition = {
+                                if (BuildVersionNeedsPermission(PermissionCode.ACTIVITY_RECOGNITION)){
+                                    permissionsLauncher.launch(permissionsPerBuild(Build.VERSION.SDK_INT).toTypedArray())
+                                }
+                            }
                         )
                     }
                 }

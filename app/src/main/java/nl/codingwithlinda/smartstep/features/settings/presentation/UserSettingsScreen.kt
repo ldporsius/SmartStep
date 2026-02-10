@@ -103,6 +103,9 @@ fun UserSettingsRoot(
 
 
     UserSettingsScreen(
+        header = {
+
+        },
         modifier = modifier,
         userSettings = heightSettingsViewModel.userSettingsState.collectAsStateWithLifecycle().value,
         heightUiState = heightSettingsViewModel.heightUiState.collectAsStateWithLifecycle().value,
@@ -132,6 +135,7 @@ fun UserSettingsRoot(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserSettingsScreen(
+    header: @Composable () -> Unit = {},
     userSettings: UserSettings,
     heightUiState: HeightSettingUiState,
     weightUiState: WeightSettingUiState,
@@ -156,28 +160,7 @@ fun UserSettingsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-
-                Text(
-                    text = "My profile",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier
-                )
-
-                TextButton(
-                    onClick = { actionSkip() },
-                    modifier = Modifier.align(Alignment.TopEnd)
-                ) {
-                    Text("Skip")
-                }
-
-            }
-
-            Text(text = "This information helps calculate your activity more accurately.")
-
+           header()
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -8,6 +8,9 @@ import kotlinx.serialization.Serializable
 object StartRoute: NavKey
 
 @Serializable
+object UserSettingsOnboardingRoute: NavKey
+
+@Serializable
 object UserSettingsRoute: NavKey
 
 @Serializable
