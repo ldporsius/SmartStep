@@ -107,9 +107,10 @@ fun UserSettingsRoot(
 
         },
         modifier = modifier,
-        userSettings = heightSettingsViewModel.userSettingsState.collectAsStateWithLifecycle().value,
+        //userSettings = heightSettingsViewModel.userSettingsState.collectAsStateWithLifecycle().value,
         heightUiState = heightSettingsViewModel.heightUiState.collectAsStateWithLifecycle().value,
         weightUiState = weightSettingsViewModel.weightUiState.collectAsStateWithLifecycle().value,
+        gender = genderSettingsViewModel.genderUi.collectAsStateWithLifecycle().value,
         actionGenderInput = {
             genderSettingsViewModel.onAction(ActionGender.ChangeGender(it))
         },
@@ -136,9 +137,10 @@ fun UserSettingsRoot(
 @Composable
 fun UserSettingsScreen(
     header: @Composable () -> Unit = {},
-    userSettings: UserSettings,
+    //userSettings: UserSettings,
     heightUiState: HeightSettingUiState,
     weightUiState: WeightSettingUiState,
+    gender: Gender,
     actionGenderInput: (Gender) -> Unit,
     actionHeightInput: (ActionHeightInput) -> Unit,
     actionWeightInput: (ActionWeightInput) -> Unit,
@@ -175,14 +177,14 @@ fun UserSettingsScreen(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    with(userSettings) {
+
                         GenderComponent(
                             currentGender = gender,
                             action = {
                                 actionGenderInput(it)
                             }
                         )
-                    }
+
                     with(heightUiState) {
                         SettingBoxComponent(
                             label = "Height",
@@ -279,9 +281,10 @@ fun UserSettingsScreen(
 private fun PreviewUserSettingsScreen() {
     SmartStepTheme {
         UserSettingsScreen(
-            userSettings = UserSettings(),
+            //userSettings = UserSettings(),
             heightUiState = HeightSettingUiState.SI(175),
             weightUiState = WeightSettingUiState.SI(100),
+            gender = Gender.FEMALE,
             actionGenderInput = {},
             actionHeightInput = {},
             actionWeightInput = {},
