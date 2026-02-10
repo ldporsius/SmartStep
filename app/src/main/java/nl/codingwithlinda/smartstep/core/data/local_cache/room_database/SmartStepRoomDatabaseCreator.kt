@@ -3,7 +3,7 @@ package nl.codingwithlinda.smartstep.core.data.local_cache.room_database
 import android.content.Context
 import androidx.room.Room
 
-object SmartStepRoomDatabase {
+object SmartStepRoomDatabaseCreator {
     @Volatile
     private var dbInstance : SmartStepDatabase? = null
 

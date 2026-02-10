@@ -48,13 +48,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SmartStepTheme {
-
                 MainNavGraph()
-
             }
         }
 
 
+        //instantiate service - this cannot be done from background process ????? like in application ???????????
         val trackerIntent = Intent(this, StepTrackerService::class.java).apply {
             action = StepTrackerService.ACTION_START
         }

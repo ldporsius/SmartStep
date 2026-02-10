@@ -12,7 +12,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import nl.codingwithlinda.smartstep.R
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabase
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 
@@ -28,7 +28,7 @@ class StepTrackerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        val db = SmartStepRoomDatabase.getInstance(applicationContext)
+        val db = SmartStepRoomDatabaseCreator.getInstance(applicationContext)
         dailyStepRepoRoomImpl = DailyStepRepoRoomImpl(
             dailyStepGoalDao = db.dailyStepGoalDao,
             dailyStepCountDao = db.dailyStepCountDao,
