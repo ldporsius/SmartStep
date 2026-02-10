@@ -1,6 +1,5 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings
 
-import android.R.attr.onClick
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +15,7 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogHeader
-import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.ScrollableHeightInputComponent
+import nl.codingwithlinda.smartstep.features.settings.presentation.common.ScrollableInputComponent
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.toUi
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
@@ -65,7 +64,7 @@ fun WeightSettingsScreen(
         Box(modifier = Modifier.weight(1f)) {
             when (uiState) {
                 is WeightSettingUiState.SI -> {
-                    ScrollableHeightInputComponent(
+                    ScrollableInputComponent(
                         label = "kg",
                         defaultValue = uiState.kg,
                         values = valuesKg,
@@ -76,7 +75,7 @@ fun WeightSettingsScreen(
                 }
 
                 is WeightSettingUiState.Imperial -> {
-                    ScrollableHeightInputComponent(
+                    ScrollableInputComponent(
                         label = "lbs",
                         defaultValue = uiState.pounds,
                         values = valuesPounds,

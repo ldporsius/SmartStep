@@ -21,6 +21,7 @@ import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogHeader
+import nl.codingwithlinda.smartstep.features.settings.presentation.common.ScrollableInputComponent
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.toUi
@@ -69,7 +70,7 @@ fun HeightSettingsComponent(
         Box(modifier = Modifier.weight(1f)) {
             when (uiState) {
                 is HeightSettingUiState.SI -> {
-                    ScrollableHeightInputComponent(
+                    ScrollableInputComponent(
                         label = "cm",
                         defaultValue = uiState.valueCm,
                         values = rangeCm,
@@ -84,7 +85,7 @@ fun HeightSettingsComponent(
                     println("--- HEIGHTSETTINGSCOMPONENT --- imperial uiState: $uiState")
                     HeightFeetInchesComponent(
                         feetComponent = {
-                            ScrollableHeightInputComponent(
+                            ScrollableInputComponent(
                                 label = "ft",
                                 defaultValue = uiState.feet,
                                 values = rangeFeet,
@@ -103,7 +104,7 @@ fun HeightSettingsComponent(
                             )
                         },
                         inchesComponent = {
-                            ScrollableHeightInputComponent(
+                            ScrollableInputComponent(
                                 label = "in",
                                 defaultValue = uiState.inches,
                                 values = rangeInches,
@@ -115,7 +116,7 @@ fun HeightSettingsComponent(
                                         )
                                     )
                                 },
-                                modifier = Modifier.semantics{
+                                modifier = Modifier.semantics {
                                     contentDescription = "inches"
                                 },
                             )

@@ -1,8 +1,8 @@
-package nl.codingwithlinda.smartstep.features.settings.presentation.height_settings
+package nl.codingwithlinda.smartstep.features.settings.presentation.common
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,20 +35,19 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import kotlin.math.roundToInt
 
 @Composable
-fun ScrollableHeightInputComponent(
+fun ScrollableInputComponent(
     label: String,
     defaultValue: Int,
     values: List<Int>,
     onValueChange: (Int) -> Unit,
-    modifier: Modifier = Modifier) {
-
+    modifier: Modifier = Modifier.Companion
+) {
 
     var listValuesYOffset by remember { mutableStateOf(0f) }
     var selectedValue by remember { mutableStateOf(defaultValue) }
@@ -66,32 +65,34 @@ fun ScrollableHeightInputComponent(
 
     val indexInList = values.indexOf(selectedValue)
 
-    LaunchedEffect(valueTextHeight){
+    LaunchedEffect(valueTextHeight) {
 
         listValuesYOffset = centerY - valueTextHeight.toFloat() * indexInList
     }
 
-    Box(modifier = modifier
-        .width(100.dp),
-        contentAlignment = Alignment.TopStart
+    Box(
+        modifier = modifier
+            .width(100.dp),
+        contentAlignment = Alignment.Companion.TopStart
     ) {
 
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-            .background(Color.LightGray)
-            .align(androidx.compose.ui.Alignment.Center)
-            .onGloballyPositioned(){
-                centerY = it.positionInParent().y
-            }
+        Spacer(
+            modifier = Modifier.Companion
+                .fillMaxWidth()
+                .height(48.dp)
+                .background(Color.Companion.LightGray)
+                .align(Alignment.Center)
+                .onGloballyPositioned() {
+                    centerY = it.positionInParent().y
+                }
         )
 
-        val minOffsetY = centerY.toInt() - valueTextHeight * (values.size-1)
+        val minOffsetY = centerY.toInt() - valueTextHeight * (values.size - 1)
         val maxOffsetY = (centerY).toInt()
 
         Column(
-            modifier = Modifier
-                .semantics(){
+            modifier = Modifier.Companion
+                .semantics() {
                     contentDescription = "scroll to pick height"
                 }
                 .fillMaxHeight()
@@ -100,11 +101,13 @@ fun ScrollableHeightInputComponent(
                     enabled = false
                 )
                 .width(IntrinsicSize.Max)
-                .offset{
-                    IntOffset(0, (listValuesYOffset.toInt())
-                        .coerceIn( minOffsetY, maxOffsetY))
+                .offset {
+                    IntOffset(
+                        0, (listValuesYOffset.toInt())
+                            .coerceIn(minOffsetY, maxOffsetY)
+                    )
                 }
-                .pointerInput(Unit){
+                .pointerInput(Unit) {
                     detectVerticalDragGestures(
                         onDragEnd = {
 
@@ -134,7 +137,7 @@ fun ScrollableHeightInputComponent(
                                 println("selectedValue = $selectedValue")
 
                                 onValueChange(selectedValue)
-                            }catch (e: Exception){
+                            } catch (e: Exception) {
                                 e.printStackTrace()
                             }
                         },
@@ -143,39 +146,37 @@ fun ScrollableHeightInputComponent(
 
                         }
                     )
-                }
-            ,
+                },
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
             values.onEach { value ->
                 var boxPosition by remember { mutableStateOf(0f) }
                 Box(
-                    modifier = Modifier
+                    modifier = Modifier.Companion
                         .size(48.dp)
-                        .onGloballyPositioned{
+                        .onGloballyPositioned {
                             boxPosition = it.positionInRoot().y
                             valueTextHeight = it.size.height
 
-                        }
-                    ,
-                    contentAlignment = androidx.compose.ui.Alignment.Center
+                        },
+                    contentAlignment = Alignment.Center
 
                 ) {
-                    val visibilityRange = IntRange((centerY - 4 * valueTextHeight).toInt(),
+                    val visibilityRange = IntRange(
+                        (centerY - 4 * valueTextHeight).toInt(),
                         (centerY + 5 * valueTextHeight).toInt()
                     )
                     val visible = boxPosition.roundToInt() in visibilityRange
 
                     val visibleAnimation = animateFloatAsState(
-                        targetValue = if ( visible) 1f else 0f,
-                        animationSpec = androidx.compose.animation.core.tween(300)
+                        targetValue = if (visible) 1f else 0f,
+                        animationSpec = tween(300)
                     )
                     Text(
                         "$value",
-                        textAlign = TextAlign.Center,
-                        color = Color.Black.copy(alpha = visibleAnimation.value),
-                        modifier = Modifier.
-                        semantics {
+                        textAlign = TextAlign.Companion.Center,
+                        color = Color.Companion.Black.copy(alpha = visibleAnimation.value),
+                        modifier = Modifier.Companion.semantics {
                             contentDescription = "value $label"
                         }
                     )
@@ -185,8 +186,8 @@ fun ScrollableHeightInputComponent(
 
         Text(
             label,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
+            modifier = Modifier.Companion
+                .align(Alignment.Companion.CenterEnd)
         )
 
 
@@ -197,12 +198,12 @@ fun ScrollableHeightInputComponent(
 @Composable
 private fun PreviewHeightInchesComponent() {
     SmartStepTheme {
-        ScrollableHeightInputComponent(
+        ScrollableInputComponent(
             label = "ft",
             defaultValue = 5,
             values = (0..10).toList(),
             onValueChange = {},
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier.Companion.fillMaxHeight()
 
         )
 
