@@ -2,9 +2,12 @@ package nl.codingwithlinda.smartstep.features.main.presentation
 
 import android.Manifest
 import android.app.Application
+import android.app.UiAutomation
+import android.os.Build
 import android.os.UserHandle
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isRoot
@@ -13,7 +16,10 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.internal.platform.content.PermissionGranter
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
+import androidx.test.runner.AndroidJUnitRunner
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import kotlinx.coroutines.delay
@@ -24,6 +30,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import java.io.File
 
 @OptIn(ExperimentalTestApi::class)
@@ -32,62 +39,62 @@ class MainScreenTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    lateinit var device: UiDevice
+    //@get:Rule
+    //val allowNotifications: GrantPermissionRule? = GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)
+    val packageName = InstrumentationRegistry.getInstrumentation().targetContext.packageName
+
 
     @Before
     fun setUp() {
-        device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     }
 
     @After
     fun tearDown() {
-        val packageName = InstrumentationRegistry.getInstrumentation().targetContext.packageName
-        println("revoking permission for packageName: $packageName")
-        InstrumentationRegistry.getInstrumentation().uiAutomation.revokeRuntimePermission(
-            packageName,
-            Manifest.permission.BODY_SENSORS,
-        )
-        //device.executeShellCommand("pm clear $packageName")
-    }
-
-    @Test
-    fun basicTest(){
-        composeTestRule.activityRule.scenario.moveToState(Lifecycle.State.STARTED)
 
     }
 
+
     @Test
-    fun testBodySensorsPermissionDeclined(){
-        val scenario = composeTestRule.activityRule.scenario
+    fun testBodySensorsPermissionDeclined() {
+        //val scenario = composeTestRule.activityRule.scenario
 
-        scenario.moveToState(Lifecycle.State.CREATED)
-        scenario.moveToState(Lifecycle.State.STARTED)
+        if(Build.VERSION.SDK_INT >= 28){
+            InstrumentationRegistry.getInstrumentation().uiAutomation.revokeRuntimePermission(
+                packageName,
+                Manifest.permission.ACTIVITY_RECOGNITION,
+            )
 
-       composeTestRule.waitForIdle()
+            InstrumentationRegistry.getInstrumentation().uiAutomation.grantRuntimePermission(
+                packageName, Manifest.permission.POST_NOTIFICATIONS
+            )
+        }
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        composeTestRule.onNode(
+            hasText("Start") and hasClickAction()
+        ).assertIsDisplayed()
+            .performClick()
+
+
         val dontAllowButton = device.findObject(UiSelector().textContains("Niet"))
 
         dontAllowButton.click()
 
-        composeTestRule.waitUntilAtLeastOneExists(
-            hasText("Allow access", substring = false, ignoreCase = true)
-        )
+
         composeTestRule.onNode(hasText("Allow access", substring = false, ignoreCase = true))
             .assertIsDisplayed()
             .performClick()
+
 
         val dontAllowButton2 = device.findObject(UiSelector().textContains("Niet"))
 
         dontAllowButton2.click()
 
-        composeTestRule.waitForIdle()
 
         composeTestRule.onNode(
             hasText("Open settings", substring = false, ignoreCase = true)
         ).assertIsDisplayed()
             .performClick()
-
-        composeTestRule.waitForIdle()
 
 
         device.pressBack()

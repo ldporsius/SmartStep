@@ -30,7 +30,6 @@ class DailyStepGoalViewModelTest {
         viewModel = DailyStepGoalViewModel(
             appScope = CoroutineScope(testDispatcher),
             dailyStepRepo = FakeDailyStepRepo(),
-            stepTracker = fakeStepTracker
 
         )
 

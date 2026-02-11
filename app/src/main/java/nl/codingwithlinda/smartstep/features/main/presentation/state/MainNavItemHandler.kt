@@ -95,7 +95,6 @@ fun MainScreenDecorator(
                         )
                     }
                 }
-
             }
         }
 
@@ -145,5 +144,4 @@ fun MainScreenDecorator(
             )
         }
     }
-
 }

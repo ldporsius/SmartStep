@@ -62,7 +62,6 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                 DailyStepGoalViewModel(
                     appScope = SmartStepApplication.applicationScope,
                     dailyStepRepo = SmartStepApplication.dailyStepRepo,
-
                     )
             }
         }

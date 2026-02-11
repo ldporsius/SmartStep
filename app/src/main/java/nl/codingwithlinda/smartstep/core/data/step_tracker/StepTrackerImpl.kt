@@ -2,7 +2,6 @@ package nl.codingwithlinda.smartstep.core.data.step_tracker
 
 import android.content.Context
 import android.hardware.Sensor
-import android.hardware.Sensor.TYPE_STEP_COUNTER
 import android.hardware.Sensor.TYPE_STEP_DETECTOR
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -32,7 +31,7 @@ class StepTrackerImpl private constructor(
 
     companion object{
         @Volatile
-        private var instance: StepTrackerImpl? = null
+        private var stepTrackerInstance: StepTrackerImpl? = null
 
         val lock = Any()
         @Synchronized
@@ -41,13 +40,13 @@ class StepTrackerImpl private constructor(
             scope: CoroutineScope
         ): StepTrackerImpl {
             synchronized(lock) {
-                val i = instance
+                val i = stepTrackerInstance
                 if (i != null) {
                     return i
                 }
 
-                instance = StepTrackerImpl(context, scope)
-                return instance!!
+                stepTrackerInstance = StepTrackerImpl(context, scope)
+                return stepTrackerInstance!!
 
             }
         }

@@ -1,7 +1,5 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.gender_settings
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -14,8 +12,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.SettingBoxComponent
@@ -67,7 +67,7 @@ fun GenderComponent(
                     },
                     trailingIcon = {
                         if (isSelectedItem) {
-                            Icon(imageVector = Icons.Default.Check, contentDescription = null)
+                            Icon(painter = painterResource(R.drawable.selected_icon), contentDescription = null)
                         }
                     }
                 )

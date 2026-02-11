@@ -50,9 +50,7 @@ class UserSettingsScreenTest {
             SmartStepTheme {
                 UserSettingsRoot(
                     userSettingsRepo = usersettingsRepo,
-                    actionSkip = {
-                        println("action skip called")
-                    }
+
                 )
             }
         }

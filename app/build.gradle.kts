@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.androidTestImplementation
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -23,6 +24,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
+
     }
 
     buildTypes {
@@ -43,8 +45,6 @@ android {
         compose = true
         buildConfig = true
     }
-
-
 }
 kotlin {
     compilerOptions {
@@ -56,10 +56,10 @@ room {
 }
 dependencies {
 
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
@@ -68,28 +68,35 @@ dependencies {
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.core.splashscreen)
 
     //room
-    implementation("androidx.room:room-ktx:2.8.4")
-    implementation("androidx.room:room-runtime:2.8.4")
-    ksp("androidx.room:room-compiler:2.8.4")
+    implementation(libs.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
+    //jvm tests
     testImplementation(libs.junit)
     testImplementation(libs.turbine)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.assertk)
 
-
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    //instrumented/ui tests
     androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.espresso.core)
+    // Test rules and transitive dependencies:
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
-    androidTestUtil("androidx.test:orchestrator:1.6.1")
-    debugImplementation(libs.androidx.ui.tooling)
+    androidTestImplementation(libs.androidx.uiautomator)
+    androidTestImplementation(libs.androidx.rules)
+    androidTestUtil(libs.androidx.orchestrator)
+
+    // Needed for createComposeRule(), but not for createAndroidComposeRule<YourActivity>():
     debugImplementation(libs.androidx.ui.test.manifest)
+    debugImplementation(libs.androidx.ui.tooling)
+
 }
