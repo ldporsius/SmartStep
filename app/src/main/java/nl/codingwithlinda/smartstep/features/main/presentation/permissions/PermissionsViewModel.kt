@@ -1,7 +1,5 @@
 package nl.codingwithlinda.smartstep.features.main.presentation.permissions
 
-import android.content.Context
-import android.os.PowerManager
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -33,9 +31,10 @@ class PermissionsViewModel: ViewModel() {
 
 
 
+
     @Composable
     fun BottomSheetContent(
-       requestActivityRegocnition: () -> Unit
+        requestActivityRecognition: () -> Unit
 
     ) {
 
@@ -47,7 +46,7 @@ class PermissionsViewModel: ViewModel() {
             PermissionUiState.DENIED_ACTIVITY_RECOGNITION -> {
                 BodySensorsPermissionRationaleDialog(
                     onClick = {
-                        requestActivityRegocnition()
+                        requestActivityRecognition()
                     },
                     modifier = Modifier
                         .width(480.dp)

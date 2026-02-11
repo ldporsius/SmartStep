@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.core.data.step_tracker
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.media.session.PlaybackState.ACTION_STOP
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +21,8 @@ class StepTrackerService : Service() {
 
     lateinit var stepTracker: StepTrackerImpl
     lateinit var dailyStepRepoRoomImpl: DailyStepRepoRoomImpl
+    lateinit var notificationManager: NotificationManager
+
     val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onBind(intent: Intent): IBinder? {
@@ -28,6 +31,7 @@ class StepTrackerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        notificationManager =  getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         val db = SmartStepRoomDatabaseCreator.getInstance(applicationContext)
         dailyStepRepoRoomImpl = DailyStepRepoRoomImpl(
             dailyStepGoalDao = db.dailyStepGoalDao,
@@ -49,31 +53,37 @@ class StepTrackerService : Service() {
 
     private fun start(){
         stepTracker.start()
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("SmartStep is running")
             .setContentText("SmartStep is tracking your steps")
             .setSmallIcon(R.drawable.splash_icon)
             .setOngoing(true)
-        notificationManager.notify(1, notification.build())
+
+        if(notificationManager.areNotificationsEnabled()) {
+            notificationManager.notify(1, notification.build())
+        }
+        startForeground(1, notification.build())
 
         stepTracker.stepsTaken.onEach {
-            notification.setContentText("Steps taken: $it")
-            notificationManager.notify(1, notification.build())
-
             DailyStepCountCreator.create(1).also {
                 dailyStepRepoRoomImpl.saveStepCount(it)
             }
-
         }.launchIn(serviceScope)
-
-        startForeground(1, notification.build())
     }
 
     private fun stop(){
         stopForeground(STOP_FOREGROUND_REMOVE)
         stepTracker.stop()
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("SmartStep stopped running")
+            .setContentText("SmartStep is no longer tracking your steps")
+            .setSmallIcon(R.drawable.splash_icon)
+            .setOngoing(true)
+
+        if(notificationManager.areNotificationsEnabled()) {
+            notificationManager.notify(2, notification.build())
+        }
         stopSelf()
     }
 

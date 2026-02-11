@@ -1,6 +1,10 @@
 package nl.codingwithlinda.smartstep.features.main.presentation.permissions
 
 import android.app.Activity
+import android.content.pm.PackageManager
+import android.os.Build
+import nl.codingwithlinda.smartstep.core.presentation.util.necessaryPermissionsOnly
+import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
 
 enum class PermissionUiState {
     NA,
@@ -20,6 +24,18 @@ fun Activity.toPermissionUiState(permission: String): PermissionUiState{
     }
 
     return PermissionUiState.NA
+}
+
+fun Activity.canStartStepTrackerService(): Boolean{
+    val permsNeeded = necessaryPermissionsOnly()
+    if (permsNeeded.isEmpty()) return true
+    val allGranted = permsNeeded.map {
+        checkSelfPermission(it)
+    }.all {
+        it == PackageManager.PERMISSION_GRANTED
+    }
+
+    return allGranted
 }
 
 

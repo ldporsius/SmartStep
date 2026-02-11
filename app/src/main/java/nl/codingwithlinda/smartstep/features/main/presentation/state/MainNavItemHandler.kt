@@ -1,6 +1,6 @@
 package nl.codingwithlinda.smartstep.features.main.presentation.state
 
-import android.app.Activity
+import android.content.Intent
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,14 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.features.main.navigation.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.ShowBackgroundAccessDialog
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalComponent
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalPickerContainer
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.exit.ExitDialog
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 
 
 val MainNavItemHandler = MainBottomSheetController()
@@ -133,8 +132,15 @@ fun MainScreenDecorator(
                     navItemHandler.handleAction(MainNavAction.NA)
                 },
                 onClick = {
-                    activity?.finishAffinity()
-                    SmartStepApplication.killAll()
+                    activity?.let {ac ->
+                        val trackerIntent = Intent(ac, StepTrackerService::class.java).apply {
+                            action = StepTrackerService.ACTION_STOP
+                        }
+                        ac.startService(trackerIntent)
+                    }
+
+                    activity?.finish()
+
                 }
             )
         }

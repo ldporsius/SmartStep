@@ -20,7 +20,6 @@ fun permissionsPerBuild(BuildVersion: Int): List<String>{
 
 @SuppressLint("InlinedApi")
 enum class PermissionCode(val code: String){
-
     ACTIVITY_RECOGNITION(Manifest.permission.ACTIVITY_RECOGNITION),
     POST_NOTIFICATIONS(Manifest.permission.POST_NOTIFICATIONS)
 }
@@ -28,4 +27,9 @@ enum class PermissionCode(val code: String){
 fun BuildVersionNeedsPermission(permissionCode: PermissionCode): Boolean{
     val build = Build.VERSION.SDK_INT
     return permissionsPerBuild(build).contains(permissionCode.code)
+}
+
+@SuppressLint("InlinedApi")
+fun necessaryPermissionsOnly() = permissionsPerBuild(Build.VERSION.SDK_INT).filter {
+    it == Manifest.permission.ACTIVITY_RECOGNITION
 }

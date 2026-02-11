@@ -1,6 +1,5 @@
 package nl.codingwithlinda.smartstep.features.main.presentation.exit
 
-import android.R.attr.onClick
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

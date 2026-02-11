@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.features.main.presentation
 
+import android.content.Intent
 import android.os.Build
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -42,8 +43,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
+import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.core.presentation.util.BuildVersionNeedsPermission
 import nl.codingwithlinda.smartstep.core.presentation.util.PermissionCode
+import nl.codingwithlinda.smartstep.core.presentation.util.necessaryPermissionsOnly
 import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
 import nl.codingwithlinda.smartstep.features.main.navigation.FixStepProblemNavItem
 import nl.codingwithlinda.smartstep.features.main.navigation.MainNavAction
@@ -52,6 +55,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimizat
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.permissions.canStartStepTrackerService
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.state.MainNavItemHandler
 import nl.codingwithlinda.smartstep.features.main.presentation.state.MainScreenDecorator
@@ -84,6 +88,15 @@ fun MainScreen(
                 navItemHandler.handleAction(MainNavAction.BACKGROUND_ACCESS_RECOMMENDED)
             }
         }
+
+        activity?.let { ac->
+            if(ac.canStartStepTrackerService()){
+                val trackerIntent = Intent(ac, StepTrackerService::class.java).apply {
+                    action = StepTrackerService.ACTION_START
+                }
+                ac.startService(trackerIntent)
+            }
+        }
         resultMap.filter {
             it.value == false
         }.toList().firstOrNull()?.let {
@@ -99,7 +112,6 @@ fun MainScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
-
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_START) {
                 permissionsPerBuild(Build.VERSION.SDK_INT).let {requiredPerms ->
@@ -162,11 +174,11 @@ fun MainScreen(
                 )
             }
 
-        ) {
+        ) { paddingValues ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(it),
+                    .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
                 DailyStepCard(
@@ -201,9 +213,9 @@ fun MainScreen(
                     ) {
                         Surface {
                             permissionsViewModel.BottomSheetContent(
-                                requestActivityRegocnition = {
-                                    if (BuildVersionNeedsPermission(PermissionCode.ACTIVITY_RECOGNITION)){
-                                        permissionsLauncher.launch(permissionsPerBuild(Build.VERSION.SDK_INT).toTypedArray())
+                                requestActivityRecognition = {
+                                    necessaryPermissionsOnly().let {
+                                        permissionsLauncher.launch(it.toTypedArray())
                                     }
                                 }
                             )
@@ -218,9 +230,9 @@ fun MainScreen(
                         }
                     ) {
                         permissionsViewModel.BottomSheetContent(
-                            requestActivityRegocnition = {
-                                if (BuildVersionNeedsPermission(PermissionCode.ACTIVITY_RECOGNITION)){
-                                    permissionsLauncher.launch(permissionsPerBuild(Build.VERSION.SDK_INT).toTypedArray())
+                            requestActivityRecognition = {
+                                necessaryPermissionsOnly().let {
+                                    permissionsLauncher.launch(it.toTypedArray())
                                 }
                             }
                         )
