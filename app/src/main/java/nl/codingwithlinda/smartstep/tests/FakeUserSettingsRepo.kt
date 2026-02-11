@@ -23,15 +23,15 @@ class FakeUserSettingsRepo: UserSettingsRepo {
         }
     }
 
-    override suspend fun skip() {
+    override suspend fun setIsOnboardingFalse() {
 
     }
 
-    override suspend fun loadSkip(): Boolean {
+    override suspend fun loadIsOnboarding(): Boolean {
         return false
     }
 
-    override val skippedObservable: Flow<Boolean>
+    override val isOnboardingObservable: Flow<Boolean>
         get() = flow {
             emit(false)
         }

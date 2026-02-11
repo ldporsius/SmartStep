@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +31,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
-import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
@@ -64,7 +61,6 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settin
 @Composable
 fun UserSettingsRoot(
     userSettingsRepo: UserSettingsRepo,
-    actionSkip: () -> Unit,
     modifier: Modifier = Modifier) {
 
     val genderSettingsViewModel = viewModel<GenderSettingsViewModel>(
@@ -103,11 +99,7 @@ fun UserSettingsRoot(
 
 
     UserSettingsScreen(
-        header = {
-
-        },
         modifier = modifier,
-        //userSettings = heightSettingsViewModel.userSettingsState.collectAsStateWithLifecycle().value,
         heightUiState = heightSettingsViewModel.heightUiState.collectAsStateWithLifecycle().value,
         weightUiState = weightSettingsViewModel.weightUiState.collectAsStateWithLifecycle().value,
         gender = genderSettingsViewModel.genderUi.collectAsStateWithLifecycle().value,
@@ -120,15 +112,12 @@ fun UserSettingsRoot(
         actionWeightInput = {
             weightSettingsViewModel.onAction(it)
         },
-        actionSkip = actionSkip,
         actionStart = {
-          SmartStepApplication.applicationScope.launch {
-              val userSettings = UserSettingsMemento.restoreLast()
-              userSettingsRepo.saveSettings(userSettings)
-
-              actionSkip()
-          }
-
+            SmartStepApplication.applicationScope.launch {
+                val userSettings = UserSettingsMemento.restoreLast()
+                userSettingsRepo.saveSettings(userSettings)
+                userSettingsRepo.setIsOnboardingFalse()
+            }
         }
     )
 
@@ -136,22 +125,18 @@ fun UserSettingsRoot(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserSettingsScreen(
-    header: @Composable () -> Unit = {},
-    //userSettings: UserSettings,
     heightUiState: HeightSettingUiState,
     weightUiState: WeightSettingUiState,
     gender: Gender,
     actionGenderInput: (Gender) -> Unit,
     actionHeightInput: (ActionHeightInput) -> Unit,
     actionWeightInput: (ActionWeightInput) -> Unit,
-    actionSkip: () -> Unit,
     actionStart: () -> Unit,
     modifier: Modifier = Modifier) {
 
 
     var shouldShowHeightDialog by remember { mutableStateOf(false) }
     var shouldShowWeightDialog by remember { mutableStateOf(false) }
-
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -162,7 +147,6 @@ fun UserSettingsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-           header()
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -178,12 +162,12 @@ fun UserSettingsScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
 
-                        GenderComponent(
-                            currentGender = gender,
-                            action = {
-                                actionGenderInput(it)
-                            }
-                        )
+                    GenderComponent(
+                        currentGender = gender,
+                        action = {
+                            actionGenderInput(it)
+                        }
+                    )
 
                     with(heightUiState) {
                         SettingBoxComponent(
@@ -288,7 +272,6 @@ private fun PreviewUserSettingsScreen() {
             actionGenderInput = {},
             actionHeightInput = {},
             actionWeightInput = {},
-            actionSkip = {},
             actionStart = {},
             modifier = Modifier.width(480.dp),
         )

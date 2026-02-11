@@ -49,13 +49,13 @@ class PreferencesUserSettingsRepo(
         }
     }
 
-    override suspend fun skip() {
+    override suspend fun setIsOnboardingFalse() {
         dataStore.edit {
             it[USER_SETTINGS_SKIP] = true
         }
     }
 
-    override suspend fun loadSkip(): Boolean {
+    override suspend fun loadIsOnboarding(): Boolean {
         return dataStore.data.firstOrNull()?.get(
             USER_SETTINGS_SKIP
         ) ?: return false
@@ -76,7 +76,7 @@ class PreferencesUserSettingsRepo(
             )
         }
 
-    override val skippedObservable: Flow<Boolean>
+    override val isOnboardingObservable: Flow<Boolean>
         get() = dataStore.data.map {
             it[USER_SETTINGS_SKIP] ?: false
         }

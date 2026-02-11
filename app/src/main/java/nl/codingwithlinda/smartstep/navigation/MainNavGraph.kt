@@ -18,9 +18,10 @@ import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dataStoreSettings
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
-import nl.codingwithlinda.smartstep.features.main.ShouldShowSettingsViewModel
+import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,13 +46,12 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
     when(shouldShowSettings) {
         null -> Unit
         false -> {
-            backStack.remove(StartRoute)
-            backStack.add(UserSettingsOnboardingRoute)
-        }
-
-       true -> {
             backStack.add(MainRoute)
             backStack.retainAll(listOf(MainRoute))
+        }
+        true -> {
+            backStack.remove(StartRoute)
+            backStack.add(UserSettingsOnboardingRoute)
         }
     }
 
@@ -62,7 +62,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                     appScope = SmartStepApplication.applicationScope,
                     dailyStepRepo = SmartStepApplication.dailyStepRepo,
 
-                )
+                    )
             }
         }
     )
@@ -77,17 +77,21 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                 }
 
                 UserSettingsOnboardingRoute -> NavEntry(UserSettingsRoute) {
-                    UserSettingsRoot(
-                        userSettingsRepo = SmartStepApplication.userSettingsRepo,
-                        modifier = Modifier
-                            .safeContentPadding()
-                            .width(480.dp),
-                        actionSkip = {
+                    UserSettingsOnboardingWrapper(
+                        modifier = Modifier.safeContentPadding(),
+                        onSkip = {
                             shouldShowSettingsViewModel.skip()
                             backStack.add(MainRoute)
                             backStack.retainAll(listOf(MainRoute))
-                        },
-                    )
+                        }
+                    ) {
+                        UserSettingsRoot(
+                            userSettingsRepo = SmartStepApplication.userSettingsRepo,
+                            modifier = Modifier
+                                .safeContentPadding()
+                                .width(480.dp),
+                        )
+                    }
                 }
                 UserSettingsRoute -> NavEntry(UserSettingsRoute) {
                     UserSettingsRoot(
@@ -95,11 +99,6 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                         modifier = Modifier
                             .safeContentPadding()
                             .width(480.dp),
-                        actionSkip = {
-                            shouldShowSettingsViewModel.skip()
-                            backStack.add(MainRoute)
-                            backStack.retainAll(listOf(MainRoute))
-                        },
                     )
                 }
 

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.userSettingsRepo
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
-import nl.codingwithlinda.smartstep.features.main.ShouldShowSettingsViewModel
+import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.navigation.MainNavGraph
 
 class MainActivity : ComponentActivity() {

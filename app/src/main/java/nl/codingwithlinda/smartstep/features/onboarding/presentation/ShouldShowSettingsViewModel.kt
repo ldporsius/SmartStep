@@ -1,9 +1,10 @@
-package nl.codingwithlinda.smartstep.features.main
+package nl.codingwithlinda.smartstep.features.onboarding.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
@@ -16,19 +17,23 @@ class ShouldShowSettingsViewModel(
 
     init {
         viewModelScope.launch {
-            userSettingsRepo.loadSkip()
+            userSettingsRepo.loadIsOnboarding()
             isChecking.value = false
         }
     }
-    val shouldShowSettings = userSettingsRepo.skippedObservable.stateIn(
+    val shouldShowSettings = userSettingsRepo.isOnboardingObservable
+        .map {
+            it.not()
+        }
+        .stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(),
+        SharingStarted.Companion.WhileSubscribed(),
         null
     )
 
     fun skip(){
         viewModelScope.launch {
-            userSettingsRepo.skip()
+            userSettingsRepo.setIsOnboardingFalse()
         }
     }
 }

@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.settings.presentation.common
+package nl.codingwithlinda.smartstep.features.onboarding.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth

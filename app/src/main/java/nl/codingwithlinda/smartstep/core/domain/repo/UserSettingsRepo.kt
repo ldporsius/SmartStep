@@ -12,9 +12,9 @@ interface UserSettingsRepo {
     val unitSystemObservable : Flow<UnitSystemUnits>
 
     val userSettingsObservable : Flow<UserSettings>
-    suspend fun skip()
-    suspend fun loadSkip(): Boolean
+    suspend fun setIsOnboardingFalse()
+    suspend fun loadIsOnboarding(): Boolean
 
-    val skippedObservable : Flow<Boolean>
+    val isOnboardingObservable : Flow<Boolean>
 
 }
