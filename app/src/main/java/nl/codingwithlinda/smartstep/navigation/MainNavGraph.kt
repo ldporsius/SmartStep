@@ -23,6 +23,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
+import nl.codingwithlinda.smartstep.features.settings.presentation.common.UserSettingsHeader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +79,10 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
 
                 UserSettingsOnboardingRoute -> NavEntry(UserSettingsRoute) {
                     UserSettingsOnboardingWrapper(
-                        modifier = Modifier.safeContentPadding(),
+                        modifier = Modifier
+                            .safeContentPadding()
+                            .width(480.dp)
+                        ,
                         onSkip = {
                             shouldShowSettingsViewModel.skip()
                             backStack.add(MainRoute)
@@ -88,18 +92,20 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                         UserSettingsRoot(
                             userSettingsRepo = SmartStepApplication.userSettingsRepo,
                             modifier = Modifier
-                                .safeContentPadding()
-                                .width(480.dp),
                         )
                     }
                 }
                 UserSettingsRoute -> NavEntry(UserSettingsRoute) {
-                    UserSettingsRoot(
-                        userSettingsRepo = SmartStepApplication.userSettingsRepo,
+                    UserSettingsHeader(
                         modifier = Modifier
                             .safeContentPadding()
                             .width(480.dp),
-                    )
+                    ) {
+                        UserSettingsRoot(
+                            userSettingsRepo = SmartStepApplication.userSettingsRepo,
+
+                        )
+                    }
                 }
 
                 MainRoute -> NavEntry(MainRoute) {
