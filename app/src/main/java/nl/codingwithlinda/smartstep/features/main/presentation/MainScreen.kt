@@ -7,7 +7,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -53,6 +56,7 @@ import nl.codingwithlinda.smartstep.features.main.navigation.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.MainNavDrawer
 import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.canStartStepTrackerService
@@ -189,57 +193,29 @@ fun MainScreen(
                             contentDescription = "Daily Step Card"
                         }
                 )
-
-                MainScreenDecorator(
-                    mainNavAction = actions,
-                    navItemHandler = navItemHandler,
-                    dailyStepGoalViewModel = dailyStepGoalViewModel,
-                    parent = this
-                )
             }
 
-
-            val density = LocalDensity.current.density
-            val isLargeScreen = LocalWindowInfo.current.containerSize.width > 840 * density
-            val shouldShowUserInteraction =
-                permissionsViewModel.shouldShowUserInteraction.collectAsStateWithLifecycle().value
-            if (shouldShowUserInteraction) {
-                if (isLargeScreen){
-                    Dialog(
-                        onDismissRequest = {
-                            permissionsViewModel.setPermissionState(PermissionUiState.NA)
-                            navItemHandler.handleAction(MainNavAction.NA)
-                        }
-                    ) {
-                        Surface {
-                            permissionsViewModel.BottomSheetContent(
-                                requestActivityRecognition = {
-                                    necessaryPermissionsOnly().let {
-                                        permissionsLauncher.launch(it.toTypedArray())
-                                    }
-                                }
-                            )
-                        }
+            PermissionDecorator(
+                permissionsViewModel = permissionsViewModel,
+                navItemHandler = navItemHandler,
+                requestPermission = {
+                    necessaryPermissionsOnly().let {
+                        permissionsLauncher.launch(it.toTypedArray())
                     }
                 }
-                else {
-                    ModalBottomSheet(
-                        onDismissRequest = {
-                            permissionsViewModel.setPermissionState(PermissionUiState.NA)
-                            navItemHandler.handleAction(MainNavAction.NA)
-                        }
-                    ) {
-                        permissionsViewModel.BottomSheetContent(
-                            requestActivityRecognition = {
-                                necessaryPermissionsOnly().let {
-                                    permissionsLauncher.launch(it.toTypedArray())
-                                }
-                            }
-                        )
-                    }
-                }
-            }
-
+            )
         }
     }
+
+    Box(
+        modifier = Modifier.systemBarsPadding()
+    ) {
+        MainScreenDecorator(
+            mainNavAction = actions,
+            navItemHandler = navItemHandler,
+            dailyStepGoalViewModel = dailyStepGoalViewModel,
+            parent = this
+        )
+    }
+
 }
