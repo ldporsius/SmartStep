@@ -27,9 +27,6 @@ class ShouldShowSettingsViewModel(
         }
     }
     val shouldShowSettings = userSettingsRepo.isOnboardingObservable
-        .map {
-            it.not()
-        }
         .stateIn(
         viewModelScope,
         SharingStarted.Companion.WhileSubscribed(5000),

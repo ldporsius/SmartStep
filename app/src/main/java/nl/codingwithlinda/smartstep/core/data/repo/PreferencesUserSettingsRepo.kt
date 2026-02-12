@@ -22,7 +22,7 @@ class PreferencesUserSettingsRepo(
     val USER_SETTINGS_GENDER = stringPreferencesKey("user_gender")
     val USER_SETTINGS_WEIGHT = intPreferencesKey("user_weight")
     val USER_SETTINGS_HEIGHT = intPreferencesKey("user_height")
-    val USER_SETTINGS_SKIP = booleanPreferencesKey("user_skip")
+    val USER_SETTINGS_ONBOARDING = booleanPreferencesKey("user_skip")
     val USER_SETTINGS_UNIT_SYSTEM = stringPreferencesKey("user_unit_system")
 
     override suspend fun loadSettings(): UserSettings {
@@ -51,14 +51,14 @@ class PreferencesUserSettingsRepo(
 
     override suspend fun setIsOnboardingFalse() {
         dataStore.edit {
-            it[USER_SETTINGS_SKIP] = true
+            it[USER_SETTINGS_ONBOARDING] = false
         }
     }
 
     override suspend fun loadIsOnboarding(): Boolean {
         return dataStore.data.firstOrNull()?.get(
-            USER_SETTINGS_SKIP
-        ) ?: return false
+            USER_SETTINGS_ONBOARDING
+        ) ?: return true
 
     }
 
@@ -78,7 +78,7 @@ class PreferencesUserSettingsRepo(
 
     override val isOnboardingObservable: Flow<Boolean>
         get() = dataStore.data.map {
-            it[USER_SETTINGS_SKIP] ?: false
+            it[USER_SETTINGS_ONBOARDING] ?: true
         }
 
     override suspend fun saveUnitSystem(systemUnits: UnitSystemUnits) {

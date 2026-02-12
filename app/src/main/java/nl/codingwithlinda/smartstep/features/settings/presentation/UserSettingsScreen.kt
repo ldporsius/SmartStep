@@ -17,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
@@ -30,6 +32,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.userSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
@@ -99,7 +102,6 @@ fun UserSettingsRoot(
         }
     )
 
-
     UserSettingsScreen(
         modifier = modifier,
         heightUiState = heightSettingsViewModel.heightUiState.collectAsStateWithLifecycle().value,
@@ -114,14 +116,7 @@ fun UserSettingsRoot(
         actionWeightInput = {
             weightSettingsViewModel.onAction(it)
         },
-        actionStart = {
-            SmartStepApplication.applicationScope.launch {
-                val userSettings = UserSettingsMemento.restoreLast()
-                userSettingsRepo.saveSettings(userSettings)
-                userSettingsRepo.setIsOnboardingFalse()
-                NavigationController.navigateTo(MainRoute)
-            }
-        }
+
     )
 
 }
@@ -134,7 +129,6 @@ fun UserSettingsScreen(
     actionGenderInput: (Gender) -> Unit,
     actionHeightInput: (ActionHeightInput) -> Unit,
     actionWeightInput: (ActionWeightInput) -> Unit,
-    actionStart: () -> Unit,
     modifier: Modifier = Modifier) {
 
 
@@ -142,11 +136,11 @@ fun UserSettingsScreen(
     var shouldShowWeightDialog by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         contentAlignment = Alignment.TopCenter
     ) {
         Column(
-            modifier = modifier,
+            modifier = Modifier,
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -196,18 +190,6 @@ fun UserSettingsScreen(
                         }
                     }
                 }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                onClick = {
-                    actionStart()
-                },
-                modifier = Modifier.fillMaxWidth(.75f)
-                    .padding(16.dp)
-            ) {
-                Text("Start")
             }
         }
     }
@@ -275,7 +257,6 @@ private fun PreviewUserSettingsScreen() {
             actionGenderInput = {},
             actionHeightInput = {},
             actionWeightInput = {},
-            actionStart = {},
             modifier = Modifier.width(480.dp),
         )
 

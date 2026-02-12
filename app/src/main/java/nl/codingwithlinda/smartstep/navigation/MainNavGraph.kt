@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.navigation
 
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,16 +15,19 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dataStoreSettings
+import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.userSettingsRepo
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
+import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
-import nl.codingwithlinda.smartstep.features.settings.presentation.common.UserSettingsHeader
+import nl.codingwithlinda.smartstep.features.settings.presentation.common.UserSettingsWrapper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,6 +91,14 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                             shouldShowSettingsViewModel.skip()
                             backStack.add(MainRoute)
                             backStack.retainAll(listOf(MainRoute))
+                        },
+                        action = {
+                            SmartStepApplication.applicationScope.launch {
+                                val userSettings = UserSettingsMemento.restoreLast()
+                                userSettingsRepo.saveSettings(userSettings)
+                                userSettingsRepo.setIsOnboardingFalse()
+                                NavigationController.navigateTo(MainRoute)
+                            }
                         }
                     ) {
                         UserSettingsRoot(
@@ -96,10 +108,19 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                     }
                 }
                 UserSettingsRoute -> NavEntry(UserSettingsRoute) {
-                    UserSettingsHeader(
+                    UserSettingsWrapper(
                         modifier = Modifier
                             .safeContentPadding()
-                            .width(480.dp),
+                            .width(480.dp)
+                            .fillMaxHeight()
+                        ,
+                        action = {
+                            SmartStepApplication.applicationScope.launch {
+                                val userSettings = UserSettingsMemento.restoreLast()
+                                userSettingsRepo.saveSettings(userSettings)
+                                NavigationController.navigateTo(MainRoute)
+                            }
+                        }
                     ) {
                         UserSettingsRoot(
                             userSettingsRepo = SmartStepApplication.userSettingsRepo,
