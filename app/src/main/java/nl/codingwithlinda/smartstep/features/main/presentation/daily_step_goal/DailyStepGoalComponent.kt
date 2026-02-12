@@ -29,7 +29,9 @@ fun DailyStepGoalComponent(
             ) {
 
                 Text("Step Goal",
-                    style = MaterialTheme.typography.titleMedium)
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(top = 48.dp,bottom = 16.dp)
+                )
 
                 DailyStepGoalPicker(
                     goals = stepGoalRange,

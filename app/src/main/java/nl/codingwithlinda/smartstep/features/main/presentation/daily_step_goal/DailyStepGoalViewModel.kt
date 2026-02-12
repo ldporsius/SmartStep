@@ -58,5 +58,11 @@ class DailyStepGoalViewModel(
         }
     }
 
-
+    fun dismissChanges(){
+        viewModelScope.launch {
+            _goal.update {
+                dailyStepRepo.getDailyStepGoalsForUser().first().goal
+            }
+        }
+    }
 }
