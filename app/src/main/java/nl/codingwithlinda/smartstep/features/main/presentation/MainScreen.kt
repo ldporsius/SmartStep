@@ -114,9 +114,6 @@ fun MainScreen(
         }
     }
 
-
-    var shouldShowFixBatteryInDrawer by remember { mutableStateOf(false) }
-
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -126,11 +123,6 @@ fun MainScreen(
                         requiredPerms.toTypedArray()
                     )
                 }
-
-                val isIgnoringBatteryOptimizations = activity?.let {
-                    isIgnoringBatteryOptimizations(it)} ?: false
-                shouldShowFixBatteryInDrawer = !isIgnoringBatteryOptimizations
-
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -149,7 +141,8 @@ fun MainScreen(
             FixStepProblemNavItem(
                 title = "Fix step problem",
                 shouldShowInDrawer = {
-                    shouldShowFixBatteryInDrawer
+                    activity?.let {
+                        isIgnoringBatteryOptimizations(it)}?.not() ?: false
                 }
             )
         )
