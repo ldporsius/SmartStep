@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,14 +32,6 @@ fun DailyStepGoalComponent(
                 modifier = modifier
             ) {
 
-                Row(
-                    modifier = Modifier
-                        .background(color = secondary, shape = RoundedCornerShape(16.dp))
-                        .padding(16.dp)
-                ) {
-                    Text("My goal:")
-                    Text("$selectedGoal")
-                }
 
                 DailyStepGoalPicker(
                     goals = stepGoalRange,
@@ -53,6 +46,7 @@ fun DailyStepGoalComponent(
 
                 )
 
+                Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = {
                         onSave(selectedGoal)
