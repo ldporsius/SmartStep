@@ -51,8 +51,9 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
             backStack.retainAll(listOf(MainRoute))
         }
         true -> {
-            backStack.remove(StartRoute)
             backStack.add(UserSettingsOnboardingRoute)
+            backStack.remove(StartRoute)
+
         }
     }
 
@@ -102,7 +103,6 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                     ) {
                         UserSettingsRoot(
                             userSettingsRepo = SmartStepApplication.userSettingsRepo,
-
                         )
                     }
                 }

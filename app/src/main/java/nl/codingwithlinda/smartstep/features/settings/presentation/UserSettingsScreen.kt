@@ -56,6 +56,8 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settin
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.WeightSettingsScreen
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
+import nl.codingwithlinda.smartstep.navigation.MainRoute
+import nl.codingwithlinda.smartstep.navigation.NavigationController
 
 
 @Composable
@@ -117,6 +119,7 @@ fun UserSettingsRoot(
                 val userSettings = UserSettingsMemento.restoreLast()
                 userSettingsRepo.saveSettings(userSettings)
                 userSettingsRepo.setIsOnboardingFalse()
+                NavigationController.navigateTo(MainRoute)
             }
         }
     )

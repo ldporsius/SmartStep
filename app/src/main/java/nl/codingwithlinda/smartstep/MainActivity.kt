@@ -4,7 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -16,6 +22,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.userSettingsRepo
+import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.navigation.MainNavGraph
@@ -46,28 +53,17 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             )
-
-            val lifecycleOwner = rememberLifecycleOwner()
-            DisposableEffect(lifecycleOwner) {
-                val observer = LifecycleEventObserver{_, event ->
-                    if(event == Lifecycle.Event.ON_START){
-                        lifecycleScope.launch {
-                            viewModel.isChecking.collect {
-                                isChecking = it
-                            }
-                        }
-                    }
-                }
-                lifecycleOwner.lifecycle.addObserver(observer)
-                onDispose {
-                    lifecycleOwner.lifecycle.removeObserver(observer)
-                }
+            ObserveAsEvents(viewModel.isChecking) {
+                isChecking = it
             }
+
 
             SmartStepTheme {
                 MainNavGraph()
+
             }
         }
 
     }
+
 }
