@@ -1,13 +1,16 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation
 
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertValueEquals
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onParent
@@ -21,7 +24,12 @@ import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter.kgToPounds
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
+import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.tests.FakeUserSettingsRepo
 import org.junit.After
@@ -29,6 +37,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalTestApi::class)
 class UserSettingsScreenTest {
@@ -48,10 +57,24 @@ class UserSettingsScreenTest {
         UserSettingsMemento.save(UserSettings())
         composeRule.setContent {
             SmartStepTheme {
-                UserSettingsRoot(
-                    userSettingsRepo = usersettingsRepo,
+                UserSettingsOnboardingWrapper(
+                    onSkip = {
 
-                )
+                    },
+                   action = {
+                       runBlocking {
+                           UserSettingsMemento.restoreLast().also {
+                               usersettingsRepo.saveSettings(it)
+                           }
+
+                       }
+                    }
+                ) {
+                    UserSettingsRoot(
+                        userSettingsRepo = usersettingsRepo,
+
+                        )
+                }
             }
         }
     }
@@ -73,8 +96,11 @@ class UserSettingsScreenTest {
         robot.pickGender()
         assertEquals(UserSettingsMemento.restoreLast().gender, Gender.MALE)
 
-        robot.pickHeight().pressOK()
-        assertEquals(UserSettingsMemento.restoreLast().height, 177)
+        robot.pickHeight(
+            initialHeight = 170,
+        ).scrollToIndex(heightsCm.indexOf(180), "cm")
+            .pressOK()
+        assertEquals(UserSettingsMemento.restoreLast().height, 180)
 
         robot.pressStart()
 
@@ -82,9 +108,8 @@ class UserSettingsScreenTest {
 
         with(usersettingsRepo.loadSettings()){
             assertEquals(gender, Gender.MALE)
-            assertEquals(height, 177)
+            assertEquals(height, 180)
         }
-
 
     }
     @Test
@@ -99,7 +124,9 @@ class UserSettingsScreenTest {
         robot.pickGender()
         assertEquals(UserSettingsMemento.restoreLast().gender, Gender.MALE)
 
-        robot.pickHeight().pressOK()
+        robot.pickHeight()
+            .scrollToIndex(heightsCm.indexOf(177), "cm")
+            .pressOK()
         assertEquals(UserSettingsMemento.restoreLast().height, 177)
 
         robot.pressSkip()
@@ -108,7 +135,41 @@ class UserSettingsScreenTest {
             assertEquals(gender, Gender.FEMALE)
             assertEquals(height, 170)
         }
+    }
 
+    @Test
+    fun test_usersettings_switchSI_Imperial(): Unit = runBlocking {
+        composeRule.waitUntilExactlyOneExists(
+            isRoot()
+        )
+        robot.pickWeight()
+            .selectImperial("lbs")
+            .scrollToIndex(weightRangePounds.indexOf(200), "lbs")
+
+        composeRule.waitForIdle()
+        robot.selectSI("kg")
+            .selectImperial("lbs")
+
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText(
+            "200"
+        ).assertIsDisplayed()
+
+        composeRule.onNodeWithContentDescription(
+            "Label 200"
+        ).assertIsDisplayed()
+
+        robot .pressOK()
+            .pressStart()
+
+        assertEquals(usersettingsRepo.loadSettings().weight, (200 / kgToPounds), .5)
+
+        robot.pickWeight()
+            .selectSI("kg")
+
+        composeRule.onNodeWithContentDescription(
+            "Label 91"
+        ).assertIsDisplayed()
 
     }
 

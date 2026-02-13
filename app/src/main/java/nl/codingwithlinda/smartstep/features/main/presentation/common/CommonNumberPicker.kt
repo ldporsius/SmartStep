@@ -44,7 +44,9 @@ fun CommonNumberPicker(
     modifier: Modifier = Modifier
    ) {
 
-    val listState = rememberLazyListState()
+    val listState = rememberLazyListState(
+        initialFirstVisibleItemIndex = values.indexOf(selectedGoal)
+    )
     val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
     val snap = snapshotFlow {
         listState.firstVisibleItemIndex
@@ -83,6 +85,9 @@ fun CommonNumberPicker(
             )
             LazyColumn(
                 modifier = Modifier
+                    .semantics(){
+                        contentDescription = "Number Picker $label"
+                    }
                     .constrainAs(numberRef) {
                         end.linkTo(centerGuidelineVer)
                     }
@@ -159,6 +164,9 @@ fun CommonNumberPicker(
                         margin = (16).dp
                     )
                 }
+                    .semantics(){
+                        contentDescription = "Label $selectedGoal"
+                    }
             )
 
         }

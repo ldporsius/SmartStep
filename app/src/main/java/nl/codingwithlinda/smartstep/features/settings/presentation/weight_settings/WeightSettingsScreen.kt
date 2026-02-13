@@ -68,7 +68,7 @@ fun WeightSettingsScreen(
                     CommonNumberPicker(
                         label = "kg",
                         values = valuesKg,
-                        selectedGoal = uiState.kg,
+                        selectedGoal = uiState.roundedKg,
                         onGoalSelected = {
                             action(ActionWeightInput.KgInput(it))
                         }

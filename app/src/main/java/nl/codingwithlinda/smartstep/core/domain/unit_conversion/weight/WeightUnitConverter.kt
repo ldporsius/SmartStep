@@ -1,17 +1,44 @@
 package nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight
 
-import kotlin.math.roundToInt
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
 
 object WeightUnitConverter {
 
     val kgToPounds = 2.20462
 
-    fun toSI(pounds: Int): Int{
-        return (pounds / kgToPounds).roundToInt()
+    fun convert(value: Double, from: UnitSystemUnits, to: WeightUnits): Double {
+        when (from) {
+            UnitSystemUnits.IMPERIAL -> {
+                return when(to.system){
+                    UnitSystemUnits.IMPERIAL -> {
+                        value
+                    }
+                    UnitSystemUnits.SI -> {
+                        toSI(value)
+                    }
+                }
+            }
+             UnitSystemUnits.SI -> {
+                return when(to.system){
+                        UnitSystemUnits.IMPERIAL -> {
+                            toImperial(value)
+                        }
+                        UnitSystemUnits.SI -> {
+                            value
+                        }
+                    }
+                }
+            }
+        }
+
+
+    private fun toSI(pounds: Double): Double{
+        return (pounds / kgToPounds)
     }
 
-    fun toImperial(kg: Double): Int {
-        return (kg * kgToPounds).roundToInt()
+    private fun toImperial(kg: Double): Double{
+        return (kg * kgToPounds)
     }
 
 }

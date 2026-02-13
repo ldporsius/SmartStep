@@ -24,10 +24,6 @@ class HeightSettingsViewModel(
     private val heightUnitConverter: HeightUnitConverter
 ): ViewModel() {
 
-    val userSettingsState = userSettingsRepo.userSettingsObservable.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(5000), UserSettings()
-    )
-
     private val _heightInput = MutableStateFlow(0)
 
     private val unitSystemPrefs = userSettingsRepo.unitSystemObservable.onEach {
@@ -81,7 +77,6 @@ class HeightSettingsViewModel(
                     val currentHeight = _heightInput.value
                     val userSettings = memento.restoreLast().copy(height = currentHeight)
                     memento.save(userSettings)
-                    //userSettingsRepo.saveSettings(userSettings)
                 }
             }
 

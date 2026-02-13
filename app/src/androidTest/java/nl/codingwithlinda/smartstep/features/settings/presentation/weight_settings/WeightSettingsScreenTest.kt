@@ -57,7 +57,7 @@ class WeightSettingsScreenTest {
                     when (it) {
                        is ActionWeightInput.ChangeSystem ->{
                            uiState.update {
-                               WeightSettingUiState.Imperial(weightRangeKg.last())
+                               WeightSettingUiState.Imperial(weightRangeKg.last().toDouble())
                            }
 
                        }

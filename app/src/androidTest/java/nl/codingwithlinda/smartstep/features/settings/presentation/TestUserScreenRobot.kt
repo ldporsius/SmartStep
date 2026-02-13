@@ -8,6 +8,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
 
@@ -30,33 +31,63 @@ class TestUserScreenRobot(
         return this
     }
 
-    suspend fun pickHeight(): TestUserScreenRobot {
+    fun pickHeight(initialHeight: Int = 170, ): TestUserScreenRobot {
         composeRule.onNode(
             hasContentDescription("Height") and hasClickAction()
         ).performClick()
 
         composeRule.waitUntilExactlyOneExists(
-            hasText("170")
+            hasText("$initialHeight")
         )
 
+        return this
+
+    }
+    fun pickWeight(): TestUserScreenRobot {
         composeRule.onNode(
-            hasContentDescription("scroll to pick height")
+            hasText("Weight") and hasClickAction()
+        ).performClick()
+
+        return this
+    }
+    fun performSwipe(targetHeight: Int = 180): TestUserScreenRobot {
+        composeRule.onNode(
+            hasContentDescription("Number Picker")
         ).assertIsDisplayed()
-            //these values happen to yield 177
             .performTouchInput {
                 try {
-                    swipeUp(500f , 100f, 2000)
+                    swipeUp(500f , 10f, 2000)
                 }catch (e: Exception){
                     e.printStackTrace()
                 }
             }
 
         composeRule.waitUntilExactlyOneExists(
-            hasText("180")
+            hasText("$targetHeight")
         )
 
         return this
+    }
+    fun scrollToIndex(index: Int, label: String): TestUserScreenRobot {
+        composeRule.onNode(
+            hasContentDescription("Number Picker $label")
+        ).assertIsDisplayed()
+            .performScrollToIndex(index)
 
+        return this
+    }
+
+    fun selectImperial(description: String): TestUserScreenRobot {
+        composeRule.onNode(
+            hasText(description) and hasClickAction()
+        ).performClick()
+        return this
+    }
+    fun selectSI(description: String): TestUserScreenRobot {
+        composeRule.onNode(
+            hasText(description)
+        ).performClick()
+        return this
     }
 
     suspend fun pressOK(): TestUserScreenRobot {

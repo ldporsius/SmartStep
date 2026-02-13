@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.core.data.repo
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -20,7 +21,7 @@ class PreferencesUserSettingsRepo(
 ): UserSettingsRepo {
 
     val USER_SETTINGS_GENDER = stringPreferencesKey("user_gender")
-    val USER_SETTINGS_WEIGHT = intPreferencesKey("user_weight")
+    val USER_SETTINGS_WEIGHT = doublePreferencesKey("user_weight")
     val USER_SETTINGS_HEIGHT = intPreferencesKey("user_height")
     val USER_SETTINGS_ONBOARDING = booleanPreferencesKey("user_skip")
     val USER_SETTINGS_UNIT_SYSTEM = stringPreferencesKey("user_unit_system")
