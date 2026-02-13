@@ -1,24 +1,31 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.height_settings
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.LengthUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
+import nl.codingwithlinda.smartstep.features.main.presentation.common.CommonNumberPicker
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogHeader
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.ScrollableInputComponent
@@ -44,7 +51,7 @@ fun HeightSettingsComponent(
     )
     Column(
         modifier = modifier,
-        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         DialogHeader(
@@ -70,58 +77,66 @@ fun HeightSettingsComponent(
         Box(modifier = Modifier.weight(1f)) {
             when (uiState) {
                 is HeightSettingUiState.SI -> {
-                    ScrollableInputComponent(
+                    CommonNumberPicker(
                         label = "cm",
-                        defaultValue = uiState.valueCm,
                         values = rangeCm,
-                        onValueChange = {
+                        selectedGoal = uiState.valueCm,
+                        onGoalSelected = {
                             action(ActionHeightInput.CmInput(it))
                         },
-                        modifier = Modifier,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
 
                 is HeightSettingUiState.Imperial -> {
                     println("--- HEIGHTSETTINGSCOMPONENT --- imperial uiState: $uiState")
-                    HeightFeetInchesComponent(
-                        feetComponent = {
-                            ScrollableInputComponent(
-                                label = "ft",
-                                defaultValue = uiState.feet,
-                                values = rangeFeet,
-                                onValueChange = {
-                                    action(
-                                        ActionHeightInput.ImperialInput(
-                                            feet = it,
-                                            inches = uiState.inches
+                    BoxWithConstraints() {
+                        val halfWidth = maxWidth / 2
+
+                        HeightFeetInchesComponent(
+                            feetComponent = {
+                                CommonNumberPicker(
+                                    label = "ft",
+                                    values = rangeFeet,
+                                    selectedGoal = uiState.feet,
+                                    onGoalSelected = {
+                                        action(
+                                            ActionHeightInput.ImperialInput(
+                                                feet = it,
+                                                inches = uiState.inches
+                                            )
                                         )
-                                    )
-                                },
-                                modifier = Modifier
-                                    .semantics {
-                                        contentDescription = "feet"
-                                    }
-                            )
-                        },
-                        inchesComponent = {
-                            ScrollableInputComponent(
-                                label = "in",
-                                defaultValue = uiState.inches,
-                                values = rangeInches,
-                                onValueChange = {
-                                    action(
-                                        ActionHeightInput.ImperialInput(
-                                            feet = uiState.feet,
-                                            inches = it
+                                    },
+                                    modifier = Modifier
+                                        .width(halfWidth)
+                                        .semantics {
+                                            contentDescription = "feet"
+                                        },
+                                )
+                            },
+                            inchesComponent = {
+                                CommonNumberPicker(
+                                    label = "in",
+                                    values = rangeInches,
+                                    selectedGoal = uiState.inches,
+                                    onGoalSelected = {
+                                        action(
+                                            ActionHeightInput.ImperialInput(
+                                                feet = uiState.feet,
+                                                inches = it
+                                            )
                                         )
-                                    )
-                                },
-                                modifier = Modifier.semantics {
-                                    contentDescription = "inches"
-                                },
-                            )
-                        }
-                    )
+                                    },
+                                    modifier = Modifier
+                                        .width(halfWidth)
+                                        .semantics {
+                                        contentDescription = "inches"
+                                    },
+                                )
+
+                            }
+                        )
+                    }
                 }
             }
         }

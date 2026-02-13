@@ -13,6 +13,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
+import nl.codingwithlinda.smartstep.features.main.presentation.common.CommonNumberPicker
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogHeader
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.ScrollableInputComponent
@@ -64,25 +65,26 @@ fun WeightSettingsScreen(
         Box(modifier = Modifier.weight(1f)) {
             when (uiState) {
                 is WeightSettingUiState.SI -> {
-                    ScrollableInputComponent(
+                    CommonNumberPicker(
                         label = "kg",
-                        defaultValue = uiState.kg,
                         values = valuesKg,
-                        onValueChange = {
+                        selectedGoal = uiState.kg,
+                        onGoalSelected = {
                             action(ActionWeightInput.KgInput(it))
-                        },
+                        }
                     )
                 }
 
                 is WeightSettingUiState.Imperial -> {
-                    ScrollableInputComponent(
+                    CommonNumberPicker(
                         label = "lbs",
-                        defaultValue = uiState.pounds,
                         values = valuesPounds,
-                        onValueChange = {
+                        selectedGoal = uiState.pounds,
+                        onGoalSelected = {
                             action(ActionWeightInput.PoundsInput(it))
                         }
                     )
+
                 }
             }
         }

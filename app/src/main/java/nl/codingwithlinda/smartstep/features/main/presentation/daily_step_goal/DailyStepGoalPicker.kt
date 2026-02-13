@@ -122,7 +122,7 @@ fun DailyStepGoalPicker(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(58.dp)
-                .background(color = Color.LightGray, shape = RoundedCornerShape(6.dp))
+                .background(color = secondary, shape = RoundedCornerShape(6.dp))
                 .align(Alignment.Center),
             contentAlignment = Alignment.Center
 

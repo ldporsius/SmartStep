@@ -77,6 +77,8 @@ dependencies {
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
+    //constraint layout
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.1")
     //jvm tests
     testImplementation(libs.junit)
     testImplementation(libs.turbine)
