@@ -9,7 +9,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsViewModel
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
@@ -49,7 +49,7 @@ class UserSettingsViewModelTest {
             val item0 = awaitItem()
             assertTrue(item0 is HeightSettingUiState.SI)
 
-            viewModel.handleHeightInput(ActionHeightInput.ChangeUnitSystem(UnitSystemUnits.SI))
+            viewModel.handleHeightInput(ActionHeightInput.ChangeUnitSystem(UnitSystems.SI))
 
             val item1 = awaitItem()
             assertTrue(item1 is HeightSettingUiState.SI)
@@ -64,7 +64,7 @@ class UserSettingsViewModelTest {
                 }
             }
 
-            viewModel.handleHeightInput(ActionHeightInput.ChangeUnitSystem(UnitSystemUnits.IMPERIAL))
+            viewModel.handleHeightInput(ActionHeightInput.ChangeUnitSystem(UnitSystems.IMPERIAL))
 
             val item3 = awaitItem()
             println("item3: $item3")

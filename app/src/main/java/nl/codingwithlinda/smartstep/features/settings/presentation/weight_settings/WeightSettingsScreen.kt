@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.Weights
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.features.main.presentation.common.CommonNumberPicker
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow
@@ -40,8 +41,8 @@ fun WeightSettingsScreen(
         )
 
         val options = listOf(
-            WeightUnits.KG,
-            WeightUnits.LBS
+            Weights.KG,
+            Weights.LBS
         )
         SingleChoiceSegmentedButtonRow (
             modifier = Modifier.fillMaxWidth(),

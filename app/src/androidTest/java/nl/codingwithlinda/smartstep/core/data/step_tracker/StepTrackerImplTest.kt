@@ -14,7 +14,7 @@ import org.junit.Test
 
 class StepTrackerImplTest {
 
-    val context = ApplicationProvider.getApplicationContext<MainActivity>()
+    val context = ApplicationProvider.getApplicationContext<SmartStepApplication>()
     val scope = SmartStepApplication.applicationScope
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     @Test

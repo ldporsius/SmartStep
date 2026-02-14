@@ -142,18 +142,6 @@ fun CommonNumberPicker(
                 }
             }
 
-
-           /* Text(
-                "${centerGoalText}",
-                style = MaterialTheme.typography.labelLarge,
-                modifier = Modifier.constrainAs(centerNumber) {
-                    centerAround(centerGuidelineHor)
-                    end.linkTo(
-                        centerGuidelineVer
-                    )
-                }
-            )*/
-
             Text(
                 label,
                 style = MaterialTheme.typography.labelLarge,

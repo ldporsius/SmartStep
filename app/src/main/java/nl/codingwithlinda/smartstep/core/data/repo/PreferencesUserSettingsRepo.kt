@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
 import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 
 class PreferencesUserSettingsRepo(
     private val dataStore: DataStore<Preferences>
@@ -33,11 +33,11 @@ class PreferencesUserSettingsRepo(
                 Gender.valueOf(gender)
             }?: Gender.FEMALE
 
-            val weight = it[USER_SETTINGS_WEIGHT] ?: UserSettings().weight
-            val height = it[USER_SETTINGS_HEIGHT] ?: UserSettings().height
+            val weight = it[USER_SETTINGS_WEIGHT] ?: UserSettings().weightGrams
+            val height = it[USER_SETTINGS_HEIGHT] ?: UserSettings().heightCm
 
 
-            UserSettings(gender = gender, weight = weight, height = height)
+            UserSettings(gender = gender, weightGrams = weight, heightCm = height)
             }
         return settings
     }
@@ -45,8 +45,8 @@ class PreferencesUserSettingsRepo(
     override suspend fun saveSettings(settings: UserSettings) {
         dataStore.edit {
             it[USER_SETTINGS_GENDER] = settings.gender.name
-            it[USER_SETTINGS_WEIGHT] = settings.weight
-            it[USER_SETTINGS_HEIGHT] = settings.height
+            it[USER_SETTINGS_WEIGHT] = settings.weightGrams
+            it[USER_SETTINGS_HEIGHT] = settings.heightCm
         }
     }
 
@@ -71,8 +71,8 @@ class PreferencesUserSettingsRepo(
 
             UserSettings(
                 gender = gender,
-                weight = it[USER_SETTINGS_WEIGHT] ?: UserSettings().weight,
-                height = it[USER_SETTINGS_HEIGHT] ?: UserSettings().height
+                weightGrams = it[USER_SETTINGS_WEIGHT] ?: UserSettings().weightGrams,
+                heightCm = it[USER_SETTINGS_HEIGHT] ?: UserSettings().heightCm
 
             )
         }
@@ -82,20 +82,20 @@ class PreferencesUserSettingsRepo(
             it[USER_SETTINGS_ONBOARDING] ?: true
         }
 
-    override suspend fun saveUnitSystem(systemUnits: UnitSystemUnits) {
+    override suspend fun saveUnitSystem(systemUnits: UnitSystems) {
         dataStore.edit {
             it[USER_SETTINGS_UNIT_SYSTEM] = systemUnits.toString()
         }
     }
 
-    override val unitSystemObservable: Flow<UnitSystemUnits>
+    override val unitSystemObservable: Flow<UnitSystems>
        = dataStore.data.map {
-           it[USER_SETTINGS_UNIT_SYSTEM] ?: UnitSystemUnits.SI.toString()
+           it[USER_SETTINGS_UNIT_SYSTEM] ?: UnitSystems.SI.toString()
        }.map {
           when(it){
-              UnitSystemUnits.SI.toString() -> UnitSystemUnits.SI
-              UnitSystemUnits.IMPERIAL.toString() -> UnitSystemUnits.IMPERIAL
-              else -> UnitSystemUnits.SI
+              UnitSystems.SI.toString() -> UnitSystems.SI
+              UnitSystems.IMPERIAL.toString() -> UnitSystems.IMPERIAL
+              else -> UnitSystems.SI
           }
     }
 }

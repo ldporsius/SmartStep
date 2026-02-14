@@ -3,12 +3,10 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.weight_setti
 import android.app.Application
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelectable
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasClickAction
-import androidx.compose.ui.test.hasNoClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.isSelectable
@@ -16,6 +14,7 @@ import androidx.compose.ui.test.isSelected
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
@@ -24,10 +23,16 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
+import nl.codingwithlinda.smartstep.application.dataStore
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.Weights
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
+import nl.codingwithlinda.smartstep.tests.FakeUserSettingsRepo
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -45,8 +50,20 @@ class WeightSettingsScreenTest {
     val context = ApplicationProvider.getApplicationContext<Application>()
     val screenshotPath = File(context.cacheDir, "testWeightSettingsScreen.png")
 
+    val kg = WeightUnits.KG(weightRangeKg.last())
+    val grams = kg.convert<WeightUnits.Grams>(Weights.GRAMS)
+
     @Before
     fun setUp() {
+        runBlocking {
+            context.dataStore.edit {
+                it.clear()
+            }
+        }
+
+        uiState.update {
+            WeightSettingUiState.SI(grams.grams)
+        }
 
         composeTestRule.setContent {
             WeightSettingsScreen(
@@ -57,7 +74,7 @@ class WeightSettingsScreenTest {
                     when (it) {
                        is ActionWeightInput.ChangeSystem ->{
                            uiState.update {
-                               WeightSettingUiState.Imperial(weightRangeKg.last().toDouble())
+                               WeightSettingUiState.Imperial(grams.grams)
                            }
 
                        }
@@ -79,6 +96,7 @@ class WeightSettingsScreenTest {
     @Test
     fun testWeightSettingsScreen(): Unit = runBlocking {
 
+        assertEquals(grams.grams, 200_000)
         composeTestRule.waitUntilExactlyOneExists(
             isRoot()
         )

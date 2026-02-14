@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
@@ -26,26 +25,24 @@ class HeightSettingsViewModel(
 
     private val _heightInput = MutableStateFlow(0)
 
-    private val unitSystemPrefs = userSettingsRepo.unitSystemObservable.onEach {
-        println("--- USERSETTINGSVIEWMODEL --- unitSystemPrefs: $it")
-    }
+    private val unitSystemPrefs = userSettingsRepo.unitSystemObservable
 
     init {
         viewModelScope.launch {
             userSettingsRepo.loadSettings().also {settings ->
                 println("--- LOADED SETTINGS FROM REPO: $settings")
                 _heightInput.update {
-                    settings.height
+                    settings.heightCm
                 }
             }
         }
     }
     val heightUiState = unitSystemPrefs.combine(_heightInput){ system, input ->
         when(system){
-            is UnitSystemUnits.SI -> HeightSettingUiState.SI(valueCm = input)
-            is UnitSystemUnits.IMPERIAL -> HeightSettingUiState.Imperial(valueCm = input)
+            is UnitSystems.SI -> HeightSettingUiState.SI(valueCm = input)
+            is UnitSystems.IMPERIAL -> HeightSettingUiState.Imperial(valueCm = input)
         }.also {
-            println("--- USERSETTINGSVIEWMODEL --- heightUiState changes in combine flow: $it")
+            //println("--- USERSETTINGSVIEWMODEL --- heightUiState changes in combine flow: $it")
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000),
         HeightSettingUiState.SI(0))
@@ -75,7 +72,7 @@ class HeightSettingsViewModel(
             is ActionHeightInput.ActionSave -> {
                 viewModelScope.launch(NonCancellable) {
                     val currentHeight = _heightInput.value
-                    val userSettings = memento.restoreLast().copy(height = currentHeight)
+                    val userSettings = memento.restoreLast().copy(heightCm = currentHeight)
                     memento.save(userSettings)
                 }
             }

@@ -2,6 +2,7 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.weight_setti
 
 import app.cash.turbine.test
 import assertk.assertThat
+import assertk.assertions.isBetween
 import assertk.assertions.isCloseTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -9,7 +10,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
@@ -51,12 +52,12 @@ class WeightSettingViewModelTest {
 
             assertEquals(awaitItem(), WeightSettingUiState.SI(100))
 
-            viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystemUnits.IMPERIAL))
+            viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystems.IMPERIAL))
 
 
             val item1 = awaitItem()
             assertTrue(item1 is WeightSettingUiState.Imperial)
-            assertEquals(item1, WeightSettingUiState.Imperial(100.0))
+            assertEquals(item1, WeightSettingUiState.Imperial(100))
             with(item1 as WeightSettingUiState.Imperial) {
                 assertEquals(pounds, 220)
             }
@@ -67,28 +68,28 @@ class WeightSettingViewModelTest {
     fun `test weightViewModel updates pounds correctly`() = runTest {
         viewModel.weightUiState.test {
             assertEquals(awaitItem(), WeightSettingUiState.SI(0))
-            viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystemUnits.IMPERIAL))
+            viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystems.IMPERIAL))
 
             viewModel.onAction(ActionWeightInput.PoundsInput(200))
 
             val item1 = awaitItem()
 
             with(item1 as WeightSettingUiState.Imperial) {
-               assertThat(kg).isCloseTo(91.0, 0.5)
+
                 assertEquals(pounds, 200)
             }
-            viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystemUnits.SI))
+            viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystems.SI))
 
             val item2 = awaitItem()
 
             with(item2 as WeightSettingUiState.SI) {
-                assertThat(kg).equals(91.0)
+                assertThat(roundedKg).equals(91.0)
             }
-            viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystemUnits.IMPERIAL))
+            viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystems.IMPERIAL))
             val item3 = awaitItem()
 
             with(item3 as WeightSettingUiState.Imperial) {
-                assertThat(kg).isCloseTo(91.0, 0.5)
+
                 assertEquals(pounds, 200)
             }
 

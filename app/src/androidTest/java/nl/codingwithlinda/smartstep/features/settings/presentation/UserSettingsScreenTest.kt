@@ -1,31 +1,18 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation
 
 import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertValueEquals
-import androidx.compose.ui.test.hasClickAction
-import androidx.compose.ui.test.hasContentDescription
-import androidx.compose.ui.test.hasScrollAction
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onParent
-import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.test.swipeUp
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter.kgToPounds
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
@@ -37,7 +24,6 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalTestApi::class)
 class UserSettingsScreenTest {
@@ -100,7 +86,7 @@ class UserSettingsScreenTest {
             initialHeight = 170,
         ).scrollToIndex(heightsCm.indexOf(180), "cm")
             .pressOK()
-        assertEquals(UserSettingsMemento.restoreLast().height, 180)
+        assertEquals(UserSettingsMemento.restoreLast().heightCm, 180)
 
         robot.pressStart()
 
@@ -108,7 +94,7 @@ class UserSettingsScreenTest {
 
         with(usersettingsRepo.loadSettings()){
             assertEquals(gender, Gender.MALE)
-            assertEquals(height, 180)
+            assertEquals(heightCm, 180)
         }
 
     }
@@ -127,13 +113,13 @@ class UserSettingsScreenTest {
         robot.pickHeight()
             .scrollToIndex(heightsCm.indexOf(177), "cm")
             .pressOK()
-        assertEquals(UserSettingsMemento.restoreLast().height, 177)
+        assertEquals(UserSettingsMemento.restoreLast().heightCm, 177)
 
         robot.pressSkip()
 
         with(usersettingsRepo.loadSettings()){
             assertEquals(gender, Gender.FEMALE)
-            assertEquals(height, 170)
+            assertEquals(heightCm, 170)
         }
     }
 
@@ -162,7 +148,7 @@ class UserSettingsScreenTest {
         robot .pressOK()
             .pressStart()
 
-        assertEquals(usersettingsRepo.loadSettings().weight, (200 / kgToPounds), .5)
+        assertEquals(usersettingsRepo.loadSettings().weightGrams, (200 / kgToPounds), .5)
 
         robot.pickWeight()
             .selectSI("kg")

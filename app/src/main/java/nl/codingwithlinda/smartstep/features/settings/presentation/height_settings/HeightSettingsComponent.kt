@@ -89,7 +89,7 @@ fun HeightSettingsComponent(
                 }
 
                 is HeightSettingUiState.Imperial -> {
-                    println("--- HEIGHTSETTINGSCOMPONENT --- imperial uiState: $uiState")
+
                     BoxWithConstraints() {
                         val halfWidth = maxWidth / 2
 

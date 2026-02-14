@@ -1,42 +1,49 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state
 
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.Weights
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.maxWeightPounds
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.minWeightPounds
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
 import kotlin.math.roundToInt
 
 interface WeightSettingUiState {
-    data class Imperial(val kg: Double): WeightSettingUiState{
-        val converter = WeightUnitConverter
-        val pounds = converter.convert(kg, UnitSystemUnits.SI, WeightUnits.LBS)
-            .roundToInt()
+    data class Imperial(private val grams: Int): WeightSettingUiState{
+        val grams1 = WeightUnits.Grams(grams)
+        val pounds = grams1.convert<WeightUnits.LBS>(Weights.LBS).pounds
             .coerceIn(minWeightPounds, maxWeightPounds)
-        override val system: UnitSystemUnits
-            get() = UnitSystemUnits.IMPERIAL
+        override val system: UnitSystems
+            get() = UnitSystems.IMPERIAL
 
         override fun toUi(): UiText {
             return UiText.DynamicText("${pounds} lbs")
         }
         init {
-            println("--- WeightSettingUiState imperial --- kg == $kg, pounds == $pounds")
+            println("--- WeightSettingUiState imperial --- grams == $grams, pounds == $pounds")
         }
 
     }
-    data class SI(val kg: Int): WeightSettingUiState{
-        override val system: UnitSystemUnits
-            get() = UnitSystemUnits.SI
+    data class SI(private val grams: Int): WeightSettingUiState{
+        val roundedKg = grams.div(1000.0)
+            .roundToInt()
+            .coerceIn(weightRangeKg.first(), weightRangeKg.last())
+
+        override val system: UnitSystems
+            get() = UnitSystems.SI
 
         override fun toUi(): UiText {
-            return UiText.DynamicText("${kg} kg")
+            return UiText.DynamicText("${roundedKg} kg")
         }
-        val roundedKg = kg
 
+        init {
+            println("--- WeightSettingUiState SI --- grams == $grams, roundedKg == $roundedKg")
+        }
     }
 
-    val system: UnitSystemUnits
+    val system: UnitSystems
     fun toUi(): UiText
 
 }

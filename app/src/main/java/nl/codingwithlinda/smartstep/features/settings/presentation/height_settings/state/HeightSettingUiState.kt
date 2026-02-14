@@ -1,6 +1,6 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state
 
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeightFeet
@@ -20,19 +20,19 @@ interface HeightSettingUiState {
         override fun toUi() : UiText {
             return UiText.DynamicText("$feet ft $inches in")
         }
-        override val system: UnitSystemUnits
-            get() = UnitSystemUnits.IMPERIAL
+        override val system: UnitSystems
+            get() = UnitSystems.IMPERIAL
     }
 
     data class SI(override var valueCm: Int): HeightSettingUiState {
         override fun toUi(): UiText = UiText.DynamicText("$valueCm cm")
-        override val system: UnitSystemUnits
-            get() = UnitSystemUnits.SI
+        override val system: UnitSystems
+            get() = UnitSystems.SI
     }
 
     var valueCm: Int
 
     fun toUi(): UiText
 
-    val system: UnitSystemUnits
+    val system: UnitSystems
 }

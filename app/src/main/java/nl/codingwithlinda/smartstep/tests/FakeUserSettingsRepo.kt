@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 
 class FakeUserSettingsRepo: UserSettingsRepo {
 
     private val settingsFlow = MutableStateFlow<UserSettings>(UserSettings())
-    private val _unitSystemObservable = MutableStateFlow<UnitSystemUnits>(UnitSystemUnits.SI)
+    private val _unitSystemObservable = MutableStateFlow<UnitSystems>(UnitSystems.SI)
     override suspend fun loadSettings(): UserSettings {
         return settingsFlow.first()
     }
@@ -39,12 +39,12 @@ class FakeUserSettingsRepo: UserSettingsRepo {
     override val userSettingsObservable: Flow<UserSettings>
         get() = settingsFlow
 
-    override suspend fun saveUnitSystem(systemUnits: UnitSystemUnits) {
+    override suspend fun saveUnitSystem(systemUnits: UnitSystems) {
        _unitSystemObservable.update {
            systemUnits
        }
     }
 
-    override val unitSystemObservable: Flow<UnitSystemUnits>
+    override val unitSystemObservable: Flow<UnitSystems>
     = _unitSystemObservable
 }

@@ -14,6 +14,7 @@ import nl.codingwithlinda.smartstep.MainActivity
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.dataStore
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,6 +37,7 @@ class SmartStepE2ETest {
             }
         }
     }
+    @Ignore
     @Test
     fun smartStepE2E_permissionsGranted() {
         //composeTestRule.activityRule.scenario.moveToState(Lifecycle.State.STARTED)

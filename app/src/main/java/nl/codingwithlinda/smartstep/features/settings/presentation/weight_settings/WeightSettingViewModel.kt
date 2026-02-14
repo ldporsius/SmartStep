@@ -6,13 +6,13 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.Weights
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
@@ -24,18 +24,18 @@ class WeightSettingViewModel(
     private val memento: UserSettingsMemento,
     private val weightUnitConverter: WeightUnitConverter
 ): ViewModel(){
-    private val _weightInputKg = MutableStateFlow(0.0)
-    private val _weightInputPounds = MutableStateFlow(0.0)
+    private val _weightInputGrams = MutableStateFlow(WeightUnits.Grams(0))
 
     private val system = userSettingsRepo.unitSystemObservable
 
-    val weightUiState = _weightInputKg.combine(system) { input, system ->
+
+    val weightUiState = combine(system, _weightInputGrams) { system, grams->
 
         when (system) {
-            is UnitSystemUnits.SI -> {
-                WeightSettingUiState.SI(input.roundToInt())
+            is UnitSystems.SI -> {
+                WeightSettingUiState.SI(grams.grams)
             }
-            is UnitSystemUnits.IMPERIAL -> WeightSettingUiState.Imperial(input)
+            is UnitSystems.IMPERIAL -> WeightSettingUiState.Imperial(grams.grams)
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WeightSettingUiState.SI(0))
 
@@ -43,7 +43,11 @@ class WeightSettingViewModel(
     init {
         viewModelScope.launch {
             userSettingsRepo.loadSettings().also {
-                _weightInputKg.value = it.weight
+
+                val weightGrams = it.weightGrams
+                _weightInputGrams.update {
+                    WeightUnits.Grams(weightGrams.toInt())
+                }
             }
         }
     }
@@ -51,25 +55,35 @@ class WeightSettingViewModel(
         when (action) {
             is ActionWeightInput.KgInput -> {
                 println("--- ActionWeightInput.KgInput --- kg: ${action.kg}")
-                _weightInputKg.value = action.kg.toDouble()
+
+                val kg = WeightUnits.KG(action.kg)
+                val convertedToGrams = kg.convert<WeightUnits.Grams>(Weights.GRAMS)
+
+                println("--- ActionWeightInput.KgInput --- converted: $convertedToGrams")
+
+                _weightInputGrams.update {
+                    convertedToGrams
+                }
             }
 
             is ActionWeightInput.PoundsInput -> {
-                val converted = weightUnitConverter.convert(
-                    value = action.pounds.toDouble(),
-                    from = UnitSystemUnits.IMPERIAL,
-                    to = WeightUnits.KG
-                )
-                println("--- ActionWeightInput.PoundsInput --- converted: ${action.pounds} to $converted")
-                _weightInputKg.update {
-                    converted
+                println("--- ActionWeightInput.PoundsInput --- pounds: ${action.pounds} ")
+
+                val pounds = WeightUnits.LBS(action.pounds)
+                val convertedToGrams = pounds.convert<WeightUnits.Grams>(Weights.GRAMS)
+
+                println("--- ActionWeightInput.PoundsInput --- convertedToGrams: $convertedToGrams")
+
+                _weightInputGrams.update {
+                    convertedToGrams
                 }
+
             }
 
             is ActionWeightInput.Save -> {
                 viewModelScope.launch(NonCancellable) {
-                    val currentWeight = _weightInputKg.value
-                    val userSettings = memento.restoreLast().copy(weight = currentWeight)
+                    val currentWeight = _weightInputGrams.value.grams.toDouble()
+                    val userSettings = memento.restoreLast().copy(weightGrams = currentWeight)
                     memento.save(userSettings)
                 }
             }

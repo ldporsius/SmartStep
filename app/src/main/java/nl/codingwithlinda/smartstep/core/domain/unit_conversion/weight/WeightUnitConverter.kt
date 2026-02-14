@@ -1,30 +1,29 @@
 package nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight
 
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystemUnits
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 
 object WeightUnitConverter {
 
     val kgToPounds = 2.20462
 
-    fun convert(value: Double, from: UnitSystemUnits, to: WeightUnits): Double {
+    fun convert(value: Double, from: UnitSystems, to: UnitSystems): Double {
         when (from) {
-            UnitSystemUnits.IMPERIAL -> {
-                return when(to.system){
-                    UnitSystemUnits.IMPERIAL -> {
+            UnitSystems.IMPERIAL -> {
+                return when(to){
+                    UnitSystems.IMPERIAL -> {
                         value
                     }
-                    UnitSystemUnits.SI -> {
-                        toSI(value)
+                    UnitSystems.SI -> {
+                        toSI(value).toDouble()
                     }
                 }
             }
-             UnitSystemUnits.SI -> {
-                return when(to.system){
-                        UnitSystemUnits.IMPERIAL -> {
+             UnitSystems.SI -> {
+                return when(to){
+                        UnitSystems.IMPERIAL -> {
                             toImperial(value)
                         }
-                        UnitSystemUnits.SI -> {
+                        UnitSystems.SI -> {
                             value
                         }
                     }
@@ -32,13 +31,19 @@ object WeightUnitConverter {
             }
         }
 
-
-    private fun toSI(pounds: Double): Double{
-        return (pounds / kgToPounds)
+    private fun Double.toGrams(): Int{
+        return (this * 1000).toInt()
+    }
+    private fun Double.toKg(): Double{
+        return this / 1000
     }
 
-    private fun toImperial(kg: Double): Double{
-        return (kg * kgToPounds)
+    private fun toSI(pounds: Double): Int{
+        return (pounds / kgToPounds).toGrams()
+    }
+
+    private fun toImperial(grams: Double): Double{
+        return grams.toKg() * kgToPounds
     }
 
 }
