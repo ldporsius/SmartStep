@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,7 +39,7 @@ fun UserSettingsOnboardingWrapper(
             onClick = {
                 action()
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.width(480.dp)
                 .padding(16.dp)
         ) {
             Text("Start")

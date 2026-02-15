@@ -13,7 +13,16 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="Tests in 'nl'">
+      <SelectionState runConfigName="testSwitchingHeightFromSIToImperial()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="SmartStepE2ETest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="MainScreenTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="testBodySensorsPermissionDeclined()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

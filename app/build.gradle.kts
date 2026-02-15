@@ -94,6 +94,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.androidx.uiautomator)
     androidTestImplementation(libs.androidx.rules)
+    androidTestImplementation(libs.assertk)
     androidTestUtil(libs.androidx.orchestrator)
 
     // Needed for createComposeRule(), but not for createAndroidComposeRule<YourActivity>():

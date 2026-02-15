@@ -1,6 +1,7 @@
 package nl.codingwithlinda.smartstep.navigation
 
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -84,8 +85,9 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                 UserSettingsOnboardingRoute -> NavEntry(UserSettingsRoute) {
                     UserSettingsOnboardingWrapper(
                         modifier = Modifier
+                            .fillMaxWidth()
                             .safeContentPadding()
-                            .width(480.dp)
+
                         ,
                         onSkip = {
                             shouldShowSettingsViewModel.skip()
@@ -103,7 +105,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                     ) {
                         UserSettingsRoot(
                             userSettingsRepo = SmartStepApplication.userSettingsRepo,
-                            modifier = Modifier
+                            modifier = Modifier.width(480.dp)
                         )
                     }
                 }

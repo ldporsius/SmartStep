@@ -9,7 +9,7 @@ fun permissionsPerBuild(BuildVersion: Int): List<String>{
    return when{
         BuildVersion >= Build.VERSION_CODES.TIRAMISU -> listOf(
             Manifest.permission.ACTIVITY_RECOGNITION,
-            Manifest.permission.POST_NOTIFICATIONS
+            //Manifest.permission.POST_NOTIFICATIONS
         )
         BuildVersion >= Build.VERSION_CODES.O -> listOf(
             Manifest.permission.ACTIVITY_RECOGNITION,

@@ -67,12 +67,12 @@ class MainScreenTest {
     }
 
 
-    @Ignore
+
     @Test
-    fun testBodySensorsPermissionDeclined(): Unit = runBlocking {
+    fun testBodySensorsPermissionDeclined(){
 
         if(Build.VERSION.SDK_INT >= 28){
-            InstrumentationRegistry.getInstrumentation().uiAutomation.grantRuntimePermission(
+            InstrumentationRegistry.getInstrumentation().uiAutomation.revokeRuntimePermission(
                 packageName,
                 Manifest.permission.ACTIVITY_RECOGNITION,
             )
