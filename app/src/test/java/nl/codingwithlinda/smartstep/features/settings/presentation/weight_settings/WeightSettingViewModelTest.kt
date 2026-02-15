@@ -2,8 +2,6 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.weight_setti
 
 import app.cash.turbine.test
 import assertk.assertThat
-import assertk.assertions.isBetween
-import assertk.assertions.isCloseTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -11,7 +9,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnits
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState

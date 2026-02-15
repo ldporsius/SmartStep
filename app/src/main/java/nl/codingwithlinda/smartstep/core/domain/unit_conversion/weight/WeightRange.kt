@@ -1,8 +1,5 @@
 package nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight
 
-import android.util.Log.i
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.Weights
 import kotlin.collections.component1
 import kotlin.math.ceil
 import kotlin.math.floor

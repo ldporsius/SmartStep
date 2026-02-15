@@ -113,7 +113,7 @@ class HeightSettingsComponentTest {
         ).assertIsDisplayed()
 
         composeRule.onNode(
-            hasText(2.toString()) and hasContentDescription("value in")
+            hasText(maxHeightInches.toString()) and hasContentDescription("value in")
         ).assertIsDisplayed()
 
 

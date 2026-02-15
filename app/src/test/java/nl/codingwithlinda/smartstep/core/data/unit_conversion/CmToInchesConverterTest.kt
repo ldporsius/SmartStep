@@ -1,5 +1,7 @@
 package nl.codingwithlinda.smartstep.core.data.unit_conversion
 
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.CmToInchesConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.InchesToFeetConverter
 import org.junit.Assert.*
 import org.junit.Test
 

@@ -24,14 +24,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.smartstep.application.dataStore
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.Weights
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weights
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
-import nl.codingwithlinda.smartstep.tests.FakeUserSettingsRepo
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before

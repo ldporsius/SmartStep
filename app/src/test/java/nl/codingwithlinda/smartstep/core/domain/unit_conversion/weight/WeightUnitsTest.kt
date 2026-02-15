@@ -1,7 +1,5 @@
 package nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight
 
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.Weights
 import org.junit.Assert
 import org.junit.Test
 
