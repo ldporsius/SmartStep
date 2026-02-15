@@ -1,5 +1,8 @@
 package nl.codingwithlinda.smartstep.core.domain.unit_conversion
 
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.kgToGramFactor
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.kgToPounds
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.kgToPoundsFactor
 import kotlin.math.roundToInt
 
 
@@ -32,11 +35,6 @@ enum class Weights(val system: UnitSystems){
 
 
 sealed interface WeightUnits {
-    val kgToGramFactor: Double
-        get() = 1000.0
-
-    val kgToPoundsFactor: Double
-        get() = 2.20462
 
 
     data class Grams(val grams: Int) : WeightUnits {
@@ -64,6 +62,20 @@ sealed interface WeightUnits {
         override val system: UnitSystems
             get() = UnitSystems.SI
 
+        fun fromPreviousPounds(pounds: Int): LBS{
+
+            val correspondingPounds = kgToPounds[kg] ?:emptyList()
+
+            println("--- KG --- correspondingPounds: $correspondingPounds")
+
+            if (pounds in correspondingPounds) {
+                println("--- KG --- returning previous pounds: $pounds")
+                return LBS(pounds)
+            }
+            val converted = (kg * kgToPoundsFactor).roundToInt()
+
+            return LBS(converted)
+        }
         inline fun <reified T: WeightUnits>convert(
             target: Weights,
         ): T{

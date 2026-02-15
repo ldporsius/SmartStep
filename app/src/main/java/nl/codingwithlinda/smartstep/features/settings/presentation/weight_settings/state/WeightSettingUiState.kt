@@ -3,7 +3,6 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.weight_setti
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.Weights
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.maxWeightPounds
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.minWeightPounds
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
@@ -11,9 +10,9 @@ import nl.codingwithlinda.smartstep.core.domain.util.UiText
 import kotlin.math.roundToInt
 
 interface WeightSettingUiState {
-    data class Imperial(private val grams: Int): WeightSettingUiState{
-        val grams1 = WeightUnits.Grams(grams)
-        val pounds = grams1.convert<WeightUnits.LBS>(Weights.LBS).pounds
+    data class Imperial(private val unit: WeightUnits.LBS): WeightSettingUiState{
+
+        val pounds = unit.pounds
             .coerceIn(minWeightPounds, maxWeightPounds)
         override val system: UnitSystems
             get() = UnitSystems.IMPERIAL
@@ -22,7 +21,7 @@ interface WeightSettingUiState {
             return UiText.DynamicText("${pounds} lbs")
         }
         init {
-            println("--- WeightSettingUiState imperial --- grams == $grams, pounds == $pounds")
+            println("--- WeightSettingUiState imperial --- , pounds == $pounds")
         }
 
     }

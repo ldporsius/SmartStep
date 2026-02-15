@@ -27,7 +27,6 @@ import nl.codingwithlinda.smartstep.application.dataStore
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.Weights
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
@@ -52,6 +51,8 @@ class WeightSettingsScreenTest {
 
     val kg = WeightUnits.KG(weightRangeKg.last())
     val grams = kg.convert<WeightUnits.Grams>(Weights.GRAMS)
+    val pounds = kg.convert<WeightUnits.LBS>(Weights.LBS)
+
 
     @Before
     fun setUp() {
@@ -74,7 +75,7 @@ class WeightSettingsScreenTest {
                     when (it) {
                        is ActionWeightInput.ChangeSystem ->{
                            uiState.update {
-                               WeightSettingUiState.Imperial(grams.grams)
+                               WeightSettingUiState.Imperial(pounds)
                            }
 
                        }

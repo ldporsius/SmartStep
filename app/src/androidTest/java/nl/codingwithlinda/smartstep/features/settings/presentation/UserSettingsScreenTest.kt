@@ -13,7 +13,8 @@ import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter.kgToPounds
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.kgToPounds
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.kgToPoundsFactor
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
@@ -148,7 +149,7 @@ class UserSettingsScreenTest {
         robot .pressOK()
             .pressStart()
 
-        assertEquals(usersettingsRepo.loadSettings().weightGrams, (200 / kgToPounds), .5)
+        assertEquals(usersettingsRepo.loadSettings().weightGrams, (200 / kgToPoundsFactor) * 1000, .5)
 
         robot.pickWeight()
             .selectSI("kg")

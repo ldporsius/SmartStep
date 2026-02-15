@@ -1,5 +1,7 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
 import org.junit.Assert.*
 import org.junit.Test
@@ -13,17 +15,17 @@ class HeightUnitConverterTest {
         val value = 0.toDouble()
         val result = heightConverter.toImperial(value)
 
-        assertTrue(result.first.equals("0"))
-        assertTrue(result.second.equals("0"))
+        assertThat(result.first).isEqualTo(0)
+        assertThat(result.second).isEqualTo(0)
     }
 
     @Test
     fun `test one cm returns pair of (0,0)`(){
         val value = 1.toDouble()
         val result = heightConverter.toImperial(value)
+        assertThat(result.first).isEqualTo(0)
+        assertThat(result.second).isEqualTo(0)
 
-        assertTrue(result.first.equals("0"))
-        assertTrue(result.second.equals("0"))
     }
 
     @Test
@@ -31,32 +33,32 @@ class HeightUnitConverterTest {
         val value = 175.toDouble()
         val result = heightConverter.toImperial(value)
 
-        assertEquals("5", result.first, )
-        assertEquals("9", result.second, )
+        assertThat(result.first).isEqualTo(5)
+        assertThat(result.second).isEqualTo(9)
     }
     @Test
     fun `test 176 cm returns pair of (5,9)`(){
         val value = 176.toDouble()
         val result = heightConverter.toImperial(value)
 
-        assertEquals("5", result.first, )
-        assertEquals("9", result.second, )
+        assertThat(result.first).isEqualTo(5)
+        assertThat(result.second).isEqualTo(9)
     }
     @Test
     fun `test 180 cm returns pair of (5,11)`(){
         val value = 180.toDouble()
         val result = heightConverter.toImperial(value)
 
-        assertEquals("5", result.first, )
-        assertEquals("11", result.second, )
+        assertThat(result.first).isEqualTo(5)
+        assertThat(result.second).isEqualTo(11)
     }
     @Test
     fun `test 183 cm returns pair of (6,0)`(){
         val value = 183.toDouble()
         val result = heightConverter.toImperial(value)
 
-        assertEquals("6", result.first, )
-        assertEquals("0", result.second, )
+        assertThat(result.first).isEqualTo(6)
+        assertThat(result.second).isEqualTo(0)
     }
 
     @Test

@@ -11,7 +11,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
@@ -33,7 +33,6 @@ class WeightSettingViewModelTest {
         viewModel = WeightSettingViewModel(
             userSettingsRepo = FakeUserSettingsRepo(),
             memento = UserSettingsMemento,
-            weightUnitConverter = WeightUnitConverter
         )
 
     }
@@ -45,19 +44,20 @@ class WeightSettingViewModelTest {
 
     @Test
     fun `test weightViewModel updates correctly`() = runTest {
+        val expected = WeightUnits.LBS(220)
         viewModel.weightUiState.test {
             assertEquals(awaitItem(), WeightSettingUiState.SI(0))
 
             viewModel.onAction(ActionWeightInput.KgInput(100))
 
-            assertEquals(awaitItem(), WeightSettingUiState.SI(100))
+            assertEquals(awaitItem(), WeightSettingUiState.SI(100_000))
 
             viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystems.IMPERIAL))
 
 
             val item1 = awaitItem()
             assertTrue(item1 is WeightSettingUiState.Imperial)
-            assertEquals(item1, WeightSettingUiState.Imperial(100))
+            assertEquals(item1, WeightSettingUiState.Imperial(expected))
             with(item1 as WeightSettingUiState.Imperial) {
                 assertEquals(pounds, 220)
             }

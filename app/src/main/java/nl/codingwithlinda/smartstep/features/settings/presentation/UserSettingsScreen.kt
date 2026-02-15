@@ -52,7 +52,6 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUni
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.WeightSettingViewModel
@@ -96,7 +95,6 @@ fun UserSettingsRoot(
                 WeightSettingViewModel(
                     userSettingsRepo = userSettingsRepo,
                     memento = UserSettingsMemento,
-                    weightUnitConverter = WeightUnitConverter
                 )
             }
         }

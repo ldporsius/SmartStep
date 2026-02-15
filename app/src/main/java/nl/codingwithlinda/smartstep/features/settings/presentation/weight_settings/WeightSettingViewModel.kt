@@ -14,7 +14,6 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.WeightUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.Weights
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnitConverter
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
 import kotlin.math.roundToInt
@@ -22,20 +21,20 @@ import kotlin.math.roundToInt
 class WeightSettingViewModel(
     private val userSettingsRepo: UserSettingsRepo,
     private val memento: UserSettingsMemento,
-    private val weightUnitConverter: WeightUnitConverter
 ): ViewModel(){
     private val _weightInputGrams = MutableStateFlow(WeightUnits.Grams(0))
+    private val _weightInputPounds = MutableStateFlow(WeightUnits.LBS(0))
 
     private val system = userSettingsRepo.unitSystemObservable
 
 
-    val weightUiState = combine(system, _weightInputGrams) { system, grams->
+    val weightUiState = combine(system, _weightInputGrams, _weightInputPounds) { system, grams, pounds->
 
         when (system) {
             is UnitSystems.SI -> {
                 WeightSettingUiState.SI(grams.grams)
             }
-            is UnitSystems.IMPERIAL -> WeightSettingUiState.Imperial(grams.grams)
+            is UnitSystems.IMPERIAL -> WeightSettingUiState.Imperial(pounds)
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WeightSettingUiState.SI(0))
 
@@ -47,6 +46,10 @@ class WeightSettingViewModel(
                 val weightGrams = it.weightGrams
                 _weightInputGrams.update {
                     WeightUnits.Grams(weightGrams.toInt())
+                }
+                val weightPounds = WeightUnits.Grams(weightGrams.roundToInt()).convert<WeightUnits.LBS>(Weights.LBS)
+                _weightInputPounds.update {
+                    weightPounds
                 }
             }
         }
@@ -64,6 +67,9 @@ class WeightSettingViewModel(
                 _weightInputGrams.update {
                     convertedToGrams
                 }
+                _weightInputPounds.update {
+                    kg.fromPreviousPounds(_weightInputPounds.value.pounds)
+                }
             }
 
             is ActionWeightInput.PoundsInput -> {
@@ -76,6 +82,9 @@ class WeightSettingViewModel(
 
                 _weightInputGrams.update {
                     convertedToGrams
+                }
+                _weightInputPounds.update {
+                    WeightUnits.LBS(action.pounds)
                 }
 
             }

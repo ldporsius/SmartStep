@@ -17,6 +17,10 @@ class FakeStepTracker(
     var isCounting = false
 
     override fun initialize() {
+
+    }
+
+    override fun start() {
         isCounting = true
         scope.launch {
             while (isCounting) {
@@ -24,10 +28,6 @@ class FakeStepTracker(
                 delay(1000)
             }
         }
-    }
-
-    override fun start() {
-
     }
 
     override fun stop() {
