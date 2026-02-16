@@ -1,7 +1,5 @@
-package nl.codingwithlinda.smartstep.features.main.navigation
+package nl.codingwithlinda.smartstep.features.main.navigation.drawer
 
-import android.R.attr.label
-import android.R.attr.onClick
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.DrawerState
@@ -16,7 +14,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.design.ui.theme.primary
-import nl.codingwithlinda.smartstep.design.ui.theme.textPrimary
+import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
+import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavActionController
 import nl.codingwithlinda.smartstep.navigation.NavigationController
 import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
 
@@ -43,16 +42,18 @@ fun MainNavDrawer(
                             label = { Text(it.title) },
                             selected = false,
                             onClick = {
-                                mainNavActionController.handleAction(it.onAction())
+                                it.onAction()
                                 scope.launch {
                                     drawerState.close()
                                 }
                             }
                         )
+
+                        HorizontalDivider()
                     }
                 }
 
-                HorizontalDivider()
+
                 NavigationDrawerItem(
                     label = { Text("Step goal") },
                     selected = false,
@@ -75,6 +76,8 @@ fun MainNavDrawer(
                         }
                     }
                 )
+
+
                 HorizontalDivider()
                 NavigationDrawerItem(
                     label = {

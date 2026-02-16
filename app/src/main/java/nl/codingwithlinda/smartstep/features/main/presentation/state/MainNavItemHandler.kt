@@ -25,32 +25,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
-import nl.codingwithlinda.smartstep.features.main.navigation.MainNavAction
+import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.ShowBackgroundAccessDialog
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalComponent
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalPickerContainer
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.exit.ExitDialog
-
-
-val MainNavItemHandler = MainBottomSheetController()
+import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.MainScreenDecorator
+import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers.MainNavItemHandler
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreenDecorator(
     mainNavAction: MainNavAction,
-    navItemHandler: MainBottomSheetController = MainNavItemHandler,
+    navItemHandler: MainScreenDecorator = MainNavItemHandler,
     dailyStepGoalViewModel: DailyStepGoalViewModel,
     parent: BoxScope
 

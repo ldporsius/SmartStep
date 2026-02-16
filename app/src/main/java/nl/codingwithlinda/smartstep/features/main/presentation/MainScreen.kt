@@ -5,11 +5,8 @@ import android.os.Build
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -17,31 +14,20 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -50,21 +36,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
-import nl.codingwithlinda.smartstep.core.presentation.util.BuildVersionNeedsPermission
-import nl.codingwithlinda.smartstep.core.presentation.util.PermissionCode
 import nl.codingwithlinda.smartstep.core.presentation.util.necessaryPermissionsOnly
 import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
-import nl.codingwithlinda.smartstep.features.main.navigation.FixStepProblemNavItem
-import nl.codingwithlinda.smartstep.features.main.navigation.MainNavAction
-import nl.codingwithlinda.smartstep.features.main.navigation.MainNavDrawer
+import nl.codingwithlinda.smartstep.features.main.navigation.drawer.FixStepProblemNavItem
+import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
+import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
 import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers.MainNavItemHandler
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.canStartStepTrackerService
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPermissionUiState
-import nl.codingwithlinda.smartstep.features.main.presentation.state.MainNavItemHandler
 import nl.codingwithlinda.smartstep.features.main.presentation.state.MainScreenDecorator
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -143,7 +127,8 @@ fun MainScreen(
                 shouldShowInDrawer = {
                     activity?.let {
                         isIgnoringBatteryOptimizations(it)}?.not() ?: false
-                }
+                },
+                mainNavActionController = navItemHandler
             )
         )
     ) {
