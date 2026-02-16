@@ -9,14 +9,14 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
-import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.MainScreenDecorator
+import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers.MainNavActionControllerImpl
 import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers.MainNavItemHandler
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PermissionDecorator(
     permissionsViewModel: PermissionsViewModel,
-    navItemHandler: MainScreenDecorator = MainNavItemHandler,
+    navItemHandler: MainNavActionControllerImpl = MainNavItemHandler,
     requestPermission: () -> Unit
     ) {
     val density = LocalDensity.current.density

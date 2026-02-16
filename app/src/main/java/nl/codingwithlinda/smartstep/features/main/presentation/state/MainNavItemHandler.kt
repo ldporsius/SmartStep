@@ -38,7 +38,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.D
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalPickerContainer
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.exit.ExitDialog
-import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.MainScreenDecorator
+import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers.MainNavActionControllerImpl
 import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers.MainNavItemHandler
 
 
@@ -46,7 +46,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events
 @Composable
 fun MainScreenDecorator(
     mainNavAction: MainNavAction,
-    navItemHandler: MainScreenDecorator = MainNavItemHandler,
+    navItemHandler: MainNavActionControllerImpl = MainNavItemHandler,
     dailyStepGoalViewModel: DailyStepGoalViewModel,
     parent: BoxScope
 

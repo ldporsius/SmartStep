@@ -38,9 +38,9 @@ import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.core.presentation.util.necessaryPermissionsOnly
 import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
-import nl.codingwithlinda.smartstep.features.main.navigation.drawer.FixStepProblemNavItem
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
+import nl.codingwithlinda.smartstep.features.main.navigation.drawer.navDrawerItems
 import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers.MainNavItemHandler
@@ -121,16 +121,7 @@ fun MainScreen(
         drawerState = drawerState,
         scope = scope,
         mainNavActionController = navItemHandler,
-        items = listOf(
-            FixStepProblemNavItem(
-                title = "Fix step problem",
-                shouldShowInDrawer = {
-                    activity?.let {
-                        isIgnoringBatteryOptimizations(it)}?.not() ?: false
-                },
-                mainNavActionController = navItemHandler
-            )
-        )
+        items = navDrawerItems()
     ) {
 
         Scaffold(
