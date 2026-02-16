@@ -2,8 +2,8 @@ package nl.codingwithlinda.smartstep.features.main.navigation.drawer
 
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavActionController
-import nl.codingwithlinda.smartstep.features.main.navigation.controller.NavActionController
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
+import nl.codingwithlinda.smartstep.features.steps.presentation.state.StepNavActionHandler
 import nl.codingwithlinda.smartstep.navigation.NavigationController
 import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
 
@@ -44,7 +44,7 @@ data class PersonalSettingsNavItem(
 
 data class EditStepsNavItem(
     override val title: String,
-    val navActionController: NavActionController
+    val navActionController: StepNavActionHandler
 ): NavDrawerItem {
     override fun onAction() {
         navActionController.handleAction(StepNavAction.EDIT_STEPS)
@@ -54,7 +54,7 @@ data class EditStepsNavItem(
 
 data class ResetTodayStepsNavItem(
     override val title: String,
-    val navActionController: NavActionController
+    val navActionController: StepNavActionHandler
 ): NavDrawerItem{
     override fun onAction() {
         navActionController.handleAction(StepNavAction.RESET_STEPS)

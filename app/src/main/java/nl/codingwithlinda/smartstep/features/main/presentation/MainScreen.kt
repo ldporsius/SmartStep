@@ -50,6 +50,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.Permi
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.canStartStepTrackerService
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.state.MainScreenDecorator
+import nl.codingwithlinda.smartstep.features.steps.presentation.state.StepsNavActionDecorator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -189,6 +190,8 @@ fun MainScreen(
             dailyStepGoalViewModel = dailyStepGoalViewModel,
             parent = this
         )
+
+        StepsNavActionDecorator()
     }
 
 }
