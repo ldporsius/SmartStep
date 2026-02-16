@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.Length
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.LengthUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
@@ -150,7 +151,7 @@ private fun PreviewHeightSettingsComponent() {
 
     SmartStepTheme {
         HeightSettingsComponent(
-            uiState = HeightSettingUiState.Imperial(175),
+            uiState = HeightSettingUiState.Imperial(Length.FeetInches(5,7)),
             rangeCm = heightsCm.toList(),
             rangeFeet = heightsFeet.toList(),
             rangeInches = heightsInches.toList(),

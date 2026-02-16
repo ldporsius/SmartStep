@@ -6,21 +6,20 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.Length
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.LengthUnits
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
 
 class HeightSettingsViewModel(
     private val userSettingsRepo: UserSettingsRepo,
     private val memento: UserSettingsMemento,
-    private val heightUnitConverter: HeightUnitConverter
 ): ViewModel() {
 
     private val _heightInput = MutableStateFlow(0)
@@ -40,7 +39,10 @@ class HeightSettingsViewModel(
     val heightUiState = unitSystemPrefs.combine(_heightInput){ system, input ->
         when(system){
             is UnitSystems.SI -> HeightSettingUiState.SI(valueCm = input)
-            is UnitSystems.IMPERIAL -> HeightSettingUiState.Imperial(valueCm = input)
+            is UnitSystems.IMPERIAL -> {
+                val feetInches = Length.Cm(input).convert<Length.FeetInches>(LengthUnits.FEET_INCHES)
+                HeightSettingUiState.Imperial(feetInches)
+            }
         }.also {
             //println("--- USERSETTINGSVIEWMODEL --- heightUiState changes in combine flow: $it")
         }
@@ -63,7 +65,8 @@ class HeightSettingsViewModel(
             is ActionHeightInput.ImperialInput -> {
                 println("--- USERSETTINGSVIEWMODEL --- imperial input: feet: ${actionUnitInput.feet} , inches:${actionUnitInput.inches}")
 
-                val update = heightUnitConverter.toSI(actionUnitInput.feet, actionUnitInput.inches)
+                val feetInches = Length.FeetInches(actionUnitInput.feet, actionUnitInput.inches)
+                val update = feetInches.convert<Length.Cm>(LengthUnits.CM).cm
                 _heightInput.update {
                     update.toInt()
                 }

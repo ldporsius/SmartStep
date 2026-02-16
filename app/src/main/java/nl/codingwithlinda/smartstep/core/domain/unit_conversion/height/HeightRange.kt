@@ -1,7 +1,5 @@
 package nl.codingwithlinda.smartstep.core.domain.unit_conversion.height
 
-import kotlin.math.roundToInt
-
 
 val heightsFeet = IntRange(0, 7).toList()
 val heightsInches = IntRange(0,11).toList()
@@ -13,7 +11,7 @@ val minHeightInches = heightsInches.first()
 val maxHeightInches = heightsInches.last()
 
 
-val maxHeightCm = HeightUnitConverter.toSI(maxHeightFeet, maxHeightInches).roundToInt()
+val maxHeightCm = Length.FeetInches(maxHeightFeet, maxHeightInches).convert<Length.Cm>(LengthUnits.CM).cm
 
 
 val heightsCm = IntRange(100, maxHeightCm).toList()

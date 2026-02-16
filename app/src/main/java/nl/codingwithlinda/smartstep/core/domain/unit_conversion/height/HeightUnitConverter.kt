@@ -3,19 +3,19 @@ package nl.codingwithlinda.smartstep.core.domain.unit_conversion.height
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
-object HeightUnitConverter {
 
-    val factorToInches = 0.3937007874
-    val cmToInches = CmToInchesConverter()
-    val inchesToFeet = InchesToFeetConverter()
-    private fun convert(from: Double): Double {
+
+    //val factorToInches = 0.3937007874
+    //val cmToInches = CmToInchesConverter()
+    //val inchesToFeet = InchesToFeetConverter()
+   /* private fun convert(from: Double): Double {
         val inches = cmToInches.convert(from)
         val feet = inchesToFeet.convert(inches)
         return feet
-    }
+    }*/
 
 
-    fun toImperial(from: Double): Pair<Int, Int>{
+   /* fun toImperial(from: Double): Pair<Int, Int>{
         val feet_inches = convert(from)
 
         val feet = floor(feet_inches).toInt()
@@ -23,10 +23,9 @@ object HeightUnitConverter {
         val inches = cmToInches.convert(from) - inchesToFeet.factorToFeet * feet
         val roundedInches = (inches).roundToInt()
         return Pair(feet, roundedInches)
-    }
+    }*/
 
-    fun toSI(feet: Int, inches: Int): Double {
+   /* fun toSI(feet: Int, inches: Int): Double {
         val totalInches = feet.toDouble() * inchesToFeet.factorToFeet + inches.toDouble()
         return totalInches / cmToInches.factorToInches  // ✅ Divide to go back to cm
-    }
-}
+    }*/

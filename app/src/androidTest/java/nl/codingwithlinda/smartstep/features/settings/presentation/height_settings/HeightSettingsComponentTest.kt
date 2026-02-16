@@ -16,7 +16,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.Length
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.LengthUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
@@ -52,13 +53,14 @@ class HeightSettingsComponentTest {
                         is ActionHeightInput.ChangeUnitSystem -> {
                             when(action.system){
                                 UnitSystems.IMPERIAL -> {
+                                    val currentCm = Length.Cm(maxHeightCm)
                                     uiState.update {
-                                        HeightSettingUiState.Imperial(it.valueCm)
+                                        HeightSettingUiState.Imperial(currentCm.convert(LengthUnits.FEET_INCHES))
                                     }
                                 }
                                 UnitSystems.SI -> {
                                     uiState.update {
-                                        HeightSettingUiState.SI(it.valueCm)
+                                        HeightSettingUiState.SI(maxHeightCm)
                                     }
                                 }
                             }
@@ -76,7 +78,7 @@ class HeightSettingsComponentTest {
                             val inches = action.inches
                             uiState.update {
                                 HeightSettingUiState.Imperial(
-                                    valueCm = HeightUnitConverter.toSI(feet, inches).roundToInt()
+                                   Length.FeetInches(action.feet, action.inches)
                                 )
                             }
                         }
@@ -93,7 +95,7 @@ class HeightSettingsComponentTest {
 
     @Test
     fun testHeightSettingsComponent() : Unit = runBlocking {
-
+        val robot = HeightSettingsRobot(composeRule)
         composeRule.awaitIdle()
         composeRule.onNode(
             hasText(maxHeightCm.toString())
@@ -112,6 +114,7 @@ class HeightSettingsComponentTest {
             hasText(maxHeightFeet.toString()) and hasContentDescription("value ft")
         ).assertIsDisplayed()
 
+        robot.keepOnScreen(5000)
         composeRule.onNode(
             hasText(maxHeightInches.toString()) and hasContentDescription("value in")
         ).assertIsDisplayed()

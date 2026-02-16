@@ -4,12 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,9 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
@@ -30,11 +25,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.userSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.design.ui.theme.white
@@ -48,18 +45,10 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.height_settin
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsViewModel
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.WeightSettingViewModel
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.WeightSettingsScreen
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
-import nl.codingwithlinda.smartstep.navigation.MainRoute
-import nl.codingwithlinda.smartstep.navigation.NavigationController
 
 
 @Composable
@@ -84,7 +73,6 @@ fun UserSettingsRoot(
                 HeightSettingsViewModel(
                     userSettingsRepo = userSettingsRepo,
                     memento = UserSettingsMemento,
-                    heightUnitConverter = HeightUnitConverter
                 )
             }
         }

@@ -13,7 +13,6 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.HeightSettingsViewModel
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.HeightUnitConverter
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.tests.FakeUserSettingsRepo
 import org.junit.After
@@ -34,7 +33,6 @@ class UserSettingsViewModelTest {
         viewModel = HeightSettingsViewModel(
             userSettingsRepo = repo,
             memento = UserSettingsMemento,
-            heightUnitConverter = HeightUnitConverter
         )
     }
 
