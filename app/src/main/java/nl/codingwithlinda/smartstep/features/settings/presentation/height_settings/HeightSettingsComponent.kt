@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -18,8 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.LengthUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.LengthUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
@@ -28,7 +25,6 @@ import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.main.presentation.common.CommonNumberPicker
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogHeader
-import nl.codingwithlinda.smartstep.features.settings.presentation.common.ScrollableInputComponent
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.toUi

@@ -5,6 +5,7 @@ import kotlin.math.roundToInt
 
 object HeightUnitConverter {
 
+    val factorToInches = 0.3937007874
     val cmToInches = CmToInchesConverter()
     val inchesToFeet = InchesToFeetConverter()
     private fun convert(from: Double): Double {
