@@ -45,7 +45,7 @@ fun CommonNumberPicker(
    ) {
 
     val listState = rememberLazyListState(
-        initialFirstVisibleItemIndex = values.indexOf(selectedGoal)
+        initialFirstVisibleItemIndex = values.indexOf(selectedGoal).coerceAtLeast(0)
     )
     val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
     val snap = snapshotFlow {
@@ -53,7 +53,7 @@ fun CommonNumberPicker(
     }
 
     LaunchedEffect(Unit){
-        listState.scrollToItem(values.indexOf(selectedGoal))
+        listState.scrollToItem(values.indexOf(selectedGoal).coerceAtLeast(0))
     }
     LaunchedEffect(true,listState){
         snap.onEach {

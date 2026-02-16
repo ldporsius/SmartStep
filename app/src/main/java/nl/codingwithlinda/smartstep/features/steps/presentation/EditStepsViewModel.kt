@@ -5,15 +5,23 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
+import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.steps.domain.mapping.toDateYYYYMMDD
+import nl.codingwithlinda.smartstep.features.steps.domain.mapping.toDomain
+import nl.codingwithlinda.smartstep.features.steps.domain.model.DatePicker
 import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.features.steps.domain.model.months
+import nl.codingwithlinda.smartstep.features.steps.domain.model.years
 import nl.codingwithlinda.smartstep.features.steps.presentation.state.EditStepAction
+import nl.codingwithlinda.smartstep.features.steps.presentation.state.StepNavActionHandler
 
 class EditStepsViewModel(
     private val dailyStepRepo: DailyStepRepo
@@ -22,9 +30,17 @@ class EditStepsViewModel(
     val steps = _steps.asStateFlow()
 
 
-    private val dateYYYYMMDD = MutableStateFlow(DateYYYYMMDD(0, 0, 0))
+    val yearRange = years.toList()
+    val monthRange = months.toList()
 
-    val dateSelected = dateYYYYMMDD
+    private val _dateYYYYMMDD = MutableStateFlow(DateYYYYMMDD(years.first, months.first, 1))
+    val dateYYYYMMDD = _dateYYYYMMDD.asStateFlow()
+
+    val dayRange = _dateYYYYMMDD.mapNotNull {
+        DatePicker(it.YYYY).daysInMonth(it.MM).toList()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val dateSelectedAsString = _dateYYYYMMDD
         .map {
             "${it.YYYY}/${it.MM}/${it.DD}"
         }
@@ -32,9 +48,14 @@ class EditStepsViewModel(
 
     init {
         viewModelScope.launch {
-            dailyStepRepo.stepCount.first().let {count ->
-                dateYYYYMMDD.update {
-                    count.toDateYYYYMMDD()
+            dailyStepRepo.stepCount.firstOrNull()?.let {count ->
+
+                val converted = count.toDateYYYYMMDD()
+
+                println("--- EDITSTEPS VIEWMODEL INIT --- converted step count to YYYYMMDD: $converted")
+
+                _dateYYYYMMDD.update {
+                    converted
                 }
             }
         }
@@ -43,14 +64,49 @@ class EditStepsViewModel(
 
     fun onAction(action: EditStepAction){
         when(action){
-            is EditStepAction.InputDay -> {
-
+            is EditStepAction.DismissDatePicker -> {
+                StepNavActionHandler.handleAction(StepNavAction.EDIT_STEPS)
             }
-            is EditStepAction.InputMonth -> {}
-            is EditStepAction.InputYear -> {}
+            is EditStepAction.ShowDatePicker -> {
+                StepNavActionHandler.handleAction(StepNavAction.SHOW_DATE_PICKER)
+            }
+            is EditStepAction.InputDay -> {
+                if (action.day < 1) return
+                println("--- EDITSTEPS VIEWMODEL INPUT DAY --- ${action.day}")
+                _dateYYYYMMDD.update {
+                    it.copy(DD = action.day)
+                }
+            }
+            is EditStepAction.InputMonth -> {
+                _dateYYYYMMDD.update {
+                    it.copy(MM = action.month)
+                }
+            }
+            is EditStepAction.InputYear -> {
+                _dateYYYYMMDD.update {
+                    it.copy(YYYY = action.year)
+                }
+            }
             is EditStepAction.SetSteps -> {
                 _steps.update {
                     action.steps.toInt()
+                }
+            }
+
+            EditStepAction.Save -> {
+                viewModelScope.launch {
+                    val yyyyMMDDToDomain = _dateYYYYMMDD.value.toDomain()
+                    println("--- EDITSTEPS VIEWMODEL SAVE DATE --- date to domain $yyyyMMDDToDomain")
+
+                    val update = DailyStepCountCreator.create(
+                        _steps.value,
+                        _dateYYYYMMDD.value.toDomain()
+                    )
+                    println("--- EDITSTEPS VIEWMODEL SAVE DATE --- $update")
+                    dailyStepRepo.saveStepCount(
+                        update
+                    )
+                    StepNavActionHandler.handleAction(StepNavAction.EDIT_STEPS)
                 }
             }
         }

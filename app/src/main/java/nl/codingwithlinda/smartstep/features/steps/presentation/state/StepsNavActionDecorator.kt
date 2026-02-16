@@ -1,7 +1,7 @@
 package nl.codingwithlinda.smartstep.features.steps.presentation.state
 
-import android.R.attr.action
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -18,8 +19,9 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
-import nl.codingwithlinda.smartstep.features.steps.presentation.EditStepsDialog
 import nl.codingwithlinda.smartstep.features.steps.presentation.EditStepsViewModel
+import nl.codingwithlinda.smartstep.features.steps.presentation.components.DatePickerComponent
+import nl.codingwithlinda.smartstep.features.steps.presentation.components.EditStepsDialog
 
 @Composable
 fun StepsNavActionDecorator(modifier: Modifier = Modifier) {
@@ -42,6 +44,26 @@ fun StepsNavActionDecorator(modifier: Modifier = Modifier) {
 
     when(action){
         StepNavAction.NA -> Unit
+        StepNavAction.SHOW_DATE_PICKER -> {
+            Dialog(
+                onDismissRequest = {
+                    StepNavActionHandler.handleAction(
+                        StepNavAction.EDIT_STEPS
+                    )
+                }
+            ) {
+                Surface() {
+                    DatePickerComponent(
+                        selectedDate = editStepsViewModel.dateYYYYMMDD.collectAsStateWithLifecycle().value,
+                        action = editStepsViewModel::onAction,
+                        years = editStepsViewModel.yearRange,
+                        months = editStepsViewModel.monthRange,
+                        daysInMonth = editStepsViewModel.dayRange.collectAsStateWithLifecycle().value,
+                        modifier = Modifier
+                    )
+                }
+            }
+        }
         StepNavAction.EDIT_STEPS -> {
             Dialog(
                 onDismissRequest = {
@@ -50,7 +72,10 @@ fun StepsNavActionDecorator(modifier: Modifier = Modifier) {
                     )
                 }
             ) {
-                Surface() {
+                Surface(
+                    shape = androidx.compose.material3.MaterialTheme.shapes.medium,
+                    modifier = Modifier
+                ) {
                     EditStepsDialog(
                         onDismiss = {
                             StepNavActionHandler.handleAction(
@@ -58,10 +83,12 @@ fun StepsNavActionDecorator(modifier: Modifier = Modifier) {
                             )
                         },
                         action = editStepsViewModel::onAction,
-                        dateSelected = editStepsViewModel.dateSelected.collectAsStateWithLifecycle().value,
+                        dateSelected = editStepsViewModel.dateSelectedAsString.collectAsStateWithLifecycle().value,
                         numSteps = editStepsViewModel.steps.collectAsStateWithLifecycle().value,
-                        onSave = { },
-                        modifier = Modifier
+                        onSave = {
+                            editStepsViewModel.onAction(EditStepAction.Save)
+                        },
+                        modifier = Modifier.padding(48.dp)
                     )
                 }
             }

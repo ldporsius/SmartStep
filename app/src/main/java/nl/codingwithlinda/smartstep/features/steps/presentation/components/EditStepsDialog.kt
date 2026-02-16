@@ -1,5 +1,6 @@
-package nl.codingwithlinda.smartstep.features.steps.presentation
+package nl.codingwithlinda.smartstep.features.steps.presentation.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,6 +37,7 @@ fun EditStepsDialog(
             label = "Date",
             action = {
                 //show date picker
+                action(EditStepAction.ShowDatePicker)
             }
         ) {
             Text(dateSelected)
@@ -54,26 +56,10 @@ fun EditStepsDialog(
             )
         )
 
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-            ,
-            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.End
-        ) {
-            TextButton(
-                onClick = {
-                    onDismiss()
-                }
-            ) {
-                Text("Cancel")
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            TextButton( onClick = {
-                onSave()
-            }
-            ) {
-                Text("Save")
-            }
-        }
+        CommonDialogButtonRow(
+            onDismiss = onDismiss,
+            onSave = onSave
+        )
+
     }
 }
