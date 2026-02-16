@@ -53,32 +53,6 @@ fun MainNavDrawer(
                     }
                 }
 
-
-                NavigationDrawerItem(
-                    label = { Text("Step goal") },
-                    selected = false,
-                    onClick = {
-                        //open a bottom sheet in MainScreen
-                        mainNavActionController.handleAction(MainNavAction.DAILY_STEP_GOAL)
-                        scope.launch {
-                            drawerState.close()
-                        }
-                    }
-                )
-                HorizontalDivider()
-                NavigationDrawerItem(
-                    label = { Text("Personal settings") },
-                    selected = false,
-                    onClick = {
-                        NavigationController.navigateTo(UserSettingsRoute)
-                        scope.launch {
-                            drawerState.close()
-                        }
-                    }
-                )
-
-
-                HorizontalDivider()
                 NavigationDrawerItem(
                     label = {
                         Text("Exit",

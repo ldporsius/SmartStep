@@ -4,6 +4,8 @@ import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavA
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavActionController
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.NavActionController
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
+import nl.codingwithlinda.smartstep.navigation.NavigationController
+import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
 
 
 data class FixStepProblemNavItem(
@@ -20,6 +22,25 @@ data class FixStepProblemNavItem(
         return shouldShowInDrawer()
     }
 }
+data class DailyStepGoalNavItem(
+    override val title: String,
+    val navActionController: MainNavActionController
+): NavDrawerItem{
+    override fun onAction() {
+        navActionController.handleAction(MainNavAction.DAILY_STEP_GOAL)
+    }
+    override fun visible(): Boolean = true
+}
+
+data class PersonalSettingsNavItem(
+    override val title: String,
+): NavDrawerItem {
+    override fun onAction() {
+        NavigationController.navigateTo(UserSettingsRoute)
+    }
+
+    override fun visible(): Boolean = true
+}
 
 data class EditStepsNavItem(
     override val title: String,
@@ -27,6 +48,16 @@ data class EditStepsNavItem(
 ): NavDrawerItem {
     override fun onAction() {
         navActionController.handleAction(StepNavAction.EDIT_STEPS)
+    }
+    override fun visible(): Boolean = true
+}
+
+data class ResetTodayStepsNavItem(
+    override val title: String,
+    val navActionController: NavActionController
+): NavDrawerItem{
+    override fun onAction() {
+        navActionController.handleAction(StepNavAction.RESET_STEPS)
     }
     override fun visible(): Boolean = true
 }
