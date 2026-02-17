@@ -13,6 +13,13 @@ val interFontFamily = FontFamily(
 )
 
 val Typography = Typography(
+    headlineLarge = TextStyle(
+        fontFamily = interFontFamily,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 48.sp,
+        lineHeight = 40.sp,
+        letterSpacing = 1.sp
+    ),
     bodySmall = TextStyle(
         fontFamily = interFontFamily,
         fontWeight = FontWeight.Normal,
