@@ -93,7 +93,7 @@ fun StepsNavActionDecorator(modifier: Modifier = Modifier) {
                         onSave = {
                             editStepsViewModel.onAction(EditStepAction.Save)
                         },
-                        modifier = Modifier.padding(48.dp)
+                        modifier = Modifier.padding(24.dp)
                     )
                 }
             }

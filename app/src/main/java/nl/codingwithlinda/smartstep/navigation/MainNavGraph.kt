@@ -24,11 +24,12 @@ import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.UserSettingsWrapper
+import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +70,13 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                     appScope = SmartStepApplication.applicationScope,
                     dailyStepRepo = SmartStepApplication.dailyStepRepo,
                     )
+            }
+        }
+    )
+    val statisticsViewModel = viewModel<StatisticsViewModel>(
+        factory = viewModelFactory {
+            initializer {
+                StatisticsViewModel()
             }
         }
     )
@@ -132,7 +140,8 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
 
                 MainRoute -> NavEntry(MainRoute) {
                     MainScreen(
-                        dailyStepGoalViewModel = dailyStepGoalViewModel
+                        dailyStepGoalViewModel = dailyStepGoalViewModel,
+                        statisticsViewModel = statisticsViewModel
                     )
                 }
 

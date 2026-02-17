@@ -2,4 +2,7 @@
     <string name="app_name" translatable="false">SmartStep</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
+
+    <string name="energy" translatable="false">%1$s %2$s</string>
+
 </resources>

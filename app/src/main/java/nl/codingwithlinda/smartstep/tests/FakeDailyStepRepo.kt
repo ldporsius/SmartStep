@@ -4,9 +4,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
+import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
+import java.time.LocalDate
 
 class FakeDailyStepRepo: DailyStepRepo {
 
@@ -14,7 +17,7 @@ class FakeDailyStepRepo: DailyStepRepo {
         listOf(DailyStepGoal(1, 1000))
 
     private val goalObservable = MutableStateFlow<DailyStepGoal?>(null)
-    private val _stepCount = MutableStateFlow(DailyStepCount(0, 1))
+    private val _stepCount = MutableStateFlow(DailyStepCount(0, 0))
 
     private val _baseline = MutableStateFlow<DailyStepCount?>(null)
 
@@ -40,6 +43,17 @@ class FakeDailyStepRepo: DailyStepRepo {
 
     override suspend fun getStepCountForDate(date: Long): DailyStepCount? {
         return _stepCount.value.takeIf { it.date == date }
+    }
+
+    fun getStepCountForYYYYMMDD(dateYYYYMMDD: DateYYYYMMDD): DailyStepCount?{
+        val date = DailyStepCountCreator.fromDateYYYYMMDD(dateYYYYMMDD)
+        return _stepCount.value.takeIf { it.date == date }
+    }
+
+    override suspend fun addStepCountToToday(stepCount: DailyStepCount) {
+        _stepCount.update {
+            it.copy(stepCount = it.stepCount + stepCount.stepCount)
+        }
     }
 
     override val stepCount: Flow<DailyStepCount> = _stepCount

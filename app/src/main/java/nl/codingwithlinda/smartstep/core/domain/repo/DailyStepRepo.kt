@@ -12,6 +12,8 @@ interface DailyStepRepo {
     suspend fun saveStepCount(stepCount: DailyStepCount)
     suspend fun getStepCountForDate(date: Long): DailyStepCount?
 
+    suspend fun addStepCountToToday(_stepCount: DailyStepCount)
+
     val stepCount: Flow<DailyStepCount>
 
     suspend fun saveDailyStepCountBaseline(dailyStepCount: DailyStepCount)

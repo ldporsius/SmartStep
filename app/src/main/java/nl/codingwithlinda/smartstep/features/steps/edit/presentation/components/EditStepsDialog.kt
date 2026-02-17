@@ -1,6 +1,7 @@
 package nl.codingwithlinda.smartstep.features.steps.edit.presentation.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -8,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.SettingBoxComponent
 import nl.codingwithlinda.smartstep.features.steps.edit.presentation.state.EditStepAction
 
@@ -20,11 +22,14 @@ fun EditStepsDialog(
     onSave: () -> Unit,
     modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier
+        modifier = modifier,
+        verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)
     ) {
         Text("Edit steps",
-            style = MaterialTheme.typography.titleLarge,)
-        Text("Calories, distance & duration will be recalculated accordingly”")
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+        Text("Calories, distance & duration will be recalculated accordingly")
 
         SettingBoxComponent(
             label = "Date",

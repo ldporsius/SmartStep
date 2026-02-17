@@ -34,9 +34,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.ShowBackgroundAccessDialog
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalComponent
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalPickerContainer
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalComponent
+import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalPickerContainer
+import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.exit.ExitDialog
 import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers.MainNavActionControllerImpl
 import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers.MainNavItemHandler

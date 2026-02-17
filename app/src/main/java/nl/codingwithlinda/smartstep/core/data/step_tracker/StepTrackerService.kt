@@ -67,7 +67,7 @@ class StepTrackerService : Service() {
 
         stepTracker.stepsTaken.onEach {
             DailyStepCountCreator.create(1).also {
-                dailyStepRepoRoomImpl.saveStepCount(it)
+                dailyStepRepoRoomImpl.addStepCountToToday(it)
             }
         }.launchIn(serviceScope)
     }

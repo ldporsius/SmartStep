@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -42,7 +43,8 @@ import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavA
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.navDrawerItems
 import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers.MainNavItemHandler
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
@@ -50,12 +52,15 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.Permi
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.canStartStepTrackerService
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.state.MainScreenDecorator
+import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
+import nl.codingwithlinda.smartstep.features.steps.navigation.StepNavActionHandler
 import nl.codingwithlinda.smartstep.features.steps.navigation.StepsNavActionDecorator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    dailyStepGoalViewModel: DailyStepGoalViewModel
+    dailyStepGoalViewModel: DailyStepGoalViewModel,
+    statisticsViewModel: StatisticsViewModel
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -161,10 +166,18 @@ fun MainScreen(
                 DailyStepCard(
                     stepsTaken = dailyStepGoalViewModel.stepCount.collectAsStateWithLifecycle().value,
                     dailyGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
+                    statisticsUi = statisticsViewModel.statistics.collectAsStateWithLifecycle().value,
+                    actionEdit = {
+                        StepNavActionHandler.handleAction(StepNavAction.EDIT_STEPS)
+                    },
+                    actionPause = {
+                        //TODO
+                    },
                     modifier = Modifier
                         .semantics {
                             contentDescription = "Daily Step Card"
                         }
+                        .padding(16.dp)
                 )
             }
 

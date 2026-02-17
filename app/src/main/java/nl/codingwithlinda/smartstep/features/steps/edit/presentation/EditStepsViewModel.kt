@@ -50,6 +50,9 @@ class EditStepsViewModel(
         viewModelScope.launch {
             dailyStepRepo.stepCount.firstOrNull()?.let {count ->
 
+                _steps.update {
+                    count.stepCount
+                }
                 val converted = count.toDateYYYYMMDD()
 
                 println("--- EDITSTEPS VIEWMODEL INIT --- converted step count to YYYYMMDD: $converted")

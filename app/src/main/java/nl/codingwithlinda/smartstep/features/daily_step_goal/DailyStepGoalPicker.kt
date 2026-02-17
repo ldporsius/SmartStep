@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal
+package nl.codingwithlinda.smartstep.features.daily_step_goal
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween

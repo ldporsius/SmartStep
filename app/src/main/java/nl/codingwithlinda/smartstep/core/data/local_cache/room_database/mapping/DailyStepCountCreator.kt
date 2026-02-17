@@ -43,6 +43,11 @@ object DailyStepCountCreator {
         )
     }
 
+    fun fromDateYYYYMMDD(dateYYYYMMDD: DateYYYYMMDD): Long {
+        val local = LocalDate.of(dateYYYYMMDD.YYYY, dateYYYYMMDD.MM, dateYYYYMMDD.DD)
+        return local.toEpochDay()
+    }
+
     private fun Long.toDate(): Long{
         val instant = Instant.ofEpochMilli(this)
         val day = instant.truncatedTo(ChronoUnit.DAYS)

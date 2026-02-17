@@ -1,6 +1,5 @@
 package nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal
 
-import android.util.Log.i
 import app.cash.turbine.test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +10,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
+import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import nl.codingwithlinda.smartstep.tests.FakeStepTracker
 import org.junit.After
@@ -37,7 +36,7 @@ class DailyStepGoalViewModelTest {
             appScope = CoroutineScope(testDispatcher),
             dailyStepRepo = repo,
 
-        )
+            )
 
     }
 
