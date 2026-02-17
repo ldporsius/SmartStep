@@ -13,10 +13,10 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="Tests in 'nl'">
+      <SelectionState runConfigName="smartStepE2E_permissionsGranted()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="smartStepE2E_permissionsGranted()">
+      <SelectionState runConfigName="testStepTrackerImpl()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

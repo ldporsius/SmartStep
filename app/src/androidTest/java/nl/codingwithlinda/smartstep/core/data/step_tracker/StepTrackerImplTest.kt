@@ -1,15 +1,13 @@
 package nl.codingwithlinda.smartstep.core.data.step_tracker
 
-import android.R.attr.action
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.EventCondition
 import androidx.test.uiautomator.UiDevice
-import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.MainActivity
+import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import org.junit.Assert.*
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
 import org.junit.Test
 
 class StepTrackerImplTest {
@@ -17,11 +15,15 @@ class StepTrackerImplTest {
     val context = ApplicationProvider.getApplicationContext<SmartStepApplication>()
     val scope = SmartStepApplication.applicationScope
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+
+    val callback = {state: StepTrackerState ->
+        println("StepTracker state changed: $state")
+    }
     @Test
     fun testStepTrackerImpl(){
         val stepTracker = StepTrackerImpl.getInstance(
         context, scope)
-        stepTracker.initialize()
+
 
         scope.launch {
             stepTracker.stepsTaken.collect {
@@ -29,6 +31,18 @@ class StepTrackerImplTest {
             }
         }
 
+        scope.launch {
+            stepTracker.stateObservable.collect {
+                callback(it)
+            }
+        }
+        runBlocking {
+            stepTracker.start()
+            delay(100)
+            stepTracker.pause()
+            delay(100)
+            stepTracker.stop()
+        }
 
     }
 

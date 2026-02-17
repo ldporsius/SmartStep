@@ -9,15 +9,25 @@ import android.hardware.SensorManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
 import kotlin.concurrent.Volatile
 
 class StepTrackerImpl private constructor(
     context: Context,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
 ): StepTracker, SensorEventListener{
+
+    private var state: StepTrackerState = StepTrackerState.STOPPED
+
+    private val _stateObservable = MutableStateFlow<StepTrackerState>(state)
+
+    val stateObservable: Flow<StepTrackerState> = _stateObservable
+
     private val _stepsTaken = Channel<Int>()
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -37,7 +47,7 @@ class StepTrackerImpl private constructor(
         @Synchronized
         fun getInstance(
             context: Context,
-            scope: CoroutineScope
+            scope: CoroutineScope,
         ): StepTrackerImpl {
             synchronized(lock) {
                 val i = stepTrackerInstance
@@ -51,11 +61,19 @@ class StepTrackerImpl private constructor(
             }
         }
     }
-    override fun initialize() {
-        println("StepTracker initialized with motionSensor: $motionSensor")
 
+    override fun pause() {
+        sensorManager.unregisterListener(this)
+        state = StepTrackerState.PAUSED
+        _stateObservable.update {
+            StepTrackerState.PAUSED
+        }
     }
     override fun start() {
+        state = StepTrackerState.STARTED
+        _stateObservable.update {
+            StepTrackerState.STARTED
+        }
         println("StepTracker started")
         motionSensor?.let {sensor ->
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL).also {registered ->
@@ -66,6 +84,10 @@ class StepTrackerImpl private constructor(
 
     override fun stop() {
         sensorManager.unregisterListener(this)
+        state = StepTrackerState.STOPPED
+        _stateObservable.update {
+            StepTrackerState.STOPPED
+        }
         println("StepTracker stopped")
     }
 

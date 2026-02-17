@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers
+package nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

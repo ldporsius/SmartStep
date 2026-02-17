@@ -38,8 +38,8 @@ import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalCompon
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalPickerContainer
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.exit.ExitDialog
-import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers.MainNavActionControllerImpl
-import nl.codingwithlinda.smartstep.features.main.presentation.nav_drawer_events.controllers.MainNavItemHandler
+import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
+import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavItemHandler
 
 
 @OptIn(ExperimentalMaterial3Api::class)

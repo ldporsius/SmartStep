@@ -19,11 +19,11 @@ import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 
 class StepTrackerService : Service() {
 
-    lateinit var stepTracker: StepTrackerImpl
-    lateinit var dailyStepRepoRoomImpl: DailyStepRepoRoomImpl
-    lateinit var notificationManager: NotificationManager
+    private lateinit var stepTracker: StepTrackerImpl
+    private lateinit var dailyStepRepoRoomImpl: DailyStepRepoRoomImpl
+    private lateinit var notificationManager: NotificationManager
 
-    val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -39,7 +39,7 @@ class StepTrackerService : Service() {
             userId = "todo"
         )
         stepTracker = StepTrackerImpl.getInstance(this, serviceScope)
-        stepTracker.initialize()
+
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

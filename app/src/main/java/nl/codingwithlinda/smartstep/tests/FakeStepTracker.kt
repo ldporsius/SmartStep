@@ -16,8 +16,8 @@ class FakeStepTracker(
 
     var isCounting = false
 
-    override fun initialize() {
-
+    override fun pause() {
+        isCounting = false
     }
 
     override fun start() {

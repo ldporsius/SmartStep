@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.main.presentation
+package nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
@@ -27,10 +29,13 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.R
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
-import nl.codingwithlinda.smartstep.design_system.ui.theme.primary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.secondary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.white
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.components.PausePlayButton
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.components.StatisticsRow
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.components.StepsProgressText
 import nl.codingwithlinda.smartstep.features.statistics.presentation.components.StatisticsItem
 import nl.codingwithlinda.smartstep.features.statistics.presentation.model.StatisticsUi
 import nl.codingwithlinda.smartstep.tests.fakeStatistics
@@ -41,12 +46,15 @@ fun DailyStepCard(
     stepsTaken: Int,
     dailyGoal: Int,
     statisticsUi: StatisticsUi,
+    stepTrackerState: StepTrackerState,
     actionEdit: () -> Unit = {},
-    actionPause: () -> Unit = {},
+    actionPause: () -> Unit ,
+    actionPlay: () -> Unit,
     modifier: Modifier = Modifier) {
 
     val iconModifier = remember {
         Modifier
+            .size(48.dp)
             .background(color = white.copy(.5f), shape = CircleShape)
             .padding(8.dp)
     }
@@ -64,12 +72,12 @@ fun DailyStepCard(
 
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
             Row(
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp),
-                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(painter = painterResource(R.drawable.sneakers),
                     contentDescription = null,
@@ -84,22 +92,22 @@ fun DailyStepCard(
                     )
 
                 )
-                Icon(painter = painterResource(R.drawable.pause),
-                    contentDescription = "pause",
-                    modifier = iconModifier
-                        .then(
-                            Modifier.clickable(){
-                                actionPause()
-                            }
-                        )
+                PausePlayButton(
+                    isPaused = stepTrackerState == StepTrackerState.PAUSED,
+                    actionPause = actionPause,
+                    actionPlay = actionPlay,
+                    iconModifier = iconModifier
                 )
             }
 
-            val fomattedSteps = String.format(Locale.getDefault(), "%,d", stepsTaken)
-
-            Text(fomattedSteps,
-                style = MaterialTheme.typography.headlineLarge)
-            Text("/$dailyGoal Steps")
+            StepsProgressText(
+                stepCount = stepsTaken,
+                dailyGoal = dailyGoal,
+                isPaused = stepTrackerState == StepTrackerState.PAUSED,
+                modifier = Modifier.semantics {
+                    contentDescription = "steps taken"
+                }
+            )
 
             LinearProgressIndicator(
                 progress = {
@@ -118,41 +126,10 @@ fun DailyStepCard(
         }
 
         //statistics
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            StatisticsItem(
-                icon = R.drawable.location_track,
-                value = statisticsUi.distance,
-                modifier = iconModifier.then(
-                    Modifier.semantics(){
-                        contentDescription = "distance"
-                    }
-                )
-            )
-
-            StatisticsItem(
-                icon = R.drawable.weight_diet,
-                value = statisticsUi.energy,
-                modifier = iconModifier.then(
-                    Modifier.semantics(){
-                        contentDescription = "energy"
-                    }
-                )
-            )
-            StatisticsItem(
-                icon = R.drawable.time_clock,
-                value = statisticsUi.time,
-                modifier = iconModifier.then(
-                    Modifier.semantics(){
-                        contentDescription = "time"
-                    }
-                )
-            )
-
-        }
+       StatisticsRow(
+           statisticsUi = statisticsUi,
+           iconModifier = iconModifier
+       )
     }
 
 }
@@ -164,7 +141,11 @@ private fun PreviewDailyStepCard() {
         DailyStepCard(
             stepsTaken = 1000,
             dailyGoal = 2000,
+            stepTrackerState = StepTrackerState.STOPPED,
             statisticsUi = fakeStatistics,
+            actionEdit = {},
+            actionPause = {},
+            actionPlay = {},
             modifier = Modifier.width(480.dp)
 
         )
