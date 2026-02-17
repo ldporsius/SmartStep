@@ -44,9 +44,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
         factory = viewModelFactory {
             initializer {
                 ShouldShowSettingsViewModel(
-                    userSettingsRepo = PreferencesUserSettingsRepo(
-                        dataStore = dataStoreSettings
-                    )
+                    userSettingsRepo = userSettingsRepo
                 )
             }
         }
@@ -79,7 +77,10 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
     val statisticsViewModel = viewModel<StatisticsViewModel>(
         factory = viewModelFactory {
             initializer {
-                StatisticsViewModel()
+                StatisticsViewModel(
+                    userSettingsRepo = SmartStepApplication.userSettingsRepo,
+                    dailyStepRepo = SmartStepApplication.dailyStepRepo
+                )
             }
         }
     )
