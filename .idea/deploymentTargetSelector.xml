@@ -13,9 +13,6 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="smartStepE2E_permissionsGranted()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="testStepTrackerImpl()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
