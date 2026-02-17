@@ -60,6 +60,7 @@ fun DailyStepCard(
     }
     val iconModifierSquare = remember {
         Modifier
+            .size(48.dp)
             .background(color = white.copy(.5f), shape = RoundedCornerShape(4.dp))
             .padding(8.dp)
     }
@@ -128,7 +129,7 @@ fun DailyStepCard(
         //statistics
        StatisticsRow(
            statisticsUi = statisticsUi,
-           iconModifier = iconModifier
+           iconModifier = iconModifierSquare
        )
     }
 
