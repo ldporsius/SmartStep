@@ -24,7 +24,7 @@ fun EditStepsDialog(
     modifier: Modifier = Modifier) {
 
     val numStepsText = remember(numSteps) {
-        if (numSteps == 0) "" else numSteps.toString()
+        numSteps.toString()
     }
     Column(
         modifier = modifier,
