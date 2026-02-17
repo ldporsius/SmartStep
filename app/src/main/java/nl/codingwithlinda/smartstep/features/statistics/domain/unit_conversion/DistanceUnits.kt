@@ -10,6 +10,11 @@ object KM: Distance {
 object METER: Distance {
     override val factorToBase: Double = 1.0
 }
+
+object CM: Distance {
+    override val factorToBase: Double = 0.01
+}
+
 object MILE: Distance {
     override val factorToBase: Double = 1609.34
 }
@@ -26,6 +31,9 @@ fun convertDistance(from: ConcreteDistance, to: Distance): ConcreteDistance{
         }
         METER -> {
             meter(converted)
+        }
+        CM -> {
+            cm(converted)
         }
         MILE -> {
             mile(converted)
@@ -45,6 +53,9 @@ data class km(override val value: Double): ConcreteDistance {
 }
 data class meter(override val value: Double): ConcreteDistance {
     override val distance: Distance = METER
+}
+data class cm(override val value: Double): ConcreteDistance {
+    override val distance: Distance = CM
 }
 data class mile(override val value: Double): ConcreteDistance {
     override val distance: Distance

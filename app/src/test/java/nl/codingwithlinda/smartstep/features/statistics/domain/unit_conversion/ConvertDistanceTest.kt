@@ -30,4 +30,14 @@ class ConvertDistanceTest {
         assertThat(result).isInstanceOf(mile::class)
         assertThat(result.value).isEqualTo(1 / 1.60934)
     }
+
+    @Test
+    fun testConvertBehaviorIsIdempotent() {
+        val km = km(1.0)
+
+        val result = convertDistance(km, KM)
+        val result2 = convertDistance(result, KM)
+        assertThat(result2).isEqualTo(result)
+
+    }
 }
