@@ -1,6 +1,5 @@
 package nl.codingwithlinda.smartstep.features.statistics.presentation
 
-import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,7 +7,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.userSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
@@ -27,8 +25,8 @@ import nl.codingwithlinda.smartstep.tests.fakeStatistics
 import kotlin.math.roundToInt
 
 class StatisticsViewModel(
-    private val userSettingsRepo: UserSettingsRepo,
-    private val dailyStepRepo: DailyStepRepo
+    userSettingsRepo: UserSettingsRepo,
+    dailyStepRepo: DailyStepRepo
 ): ViewModel() {
 
     val statistics = MutableStateFlow<StatisticsUi>(
