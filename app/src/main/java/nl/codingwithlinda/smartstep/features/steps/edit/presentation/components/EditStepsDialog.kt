@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -21,6 +22,10 @@ fun EditStepsDialog(
     onDismiss: () -> Unit,
     onSave: () -> Unit,
     modifier: Modifier = Modifier) {
+
+    val numStepsText = remember(numSteps) {
+        if (numSteps == 0) "" else numSteps.toString()
+    }
     Column(
         modifier = modifier,
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)
@@ -42,7 +47,7 @@ fun EditStepsDialog(
         }
 
         OutlinedTextField(
-            value = numSteps.toString(),
+            value = numStepsText,
             onValueChange = {
                 action(EditStepAction.SetSteps(it))
             },
@@ -51,7 +56,8 @@ fun EditStepsDialog(
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
-            )
+            ),
+            singleLine = true
         )
 
         CommonDialogButtonRow(

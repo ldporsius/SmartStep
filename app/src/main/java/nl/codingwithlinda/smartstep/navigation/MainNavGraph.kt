@@ -32,6 +32,7 @@ import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.UserSettingsWrapper
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
+import nl.codingwithlinda.smartstep.features.steps.edit.presentation.EditStepsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,6 +91,17 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                         context = SmartStepApplication._applicationContext,
                         scope = SmartStepApplication.applicationScope
                     )
+                )
+            }
+        }
+    )
+
+
+    val editStepsViewModel = viewModel<EditStepsViewModel>(
+        factory = viewModelFactory {
+            initializer {
+                EditStepsViewModel(
+                    dailyStepRepo = SmartStepApplication.dailyStepRepo
                 )
             }
         }
@@ -156,7 +168,8 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                     MainScreen(
                         dailyStepGoalViewModel = dailyStepGoalViewModel,
                         statisticsViewModel = statisticsViewModel,
-                        stepTrackerViewModel = stepTrackerViewModel
+                        stepTrackerViewModel = stepTrackerViewModel,
+                        editStepsViewModel = editStepsViewModel
                     )
                 }
 

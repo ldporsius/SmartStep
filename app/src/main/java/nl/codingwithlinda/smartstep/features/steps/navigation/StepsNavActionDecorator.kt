@@ -1,11 +1,9 @@
 package nl.codingwithlinda.smartstep.features.steps.navigation
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,18 +27,12 @@ import nl.codingwithlinda.smartstep.features.steps.reset.presentation.ResetSteps
 import nl.codingwithlinda.smartstep.features.steps.reset.presentation.ResetStepsViewModel
 
 @Composable
-fun StepsNavActionDecorator(modifier: Modifier = Modifier) {
+fun StepsNavActionDecorator(
+    editStepsViewModel: EditStepsViewModel
+) {
 
-    val editStepsViewModel = viewModel<EditStepsViewModel>(
-        factory = viewModelFactory {
-            initializer {
-                EditStepsViewModel(
-                    dailyStepRepo = SmartStepApplication.dailyStepRepo
-                )
-            }
-        }
-    )
-
+  /*
+*/
     var action: StepNavAction by remember { mutableStateOf(StepNavAction.NA) }
 
     ObserveAsEvents(StepNavActionHandler.actions) { _action ->

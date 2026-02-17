@@ -91,9 +91,10 @@ class EditStepsViewModel(
                 }
             }
             is EditStepAction.SetSteps -> {
-                action.steps.toIntOrNull()?.let {steps ->
+                println("--- EDITSTEPS VIEWMODEL SET STEPS --- ${action.steps}")
+                action.steps.toIntOrNull().let {new->
                     _steps.update {
-                        steps
+                        new ?: 0
                     }
                 }
             }
