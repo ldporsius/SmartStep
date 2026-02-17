@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.DailyStepCountDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.DailyStepGoalDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toDomain
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toBaselineEntity
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toEntity
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
@@ -20,7 +21,7 @@ class DailyStepRepoRoomImpl(
 
     override suspend fun saveDailyStepGoal(dailyStepGoal: DailyStepGoal) {
         dailyStepGoalDao.upsertDailyStepGoal(
-            dailyStepGoal.toEntity(
+            dailyStepGoal.toBaselineEntity(
                 userId = userId
             )
         )
@@ -54,9 +55,15 @@ class DailyStepRepoRoomImpl(
         }else{
             _stepCount.toEntity(userId)
         }
-
-
         dailyStepCountDao.saveDailyStepCount(entity)
+    }
+
+    override suspend fun getStepCountForDate(date: Long): DailyStepCount? {
+        return dailyStepCountDao.getDailyStepCount().firstOrNull()?.let { entities ->
+            entities.firstOrNull{
+                        it.date == date
+                    }?.toDomain()
+        }
     }
 
     override val stepCount: Flow<DailyStepCount> =
@@ -67,5 +74,13 @@ class DailyStepRepoRoomImpl(
         }.mapNotNull {
             it.lastOrNull()
         }
+
+    override suspend fun saveDailyStepCountBaseline(dailyStepCount: DailyStepCount) {
+        dailyStepCountDao.saveDailyStepCountBaseline(dailyStepCount.toBaselineEntity())
+    }
+
+    override suspend fun getDailyStepCountBaselineForDate(date: Long): DailyStepCount? {
+        return dailyStepCountDao.getDailyStepCountBaselineForDate(date)?.toDomain()
+    }
 
 }

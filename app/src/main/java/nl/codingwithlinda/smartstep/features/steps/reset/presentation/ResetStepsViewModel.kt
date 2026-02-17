@@ -13,6 +13,12 @@ class ResetStepsViewModel(
 
     fun reset(){
         SmartStepApplication.applicationScope.launch {
+
+           DailyStepCountCreator.getTodayAsSeconds().let {
+               dailyStepRepo.getStepCountForDate(it)
+           }?.also {
+               dailyStepRepo.saveDailyStepCountBaseline(it)
+           }
             DailyStepCountCreator.create(0).also {
                 dailyStepRepo.saveStepCount(it)
             }

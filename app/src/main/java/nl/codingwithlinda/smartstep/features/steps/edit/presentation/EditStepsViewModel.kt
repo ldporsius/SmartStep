@@ -88,8 +88,10 @@ class EditStepsViewModel(
                 }
             }
             is EditStepAction.SetSteps -> {
-                _steps.update {
-                    action.steps.toInt()
+                action.steps.toIntOrNull()?.let {steps ->
+                    _steps.update {
+                        steps
+                    }
                 }
             }
 
@@ -106,7 +108,7 @@ class EditStepsViewModel(
                     dailyStepRepo.saveStepCount(
                         update
                     )
-                    StepNavActionHandler.handleAction(StepNavAction.EDIT_STEPS)
+                    StepNavActionHandler.handleAction(StepNavAction.NA)
                 }
             }
         }

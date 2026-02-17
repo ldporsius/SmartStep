@@ -27,6 +27,12 @@ object DailyStepCountCreator {
         }
     }
 
+    fun getTodayAsSeconds(): Long{
+        val today = System.currentTimeMillis()
+        val date = today.toDate()
+        return date
+    }
+
     fun toDateYYYYMMDD(date: Long): DateYYYYMMDD {
         val instant = Instant.ofEpochSecond(date)
         val local = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
