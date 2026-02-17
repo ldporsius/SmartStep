@@ -12,8 +12,11 @@ import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.u
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weights
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.calculateDistanceCm
+import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.caloriesBurned
 import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.KM
 import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.MILE
 import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.cm
@@ -21,6 +24,7 @@ import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.c
 import nl.codingwithlinda.smartstep.features.statistics.presentation.model.StatisticsUi
 import nl.codingwithlinda.smartstep.features.statistics.presentation.util.toUi
 import nl.codingwithlinda.smartstep.tests.fakeStatistics
+import kotlin.math.roundToInt
 
 class StatisticsViewModel(
     private val userSettingsRepo: UserSettingsRepo,
@@ -34,6 +38,15 @@ class StatisticsViewModel(
     val userHeightCm = userSettingsRepo.userSettingsObservable.map {
         it.heightCm
     }
+    val userWeightKG = userSettingsRepo.userSettingsObservable.map {
+        it.weightGrams
+    }.map {
+        WeightUnits.Grams(it.roundToInt()).convert<WeightUnits.KG>(Weights.KG)
+    }
+
+    val gender = userSettingsRepo.userSettingsObservable.map {
+        it.gender
+    }
     val stepsTaken = dailyStepRepo.stepCount.map {
         it.stepCount
     }
@@ -46,7 +59,7 @@ class StatisticsViewModel(
         val distance = calculateDistanceCm(height, steps)
         cm(distance)
     }.combine(currentSystem){
-        distance, system ->
+            distance, system ->
 
         when(system){
             UnitSystems.IMPERIAL ->{
@@ -56,6 +69,10 @@ class StatisticsViewModel(
                 convertDistance(distance, KM)
             }
         }
+    }
+
+    val caloriesBurned = combine(stepsTaken, userWeightKG, gender) { steps, weight, gender ->
+        caloriesBurned(steps, weight.kg.toDouble(), gender)
     }
 
     init {
@@ -73,6 +90,20 @@ class StatisticsViewModel(
                 }
             }
         }
-    }
 
+        viewModelScope.launch {
+            caloriesBurned.collect {
+                val formatted = String.format(java.util.Locale.getDefault(),"%.0f", it)
+
+                statistics.update {
+                    it.copy(
+                        energy = UiText.DynamicText(
+                            "$formatted kcal"
+                        )
+                    )
+                }
+            }
+        }
+
+    }
 }
