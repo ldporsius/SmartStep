@@ -22,7 +22,7 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
-import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
+import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.main.presentation.common.CommonNumberPicker
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogHeader

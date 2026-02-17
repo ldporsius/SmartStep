@@ -50,7 +50,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.Permi
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.canStartStepTrackerService
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.state.MainScreenDecorator
-import nl.codingwithlinda.smartstep.features.steps.presentation.state.StepsNavActionDecorator
+import nl.codingwithlinda.smartstep.features.steps.navigation.StepsNavActionDecorator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

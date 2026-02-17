@@ -1,5 +1,7 @@
 package nl.codingwithlinda.smartstep.features.main.presentation
 
+import android.Manifest
+import android.os.Build
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -7,6 +9,7 @@ import androidx.compose.ui.test.performClick
 import androidx.datastore.preferences.core.edit
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.smartstep.MainActivity
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
@@ -25,12 +28,24 @@ class SmartStepE2ETest {
     )
 
     val context: SmartStepApplication = ApplicationProvider.getApplicationContext<SmartStepApplication>()
+    val packageName = InstrumentationRegistry.getInstrumentation().targetContext.packageName
 
     @Before
     fun setUp(){
         runBlocking {
             context.dataStore.edit {
                 it.clear()
+            }
+
+            if(Build.VERSION.SDK_INT >= 28){
+                InstrumentationRegistry.getInstrumentation().uiAutomation.grantRuntimePermission(
+                    packageName,
+                    Manifest.permission.ACTIVITY_RECOGNITION,
+                )
+
+                InstrumentationRegistry.getInstrumentation().uiAutomation.grantRuntimePermission(
+                    packageName, Manifest.permission.POST_NOTIFICATIONS
+                )
             }
         }
     }

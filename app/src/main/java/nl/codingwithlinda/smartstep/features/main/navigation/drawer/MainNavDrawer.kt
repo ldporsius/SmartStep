@@ -13,11 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.design.ui.theme.primary
+import nl.codingwithlinda.smartstep.design_system.ui.theme.primary
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavActionController
-import nl.codingwithlinda.smartstep.navigation.NavigationController
-import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
 
 @Composable
 fun MainNavDrawer(

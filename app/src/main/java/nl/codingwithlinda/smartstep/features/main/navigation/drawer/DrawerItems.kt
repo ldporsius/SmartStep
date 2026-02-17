@@ -3,7 +3,7 @@ package nl.codingwithlinda.smartstep.features.main.navigation.drawer
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavActionController
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
-import nl.codingwithlinda.smartstep.features.steps.presentation.state.StepNavActionHandler
+import nl.codingwithlinda.smartstep.features.steps.navigation.StepNavActionHandler
 import nl.codingwithlinda.smartstep.navigation.NavigationController
 import nl.codingwithlinda.smartstep.navigation.UserSettingsRoute
 

@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.steps.presentation.components
+package nl.codingwithlinda.smartstep.features.steps.edit.presentation.components
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,7 @@ import nl.codingwithlinda.smartstep.features.steps.domain.model.DatePicker
 import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.features.steps.domain.model.months
 import nl.codingwithlinda.smartstep.features.steps.domain.model.years
-import nl.codingwithlinda.smartstep.features.steps.presentation.state.EditStepAction
+import nl.codingwithlinda.smartstep.features.steps.edit.presentation.state.EditStepAction
 
 @Composable
 fun DatePickerComponent(

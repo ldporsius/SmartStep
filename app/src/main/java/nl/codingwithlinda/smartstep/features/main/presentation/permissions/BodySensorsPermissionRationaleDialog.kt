@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.R
-import nl.codingwithlinda.smartstep.design.ui.theme.textPrimary
+import nl.codingwithlinda.smartstep.design_system.ui.theme.textPrimary
 
 
 @Composable

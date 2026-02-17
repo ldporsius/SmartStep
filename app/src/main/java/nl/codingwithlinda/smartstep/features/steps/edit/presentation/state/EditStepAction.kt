@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.steps.presentation.state
+package nl.codingwithlinda.smartstep.features.steps.edit.presentation.state
 
 sealed interface EditStepAction {
     object ShowDatePicker: EditStepAction

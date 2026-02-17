@@ -16,6 +16,9 @@
       <SelectionState runConfigName="Tests in 'nl'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="smartStepE2E_permissionsGranted()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

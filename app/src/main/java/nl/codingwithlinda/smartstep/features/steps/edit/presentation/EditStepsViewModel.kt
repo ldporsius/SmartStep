@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.steps.presentation
+package nl.codingwithlinda.smartstep.features.steps.edit.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,8 +20,8 @@ import nl.codingwithlinda.smartstep.features.steps.domain.model.DatePicker
 import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.features.steps.domain.model.months
 import nl.codingwithlinda.smartstep.features.steps.domain.model.years
-import nl.codingwithlinda.smartstep.features.steps.presentation.state.EditStepAction
-import nl.codingwithlinda.smartstep.features.steps.presentation.state.StepNavActionHandler
+import nl.codingwithlinda.smartstep.features.steps.edit.presentation.state.EditStepAction
+import nl.codingwithlinda.smartstep.features.steps.navigation.StepNavActionHandler
 
 class EditStepsViewModel(
     private val dailyStepRepo: DailyStepRepo

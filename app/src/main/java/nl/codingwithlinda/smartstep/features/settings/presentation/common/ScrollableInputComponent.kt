@@ -37,7 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
+import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import kotlin.math.roundToInt
 
 @Composable

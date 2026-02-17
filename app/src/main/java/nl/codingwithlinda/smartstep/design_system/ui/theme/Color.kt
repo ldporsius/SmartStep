@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.design.ui.theme
+package nl.codingwithlinda.smartstep.design_system.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

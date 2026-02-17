@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import nl.codingwithlinda.smartstep.R
-import nl.codingwithlinda.smartstep.design.ui.theme.textSecondary
+import nl.codingwithlinda.smartstep.design_system.ui.theme.textSecondary
 
 @Composable
 fun ExitDialog(

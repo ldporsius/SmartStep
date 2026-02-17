@@ -33,8 +33,8 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsIn
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
-import nl.codingwithlinda.smartstep.design.ui.theme.SmartStepTheme
-import nl.codingwithlinda.smartstep.design.ui.theme.white
+import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
+import nl.codingwithlinda.smartstep.design_system.ui.theme.white
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.SettingBoxComponent
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.SettingsDialog

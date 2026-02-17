@@ -1,7 +1,9 @@
-package nl.codingwithlinda.smartstep.features.steps.presentation.state
+package nl.codingwithlinda.smartstep.features.steps.navigation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,9 +21,12 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
-import nl.codingwithlinda.smartstep.features.steps.presentation.EditStepsViewModel
-import nl.codingwithlinda.smartstep.features.steps.presentation.components.DatePickerComponent
-import nl.codingwithlinda.smartstep.features.steps.presentation.components.EditStepsDialog
+import nl.codingwithlinda.smartstep.features.steps.edit.presentation.EditStepsViewModel
+import nl.codingwithlinda.smartstep.features.steps.edit.presentation.components.DatePickerComponent
+import nl.codingwithlinda.smartstep.features.steps.edit.presentation.components.EditStepsDialog
+import nl.codingwithlinda.smartstep.features.steps.edit.presentation.state.EditStepAction
+import nl.codingwithlinda.smartstep.features.steps.reset.presentation.ResetStepsDialog
+import nl.codingwithlinda.smartstep.features.steps.reset.presentation.ResetStepsViewModel
 
 @Composable
 fun StepsNavActionDecorator(modifier: Modifier = Modifier) {
@@ -73,7 +78,7 @@ fun StepsNavActionDecorator(modifier: Modifier = Modifier) {
                 }
             ) {
                 Surface(
-                    shape = androidx.compose.material3.MaterialTheme.shapes.medium,
+                    shape = MaterialTheme.shapes.medium,
                     modifier = Modifier
                 ) {
                     EditStepsDialog(
@@ -94,9 +99,40 @@ fun StepsNavActionDecorator(modifier: Modifier = Modifier) {
             }
         }
         StepNavAction.RESET_STEPS -> {
-            Box() {
-                Text("Reset steps")
-            }
+            val resetStepsViewModel = viewModel<ResetStepsViewModel>(
+                factory = viewModelFactory {
+
+                    initializer {
+                        ResetStepsViewModel(
+                            dailyStepRepo = SmartStepApplication.dailyStepRepo
+                        )
+                    }
+                }
+            )
+           Dialog(
+               onDismissRequest = {
+                   StepNavActionHandler.handleAction(
+                       StepNavAction.NA
+                   )
+               }
+           ) {
+               Surface(
+                   shape = MaterialTheme.shapes.medium,
+                   modifier = Modifier.fillMaxWidth()
+               ) {
+                   ResetStepsDialog(
+                       onDismiss = {
+                           StepNavActionHandler.handleAction(
+                               StepNavAction.NA
+                           )
+                       },
+                       onReset = {
+                           resetStepsViewModel.reset()
+                       },
+                       modifier = Modifier.fillMaxWidth().padding(16.dp)
+                   )
+               }
+           }
         }
     }
 

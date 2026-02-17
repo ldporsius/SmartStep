@@ -1,6 +1,5 @@
-package nl.codingwithlinda.smartstep.design.ui.theme
+package nl.codingwithlinda.smartstep.design_system.ui.theme
 
-import android.R.attr.fontFamily
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -40,6 +39,13 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 22.sp,
         lineHeight = 28.sp,
+        letterSpacing = 0.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = interFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
         letterSpacing = 0.sp
     ),
 

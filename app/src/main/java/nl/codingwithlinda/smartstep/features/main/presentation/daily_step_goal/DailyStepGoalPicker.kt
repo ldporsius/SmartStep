@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import nl.codingwithlinda.smartstep.design.ui.theme.secondary
+import nl.codingwithlinda.smartstep.design_system.ui.theme.secondary
 
 @Composable
 fun DailyStepGoalPicker(

@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.steps.presentation.state
+package nl.codingwithlinda.smartstep.features.steps.navigation
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
