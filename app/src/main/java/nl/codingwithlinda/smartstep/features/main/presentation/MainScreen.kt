@@ -2,6 +2,7 @@ package nl.codingwithlinda.smartstep.features.main.presentation
 
 import android.content.Intent
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,6 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
+import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.presentation.util.necessaryPermissionsOnly
 import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
@@ -188,6 +190,15 @@ fun MainScreen(
                         }
                         .padding(16.dp)
                 )
+
+                Box(
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                ){
+                    val count = stepTrackerViewModel.counter.collectAsStateWithLifecycle().value
+
+                    Text("$count")
+
+                }
             }
 
             PermissionDecorator(
@@ -215,5 +226,11 @@ fun MainScreen(
 
         StepsNavActionDecorator(editStepsViewModel)
     }
+
+    ObserveAsEvents(stepTrackerViewModel.state) {
+        Toast.makeText(context, it.name, Toast.LENGTH_SHORT).show()
+    }
+
+
 
 }

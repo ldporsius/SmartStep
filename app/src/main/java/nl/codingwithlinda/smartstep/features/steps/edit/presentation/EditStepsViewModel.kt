@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,7 +28,23 @@ class EditStepsViewModel(
     private val dailyStepRepo: DailyStepRepo
 ): ViewModel() {
     private val _steps = MutableStateFlow(0)
-    val steps = _steps.asStateFlow()
+    val steps = _steps
+        .onStart {
+            dailyStepRepo.stepCount.firstOrNull()?.let {count ->
+
+                _steps.update {
+                    count.stepCount
+                }
+                val converted = count.toDateYYYYMMDD()
+
+                println("--- EDITSTEPS VIEWMODEL INIT --- converted step count to YYYYMMDD: $converted")
+
+                _dateYYYYMMDD.update {
+                    converted
+                }
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
 
     val yearRange = years.toList()
