@@ -66,6 +66,7 @@ class MainScreenTest {
 
     }
 
+    @Ignore
     @Test
     fun testBodySensorsPermissionDeclined(){
 

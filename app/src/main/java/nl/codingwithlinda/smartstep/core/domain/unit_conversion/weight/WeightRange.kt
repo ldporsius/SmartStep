@@ -20,10 +20,10 @@ val maxWeightPounds = floor(weightRangeKg.last() * kgToPoundsFactor).toInt()
 val weightRangePounds = IntRange(minWeightPounds, maxWeightPounds).toList()
 
 val kgToPounds = weightRangePounds.map {
-    val pound = WeightUnits.LBS(it)
-    val kg = pound.convert<WeightUnits.KG>(Weights.KG)
+    val pound = LBSWeight(it)
+    val kg = convertWeight(pound, KG)
 
-    it to kg.kg
+    it to kg
 }.groupBy { (pounds, kg) ->
     kg
 }.mapValues{ (i, pairs) ->

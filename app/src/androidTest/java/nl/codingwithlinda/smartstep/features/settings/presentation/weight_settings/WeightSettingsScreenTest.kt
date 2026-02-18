@@ -24,8 +24,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.smartstep.application.dataStore
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GRAM
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KGWeight
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBS
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weights
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.convertWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
@@ -47,9 +51,9 @@ class WeightSettingsScreenTest {
     val context = ApplicationProvider.getApplicationContext<Application>()
     val screenshotPath = File(context.cacheDir, "testWeightSettingsScreen.png")
 
-    val kg = WeightUnits.KG(weightRangeKg.last())
-    val grams = kg.convert<WeightUnits.Grams>(Weights.GRAMS)
-    val pounds = kg.convert<WeightUnits.LBS>(Weights.LBS)
+    val kg = KGWeight(weightRangeKg.last())
+    val grams = convertWeight(kg, GRAM)
+    val pounds = convertWeight(kg, LBS)
 
 
     @Before
@@ -61,7 +65,7 @@ class WeightSettingsScreenTest {
         }
 
         uiState.update {
-            WeightSettingUiState.SI(grams.grams)
+            WeightSettingUiState.SI(grams.weight)
         }
 
         composeTestRule.setContent {
@@ -73,7 +77,7 @@ class WeightSettingsScreenTest {
                     when (it) {
                        is ActionWeightInput.ChangeSystem ->{
                            uiState.update {
-                               WeightSettingUiState.Imperial(pounds)
+                               WeightSettingUiState.Imperial(pounds as LBSWeight)
                            }
 
                        }
@@ -95,7 +99,7 @@ class WeightSettingsScreenTest {
     @Test
     fun testWeightSettingsScreen(): Unit = runBlocking {
 
-        assertEquals(grams.grams, 200_000)
+        assertEquals(grams.weight, 200_000)
         composeTestRule.waitUntilExactlyOneExists(
             isRoot()
         )

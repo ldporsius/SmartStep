@@ -11,8 +11,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GRAM
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GramsWeight
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KGWeight
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBS
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weights
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.convertWeight
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.fromPreviousPounds
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
@@ -22,8 +28,8 @@ class WeightSettingViewModel(
     private val userSettingsRepo: UserSettingsRepo,
     private val memento: UserSettingsMemento,
 ): ViewModel(){
-    private val _weightInputGrams = MutableStateFlow(WeightUnits.Grams(0))
-    private val _weightInputPounds = MutableStateFlow(WeightUnits.LBS(0))
+    private val _weightInputGrams = MutableStateFlow(GramsWeight(0))
+    private val _weightInputPounds = MutableStateFlow(LBSWeight(0))
 
     private val system = userSettingsRepo.unitSystemObservable
 
@@ -32,7 +38,7 @@ class WeightSettingViewModel(
 
         when (system) {
             is UnitSystems.SI -> {
-                WeightSettingUiState.SI(grams.grams)
+                WeightSettingUiState.SI(grams.weight)
             }
             is UnitSystems.IMPERIAL -> WeightSettingUiState.Imperial(pounds)
         }
@@ -43,13 +49,13 @@ class WeightSettingViewModel(
         viewModelScope.launch {
             userSettingsRepo.loadSettings().also {
 
-                val weightGrams = it.weightGrams
+                val weightGrams = GramsWeight(it.weightGrams.roundToInt())
                 _weightInputGrams.update {
-                    WeightUnits.Grams(weightGrams.toInt())
+                   weightGrams
                 }
-                val weightPounds = WeightUnits.Grams(weightGrams.roundToInt()).convert<WeightUnits.LBS>(Weights.LBS)
+                val weightPounds = convertWeight(weightGrams, LBS)
                 _weightInputPounds.update {
-                    weightPounds
+                    weightPounds as LBSWeight
                 }
             }
         }
@@ -59,24 +65,23 @@ class WeightSettingViewModel(
             is ActionWeightInput.KgInput -> {
                 println("--- ActionWeightInput.KgInput --- kg: ${action.kg}")
 
-                val kg = WeightUnits.KG(action.kg)
-                val convertedToGrams = kg.convert<WeightUnits.Grams>(Weights.GRAMS)
-
+                val kg = KGWeight(action.kg)
+                val convertedToGrams = convertWeight(kg, GRAM)
                 println("--- ActionWeightInput.KgInput --- converted: $convertedToGrams")
 
                 _weightInputGrams.update {
-                    convertedToGrams
+                    convertedToGrams as GramsWeight
                 }
                 _weightInputPounds.update {
-                    kg.fromPreviousPounds(_weightInputPounds.value.pounds)
+                    fromPreviousPounds(kg,_weightInputPounds.value.weight)
                 }
             }
 
             is ActionWeightInput.PoundsInput -> {
                 println("--- ActionWeightInput.PoundsInput --- pounds: ${action.pounds} ")
 
-                val pounds = WeightUnits.LBS(action.pounds)
-                val convertedToGrams = pounds.convert<WeightUnits.Grams>(Weights.GRAMS)
+                val pounds = LBSWeight(action.pounds)
+                val convertedToGrams = convertWeight(pounds, GRAM) as GramsWeight
 
                 println("--- ActionWeightInput.PoundsInput --- convertedToGrams: $convertedToGrams")
 
@@ -84,14 +89,14 @@ class WeightSettingViewModel(
                     convertedToGrams
                 }
                 _weightInputPounds.update {
-                    WeightUnits.LBS(action.pounds)
+                    pounds
                 }
 
             }
 
             is ActionWeightInput.Save -> {
                 viewModelScope.launch(NonCancellable) {
-                    val currentWeight = _weightInputGrams.value.grams.toDouble()
+                    val currentWeight = _weightInputGrams.value.weight.toDouble()
                     val userSettings = memento.restoreLast().copy(weightGrams = currentWeight)
                     memento.save(userSettings)
                 }

@@ -10,8 +10,9 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnits
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weights
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GramsWeight
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KG
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.convertWeight
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.calculateDistanceCm
 import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.caloriesBurned
@@ -39,7 +40,8 @@ class StatisticsViewModel(
     val userWeightKG = userSettingsRepo.userSettingsObservable.map {
         it.weightGrams
     }.map {
-        WeightUnits.Grams(it.roundToInt()).convert<WeightUnits.KG>(Weights.KG)
+        val grams = GramsWeight(it.roundToInt())
+        convertWeight(grams, KG)
     }
 
     val gender = userSettingsRepo.userSettingsObservable.map {
@@ -70,7 +72,7 @@ class StatisticsViewModel(
     }
 
     val caloriesBurned = combine(stepsTaken, userWeightKG, gender) { steps, weight, gender ->
-        caloriesBurned(steps, weight.kg.toDouble(), gender)
+        caloriesBurned(steps, weight.weight.toDouble(), gender)
     }
 
     init {

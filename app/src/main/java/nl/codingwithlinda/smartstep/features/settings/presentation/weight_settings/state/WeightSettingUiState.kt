@@ -1,7 +1,7 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state
 
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.maxWeightPounds
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.minWeightPounds
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
@@ -9,9 +9,9 @@ import nl.codingwithlinda.smartstep.core.domain.util.UiText
 import kotlin.math.roundToInt
 
 interface WeightSettingUiState {
-    data class Imperial(private val unit: WeightUnits.LBS): WeightSettingUiState{
+    data class Imperial(private val unit: LBSWeight): WeightSettingUiState{
 
-        val pounds = unit.pounds
+        val pounds = unit.weight
             .coerceIn(minWeightPounds, maxWeightPounds)
         override val system: UnitSystems
             get() = UnitSystems.IMPERIAL

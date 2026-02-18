@@ -29,21 +29,6 @@ class EditStepsViewModel(
 ): ViewModel() {
     private val _steps = MutableStateFlow(0)
     val steps = _steps
-        .onStart {
-            dailyStepRepo.stepCount.firstOrNull()?.let {count ->
-
-                _steps.update {
-                    count.stepCount
-                }
-                val converted = count.toDateYYYYMMDD()
-
-                println("--- EDITSTEPS VIEWMODEL INIT --- converted step count to YYYYMMDD: $converted")
-
-                _dateYYYYMMDD.update {
-                    converted
-                }
-            }
-        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
 
@@ -109,10 +94,11 @@ class EditStepsViewModel(
             }
             is EditStepAction.SetSteps -> {
                 println("--- EDITSTEPS VIEWMODEL SET STEPS --- ${action.steps}")
-                action.steps.toIntOrNull().let {new->
+                val asInt = action.steps.toIntOrNull() ?: -1000000
+
                     _steps.update {
-                        new ?: 0
-                    }
+                        asInt
+
                 }
             }
 

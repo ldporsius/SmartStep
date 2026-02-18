@@ -5,54 +5,54 @@ import org.junit.Test
 
 class WeightUnitsTest {
 
-    val grams = WeightUnits.Grams(1000)
-    val kg = WeightUnits.KG(1)
-    val pounds = WeightUnits.LBS(200)
+    val grams = GramsWeight(1000)
+    val kg = KGWeight(1)
+    val pounds = LBSWeight(200)
 
     @Test
     fun `convert from grams to kilograms`() {
-        val converted = grams.convert<WeightUnits.KG>(Weights.KG)
-        Assert.assertEquals(1, converted.kg)
+        val converted = convertWeight(grams, KG)
+        Assert.assertEquals(1, converted.weight)
     }
 
     @Test
     fun `convert from kg to grams`() {
-        val converted = kg.convert<WeightUnits.Grams>(Weights.GRAMS)
-        Assert.assertEquals(1000, converted.grams)
+        val converted = convertWeight(kg, GRAM)
+        Assert.assertEquals(1000, converted.weight)
     }
 
     @Test
     fun `convert from kg to pounds`() {
-        val converted = kg.convert<WeightUnits.LBS>(Weights.LBS)
-        Assert.assertEquals(2, converted.pounds)
+        val converted = convertWeight(kg, LBS)
+        Assert.assertEquals(2, converted.weight)
     }
 
     @Test
     fun `convert from pounds to kilograms`() {
-        val converted = pounds.convert<WeightUnits.KG>(Weights.KG)
-        Assert.assertEquals(91, converted.kg)
+        val converted = convertWeight(pounds, KG)
+        Assert.assertEquals(91, converted.weight)
     }
 
     @Test
     fun `convert from pounds to grams`() {
-        val converted = pounds.convert<WeightUnits.Grams>(Weights.GRAMS)
-        Assert.assertEquals(90_719, converted.grams)
+        val converted = convertWeight(pounds, GRAM)
+        Assert.assertEquals(90_718, converted.weight)
     }
 
     @Test
     fun `convert from grams to pounds`() {
-        val converted = grams.convert<WeightUnits.LBS>(Weights.LBS)
-        Assert.assertEquals(2, converted.pounds)
+        val converted = convertWeight(grams, LBS)
+        Assert.assertEquals(2, converted.weight)
     }
 
 
     @Test
     fun `print list of pounds and kg`() {
         val poundsKg = weightRangePounds.map {
-            val pound = WeightUnits.LBS(it)
-            val kg = pound.convert<WeightUnits.KG>(Weights.KG)
+            val pound = LBSWeight(it)
+            val kg = convertWeight(pound, KG)
 
-            it to kg.kg
+            it to kg.weight
         }
 
         poundsKg.groupBy { (pounds, kg) ->

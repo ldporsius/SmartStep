@@ -9,7 +9,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.WeightUnits
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
@@ -32,7 +32,6 @@ class WeightSettingViewModelTest {
             userSettingsRepo = FakeUserSettingsRepo(),
             memento = UserSettingsMemento,
         )
-
     }
 
     @After
@@ -42,7 +41,7 @@ class WeightSettingViewModelTest {
 
     @Test
     fun `test weightViewModel updates correctly`() = runTest {
-        val expected = WeightUnits.LBS(220)
+        val expected = LBSWeight(220)
         viewModel.weightUiState.test {
             assertEquals(awaitItem(), WeightSettingUiState.SI(0))
 

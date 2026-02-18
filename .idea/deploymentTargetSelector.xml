@@ -13,7 +13,7 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="testStepTrackerImpl()">
+      <SelectionState runConfigName="Tests in 'nl'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
