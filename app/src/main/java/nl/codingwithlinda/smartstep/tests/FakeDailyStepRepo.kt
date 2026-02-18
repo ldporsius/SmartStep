@@ -13,11 +13,12 @@ import java.time.LocalDate
 
 class FakeDailyStepRepo: DailyStepRepo {
 
+    val today = DailyStepCountCreator.getTodayAsSeconds()
     private val goals =
         listOf(DailyStepGoal(1, 1000))
 
     private val goalObservable = MutableStateFlow<DailyStepGoal?>(null)
-    private val _stepCount = MutableStateFlow(DailyStepCount(0, 0))
+    private val _stepCount = MutableStateFlow(DailyStepCount(today, 0))
 
     private val _baseline = MutableStateFlow<DailyStepCount?>(null)
 

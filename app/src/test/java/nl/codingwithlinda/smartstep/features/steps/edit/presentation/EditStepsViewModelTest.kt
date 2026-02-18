@@ -13,12 +13,16 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.features.steps.edit.presentation.state.EditStepAction
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import java.time.LocalDate
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EditStepsViewModelTest {
@@ -68,25 +72,30 @@ class EditStepsViewModelTest {
 
             println("first emission received")
 
-            viewModel.onAction(EditStepAction.InputYear(2026))
+            val tomorrow = DailyStepCountCreator.getTodayAsSeconds().seconds
+                .plus(365.days)
+                .plus(30.days)
+                .plus(1.days)
+            val tomorrowLocal = LocalDate.ofEpochDay(tomorrow.inWholeDays)
+            viewModel.onAction(EditStepAction.InputYear(tomorrowLocal.year))
             val emYear = awaitItem()
 
             println("year emission received")
 
-            assertEquals(2026, emYear.YYYY)
+            assertEquals(tomorrowLocal.year, emYear.YYYY)
 
-            viewModel.onAction(EditStepAction.InputMonth(2))
+            viewModel.onAction(EditStepAction.InputMonth(tomorrowLocal.monthValue))
 
             val emMonth = awaitItem()
             println("month emission received")
 
-            assertEquals(2, emMonth.MM)
+            assertEquals(tomorrowLocal.monthValue, emMonth.MM)
 
-            viewModel.onAction(EditStepAction.InputDay(31))
+            viewModel.onAction(EditStepAction.InputDay(tomorrowLocal.dayOfMonth))
 
 
             val emDay = awaitItem()
-                assertEquals(31, emDay.DD)
+                assertEquals(tomorrowLocal.dayOfMonth, emDay.DD)
 
                // assertThat(fakeDailyStepRepo.getStepCountForYYYYMMDD(date)?.stepCount).isEqualTo(1000)
             }

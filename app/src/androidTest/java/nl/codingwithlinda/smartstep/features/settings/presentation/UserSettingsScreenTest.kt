@@ -8,11 +8,16 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GRAM
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.convertWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.kgToPoundsFactor
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
@@ -24,6 +29,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalTestApi::class)
 class UserSettingsScreenTest {
@@ -148,7 +154,15 @@ class UserSettingsScreenTest {
         robot .pressOK()
             .pressStart()
 
-        assertEquals(usersettingsRepo.loadSettings().weightGrams, (200 / kgToPoundsFactor) * 1000, .5)
+        val actual = usersettingsRepo.loadSettings().weightGrams
+        val expected = convertWeight( LBSWeight(200), GRAM).weight.toDouble()
+        println("actual: $actual")
+        println("expected: $expected")
+        assertThat(
+            actual
+        ).isEqualTo(
+            expected
+        )
 
         robot.pickWeight()
             .selectSI("kg")

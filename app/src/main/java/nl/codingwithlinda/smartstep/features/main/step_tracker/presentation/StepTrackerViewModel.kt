@@ -7,11 +7,17 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationEnd
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationStart
+import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 
 class StepTrackerViewModel(
-    private val stepTracker: StepTrackerImpl
+    private val stepTracker: StepTrackerImpl,
+    private val walkDurationRepo: WalkDurationRepo
 ): ViewModel() {
 
     val state = stepTracker.stateObservable
@@ -28,6 +34,48 @@ class StepTrackerViewModel(
 
     init {
         stepsTaken.start()
+
+        viewModelScope.launch {
+            state.collect {state ->
+                println("state changed: $state")
+                when(state){
+                    StepTrackerState.STARTED -> {
+                        val today = DailyStepCountCreator.toDateYYYYMMDD(System.currentTimeMillis())
+                        walkDurationRepo.saveWalkDurationStart(
+                            WalkDurationStart(
+                                today.YYYY,
+                                today.MM,
+                                today.DD,
+                                System.currentTimeMillis()
+                            )
+                        )
+                    }
+                    StepTrackerState.PAUSED -> {
+                        val today = DailyStepCountCreator.toDateYYYYMMDD(System.currentTimeMillis())
+                        walkDurationRepo.saveWalkDurationEnd(
+                            WalkDurationEnd(
+                                today.YYYY,
+                                today.MM,
+                                today.DD,
+                                System.currentTimeMillis()
+                            )
+                        )
+                    }
+                    StepTrackerState.STOPPED -> {
+                        val today = DailyStepCountCreator.toDateYYYYMMDD(System.currentTimeMillis())
+                        walkDurationRepo.saveWalkDurationEnd(
+                            WalkDurationEnd(
+                                today.YYYY,
+                                today.MM,
+                                today.DD,
+                                System.currentTimeMillis()
+                            )
+                        )
+                    }
+                }
+            }
+
+        }
     }
     fun pause(){
         stepTracker.pause()

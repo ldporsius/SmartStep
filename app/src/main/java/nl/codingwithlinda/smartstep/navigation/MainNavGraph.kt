@@ -20,8 +20,10 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dataStoreSettings
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.userSettingsRepo
+import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerImpl
+import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
@@ -79,7 +81,9 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
             initializer {
                 StatisticsViewModel(
                     userSettingsRepo = SmartStepApplication.userSettingsRepo,
-                    dailyStepRepo = SmartStepApplication.dailyStepRepo
+                    dailyStepRepo = SmartStepApplication.dailyStepRepo,
+                    walkDurationRepo = SmartStepApplication.walkDurationRepo,
+                    dispatcherProvider = AndroidDispatcherProvider()
                 )
             }
         }
@@ -91,7 +95,8 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                     stepTracker = StepTrackerImpl.getInstance(
                         context = SmartStepApplication._applicationContext,
                         scope = SmartStepApplication.applicationScope
-                    )
+                    ),
+                    walkDurationRepo = SmartStepApplication.walkDurationRepo
                 )
             }
         }

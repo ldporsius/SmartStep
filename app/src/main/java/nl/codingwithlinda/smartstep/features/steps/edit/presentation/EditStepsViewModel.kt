@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
-import nl.codingwithlinda.smartstep.features.steps.domain.mapping.toDateYYYYMMDD
 import nl.codingwithlinda.smartstep.features.steps.domain.mapping.toDomain
 import nl.codingwithlinda.smartstep.features.steps.domain.model.DatePicker
 import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
@@ -55,7 +54,7 @@ class EditStepsViewModel(
                 _steps.update {
                     count.stepCount
                 }
-                val converted = count.toDateYYYYMMDD()
+                val converted = DailyStepCountCreator.toDateYYYYMMDD(count.date)
 
                 println("--- EDITSTEPS VIEWMODEL INIT --- converted step count to YYYYMMDD: $converted")
 

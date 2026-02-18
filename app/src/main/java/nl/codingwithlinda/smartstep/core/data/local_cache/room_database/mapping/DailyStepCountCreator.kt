@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.features.steps.domain.model.years
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -33,14 +34,27 @@ object DailyStepCountCreator {
         return date
     }
 
-    fun toDateYYYYMMDD(date: Long): DateYYYYMMDD {
-        val instant = Instant.ofEpochSecond(date)
+    fun toDateYYYYMMDD(dateSeconds: Long): DateYYYYMMDD {
+        val instant = Instant.ofEpochSecond(dateSeconds)
         val local = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
+        if (local.year !in years) {
+            //try if input was in milliseconds
+            val instant = Instant.ofEpochMilli(dateSeconds)
+            val local = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
+            if (local.year !in years) throw Exception("Invalid date")
+            return DateYYYYMMDD(
+                YYYY = local.year,
+                MM = local.monthValue,
+                DD = local.dayOfMonth
+            )
+        }
         return DateYYYYMMDD(
             YYYY = local.year,
             MM = local.monthValue,
             DD = local.dayOfMonth
         )
+
+
     }
 
     fun fromDateYYYYMMDD(dateYYYYMMDD: DateYYYYMMDD): Long {

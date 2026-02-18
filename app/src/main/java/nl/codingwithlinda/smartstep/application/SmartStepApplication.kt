@@ -16,8 +16,10 @@ import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartSte
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService.Companion.CHANNEL_ID
+import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
@@ -28,7 +30,8 @@ class SmartStepApplication: Application() {
         lateinit var dataStoreSettings: DataStore<Preferences>
         lateinit var userSettingsRepo: UserSettingsRepo
         lateinit var dailyStepRepo: DailyStepRepo
-        //lateinit var stepTracker: StepTracker
+        lateinit var walkDurationRepo: WalkDurationRepo
+
         lateinit var _applicationContext: Context
 
         val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -61,6 +64,8 @@ class SmartStepApplication: Application() {
             dailyStepCountDao = db.dailyStepCountDao,
             userId = "todo"
         )
+
+        walkDurationRepo = WalkDurationRepoImpl()
 
 
         _applicationContext = this
