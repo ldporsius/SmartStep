@@ -18,17 +18,13 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dataStoreSettings
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.userSettingsRepo
 import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
-import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
-import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerImpl
-import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
-import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
-import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.main.step_tracker.presentation.StepTrackerViewModel
+import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
@@ -92,10 +88,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
         factory = viewModelFactory {
             initializer {
                 StepTrackerViewModel(
-                    stepTracker = StepTrackerImpl.getInstance(
-                        context = SmartStepApplication._applicationContext,
-                        scope = SmartStepApplication.applicationScope
-                    ),
+                    stepTracker = SmartStepApplication.stepTracker,
                     walkDurationRepo = SmartStepApplication.walkDurationRepo
                 )
             }

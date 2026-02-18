@@ -16,10 +16,11 @@ import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 
 class StepTrackerService : Service() {
 
-    private lateinit var stepTracker: StepTrackerImpl
+    private lateinit var stepTracker: StepTracker
     private lateinit var dailyStepRepoRoomImpl: DailyStepRepoRoomImpl
     private lateinit var notificationManager: NotificationManager
 
@@ -38,7 +39,7 @@ class StepTrackerService : Service() {
             dailyStepCountDao = db.dailyStepCountDao,
             userId = "todo"
         )
-        stepTracker = StepTrackerImpl.getInstance(this, serviceScope)
+        stepTracker = StepTrackerCounterImpl.getInstance(this)
 
     }
 
@@ -66,6 +67,7 @@ class StepTrackerService : Service() {
         startForeground(1, notification.build())
 
         stepTracker.stepsTaken.onEach {
+            println("--- StepTrackerService --- steps taken: $it")
             DailyStepCountCreator.create(1).also {
                 dailyStepRepoRoomImpl.addStepCountToToday(it)
             }

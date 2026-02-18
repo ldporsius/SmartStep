@@ -26,7 +26,7 @@ class StepTrackerImpl private constructor(
 
     private val _stateObservable = MutableStateFlow<StepTrackerState>(state)
 
-    val stateObservable: Flow<StepTrackerState> = _stateObservable
+    override val stateObservable: Flow<StepTrackerState> = _stateObservable
 
     private val _stepsTaken = Channel<Int>()
 

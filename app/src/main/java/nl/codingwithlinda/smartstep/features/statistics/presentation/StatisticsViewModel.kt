@@ -144,7 +144,6 @@ class StatisticsViewModel(
         }
         viewModelScope.launch {
             timeWalked.collect {duration ->
-                println("--- StatisticsViewModel --- timeWalked collected: $duration")
                 _statistics.update {
                     it.copy(
                         time = UiText.DynamicText(

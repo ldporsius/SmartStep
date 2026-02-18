@@ -9,14 +9,14 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
-import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerImpl
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationEnd
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationStart
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 
 class StepTrackerViewModel(
-    private val stepTracker: StepTrackerImpl,
+    private val stepTracker: StepTracker,
     private val walkDurationRepo: WalkDurationRepo
 ): ViewModel() {
 

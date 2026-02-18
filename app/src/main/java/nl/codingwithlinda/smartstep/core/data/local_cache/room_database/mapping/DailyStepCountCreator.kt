@@ -41,7 +41,7 @@ object DailyStepCountCreator {
             //try if input was in milliseconds
             val instant = Instant.ofEpochMilli(dateSeconds)
             val local = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
-            if (local.year !in years) throw Exception("Invalid date")
+
             return DateYYYYMMDD(
                 YYYY = local.year,
                 MM = local.monthValue,

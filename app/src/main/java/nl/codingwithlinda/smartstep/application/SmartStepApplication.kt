@@ -15,8 +15,10 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
+import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerCounterImpl
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService.Companion.CHANNEL_ID
 import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
@@ -31,6 +33,7 @@ class SmartStepApplication: Application() {
         lateinit var userSettingsRepo: UserSettingsRepo
         lateinit var dailyStepRepo: DailyStepRepo
         lateinit var walkDurationRepo: WalkDurationRepo
+        lateinit var stepTracker: StepTracker
 
         lateinit var _applicationContext: Context
 
@@ -66,6 +69,8 @@ class SmartStepApplication: Application() {
         )
 
         walkDurationRepo = WalkDurationRepoImpl()
+
+        stepTracker = StepTrackerCounterImpl.getInstance(this.applicationContext)
 
 
         _applicationContext = this
