@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,6 +28,13 @@ class EditStepsViewModel(
 ): ViewModel() {
     private val _steps = MutableStateFlow(0)
     val steps = _steps
+        .onStart {
+            dailyStepRepo.stepCount.firstOrNull()?.let { fromRepo->
+                _steps.update {
+                   fromRepo.stepCount
+                }
+            }
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
 
@@ -46,7 +54,7 @@ class EditStepsViewModel(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
-    init {
+   /* init {
         viewModelScope.launch {
             dailyStepRepo.stepCount.firstOrNull()?.let {count ->
 
@@ -63,7 +71,7 @@ class EditStepsViewModel(
             }
         }
 
-    }
+    }*/
 
     fun onAction(action: EditStepAction){
         when(action){
@@ -96,7 +104,6 @@ class EditStepsViewModel(
 
                     _steps.update {
                         asInt
-
                 }
             }
 
@@ -110,9 +117,7 @@ class EditStepsViewModel(
                         _dateYYYYMMDD.value.toDomain()
                     )
                     println("--- EDITSTEPS VIEWMODEL SAVE DATE --- $update")
-                    dailyStepRepo.saveStepCount(
-                        update
-                    )
+                    dailyStepRepo.saveDailyStepCountUserOverride(update)
                     StepNavActionHandler.handleAction(StepNavAction.NA)
                 }
             }
