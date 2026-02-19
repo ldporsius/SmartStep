@@ -6,9 +6,12 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.SystemClock
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
@@ -29,12 +32,6 @@ class StepTrackerCounterImpl private constructor(
 
     private val manager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val stepCounterSensor = manager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-
-   init {
-       manager.getSensorList(Sensor.TYPE_STEP_COUNTER).forEach { sensor ->
-           println("--- STEP TRACKER COUNTER IMPL --- sensor: $sensor")
-       }
-   }
 
     companion object{
         @Volatile
@@ -79,6 +76,8 @@ class StepTrackerCounterImpl private constructor(
 
     override fun onSensorChanged(event: SensorEvent?) {
         if(event == null) return
+
+
         if (event.sensor?.type == Sensor.TYPE_STEP_COUNTER){
             println("--- STEP TRACKER COUNTER IMPL --- onSensorChanged: ${event.values.toList()}")
             println("--- STEP TRACKER COUNTER IMPL --- timestamp: ${event.timestamp}")
@@ -102,12 +101,14 @@ class StepTrackerCounterImpl private constructor(
 
             println("--- STEP TRACKER COUNTER IMPL --- stepsReceivedFromEvent: $stepsReceivedFromEvent")
 
-            _stepsTaken.update {
-                DailyStepCount(
-                    dateSeconds = dateOfEvent.toEpochDay(),
-                    stepCount = stepsReceivedFromEvent
-                )
+            CoroutineScope(Dispatchers.IO).launch {
+                _stepsTaken.update {
+                    DailyStepCount(
+                        dateSeconds = momentEventTookPlace.nanoseconds.inWholeSeconds,
+                        stepCount = stepsReceivedFromEvent
+                    )
                 }
+            }
         }
     }
 }

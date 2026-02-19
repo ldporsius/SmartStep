@@ -15,7 +15,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationStart
 import nl.codingwithlinda.smartstep.features.steps.domain.mapping.toDomain

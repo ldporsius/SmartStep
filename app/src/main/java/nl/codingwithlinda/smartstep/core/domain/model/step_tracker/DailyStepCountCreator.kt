@@ -1,6 +1,5 @@
-package nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping
+package nl.codingwithlinda.smartstep.core.domain.model.step_tracker
 
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.features.steps.domain.model.years
 import java.time.Instant

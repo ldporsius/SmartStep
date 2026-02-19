@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.steps.domain.mapping.toDomain

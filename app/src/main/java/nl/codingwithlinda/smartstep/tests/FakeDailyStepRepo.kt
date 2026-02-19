@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo

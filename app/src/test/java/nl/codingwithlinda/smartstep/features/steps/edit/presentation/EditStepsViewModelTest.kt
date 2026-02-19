@@ -13,7 +13,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.features.steps.edit.presentation.state.EditStepAction
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import org.junit.After
