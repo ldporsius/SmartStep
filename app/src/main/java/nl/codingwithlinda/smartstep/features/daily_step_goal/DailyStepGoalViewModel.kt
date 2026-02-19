@@ -24,11 +24,6 @@ class DailyStepGoalViewModel(
     val goal = _goal.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 1)
 
 
-    val stepCount = dailyStepRepo.stepCount.map {
-        it.stepCount
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
-
-
     init {
 
         viewModelScope.launch {

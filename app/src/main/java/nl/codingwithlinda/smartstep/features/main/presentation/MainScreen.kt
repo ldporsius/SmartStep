@@ -49,6 +49,7 @@ import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewMo
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavItemHandler
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCard
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
@@ -65,6 +66,7 @@ import nl.codingwithlinda.smartstep.features.steps.navigation.StepsNavActionDeco
 @Composable
 fun MainScreen(
     dailyStepGoalViewModel: DailyStepGoalViewModel,
+    dailyStepCountViewModel: DailyStepCountViewModel,
     statisticsViewModel: StatisticsViewModel,
     stepTrackerViewModel: StepTrackerViewModel,
     editStepsViewModel: EditStepsViewModel
@@ -171,7 +173,7 @@ fun MainScreen(
                 contentAlignment = Alignment.Center
             ) {
                 DailyStepCard(
-                    stepsTaken = dailyStepGoalViewModel.stepCount.collectAsStateWithLifecycle().value,
+                    stepsTaken = dailyStepCountViewModel.stepsToday.collectAsStateWithLifecycle().value,
                     dailyGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
                     statisticsUi = statisticsViewModel.statistics.collectAsStateWithLifecycle().value,
                     stepTrackerState = stepTrackerViewModel.state.collectAsStateWithLifecycle().value,

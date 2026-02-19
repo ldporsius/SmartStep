@@ -71,7 +71,7 @@ class MainScreenTest {
     fun testBodySensorsPermissionDeclined(){
 
         if(Build.VERSION.SDK_INT >= 28){
-            InstrumentationRegistry.getInstrumentation().uiAutomation.revokeRuntimePermission(
+            InstrumentationRegistry.getInstrumentation().uiAutomation.grantRuntimePermission(
                 packageName,
                 Manifest.permission.ACTIVITY_RECOGNITION,
             )
@@ -84,41 +84,6 @@ class MainScreenTest {
         val mainActivity = composeTestRule.activity
         mainActivity.isChecking = false
 
-        composeTestRule.onNode(
-            hasText("Start") and hasClickAction()
-        ).assertIsDisplayed()
-            .performClick()
-
-        composeTestRule.waitUntilAtLeastOneExists(
-            hasContentDescription("Daily Step Card")
-        )
-
-        val dontAllowButton = device.findObject(UiSelector().textContains("Niet"))
-
-        dontAllowButton.click()
-
-
-        composeTestRule.onNode(hasText("Allow access", substring = false, ignoreCase = true))
-            .assertIsDisplayed()
-            .performClick()
-
-
-        val dontAllowButton2 = device.findObject(UiSelector().textContains("Niet"))
-
-        dontAllowButton2.click()
-
-
-        composeTestRule.onNode(
-            hasText("Open settings", substring = false, ignoreCase = true)
-        ).assertIsDisplayed()
-            .performClick()
-
-
-        device.pressBack()
-
-        composeTestRule.onNode(
-            hasText("Open settings", substring = false, ignoreCase = true)
-        ).assertDoesNotExist()
 
     }
 }

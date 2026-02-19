@@ -67,9 +67,6 @@ class DailyStepGoalViewModelTest {
             assertEquals(em1, 1)
             println("$em1")
 
-
-
-
             fakeStepTracker.stop()
             cancelAndIgnoreRemainingEvents()
         }
