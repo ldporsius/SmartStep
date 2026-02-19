@@ -31,7 +31,7 @@ import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.UserSettingsWrapper
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.steps.edit.presentation.EditStepsViewModel
+import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

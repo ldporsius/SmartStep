@@ -1,13 +1,11 @@
 package nl.codingwithlinda.smartstep.core.domain.model.step_tracker
 
-import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
-import nl.codingwithlinda.smartstep.features.steps.domain.model.years
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 object DailyStepCountCreator {

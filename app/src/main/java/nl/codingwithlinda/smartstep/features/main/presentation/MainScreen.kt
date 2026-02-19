@@ -58,9 +58,9 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPer
 import nl.codingwithlinda.smartstep.features.main.presentation.state.MainScreenDecorator
 import nl.codingwithlinda.smartstep.features.main.step_tracker.presentation.StepTrackerViewModel
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.steps.edit.presentation.EditStepsViewModel
-import nl.codingwithlinda.smartstep.features.steps.navigation.StepNavActionHandler
-import nl.codingwithlinda.smartstep.features.steps.navigation.StepsNavActionDecorator
+import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
+import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
+import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepsNavActionDecorator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

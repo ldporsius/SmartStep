@@ -1,10 +1,8 @@
 package nl.codingwithlinda.smartstep.core.domain.model.step_tracker
 
-import android.R.attr.end
 import kotlinx.coroutines.test.runTest
-import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.tests.FakeWalkDurationRepo
-import org.junit.Assert.*
 import org.junit.Test
 import java.time.LocalDateTime
 import java.time.ZoneOffset

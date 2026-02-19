@@ -1,6 +1,6 @@
-package nl.codingwithlinda.smartstep.features.steps.domain.mapping
+package nl.codingwithlinda.smartstep.features.steps_override_user.domain.mapping
 
-import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.days
 

@@ -1,20 +1,14 @@
-package nl.codingwithlinda.smartstep.features.steps.edit.presentation
+package nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation
 
-import androidx.lifecycle.viewmodel.compose.viewModel
 import app.cash.turbine.test
-import assertk.assertThat
-import assertk.assertions.isEqualTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
-import nl.codingwithlinda.smartstep.features.steps.edit.presentation.state.EditStepAction
+import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import org.junit.After
 import org.junit.Assert.*

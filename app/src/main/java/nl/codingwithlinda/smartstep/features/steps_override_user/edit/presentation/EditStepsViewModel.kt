@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.steps.edit.presentation
+package nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,13 +14,13 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
-import nl.codingwithlinda.smartstep.features.steps.domain.mapping.toDomain
-import nl.codingwithlinda.smartstep.features.steps.domain.model.DatePicker
-import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
-import nl.codingwithlinda.smartstep.features.steps.domain.model.months
-import nl.codingwithlinda.smartstep.features.steps.domain.model.years
-import nl.codingwithlinda.smartstep.features.steps.edit.presentation.state.EditStepAction
-import nl.codingwithlinda.smartstep.features.steps.navigation.StepNavActionHandler
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.mapping.toDomain
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DatePicker
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.months
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.years
+import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
+import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
 
 class EditStepsViewModel(
     private val dailyStepRepo: DailyStepRepo

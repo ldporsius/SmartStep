@@ -1,9 +1,7 @@
 package nl.codingwithlinda.smartstep.tests
 
-import android.R.attr.end
 import androidx.compose.ui.util.fastMaxOfOrNull
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -11,7 +9,7 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationE
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationStart
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkSession
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
-import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
 
 class FakeWalkDurationRepo: WalkDurationRepo {
 

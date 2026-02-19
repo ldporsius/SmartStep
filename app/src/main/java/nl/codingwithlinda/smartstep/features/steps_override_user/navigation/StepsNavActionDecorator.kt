@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.steps.navigation
+package nl.codingwithlinda.smartstep.features.steps_override_user.navigation
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,12 +19,12 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
-import nl.codingwithlinda.smartstep.features.steps.edit.presentation.EditStepsViewModel
-import nl.codingwithlinda.smartstep.features.steps.edit.presentation.components.DatePickerComponent
-import nl.codingwithlinda.smartstep.features.steps.edit.presentation.components.EditStepsDialog
-import nl.codingwithlinda.smartstep.features.steps.edit.presentation.state.EditStepAction
-import nl.codingwithlinda.smartstep.features.steps.reset.presentation.ResetStepsDialog
-import nl.codingwithlinda.smartstep.features.steps.reset.presentation.ResetStepsViewModel
+import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
+import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.components.DatePickerComponent
+import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.components.EditStepsDialog
+import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
+import nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation.ResetStepsDialog
+import nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation.ResetStepsViewModel
 
 @Composable
 fun StepsNavActionDecorator(

@@ -8,7 +8,7 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCoun
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
-import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
 
 class FakeDailyStepRepo: DailyStepRepo {
 

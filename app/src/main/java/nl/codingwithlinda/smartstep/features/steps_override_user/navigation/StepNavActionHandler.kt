@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.steps.navigation
+package nl.codingwithlinda.smartstep.features.steps_override_user.navigation
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

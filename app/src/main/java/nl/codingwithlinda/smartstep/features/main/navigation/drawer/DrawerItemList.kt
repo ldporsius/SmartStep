@@ -4,7 +4,7 @@ import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavItemHandler
-import nl.codingwithlinda.smartstep.features.steps.navigation.StepNavActionHandler
+import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
 
 
 @Composable

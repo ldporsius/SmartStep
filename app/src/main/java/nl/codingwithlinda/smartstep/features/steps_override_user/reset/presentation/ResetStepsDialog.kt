@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.steps.reset.presentation
+package nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

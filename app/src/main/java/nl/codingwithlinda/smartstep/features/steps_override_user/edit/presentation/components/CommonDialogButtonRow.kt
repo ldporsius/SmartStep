@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.steps.edit.presentation.components
+package nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.steps.edit.presentation.components
+package nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.SettingBoxComponent
-import nl.codingwithlinda.smartstep.features.steps.edit.presentation.state.EditStepAction
+import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
 
 @Composable
 fun EditStepsDialog(

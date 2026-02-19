@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.steps.edit.presentation.components
+package nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.components
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -10,11 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import nl.codingwithlinda.smartstep.features.main.presentation.common.CommonNumberPicker
-import nl.codingwithlinda.smartstep.features.steps.domain.model.DatePicker
-import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
-import nl.codingwithlinda.smartstep.features.steps.domain.model.months
-import nl.codingwithlinda.smartstep.features.steps.domain.model.years
-import nl.codingwithlinda.smartstep.features.steps.edit.presentation.state.EditStepAction
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DatePicker
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.months
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.years
+import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
 
 @Composable
 fun DatePickerComponent(

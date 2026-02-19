@@ -1,7 +1,7 @@
 package nl.codingwithlinda.smartstep.core.domain.model.step_tracker
 
-import nl.codingwithlinda.smartstep.features.steps.domain.mapping.toDomain
-import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.mapping.toDomain
+import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
 
 data class WalkDurationStart(
     val YYYY: Int,

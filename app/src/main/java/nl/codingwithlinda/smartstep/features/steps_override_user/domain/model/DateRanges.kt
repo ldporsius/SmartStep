@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.steps.domain.model
+package nl.codingwithlinda.smartstep.features.steps_override_user.domain.model
 
 import java.time.YearMonth
 
@@ -10,7 +10,7 @@ val months = IntRange(1, 12)
 data class DatePicker(
     val year: Int,
 ){
-    val months = nl.codingwithlinda.smartstep.features.steps.domain.model.months
+    val months = nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.months
     val daysInMonths = months.associate { month ->
         val max = YearMonth.of(year, month).lengthOfMonth()
         month to IntRange(1, max)
