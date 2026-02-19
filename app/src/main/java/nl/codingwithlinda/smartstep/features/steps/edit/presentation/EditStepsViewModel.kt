@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -54,7 +53,7 @@ class EditStepsViewModel(
                 _steps.update {
                     count.stepCount
                 }
-                val converted = DailyStepCountCreator.toDateYYYYMMDD(count.date)
+                val converted = DailyStepCountCreator.toDateYYYYMMDD(count.dateSeconds)
 
                 println("--- EDITSTEPS VIEWMODEL INIT --- converted step count to YYYYMMDD: $converted")
 

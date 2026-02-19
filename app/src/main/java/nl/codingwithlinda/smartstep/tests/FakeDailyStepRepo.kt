@@ -9,7 +9,6 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCoun
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
-import java.time.LocalDate
 
 class FakeDailyStepRepo: DailyStepRepo {
 
@@ -43,12 +42,12 @@ class FakeDailyStepRepo: DailyStepRepo {
     }
 
     override suspend fun getStepCountForDate(date: Long): DailyStepCount? {
-        return _stepCount.value.takeIf { it.date == date }
+        return _stepCount.value.takeIf { it.dateSeconds == date }
     }
 
     fun getStepCountForYYYYMMDD(dateYYYYMMDD: DateYYYYMMDD): DailyStepCount?{
         val date = DailyStepCountCreator.fromDateYYYYMMDD(dateYYYYMMDD)
-        return _stepCount.value.takeIf { it.date == date }
+        return _stepCount.value.takeIf { it.dateSeconds == date }
     }
 
     override suspend fun addStepCountToToday(stepCount: DailyStepCount) {

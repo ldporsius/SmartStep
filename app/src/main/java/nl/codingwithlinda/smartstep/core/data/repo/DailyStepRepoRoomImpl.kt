@@ -53,7 +53,7 @@ class DailyStepRepoRoomImpl(
         val latestCount = dailyStepCountDao.getDailyStepCount().firstOrNull()?.maxByOrNull {
             it.date
         }
-        val isUpdateToday = latestCount?.date == _stepCount.date
+        val isUpdateToday = latestCount?.date == _stepCount.dateSeconds
         val entity = if (isUpdateToday){
             latestCount.copy(
                 stepCount = latestCount.stepCount + _stepCount.stepCount

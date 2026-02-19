@@ -10,9 +10,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
 import kotlin.concurrent.Volatile
@@ -91,8 +94,12 @@ class StepTrackerImpl private constructor(
         println("StepTracker stopped")
     }
 
-    override val stepsTaken: Flow<Int>
-            = _stepsTaken.receiveAsFlow()
+    override val stepsTaken: Flow<DailyStepCount>
+            = _stepsTaken.receiveAsFlow().map {
+                DailyStepCountCreator.create(
+                    count = it
+                )
+    }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
         println("--- onAccuracyChanged: sensor: $p0, accuracy: $p1")
@@ -108,7 +115,5 @@ class StepTrackerImpl private constructor(
                     _stepsTaken.send(1)
                 }
         }
-
-
     }
 }

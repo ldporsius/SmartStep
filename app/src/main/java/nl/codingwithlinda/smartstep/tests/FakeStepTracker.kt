@@ -5,8 +5,11 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
 
@@ -37,7 +40,12 @@ class FakeStepTracker(
         isCounting = false
     }
 
-    override val stepsTaken: Flow<Int> = _stepsTaken.receiveAsFlow()
+    override val stepsTaken: Flow<DailyStepCount> = _stepsTaken.receiveAsFlow()
+        .map {
+            DailyStepCountCreator.create(
+                count = it
+            )
+        }
 
     override val stateObservable: Flow<StepTrackerState>
         get() = state

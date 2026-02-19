@@ -8,7 +8,7 @@ interface StepTracker {
 
     fun pause()
     fun stop()
-    val stepsTaken: Flow<Int>
+    val stepsTaken: Flow<DailyStepCount>
 
     val stateObservable: Flow<StepTrackerState>
 }

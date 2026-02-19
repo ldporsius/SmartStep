@@ -31,7 +31,7 @@ class StepTrackerViewModel(
 
     val stepsTaken = stepTracker.stepsTaken
         .onEach {
-            _counter.value = it
+            _counter.value = it.stepCount
         }
         .launchIn(viewModelScope)
 

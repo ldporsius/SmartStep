@@ -1,7 +1,6 @@
 package nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping
 
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.features.steps.domain.model.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.features.steps.domain.model.years
 import java.time.Instant
@@ -9,13 +8,12 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
-import kotlin.time.toKotlinInstant
 
 object DailyStepCountCreator {
 
     fun create(count: Int, date: Long = System.currentTimeMillis()): DailyStepCount{
         return DailyStepCount(
-            date = date.toDate(),
+            dateSeconds = date.toDate(),
             stepCount = count
         )
     }
@@ -24,7 +22,7 @@ object DailyStepCountCreator {
         val day = today.toDate()
 
         return counts.lastOrNull {
-            it.date == day
+            it.dateSeconds == day
         }
     }
 

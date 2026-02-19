@@ -3,7 +3,6 @@ package nl.codingwithlinda.smartstep.core.data.step_tracker
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
-import android.media.session.PlaybackState.ACTION_STOP
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
@@ -13,8 +12,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import nl.codingwithlinda.smartstep.R
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 
@@ -39,7 +38,7 @@ class StepTrackerService : Service() {
             dailyStepCountDao = db.dailyStepCountDao,
             userId = "todo"
         )
-        stepTracker = StepTrackerCounterImpl.getInstance(this)
+        stepTracker = SmartStepApplication.stepTracker
 
     }
 
@@ -67,10 +66,10 @@ class StepTrackerService : Service() {
         startForeground(1, notification.build())
 
         stepTracker.stepsTaken.onEach { step ->
+            if(step.stepCount == 0) return@onEach
             println("--- StepTrackerService --- steps taken: $step")
-            DailyStepCountCreator.create(1).also {
-                dailyStepRepoRoomImpl.addStepCountToToday(it)
-            }
+            dailyStepRepoRoomImpl.addStepCountToToday(step)
+
         }.launchIn(serviceScope)
     }
 
