@@ -1,6 +1,5 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings
 
-import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.NonCancellable
@@ -15,9 +14,7 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GRAM
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GramsWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KGWeight
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBS
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weights
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.convertWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.fromPreviousPounds
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
@@ -49,12 +46,10 @@ class WeightSettingViewModel(
     init {
         viewModelScope.launch {
             userSettingsRepo.loadSettings().also {
-
                 val weightGrams = GramsWeight(it.weightGrams)
                 _weightInputGrams.update {
                    weightGrams
                 }
-
             }
         }
     }
@@ -74,9 +69,6 @@ class WeightSettingViewModel(
                 _weightInputGrams.update {
                     convertedToGrams as GramsWeight
                 }
-
-
-
             }
 
             is ActionWeightInput.PoundsInput -> {

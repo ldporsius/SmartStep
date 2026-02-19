@@ -1,23 +1,17 @@
 package nl.codingwithlinda.smartstep.features.statistics.presentation
 
-import android.R.attr.duration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationEnd
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationStart
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
@@ -33,12 +27,11 @@ import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.M
 import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.cm
 import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.convertDistance
 import nl.codingwithlinda.smartstep.features.statistics.presentation.model.StatisticsUi
+import nl.codingwithlinda.smartstep.features.statistics.presentation.util.MinuteCounter
+import nl.codingwithlinda.smartstep.features.statistics.presentation.util.MinuteCounter.minuteCounter
 import nl.codingwithlinda.smartstep.features.statistics.presentation.util.toUi
 import nl.codingwithlinda.smartstep.tests.fakeStatistics
-import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 class StatisticsViewModel(
     userSettingsRepo: UserSettingsRepo,
@@ -88,22 +81,18 @@ class StatisticsViewModel(
                 convertDistance(distance, KM)
             }
         }
-    }
+    }.flowOn(dispatcherProvider.default)
+
 
     val caloriesBurned = combine(stepsTaken, userWeightKG, gender) { steps, weight, gender ->
         caloriesBurned(steps, weight.weight, gender)
     }
 
-    val minuteCounter = flow {
-        while (true){
-            emit(System.currentTimeMillis())
-            delay(10.seconds)
-        }
-    }
 
-    val timeWalked = walkDurationRepo.sessions.filter {
+
+    val timeWalked = walkDurationRepo.sessions.filter { sessions ->
         val today = DailyStepCountCreator.getTodayAsSeconds()
-        it.any{
+        sessions.any{
             it.start.dateSeconds == today
         }
     }.combine(minuteCounter){session, minute ->
@@ -111,7 +100,7 @@ class StatisticsViewModel(
             ( it.end?.timestamp ?: minute ) - it.start.timestamp
         }
         duration
-    }
+    }.flowOn(dispatcherProvider.default)
 
     init {
         viewModelScope.launch {
@@ -121,7 +110,6 @@ class StatisticsViewModel(
                 _statistics.update {
                     it.copy(
                         distance = UiText.DynamicText(
-
                             formatted + " " + concreteDistance.distance.toUi()
                         )
                     )
@@ -152,8 +140,7 @@ class StatisticsViewModel(
                     )
                 }
             }
-
         }
-
+        MinuteCounter.start()
     }
 }
