@@ -41,13 +41,13 @@ class WeightSettingViewModelTest {
 
     @Test
     fun `test weightViewModel updates correctly`() = runTest {
-        val expected = LBSWeight(220)
+        val expected = 100_000.0
         viewModel.weightUiState.test {
-            assertEquals(awaitItem(), WeightSettingUiState.SI(0))
+            assertEquals(awaitItem(), WeightSettingUiState.SI(0.0))
 
             viewModel.onAction(ActionWeightInput.KgInput(100))
 
-            assertEquals(awaitItem(), WeightSettingUiState.SI(100_000))
+            assertEquals(awaitItem(), WeightSettingUiState.SI(100_000.0))
 
             viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystems.IMPERIAL))
 
@@ -64,7 +64,7 @@ class WeightSettingViewModelTest {
     @Test
     fun `test weightViewModel updates pounds correctly`() = runTest {
         viewModel.weightUiState.test {
-            assertEquals(awaitItem(), WeightSettingUiState.SI(0))
+            assertEquals(awaitItem(), WeightSettingUiState.SI(0.0))
             viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystems.IMPERIAL))
 
             viewModel.onAction(ActionWeightInput.PoundsInput(200))

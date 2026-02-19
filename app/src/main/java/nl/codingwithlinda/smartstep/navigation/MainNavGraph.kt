@@ -89,7 +89,8 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
             initializer {
                 StepTrackerViewModel(
                     stepTracker = SmartStepApplication.stepTracker,
-                    walkDurationRepo = SmartStepApplication.walkDurationRepo
+                    walkDurationRepo = SmartStepApplication.walkDurationRepo,
+                    dispatcherProvider = AndroidDispatcherProvider()
                 )
             }
         }

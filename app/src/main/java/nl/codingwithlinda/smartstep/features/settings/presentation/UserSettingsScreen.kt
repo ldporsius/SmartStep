@@ -238,7 +238,7 @@ private fun PreviewUserSettingsScreen() {
         UserSettingsScreen(
             //userSettings = UserSettings(),
             heightUiState = HeightSettingUiState.SI(175),
-            weightUiState = WeightSettingUiState.SI(100 * 1000),
+            weightUiState = WeightSettingUiState.SI(100.0 * 1000),
             gender = Gender.FEMALE,
             actionGenderInput = {},
             actionHeightInput = {},

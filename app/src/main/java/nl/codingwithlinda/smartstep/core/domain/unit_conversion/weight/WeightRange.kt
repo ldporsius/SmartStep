@@ -3,7 +3,7 @@ package nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight
 import kotlin.collections.component1
 import kotlin.math.ceil
 import kotlin.math.floor
-
+import kotlin.math.roundToInt
 
 
 val kgToGramFactor: Double
@@ -20,12 +20,12 @@ val maxWeightPounds = floor(weightRangeKg.last() * kgToPoundsFactor).toInt()
 val weightRangePounds = IntRange(minWeightPounds, maxWeightPounds).toList()
 
 val kgToPounds = weightRangePounds.map {
-    val pound = LBSWeight(it)
+    val pound = LBSWeight(it.toDouble())
     val kg = convertWeight(pound, KG)
 
     it to kg
 }.groupBy { (pounds, kg) ->
-    kg
+    kg.weight.roundToInt()
 }.mapValues{ (i, pairs) ->
     pairs.map { it.first }
 }

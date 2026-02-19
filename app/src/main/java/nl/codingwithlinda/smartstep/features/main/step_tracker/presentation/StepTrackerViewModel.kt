@@ -2,12 +2,14 @@ package nl.codingwithlinda.smartstep.features.main.step_tracker.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
@@ -17,7 +19,8 @@ import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 
 class StepTrackerViewModel(
     private val stepTracker: StepTracker,
-    private val walkDurationRepo: WalkDurationRepo
+    private val walkDurationRepo: WalkDurationRepo,
+    dispatcherProvider: DispatcherProvider
 ): ViewModel() {
 
     val state = stepTracker.stateObservable
@@ -28,14 +31,14 @@ class StepTrackerViewModel(
 
     val stepsTaken = stepTracker.stepsTaken
         .onEach {
-            _counter.value += it
+            _counter.value = it
         }
         .launchIn(viewModelScope)
 
     init {
         stepsTaken.start()
 
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.io) {
             state.collect {state ->
                 println("state changed: $state")
                 when(state){

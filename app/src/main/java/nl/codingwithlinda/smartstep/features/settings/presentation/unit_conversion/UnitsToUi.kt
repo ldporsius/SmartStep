@@ -4,6 +4,7 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.LengthUni
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GRAM
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KG
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBS
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.TestConverter
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weights
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
@@ -14,6 +15,7 @@ fun Weight.toUi(): UiText{
         GRAM -> DynamicText("g")
         KG -> DynamicText("kg")
         LBS -> DynamicText("lbs")
+        is TestConverter -> DynamicText("test")
     }
 }
 

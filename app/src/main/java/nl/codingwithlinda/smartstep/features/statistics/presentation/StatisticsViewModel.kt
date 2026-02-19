@@ -59,7 +59,7 @@ class StatisticsViewModel(
     val userWeightKG = userSettingsRepo.userSettingsObservable.map {
         it.weightGrams
     }.map {
-        val grams = GramsWeight(it.roundToInt())
+        val grams = GramsWeight(it)
         convertWeight(grams, KG)
     }
 
@@ -91,7 +91,7 @@ class StatisticsViewModel(
     }
 
     val caloriesBurned = combine(stepsTaken, userWeightKG, gender) { steps, weight, gender ->
-        caloriesBurned(steps, weight.weight.toDouble(), gender)
+        caloriesBurned(steps, weight.weight, gender)
     }
 
     val minuteCounter = flow {

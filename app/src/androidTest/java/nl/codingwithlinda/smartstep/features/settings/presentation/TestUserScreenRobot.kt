@@ -11,6 +11,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalTestApi::class)
 class TestUserScreenRobot(
@@ -114,6 +115,11 @@ class TestUserScreenRobot(
         composeRule.awaitIdle()
         composeRule.onNodeWithText("Start").performClick()
         composeRule.awaitIdle()
+        return this
+    }
+
+    suspend fun keepScreenOn(delay: Long): TestUserScreenRobot{
+        delay(delay)
         return this
     }
 

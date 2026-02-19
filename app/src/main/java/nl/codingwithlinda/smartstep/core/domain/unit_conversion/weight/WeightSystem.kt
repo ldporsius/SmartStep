@@ -6,6 +6,12 @@ sealed interface Weight{
     val baseFactor: Double
 }
 
+class TestConverter(
+    override val baseFactor: Double
+): Weight
+
+
+
 object GRAM : Weight {
     override val baseFactor: Double
         get() = 1.0
@@ -22,49 +28,59 @@ object LBS : Weight {
 }
 
 interface ConcreteWeight{
-    val weight: Int
+    val weight: Double
     val unit: Weight
 }
 
 data class GramsWeight(
-    override val weight: Int,
+    override val weight: Double,
     override val unit: Weight = GRAM
 ): ConcreteWeight
 
 data class KGWeight(
-    override val weight: Int,
+    override val weight: Double,
     override val unit: Weight = KG
 ): ConcreteWeight
 
 data class LBSWeight(
-    override val weight: Int,
+    override val weight: Double,
 
 ): ConcreteWeight{
     override val unit: Weight = LBS
 }
 
+data class TestWeight(
+    override val weight: Double,
+    override val unit: Weight
+): ConcreteWeight
+
+
+
 fun convertWeight(
     concreteWeight: ConcreteWeight,
     target: Weight
 ): ConcreteWeight {
+    if (target.baseFactor == 0.0) throw Exception("Cannot convert to zero")
     val convertedWeight =
         concreteWeight.weight * concreteWeight.unit.baseFactor / target.baseFactor
     return when(target) {
-        GRAM -> GramsWeight(convertedWeight.roundToInt())
-        KG -> KGWeight(convertedWeight.roundToInt())
-        LBS -> LBSWeight(convertedWeight.roundToInt())
+        GRAM -> GramsWeight(convertedWeight)
+        KG -> KGWeight(convertedWeight)
+        LBS -> LBSWeight(convertedWeight)
+        is TestConverter -> TestWeight(convertedWeight, target)
     }
 }
 
+
 fun fromPreviousPounds(kg: KGWeight, pounds: Int): LBSWeight{
 
-    val correspondingPounds = kgToPounds[kg] ?:emptyList()
+    val correspondingPounds: List<Int> = kgToPounds[kg.weight.roundToInt()] ?:emptyList()
 
     println("--- KG --- correspondingPounds: $correspondingPounds")
 
     if (pounds in correspondingPounds) {
         println("--- KG --- returning previous pounds: $pounds")
-        return LBSWeight(pounds)
+        return LBSWeight(pounds.toDouble())
     }
     val converted = convertWeight(kg, LBS)
 

@@ -147,6 +147,7 @@ class UserSettingsScreenTest {
             "200"
         ).assertIsDisplayed()
 
+        robot.keepScreenOn(5000)
         composeRule.onNodeWithContentDescription(
             "Label 200"
         ).assertIsDisplayed()
@@ -155,7 +156,7 @@ class UserSettingsScreenTest {
             .pressStart()
 
         val actual = usersettingsRepo.loadSettings().weightGrams
-        val expected = convertWeight( LBSWeight(200), GRAM).weight.toDouble()
+        val expected = convertWeight( LBSWeight(200.0), GRAM).weight.toDouble()
         println("actual: $actual")
         println("expected: $expected")
         assertThat(

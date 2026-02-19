@@ -66,8 +66,8 @@ class StepTrackerService : Service() {
         }
         startForeground(1, notification.build())
 
-        stepTracker.stepsTaken.onEach {
-            println("--- StepTrackerService --- steps taken: $it")
+        stepTracker.stepsTaken.onEach { step ->
+            println("--- StepTrackerService --- steps taken: $step")
             DailyStepCountCreator.create(1).also {
                 dailyStepRepoRoomImpl.addStepCountToToday(it)
             }

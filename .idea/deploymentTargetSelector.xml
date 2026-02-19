@@ -13,10 +13,10 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="Tests in 'nl'">
+      <SelectionState runConfigName="test_usersettings_switchSI_Imperial()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="test_usersettings_switchSI_Imperial()">
+      <SelectionState runConfigName="Tests in 'nl'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
