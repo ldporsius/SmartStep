@@ -25,9 +25,7 @@ interface WeightSettingUiState {
         override fun toUi(): UiText {
             return UiText.DynamicText("${pounds} lbs")
         }
-        init {
-            println("--- WeightSettingUiState imperial --- ,grams = $grams, pounds == $pounds")
-        }
+
 
     }
     data class SI(private val grams: Double): WeightSettingUiState{
@@ -42,9 +40,6 @@ interface WeightSettingUiState {
             return UiText.DynamicText("${roundedKg} kg")
         }
 
-        init {
-            println("--- WeightSettingUiState SI --- grams == $grams, roundedKg == $roundedKg")
-        }
     }
 
     val system: UnitSystems
