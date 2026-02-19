@@ -27,11 +27,19 @@ class EditStepsViewModel(
     private val dailyStepRepo: DailyStepRepo
 ): ViewModel() {
     private val _steps = MutableStateFlow(0)
+
+    private val _dateYYYYMMDD = MutableStateFlow(DateYYYYMMDD(years.first, months.first, 1))
+
     val steps = _steps
         .onStart {
             dailyStepRepo.stepCount.firstOrNull()?.let { fromRepo->
                 _steps.update {
                    fromRepo.stepCount
+                }
+                val converted = DailyStepCountCreator.toDateYYYYMMDD(fromRepo.dayEpochSeconds)
+
+                _dateYYYYMMDD.update {
+                    converted
                 }
             }
         }
@@ -41,7 +49,7 @@ class EditStepsViewModel(
     val yearRange = years.toList()
     val monthRange = months.toList()
 
-    private val _dateYYYYMMDD = MutableStateFlow(DateYYYYMMDD(years.first, months.first, 1))
+
     val dateYYYYMMDD = _dateYYYYMMDD.asStateFlow()
 
     val dayRange = _dateYYYYMMDD.mapNotNull {
@@ -100,8 +108,7 @@ class EditStepsViewModel(
             }
             is EditStepAction.SetSteps -> {
                 println("--- EDITSTEPS VIEWMODEL SET STEPS --- ${action.steps}")
-                val asInt = action.steps.toIntOrNull() ?: -1000000
-
+                val asInt = action.steps.toIntOrNull() ?: 0
                     _steps.update {
                         asInt
                 }

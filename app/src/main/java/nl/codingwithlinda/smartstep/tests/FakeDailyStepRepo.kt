@@ -44,12 +44,12 @@ class FakeDailyStepRepo: DailyStepRepo {
     }
 
     override suspend fun getStepCountForDate(date: Long): DailyStepCount? {
-        return _stepCount.value.takeIf { it.dateSeconds == date }
+        return _stepCount.value.takeIf { it.dayEpochSeconds == date }
     }
 
     fun getStepCountForYYYYMMDD(dateYYYYMMDD: DateYYYYMMDD): DailyStepCount?{
         val date = DailyStepCountCreator.fromDateYYYYMMDD(dateYYYYMMDD)
-        return _stepCount.value.takeIf { it.dateSeconds == date }
+        return _stepCount.value.takeIf { it.dayEpochSeconds == date }
     }
 
     override suspend fun addStepCountToToday(stepCount: DailyStepCount) {
@@ -78,7 +78,7 @@ class FakeDailyStepRepo: DailyStepRepo {
 
     override suspend fun getDailyStepCountUserOverrideForDay(date: Long): DailyStepCount? {
         return _userStepCountOverride.value.firstOrNull {
-            it.dateSeconds == date
+            it.dayEpochSeconds == date
         }
     }
 

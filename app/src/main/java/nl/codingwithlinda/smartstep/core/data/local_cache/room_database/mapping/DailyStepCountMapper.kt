@@ -5,14 +5,14 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCoun
 
 fun DailyStepCountEntity.toDomain(): DailyStepCount{
     return DailyStepCount(
-        dateSeconds = date,
+        dayEpochSeconds = date,
         stepCount = stepCount
     )
 }
 
 fun DailyStepCount.toEntity(userId: String): DailyStepCountEntity {
     return DailyStepCountEntity(
-        date = dateSeconds,
+        date = dayEpochSeconds,
         stepCount = stepCount,
         userId = userId
     )

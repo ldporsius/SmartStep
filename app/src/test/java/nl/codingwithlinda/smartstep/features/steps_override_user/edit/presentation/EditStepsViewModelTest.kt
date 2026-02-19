@@ -48,8 +48,6 @@ class EditStepsViewModelTest {
             println("first emission received")
             viewModel.onAction(EditStepAction.SetSteps("1000"))
 
-
-
             val item2 = awaitItem()
             assertEquals(1000, item2)
 

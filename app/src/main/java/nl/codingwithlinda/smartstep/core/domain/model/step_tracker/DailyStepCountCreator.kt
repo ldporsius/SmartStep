@@ -6,6 +6,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
 object DailyStepCountCreator {
@@ -14,7 +15,7 @@ object DailyStepCountCreator {
         val isDateMillis = date.toString().length >= 13
         val dateSeconds = if(isDateMillis) date.MillisToDay() else date.seconds.inWholeDays
         return DailyStepCount(
-            dateSeconds = dateSeconds,
+            dayEpochSeconds = dateSeconds,
             stepCount = count
         )
     }
@@ -26,12 +27,16 @@ object DailyStepCountCreator {
         return date
     }
 
-    fun toDateYYYYMMDD(dateSeconds: Long): DateYYYYMMDD {
-        val instant = Instant.ofEpochSecond(dateSeconds)
+    fun toDateYYYYMMDD(dayEpochSeconds: Long): DateYYYYMMDD {
+        val isInputMillis = dayEpochSeconds.toString().length >= 13
+        val instant = when(isInputMillis) {
+            true -> Instant.ofEpochMilli(dayEpochSeconds)
+            false -> Instant.ofEpochSecond(dayEpochSeconds)
+        }
         val local = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
-        if (local.year !in 0 .. 3000) {
+       /* if (local.year !in 0 .. 3000) {
             //try if input was in milliseconds
-            val instant = Instant.ofEpochMilli(dateSeconds)
+            val instant = Instant.ofEpochMilli(dayEpochSeconds)
             val local = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
 
             return DateYYYYMMDD(
@@ -39,7 +44,7 @@ object DailyStepCountCreator {
                 MM = local.monthValue,
                 DD = local.dayOfMonth
             )
-        }
+        }*/
         return DateYYYYMMDD(
             YYYY = local.year,
             MM = local.monthValue,

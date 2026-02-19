@@ -6,7 +6,7 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCoun
 fun DailyStepCount.toUserOverrideEntity(): DailyStepCountUserOverride{
 
     return DailyStepCountUserOverride(
-        dateEpochDay = dateSeconds,
+        dateEpochDay = dayEpochSeconds,
         stepCount = stepCount,
         userId = "todo"
     )
@@ -14,7 +14,7 @@ fun DailyStepCount.toUserOverrideEntity(): DailyStepCountUserOverride{
 
 fun DailyStepCountUserOverride.toDomain(): DailyStepCount{
     return DailyStepCount(
-        dateSeconds = dateEpochDay,
+        dayEpochSeconds = dateEpochDay,
         stepCount = stepCount
     )
 }

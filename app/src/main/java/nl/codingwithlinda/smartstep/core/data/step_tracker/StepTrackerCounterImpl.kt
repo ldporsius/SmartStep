@@ -104,7 +104,7 @@ class StepTrackerCounterImpl private constructor(
             CoroutineScope(Dispatchers.IO).launch {
                 _stepsTaken.update {
                     DailyStepCount(
-                        dateSeconds = momentEventTookPlace.nanoseconds.inWholeSeconds,
+                        dayEpochSeconds = momentEventTookPlace.nanoseconds.inWholeSeconds,
                         stepCount = stepsReceivedFromEvent
                     )
                 }

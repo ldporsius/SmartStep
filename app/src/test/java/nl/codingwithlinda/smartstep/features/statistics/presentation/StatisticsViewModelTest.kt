@@ -58,7 +58,6 @@ class StatisticsViewModelTest {
 
         walkDurationRepo.saveWalkDurationStart(
             WalkDurationStart(today.YYYY, today.MM, today.DD, now)
-
         )
         val sessions = walkDurationRepo.sessions.first()
         assertThat(sessions.size).isEqualTo(1)

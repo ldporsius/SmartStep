@@ -3,7 +3,6 @@ package nl.codingwithlinda.smartstep.core.data.step_tracker
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
-import android.media.session.PlaybackState.ACTION_STOP
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
@@ -18,7 +17,6 @@ import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartSte
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
-import nl.codingwithlinda.smartstep.features.statistics.presentation.util.MinuteCounter.stop
 
 class StepTrackerService : Service() {
 
@@ -71,9 +69,9 @@ class StepTrackerService : Service() {
         stepTracker.stepsTaken.onEach { step ->
             if(step.stepCount == 0) return@onEach
             println("--- StepTrackerService --- steps taken: $step")
-            val today = DailyStepCountCreator.create(step.stepCount, step.dateSeconds)
+            val today = DailyStepCountCreator.create(step.stepCount, step.dayEpochSeconds)
             //check if we have a baseline
-            val baseline = dailyStepRepoRoomImpl.getDailyStepCountBaselineForDate(today.dateSeconds)
+            val baseline = dailyStepRepoRoomImpl.getDailyStepCountBaselineForDate(today.dayEpochSeconds)
             if(baseline == null){
                 dailyStepRepoRoomImpl.saveDailyStepCountBaseline(today)
             }
@@ -82,7 +80,7 @@ class StepTrackerService : Service() {
                 dailyStepRepoRoomImpl.addStepCountToToday(
                     DailyStepCountCreator.create(
                         count = difference,
-                        date = step.dateSeconds
+                        date = step.dayEpochSeconds
                     )
                 )
             }
