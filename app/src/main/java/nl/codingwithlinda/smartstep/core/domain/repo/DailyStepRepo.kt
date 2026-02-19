@@ -19,5 +19,11 @@ interface DailyStepRepo {
     suspend fun saveDailyStepCountBaseline(dailyStepCount: DailyStepCount)
     suspend fun getDailyStepCountBaselineForDate(date: Long): DailyStepCount?
 
+    suspend fun saveDailyStepCountUserOverride(dailyStepCount: DailyStepCount)
+
+    suspend fun getDailyStepCountUserOverrideForDay(date: Long): DailyStepCount?
+
+    fun getDailyStepCountUserOverride(): Flow<List<DailyStepCount>>
+
 }
 

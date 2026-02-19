@@ -79,7 +79,7 @@ class StepTrackerService : Service() {
             }
             baseline?.let {baseline ->
                 val difference = step.stepCount - baseline.stepCount
-                dailyStepRepoRoomImpl.saveStepCount(
+                dailyStepRepoRoomImpl.addStepCountToToday(
                     DailyStepCountCreator.create(
                         count = difference,
                         date = step.dateSeconds

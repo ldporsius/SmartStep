@@ -68,4 +68,16 @@ class FakeDailyStepRepo: DailyStepRepo {
         return _baseline.value
     }
 
+    override suspend fun saveDailyStepCountUserOverride(dailyStepCount: DailyStepCount) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getDailyStepCountUserOverrideForDay(date: Long): DailyStepCount? {
+        TODO("Not yet implemented")
+    }
+
+    override fun getDailyStepCountUserOverride(): Flow<List<DailyStepCount>> {
+        TODO("Not yet implemented")
+    }
+
 }

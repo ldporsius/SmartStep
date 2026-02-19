@@ -52,7 +52,7 @@ class DailyStepGoalViewModelTest {
             fakeStepTracker.stepsTaken.collect {
                 println("--- test step taken : $it")
                 repo.saveStepCount(
-                    DailyStepCount(1, it)
+                   it
                 )
             }
         }

@@ -9,6 +9,7 @@ import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.DailySte
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toDomain
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toBaselineEntity
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toEntity
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toUserOverrideEntity
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
@@ -87,6 +88,22 @@ class DailyStepRepoRoomImpl(
 
     override suspend fun getDailyStepCountBaselineForDate(date: Long): DailyStepCount? {
         return dailyStepCountDao.getDailyStepCountBaselineForDate(date)?.toDomain()
+    }
+
+    override suspend fun saveDailyStepCountUserOverride(dailyStepCount: DailyStepCount) {
+        dailyStepCountDao.saveDailyStepCountUserOverride(dailyStepCount.toUserOverrideEntity())
+    }
+
+    override suspend fun getDailyStepCountUserOverrideForDay(date: Long): DailyStepCount? {
+        return dailyStepCountDao.getDailyStepGoalUserOverrideForDay(date)?.toDomain()
+    }
+
+    override fun getDailyStepCountUserOverride(): Flow<List<DailyStepCount>> {
+        return dailyStepCountDao.getDailyStepCountUserOverride().map {
+            it.map {
+                it.toDomain()
+            }
+        }
     }
 
 }
