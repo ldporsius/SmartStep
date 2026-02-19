@@ -19,6 +19,8 @@ class FakeDailyStepRepo: DailyStepRepo {
     private val goalObservable = MutableStateFlow<DailyStepGoal?>(null)
     private val _stepCount = MutableStateFlow(DailyStepCount(today, 0))
 
+    private val _userStepCountOverride = MutableStateFlow<List<DailyStepCount>>(emptyList())
+
     private val _baseline = MutableStateFlow<DailyStepCount?>(null)
 
     override suspend fun saveDailyStepGoal(dailyStepGoal: DailyStepGoal) {
@@ -69,15 +71,17 @@ class FakeDailyStepRepo: DailyStepRepo {
     }
 
     override suspend fun saveDailyStepCountUserOverride(dailyStepCount: DailyStepCount) {
-        TODO("Not yet implemented")
+        _userStepCountOverride.update {
+            it + dailyStepCount
+        }
     }
 
     override suspend fun getDailyStepCountUserOverrideForDay(date: Long): DailyStepCount? {
-        TODO("Not yet implemented")
+        return _userStepCountOverride.value.firstOrNull {
+            it.dateSeconds == date
+        }
     }
 
-    override fun getDailyStepCountUserOverride(): Flow<List<DailyStepCount>> {
-        TODO("Not yet implemented")
-    }
+    override fun getDailyStepCountUserOverride(): Flow<List<DailyStepCount>> = _userStepCountOverride
 
 }
