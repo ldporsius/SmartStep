@@ -7,34 +7,31 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 object DailyStepCountCreator {
 
     fun create(count: Int, date: Long = System.currentTimeMillis()): DailyStepCount{
+        val isDateMillis = date.toString().length >= 13
+        val dateSeconds = if(isDateMillis) date.MillisToDay() else date.seconds.inWholeDays
         return DailyStepCount(
-            dateSeconds = date.toDate(),
+            dateSeconds = dateSeconds,
             stepCount = count
         )
     }
 
-    fun getTodaysCount(counts: List<DailyStepCount>, today: Long): DailyStepCount?{
-        val day = today.toDate()
-
-        return counts.lastOrNull {
-            it.dateSeconds == day
-        }
-    }
 
     fun getTodayAsSeconds(): Long{
         val today = System.currentTimeMillis()
-        val date = today.toDate()
+        val date = today.MillisToDay()
         return date
     }
 
     fun toDateYYYYMMDD(dateSeconds: Long): DateYYYYMMDD {
         val instant = Instant.ofEpochSecond(dateSeconds)
         val local = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
-        if (local.year !in years) {
+        if (local.year !in 0 .. 3000) {
             //try if input was in milliseconds
             val instant = Instant.ofEpochMilli(dateSeconds)
             val local = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
@@ -59,7 +56,7 @@ object DailyStepCountCreator {
         return local.toEpochDay()
     }
 
-    private fun Long.toDate(): Long{
+    private fun Long.MillisToDay(): Long{
         val instant = Instant.ofEpochMilli(this)
         val day = instant.truncatedTo(ChronoUnit.DAYS)
 

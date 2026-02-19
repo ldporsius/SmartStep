@@ -71,11 +71,11 @@ class StepTrackerService : Service() {
         stepTracker.stepsTaken.onEach { step ->
             if(step.stepCount == 0) return@onEach
             println("--- StepTrackerService --- steps taken: $step")
-
+            val today = DailyStepCountCreator.create(step.stepCount, step.dateSeconds)
             //check if we have a baseline
-            val baseline = dailyStepRepoRoomImpl.getDailyStepCountBaselineForDate(step.dateSeconds)
+            val baseline = dailyStepRepoRoomImpl.getDailyStepCountBaselineForDate(today.dateSeconds)
             if(baseline == null){
-                dailyStepRepoRoomImpl.saveDailyStepCountBaseline(step)
+                dailyStepRepoRoomImpl.saveDailyStepCountBaseline(today)
             }
             baseline?.let {baseline ->
                 val difference = step.stepCount - baseline.stepCount
