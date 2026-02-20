@@ -1,13 +1,15 @@
 package nl.codingwithlinda.smartstep.core.domain.model.step_tracker
 
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toKotlinInstant
 
 object DailyStepCountCreator {
 
@@ -22,13 +24,18 @@ object DailyStepCountCreator {
 
     fun create(count: Int, date: Long = System.currentTimeMillis()): DailyStepCount{
         val isDateMillis = date.toString().length >= 13
-        val dateInDays = if(isDateMillis) date.MillisToDay() else date.seconds.inWholeDays
+       // println("${date} with lengt: ${date.toString().length} isDateMillis: $isDateMillis")
+        val dateInDays = if(isDateMillis) date.milliseconds.inWholeDays else date.seconds.inWholeDays
+
+       // println("dateInDays: ${dateInDays.days}")
         val localDate = LocalDate.ofEpochDay(dateInDays)
+
+        //println("localDate: $localDate")
         return DailyStepCount(
             YYYY = localDate.year,
             MM = localDate.monthValue,
             DD = localDate.dayOfMonth,
-            stepCount = count
+            stepCount = count.coerceAtLeast(0)
         )
     }
 
@@ -40,27 +47,24 @@ object DailyStepCountCreator {
     }
 
 
-    fun toDateYYYYMMDD(dayEpochSeconds: Long): DateYYYYMMDD {
+    fun toDateYYYYMMDD(
+        dayEpochSeconds: Long,
+
+    ): DateYYYYMMDD {
         val isInputMillis = dayEpochSeconds.toString().length >= 13
-        val instant = when(isInputMillis) {
-            true -> Instant.ofEpochMilli(dayEpochSeconds)
-            false -> Instant.ofEpochSecond(dayEpochSeconds)
+        val day = when(isInputMillis) {
+            true -> dayEpochSeconds.milliseconds.inWholeDays
+            false -> dayEpochSeconds.seconds.inWholeDays
         }
-        val local = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
+        val local = LocalDate.ofEpochDay(day)
 
         return DateYYYYMMDD(
             YYYY = local.year,
             MM = local.monthValue,
             DD = local.dayOfMonth
         )
-
-
     }
 
-    private fun fromDateYYYYMMDD(dateYYYYMMDD: DateYYYYMMDD): Long {
-        val local = LocalDate.of(dateYYYYMMDD.YYYY, dateYYYYMMDD.MM, dateYYYYMMDD.DD)
-        return local.toEpochDay()
-    }
 
     private fun Long.MillisToDay(): Long{
         val instant = Instant.ofEpochMilli(this)

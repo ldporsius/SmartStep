@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.tests
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
@@ -17,7 +18,7 @@ class FakeDailyStepRepo: DailyStepRepo {
         listOf(DailyStepGoal(1, 1000))
 
     private val goalObservable = MutableStateFlow<DailyStepGoal?>(null)
-    private val _stepCount = MutableStateFlow(DailyStepCount(0,0,0,0))
+    private val _stepCount:MutableStateFlow<DailyStepCount?> = MutableStateFlow(null)
 
     private val _userStepCountOverride = MutableStateFlow<List<DailyStepCount>>(emptyList())
 
@@ -44,20 +45,24 @@ class FakeDailyStepRepo: DailyStepRepo {
     }
 
     override suspend fun getStepCountForDate(date: Long): DailyStepCount? {
-        return _stepCount.value.takeIf { it.dayEpochSeconds() == date }
+        return _stepCount.value.takeIf { it?.dayEpochSeconds() == date }
     }
 
     fun getStepCountForYYYYMMDD(dateYYYYMMDD: DateYYYYMMDD): DailyStepCount?{
        throw Exception("not implemented")
     }
 
-    override suspend fun addStepCountToToday(_stepCount: DailyStepCount) {
+    override suspend fun addStepCountToToday(stepCount: DailyStepCount) {
+        val current = _stepCount.value?.let {
+            it.copy(stepCount = it.stepCount + stepCount.stepCount)
+            }
+            ?: stepCount
         this@FakeDailyStepRepo._stepCount.update {
-            it.copy(stepCount = it.stepCount + _stepCount.stepCount)
+           current
         }
     }
 
-    override val stepCount: Flow<DailyStepCount> = _stepCount
+    override val stepCount: Flow<DailyStepCount> = _stepCount.mapNotNull {it}
 
     override suspend fun saveDailyStepCountBaseline(dailyStepCount: DailyStepCount) {
         _baseline.update {
@@ -83,4 +88,16 @@ class FakeDailyStepRepo: DailyStepRepo {
 
     override fun getDailyStepCountUserOverride(): Flow<List<DailyStepCount>> = _userStepCountOverride
 
+
+    fun reset() {
+        _baseline.update {
+            null
+        }
+        _stepCount.update {
+            null
+        }
+        _userStepCountOverride.update {
+            emptyList()
+        }
+    }
 }

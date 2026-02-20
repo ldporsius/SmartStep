@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentat
 import app.cash.turbine.test
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -43,8 +44,19 @@ class EditStepsViewModelTest {
     @Test
     fun `test editsteps viewmodel - steps are replaced on save`() = runTest(testDispatcher) {
         viewModel.steps.test {
+
+            val item0 = awaitItem()
+            assertEquals(0, item0)
+
+            fakeDailyStepRepo.saveStepCount(
+                DailyStepCountCreator.create(100)
+            )
+
+            fakeDailyStepRepo.stepCount.firstOrNull().also {
+                println("current: $it")
+            }
             val item = awaitItem()
-            assertEquals(0, item)
+            assertEquals(100, item)
 
             println("first emission received")
             viewModel.onAction(EditStepAction.SetSteps("1000"))
