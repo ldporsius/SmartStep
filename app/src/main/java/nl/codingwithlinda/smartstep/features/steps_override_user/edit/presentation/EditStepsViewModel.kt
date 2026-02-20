@@ -61,24 +61,6 @@ class EditStepsViewModel(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
-   /* init {
-        viewModelScope.launch {
-            dailyStepRepo.stepCount.firstOrNull()?.let {count ->
-
-                _steps.update {
-                    count.stepCount
-                }
-                val converted = DailyStepCountCreator.toDateYYYYMMDD(count.dateSeconds)
-
-                println("--- EDITSTEPS VIEWMODEL INIT --- converted step count to YYYYMMDD: $converted")
-
-                _dateYYYYMMDD.update {
-                    converted
-                }
-            }
-        }
-
-    }*/
 
     fun onAction(action: EditStepAction){
         when(action){
