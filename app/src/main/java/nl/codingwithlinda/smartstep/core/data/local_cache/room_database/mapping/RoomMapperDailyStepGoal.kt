@@ -11,7 +11,7 @@ fun DailyStepGoalEntity.toDomain(): DailyStepGoal{
 
 }
 
-fun DailyStepGoal.toBaselineEntity(userId: String): DailyStepGoalEntity{
+fun DailyStepGoal.toGoalEntity(userId: String): DailyStepGoalEntity{
     return DailyStepGoalEntity(
         date = date,
         goal = goal,

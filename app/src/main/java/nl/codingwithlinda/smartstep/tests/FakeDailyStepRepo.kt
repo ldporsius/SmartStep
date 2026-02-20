@@ -17,7 +17,7 @@ class FakeDailyStepRepo: DailyStepRepo {
         listOf(DailyStepGoal(1, 1000))
 
     private val goalObservable = MutableStateFlow<DailyStepGoal?>(null)
-    private val _stepCount = MutableStateFlow(DailyStepCount(today, 0))
+    private val _stepCount = MutableStateFlow(DailyStepCount(0,0,0,0))
 
     private val _userStepCountOverride = MutableStateFlow<List<DailyStepCount>>(emptyList())
 
@@ -44,17 +44,16 @@ class FakeDailyStepRepo: DailyStepRepo {
     }
 
     override suspend fun getStepCountForDate(date: Long): DailyStepCount? {
-        return _stepCount.value.takeIf { it.dayEpochSeconds == date }
+        return _stepCount.value.takeIf { it.dayEpochSeconds() == date }
     }
 
     fun getStepCountForYYYYMMDD(dateYYYYMMDD: DateYYYYMMDD): DailyStepCount?{
-        val date = DailyStepCountCreator.fromDateYYYYMMDD(dateYYYYMMDD)
-        return _stepCount.value.takeIf { it.dayEpochSeconds == date }
+       throw Exception("not implemented")
     }
 
-    override suspend fun addStepCountToToday(stepCount: DailyStepCount) {
-        _stepCount.update {
-            it.copy(stepCount = it.stepCount + stepCount.stepCount)
+    override suspend fun addStepCountToToday(_stepCount: DailyStepCount) {
+        this@FakeDailyStepRepo._stepCount.update {
+            it.copy(stepCount = it.stepCount + _stepCount.stepCount)
         }
     }
 
@@ -78,7 +77,7 @@ class FakeDailyStepRepo: DailyStepRepo {
 
     override suspend fun getDailyStepCountUserOverrideForDay(date: Long): DailyStepCount? {
         return _userStepCountOverride.value.firstOrNull {
-            it.dayEpochSeconds == date
+            it.dayEpochSeconds() == date
         }
     }
 

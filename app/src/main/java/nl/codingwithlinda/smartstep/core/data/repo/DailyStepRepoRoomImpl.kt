@@ -9,6 +9,7 @@ import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.DailySte
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toDomain
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toBaselineEntity
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toEntity
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toGoalEntity
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toUserOverrideEntity
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
@@ -22,23 +23,23 @@ class DailyStepRepoRoomImpl(
 
     override suspend fun saveDailyStepGoal(dailyStepGoal: DailyStepGoal) {
         dailyStepGoalDao.upsertDailyStepGoal(
-            dailyStepGoal.toBaselineEntity(
+            dailyStepGoal.toGoalEntity(
                 userId = userId
             )
         )
     }
 
     override fun getDailyStepGoals(): Flow<List<DailyStepGoal>> {
-        return dailyStepGoalDao.getAllDailyStepGoals().map {
-            it.map {
+        return dailyStepGoalDao.getAllDailyStepGoals().map { goalEntities ->
+            goalEntities.map {
                 it.toDomain()
             }
         }
     }
 
     override suspend fun getDailyStepGoalsForUser(): List<DailyStepGoal> {
-        return dailyStepGoalDao.getAllDailyStepGoals().map {
-            it.map {
+        return dailyStepGoalDao.getAllDailyStepGoals().map { goalEntities ->
+            goalEntities.map {
                 it.toDomain()
             }
         }.firstOrNull() ?: emptyList()
@@ -50,18 +51,10 @@ class DailyStepRepoRoomImpl(
         }
     }
 
-    override suspend fun addStepCountToToday(_stepCount: DailyStepCount){
-        val latestCount = dailyStepCountDao.getDailyStepCount().firstOrNull()?.maxByOrNull {
-            it.date
-        }
-        val isUpdateToday = latestCount?.date == _stepCount.dayEpochSeconds
-        val entity = if (isUpdateToday){
-            latestCount.copy(
-                stepCount = latestCount.stepCount + _stepCount.stepCount
-            )
-        }else{
-            _stepCount.toEntity(userId)
-        }
+    override suspend fun addStepCountToToday(stepCount: DailyStepCount){
+        val entity =
+            stepCount.toEntity(userId)
+
         dailyStepCountDao.saveDailyStepCount(entity)
     }
 

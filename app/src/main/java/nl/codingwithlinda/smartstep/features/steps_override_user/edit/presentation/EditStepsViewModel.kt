@@ -36,10 +36,9 @@ class EditStepsViewModel(
                 _steps.update {
                    fromRepo.stepCount
                 }
-                val converted = DailyStepCountCreator.toDateYYYYMMDD(fromRepo.dayEpochSeconds)
 
                 _dateYYYYMMDD.update {
-                    converted
+                    DateYYYYMMDD(fromRepo.YYYY, fromRepo.MM, fromRepo.DD)
                 }
             }
         }
@@ -121,7 +120,7 @@ class EditStepsViewModel(
 
                     val update = DailyStepCountCreator.create(
                         _steps.value,
-                        _dateYYYYMMDD.value.toDomain()
+                        _dateYYYYMMDD.value
                     )
                     println("--- EDITSTEPS VIEWMODEL SAVE DATE --- $update")
                     dailyStepRepo.saveDailyStepCountUserOverride(update)

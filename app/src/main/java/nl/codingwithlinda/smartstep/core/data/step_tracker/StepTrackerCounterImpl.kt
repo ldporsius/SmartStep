@@ -28,7 +28,7 @@ class StepTrackerCounterImpl private constructor(
 
     override val stateObservable: Flow<StepTrackerState> = _stateObservable
 
-    private val _stepsTaken = MutableStateFlow(DailyStepCount(0,0))
+    private val _stepsTaken = MutableStateFlow(DailyStepCount(0,0,0,0))
 
     private val manager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val stepCounterSensor = manager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
@@ -104,7 +104,9 @@ class StepTrackerCounterImpl private constructor(
             CoroutineScope(Dispatchers.IO).launch {
                 _stepsTaken.update {
                     DailyStepCount(
-                        dayEpochSeconds = momentEventTookPlace.nanoseconds.inWholeSeconds,
+                        YYYY = dateOfEvent.year,
+                        MM = dateOfEvent.monthValue,
+                        DD = dateOfEvent.dayOfMonth,
                         stepCount = stepsReceivedFromEvent
                     )
                 }

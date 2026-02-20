@@ -17,6 +17,7 @@ import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartSte
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
+import java.time.LocalDate
 
 class StepTrackerService : Service() {
 
@@ -69,18 +70,18 @@ class StepTrackerService : Service() {
         stepTracker.stepsTaken.onEach { step ->
             if(step.stepCount == 0) return@onEach
             println("--- StepTrackerService --- steps taken: $step")
-            val today = DailyStepCountCreator.create(step.stepCount, step.dayEpochSeconds)
+            val today = LocalDate.of(step.YYYY, step.MM, step.DD).toEpochDay()
             //check if we have a baseline
-            val baseline = dailyStepRepoRoomImpl.getDailyStepCountBaselineForDate(today.dayEpochSeconds)
+            val baseline = dailyStepRepoRoomImpl.getDailyStepCountBaselineForDate(today)
             if(baseline == null){
-                dailyStepRepoRoomImpl.saveDailyStepCountBaseline(today)
+                dailyStepRepoRoomImpl.saveDailyStepCountBaseline(step)
             }
             baseline?.let {baseline ->
                 val difference = step.stepCount - baseline.stepCount
                 dailyStepRepoRoomImpl.addStepCountToToday(
                     DailyStepCountCreator.create(
                         count = difference,
-                        date = step.dayEpochSeconds
+                        date = today
                     )
                 )
             }
