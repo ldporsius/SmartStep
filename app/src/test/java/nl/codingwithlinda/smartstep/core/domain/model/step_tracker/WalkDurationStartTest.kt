@@ -1,7 +1,7 @@
 package nl.codingwithlinda.smartstep.core.domain.model.step_tracker
 
 import kotlinx.coroutines.test.runTest
-import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.tests.FakeWalkDurationRepo
 import org.junit.Test
 import java.time.LocalDateTime

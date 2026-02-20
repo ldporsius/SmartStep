@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import nl.codingwithlinda.smartstep.features.main.presentation.common.CommonNumberPicker
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DatePicker
-import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.months
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.years
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction

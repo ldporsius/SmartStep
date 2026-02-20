@@ -1,16 +1,15 @@
 package nl.codingwithlinda.smartstep.core.domain.model.step_tracker
 
-import nl.codingwithlinda.smartstep.features.steps_override_user.domain.mapping.toDomain
-import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
-
 data class WalkDurationStart(
     val YYYY: Int,
     val MM: Int,
     val DD: Int,
     val timestamp: Long,
 ){
-    val dateSeconds: Long
-        get() = DateYYYYMMDD(YYYY, MM, DD).toDomain()
+    val dateString: String
+        get() = dateYYYYMMDD.dateString
+    val dateYYYYMMDD : DateYYYYMMDD
+        get() = DateYYYYMMDD(YYYY, MM, DD)
 }
 
 data class WalkDurationEnd(
@@ -19,8 +18,8 @@ data class WalkDurationEnd(
     val DD: Int,
     val timestamp: Long,
 ){
-    val dateSeconds: Long
-        get() = DateYYYYMMDD(YYYY, MM, DD).toDomain()
+    val dateString: String
+        get() = DateYYYYMMDD(YYYY, MM, DD).dateString
 }
 
 data class WalkSession(

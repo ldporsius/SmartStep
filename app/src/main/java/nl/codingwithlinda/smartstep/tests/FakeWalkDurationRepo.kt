@@ -9,7 +9,7 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationE
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationStart
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkSession
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
-import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 
 class FakeWalkDurationRepo: WalkDurationRepo {
 
@@ -34,7 +34,7 @@ class FakeWalkDurationRepo: WalkDurationRepo {
     override suspend fun saveWalkDurationEnd(walkDuration: WalkDurationEnd) {
         mutex.withLock {
             val sessionToday = _sessions.filter {
-                it.start.dateSeconds == walkDuration.dateSeconds
+                it.start.dateString == walkDuration.dateString
             }.filter {
                 it.end == null
             }.minBy {

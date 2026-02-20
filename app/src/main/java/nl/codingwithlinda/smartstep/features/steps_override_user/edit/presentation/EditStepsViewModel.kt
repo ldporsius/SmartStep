@@ -15,9 +15,8 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
-import nl.codingwithlinda.smartstep.features.steps_override_user.domain.mapping.toDomain
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DatePicker
-import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.months
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.years
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
@@ -97,8 +96,6 @@ class EditStepsViewModel(
 
             EditStepAction.Save -> {
                 viewModelScope.launch {
-                    val yyyyMMDDToDomain = _dateYYYYMMDD.value.toDomain()
-                    println("--- EDITSTEPS VIEWMODEL SAVE DATE --- date to domain $yyyyMMDDToDomain")
 
                     val update = DailyStepCountCreator.create(
                         _steps.value,

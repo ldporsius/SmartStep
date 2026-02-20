@@ -91,9 +91,10 @@ class StatisticsViewModel(
 
 
     val timeWalked = walkDurationRepo.sessions.filter { sessions ->
-        val today = DailyStepCountCreator.getTodayAsSeconds()
+        val today = DailyStepCountCreator.toDateYYYYMMDD(System.currentTimeMillis())
+
         sessions.any{
-            it.start.dateSeconds == today
+            it.start.dateString == today.dateString
         }
     }.combine(minuteCounter){session, minute ->
         val duration = session.sumOf {

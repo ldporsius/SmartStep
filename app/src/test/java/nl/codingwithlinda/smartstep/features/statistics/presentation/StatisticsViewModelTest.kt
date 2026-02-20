@@ -62,7 +62,7 @@ class StatisticsViewModelTest {
         val sessions = walkDurationRepo.sessions.first()
         assertThat(sessions.size).isEqualTo(1)
         val startTimeSeconds = sessions.first().start.timestamp
-        println("We have a session: ${sessions}, with start: ${sessions.first().start.dateSeconds}")
+        println("We have a session: ${sessions}, with start: ${sessions.first().start.dateString}")
 
         statisticsViewModel.timeWalked.test {
             val duration = measureTimeMillis {

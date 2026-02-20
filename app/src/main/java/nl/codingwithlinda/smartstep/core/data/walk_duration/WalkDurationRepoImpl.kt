@@ -37,7 +37,7 @@ class WalkDurationRepoImpl: WalkDurationRepo {
 
         mutex.withLock {
             val sessionToday = _sessions.value.filter {
-                it.start.dateSeconds == walkDuration.dateSeconds
+                it.start.dateString == walkDuration.dateString
             }.filter {
                 it.end == null
             }.minByOrNull {

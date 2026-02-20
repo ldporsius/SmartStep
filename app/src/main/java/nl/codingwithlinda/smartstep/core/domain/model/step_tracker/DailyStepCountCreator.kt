@@ -1,6 +1,6 @@
 package nl.codingwithlinda.smartstep.core.domain.model.step_tracker
 
-import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -38,6 +38,7 @@ object DailyStepCountCreator {
         val date = today.MillisToDay()
         return date
     }
+
 
     fun toDateYYYYMMDD(dayEpochSeconds: Long): DateYYYYMMDD {
         val isInputMillis = dayEpochSeconds.toString().length >= 13
