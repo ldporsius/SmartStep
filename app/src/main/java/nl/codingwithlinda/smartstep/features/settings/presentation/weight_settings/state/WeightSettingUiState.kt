@@ -2,6 +2,7 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.weight_setti
 
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GramsWeight
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KGWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBS
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.convertWeight
@@ -12,11 +13,9 @@ import nl.codingwithlinda.smartstep.core.domain.util.UiText
 import kotlin.math.roundToInt
 
 interface WeightSettingUiState {
-    data class Imperial(private val grams: Double): WeightSettingUiState{
+    data class Imperial(private val lbsWeight: LBSWeight): WeightSettingUiState{
 
-        val pounds = GramsWeight(grams).let {
-            convertWeight(it, LBS).weight
-        }
+        val pounds = lbsWeight.weight
             .roundToInt()
             .coerceIn(minWeightPounds, maxWeightPounds)
         override val system: UnitSystems
@@ -28,8 +27,8 @@ interface WeightSettingUiState {
 
 
     }
-    data class SI(private val grams: Double): WeightSettingUiState{
-        val roundedKg = grams.div(1000.0)
+    data class SI(private val kg: KGWeight): WeightSettingUiState{
+        val roundedKg = kg.weight
             .roundToInt()
             .coerceIn(weightRangeKg.first(), weightRangeKg.last())
 

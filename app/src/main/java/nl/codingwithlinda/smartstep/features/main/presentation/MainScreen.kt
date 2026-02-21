@@ -69,7 +69,6 @@ fun MainScreen(
     dailyStepCountViewModel: DailyStepCountViewModel,
     statisticsViewModel: StatisticsViewModel,
     stepTrackerViewModel: StepTrackerViewModel,
-    editStepsViewModel: EditStepsViewModel
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -226,7 +225,9 @@ fun MainScreen(
             parent = this
         )
 
-        StepsNavActionDecorator(editStepsViewModel)
+        StepsNavActionDecorator(
+           currentStep = dailyStepCountViewModel.todaysStep.collectAsStateWithLifecycle().value ?: return@Box
+        )
     }
 
     ObserveAsEvents(stepTrackerViewModel.state) {

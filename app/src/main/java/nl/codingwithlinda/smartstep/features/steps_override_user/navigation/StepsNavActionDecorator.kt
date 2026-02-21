@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
@@ -28,11 +29,19 @@ import nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentat
 
 @Composable
 fun StepsNavActionDecorator(
-    editStepsViewModel: EditStepsViewModel
+   currentStep: DailyStepCount
 ) {
 
-  /*
-*/
+    val editStepsViewModel: EditStepsViewModel = viewModel(
+        factory = viewModelFactory {
+            initializer {
+                EditStepsViewModel(
+                    dailyStepRepo = SmartStepApplication.dailyStepRepo,
+                    currentStep = currentStep
+                )
+            }
+        }
+    )
     var action: StepNavAction by remember { mutableStateOf(StepNavAction.NA) }
 
     ObserveAsEvents(StepNavActionHandler.actions) { _action ->
@@ -96,7 +105,9 @@ fun StepsNavActionDecorator(
 
                     initializer {
                         ResetStepsViewModel(
-                            dailyStepRepo = SmartStepApplication.dailyStepRepo
+                            dailyStepRepo = SmartStepApplication.dailyStepRepo,
+                            currentStep = currentStep,
+                            scope = SmartStepApplication.applicationScope
                         )
                     }
                 }

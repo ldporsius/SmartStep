@@ -1,26 +1,33 @@
 package nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation
 
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 
 class ResetStepsViewModel(
-    private val dailyStepRepo: DailyStepRepo
+    private val dailyStepRepo: DailyStepRepo,
+    private val currentStep: DailyStepCount,
+    private val scope: CoroutineScope
 ): ViewModel() {
 
+    fun reset() {
+        scope.launch {
 
-    fun reset(){
-        SmartStepApplication.applicationScope.launch {
+            with(currentStep) {
+                val update = copy(stepCount = 0)
+                println("--- RESETSTEPSVIEWMODEL --- update: $update")
+                dailyStepRepo.saveDailyStepCountUserOverride(
+                    update
+                )
+                dailyStepRepo.saveStepCount(
+                    update
+                )
 
-           DailyStepCountCreator.getTodayAsSeconds().let {
-               dailyStepRepo.getStepCountForDate(it)
-           }?.also {
-               dailyStepRepo.saveDailyStepCountBaseline(it)
-           }
-            DailyStepCountCreator.create(0).also {
-                dailyStepRepo.saveStepCount(it)
             }
         }
     }

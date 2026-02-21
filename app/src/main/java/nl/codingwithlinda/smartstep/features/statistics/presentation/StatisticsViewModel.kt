@@ -60,7 +60,9 @@ class StatisticsViewModel(
         it.gender
     }
     val stepsTaken = dailyStepRepo.stepCount.map {
-        it.stepCount
+        it.firstOrNull {
+            it.dayEpochDay == DailyStepCountCreator.getTodayAsYYYYMMDD().dateEpochDay
+        }?.stepCount ?:0
     }
 
     val currentSystem = userSettingsRepo.unitSystemObservable.map{

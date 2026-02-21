@@ -149,15 +149,15 @@ class DailyStepCountCreatorTest {
     fun `Millisecond to Day truncation verification`() {
         // Verify that the custom MillisToDay extension correctly truncates time 
         // components (hours/minutes/seconds) using ChronoUnit.DAYS via Instant.
-        val todayAsSeconds = DailyStepCountCreator.getTodayAsSeconds()
+        val todayAsSeconds = DailyStepCountCreator.getTodayAsYYYYMMDD()
         val expected = LocalDateTime.ofEpochSecond(System.currentTimeMillis().milliseconds.inWholeSeconds, 0, ZoneOffset.UTC)
 
         println("todayAsSeconds: $todayAsSeconds")
         println("expected: $expected")
 
-        assertThat(expected.year).isEqualTo(expected.year)
-        assertThat(expected.monthValue).isEqualTo(expected.monthValue)
-        assertThat(expected.dayOfMonth).isEqualTo(expected.dayOfMonth)
+        assertThat(expected.year).isEqualTo(todayAsSeconds.YYYY)
+        assertThat(expected.monthValue).isEqualTo(todayAsSeconds.MM)
+        assertThat(expected.dayOfMonth).isEqualTo(todayAsSeconds.DD)
     }
 
     @Test

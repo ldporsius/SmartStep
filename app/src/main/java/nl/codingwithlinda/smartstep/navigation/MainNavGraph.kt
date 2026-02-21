@@ -109,15 +109,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
     )
 
 
-    val editStepsViewModel = viewModel<EditStepsViewModel>(
-        factory = viewModelFactory {
-            initializer {
-                EditStepsViewModel(
-                    dailyStepRepo = SmartStepApplication.dailyStepRepo
-                )
-            }
-        }
-    )
+
 
     NavDisplay(
         backStack = backStack,
@@ -182,7 +174,6 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                         dailyStepCountViewModel = dailyStepCountViewModel,
                         statisticsViewModel = statisticsViewModel,
                         stepTrackerViewModel = stepTrackerViewModel,
-                        editStepsViewModel = editStepsViewModel
                     )
                 }
 

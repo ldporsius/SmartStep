@@ -25,6 +25,8 @@ class EditStepsViewModelTest {
 
     private lateinit var viewModel: EditStepsViewModel
     private val fakeDailyStepRepo = FakeDailyStepRepo()
+    private val todaysStep = DailyStepCountCreator.create(100)
+
 
     val testDispatcher = UnconfinedTestDispatcher()
 
@@ -32,12 +34,16 @@ class EditStepsViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = EditStepsViewModel(fakeDailyStepRepo)
+        viewModel = EditStepsViewModel(
+            fakeDailyStepRepo,
+            todaysStep
+        )
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+        fakeDailyStepRepo.reset()
     }
 
 
@@ -46,17 +52,7 @@ class EditStepsViewModelTest {
         viewModel.steps.test {
 
             val item0 = awaitItem()
-            assertEquals(0, item0)
-
-            fakeDailyStepRepo.saveStepCount(
-                DailyStepCountCreator.create(100)
-            )
-
-            fakeDailyStepRepo.stepCount.firstOrNull().also {
-                println("current: $it")
-            }
-            val item = awaitItem()
-            assertEquals(100, item)
+            assertEquals(100, item0)
 
             println("first emission received")
             viewModel.onAction(EditStepAction.SetSteps("1000"))
@@ -77,7 +73,7 @@ class EditStepsViewModelTest {
 
             println("first emission received")
 
-            val tomorrow = DailyStepCountCreator.getTodayAsSeconds().seconds
+            val tomorrow = DailyStepCountCreator.getTodayAsYYYYMMDD().dateEpochDay.days
                 .plus(365.days)
                 .plus(30.days)
                 .plus(1.days)

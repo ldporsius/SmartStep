@@ -1,15 +1,8 @@
 package nl.codingwithlinda.smartstep.core.domain.model.step_tracker
 
-import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
-import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.toKotlinInstant
 
 object DailyStepCountCreator {
 
@@ -40,12 +33,10 @@ object DailyStepCountCreator {
     }
 
 
-    fun getTodayAsSeconds(): Long{
+    fun getTodayAsYYYYMMDD(): DateYYYYMMDD {
         val today = System.currentTimeMillis()
-        val date = today.MillisToDay()
-        return date
+        return toDateYYYYMMDD(today)
     }
-
 
     fun toDateYYYYMMDD(
         dayEpochSeconds: Long,
@@ -63,13 +54,5 @@ object DailyStepCountCreator {
             MM = local.monthValue,
             DD = local.dayOfMonth
         )
-    }
-
-
-    private fun Long.MillisToDay(): Long{
-        val instant = Instant.ofEpochMilli(this)
-        val day = instant.truncatedTo(ChronoUnit.DAYS)
-
-        return day.epochSecond
     }
 }

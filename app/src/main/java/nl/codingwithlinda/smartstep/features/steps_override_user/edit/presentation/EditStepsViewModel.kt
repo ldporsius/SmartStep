@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dailyStepRepo
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
@@ -23,7 +25,8 @@ import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentati
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
 
 class EditStepsViewModel(
-    private val dailyStepRepo: DailyStepRepo
+    private val dailyStepRepo: DailyStepRepo,
+    private val currentStep: DailyStepCount
 ): ViewModel() {
     private val _steps = MutableStateFlow(0)
 
@@ -31,18 +34,15 @@ class EditStepsViewModel(
 
     val steps = _steps
         .onStart {
-            dailyStepRepo.stepCount.firstOrNull()?.let { fromRepo->
-                _steps.update {
-                   fromRepo.stepCount
-                }
+            _steps.update {
+                currentStep.stepCount
+            }
 
-                _dateYYYYMMDD.update {
-                    DateYYYYMMDD(fromRepo.YYYY, fromRepo.MM, fromRepo.DD)
-                }
+            _dateYYYYMMDD.update {
+                DateYYYYMMDD(currentStep.YYYY, currentStep.MM, currentStep.DD)
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
-
 
     val yearRange = years.toList()
     val monthRange = months.toList()

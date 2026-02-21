@@ -1,6 +1,16 @@
 package nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isZero
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.test.runTest
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import nl.codingwithlinda.smartstep.util.BaseJunitTest
 import org.junit.After
@@ -8,16 +18,23 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
+import kotlin.time.Duration.Companion.seconds
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ResetStepsViewModelTest: BaseJunitTest() {
 
     private lateinit var viewModel: ResetStepsViewModel
     private val fakeDailyStepRepo = FakeDailyStepRepo()
 
+    private val scope = CoroutineScope(testDispatcher)
+
+    private val step = DailyStepCountCreator.create(100)
     @Before
     fun setup1(){
         viewModel = ResetStepsViewModel(
-            fakeDailyStepRepo
+            fakeDailyStepRepo,
+            step,
+            scope
         )
     }
     @After
@@ -25,18 +42,53 @@ class ResetStepsViewModelTest: BaseJunitTest() {
         fakeDailyStepRepo.reset()
     }
 
-    @Ignore
+
     @Test
-    fun `reset   success   today s step count exists`() {
+    fun `reset   success   today s step count exists`() : Unit = runTest (testDispatcher){
         // Verify that when a step count for today exists, it is fetched and its value is saved as the new baseline.
+
+        fakeDailyStepRepo.saveStepCount(step)
+        val userOverride = DailyStepCountCreator.create(200)
+        fakeDailyStepRepo.saveDailyStepCountUserOverride(userOverride)
+
+        val override1 = fakeDailyStepRepo.getDailyStepCountUserOverrideForDay(userOverride.dayEpochDay)?.stepCount ?: 0
+
+        assertThat(override1).isEqualTo(200)
+
+        viewModel.reset()
+
+        //runCurrent()
+
+        fakeDailyStepRepo.stepCount.firstOrNull()?.also {
+            println("stepCount: $it")
+        }
+        val today = DailyStepCountCreator.getTodayAsYYYYMMDD()
+        println("today: ${today.dateString}")
+
+        val result = fakeDailyStepRepo.getStepCountForDate(today.dateEpochDay)
+        assertThat(result!!.stepCount).isZero()
+
+        val todaysSteps = fakeDailyStepRepo.getStepCountForDate(System.currentTimeMillis())?.stepCount ?: 0
+        val override = fakeDailyStepRepo.getDailyStepCountUserOverrideForDay(userOverride.dayEpochDay)?.stepCount ?: 0
+
+        val total = todaysSteps + override
+
+        assertThat(total).isZero()
 
     }
 
-    @Ignore
+
     @Test
-    fun `reset   success   today s step count does not exist`() {
+    fun `reset   success   today s step count does not exist`(): Unit = runTest(testDispatcher){
         // Verify that when no step count for today exists, the baseline is not updated, and a new step count of 0 is created and saved.
-        // TODO implement test
+        viewModel.reset()
+        //runCurrent()
+        val today = DailyStepCountCreator.getTodayAsYYYYMMDD()
+        println("today: ${today.dateString}")
+
+        val result = fakeDailyStepRepo.getStepCountForDate(today.dateEpochDay)
+        assertThat(result!!.stepCount).isZero()
+
     }
 
     @Ignore

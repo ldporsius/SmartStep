@@ -30,6 +30,7 @@ import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KGWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
@@ -238,7 +239,7 @@ private fun PreviewUserSettingsScreen() {
         UserSettingsScreen(
             //userSettings = UserSettings(),
             heightUiState = HeightSettingUiState.SI(175),
-            weightUiState = WeightSettingUiState.SI(100.0 * 1000),
+            weightUiState = WeightSettingUiState.SI(KGWeight(100.0)),
             gender = Gender.FEMALE,
             actionGenderInput = {},
             actionHeightInput = {},

@@ -27,6 +27,7 @@ import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.smartstep.application.dataStore
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GRAM
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GramsWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KGWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBS
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
@@ -48,14 +49,16 @@ class WeightSettingsScreenTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
-    val uiState = MutableStateFlow<WeightSettingUiState> ( WeightSettingUiState.SI(weightRangeKg.last().toDouble()) )
+
+    val kg = KGWeight(weightRangeKg.last().toDouble())
+    val grams = convertWeight(kg, GRAM) as GramsWeight
+    val pounds = convertWeight(kg, LBS) as LBSWeight
+
+    val uiState = MutableStateFlow<WeightSettingUiState> ( WeightSettingUiState.SI(kg) )
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     val context = ApplicationProvider.getApplicationContext<Application>()
     val screenshotPath = File(context.cacheDir, "testWeightSettingsScreen.png")
 
-    val kg = KGWeight(weightRangeKg.last().toDouble())
-    val grams = convertWeight(kg, GRAM)
-    val pounds = convertWeight(kg, LBS)
 
 
     @Before
@@ -66,9 +69,6 @@ class WeightSettingsScreenTest {
             }
         }
 
-        uiState.update {
-            WeightSettingUiState.SI(grams.weight)
-        }
 
         composeTestRule.setContent {
             WeightSettingsScreen(
@@ -81,12 +81,12 @@ class WeightSettingsScreenTest {
                            when(action.system) {
                                UnitSystems.IMPERIAL -> {
                                    uiState.update {
-                                       WeightSettingUiState.Imperial(grams.weight)
+                                       WeightSettingUiState.Imperial(pounds)
                                    }
                                }
                                UnitSystems.SI -> {
                                    uiState.update {
-                                       WeightSettingUiState.SI(grams.weight)
+                                       WeightSettingUiState.SI(kg)
                                    }
                                }
                            }
