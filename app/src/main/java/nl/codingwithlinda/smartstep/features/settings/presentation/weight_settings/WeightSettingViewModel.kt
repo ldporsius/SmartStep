@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings
 
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,6 +25,7 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.fromPrevi
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
+import kotlin.math.nextDown
 import kotlin.math.roundToInt
 
 class WeightSettingViewModel(
@@ -74,12 +76,15 @@ class WeightSettingViewModel(
                 _weightInputKg.update {
                     kg
                 }
-                val previousPounds = fromPreviousPounds(kg,_weightInputPounds.value.weight.roundToInt()).apply {
-                    weight.roundToInt()
-                }
+                val previousPounds = fromPreviousPounds(kg,_weightInputPounds.value.weight.roundToInt())
+
+                println("--- ActionWeightInput.KgInput --- previousPounds: $previousPounds")
+
 
                 _weightInputPounds.update {
-                   previousPounds
+                   previousPounds.copy(
+                      weight = previousPounds.weight.roundToInt().toDouble()
+                   )
                 }
 
             }

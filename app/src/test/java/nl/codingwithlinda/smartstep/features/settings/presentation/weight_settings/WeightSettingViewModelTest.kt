@@ -9,6 +9,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
+import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KGWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
@@ -41,20 +42,21 @@ class WeightSettingViewModelTest {
 
     @Test
     fun `test weightViewModel updates correctly`() = runTest {
-        val expected = 100_000.0
+        val expectedPounds = LBSWeight(220.0)
+        val initSI = KGWeight(0.0)
         viewModel.weightUiState.test {
-            assertEquals(awaitItem(), WeightSettingUiState.SI(0.0))
+            assertEquals(awaitItem(), WeightSettingUiState.SI(initSI))
 
             viewModel.onAction(ActionWeightInput.KgInput(100))
 
-            assertEquals(awaitItem(), WeightSettingUiState.SI(100_000.0))
+            assertEquals(awaitItem(), WeightSettingUiState.SI(KGWeight(100.0)))
 
             viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystems.IMPERIAL))
 
 
             val item1 = awaitItem()
             assertTrue(item1 is WeightSettingUiState.Imperial)
-            assertEquals(item1, WeightSettingUiState.Imperial(expected))
+            assertEquals(item1, WeightSettingUiState.Imperial(expectedPounds))
             with(item1 as WeightSettingUiState.Imperial) {
                 assertEquals(pounds, 220)
             }
@@ -64,7 +66,7 @@ class WeightSettingViewModelTest {
     @Test
     fun `test weightViewModel updates pounds correctly`() = runTest {
         viewModel.weightUiState.test {
-            assertEquals(awaitItem(), WeightSettingUiState.SI(0.0))
+            assertEquals(awaitItem(), WeightSettingUiState.SI(KGWeight(0.0)))
             viewModel.onAction(ActionWeightInput.ChangeSystem(UnitSystems.IMPERIAL))
 
             viewModel.onAction(ActionWeightInput.PoundsInput(200))

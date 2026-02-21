@@ -237,7 +237,6 @@ fun UserSettingsScreen(
 private fun PreviewUserSettingsScreen() {
     SmartStepTheme {
         UserSettingsScreen(
-            //userSettings = UserSettings(),
             heightUiState = HeightSettingUiState.SI(175),
             weightUiState = WeightSettingUiState.SI(KGWeight(100.0)),
             gender = Gender.FEMALE,

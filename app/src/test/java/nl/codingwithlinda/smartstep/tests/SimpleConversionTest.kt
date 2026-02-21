@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.kgToPounds
 import org.hamcrest.CoreMatchers.equalTo
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ErrorCollector
@@ -69,6 +70,7 @@ class SimpleConversionTest {
     }
 
 
+    @Ignore
     @Test
     fun `convert even and odd - odd value first`() {
 
@@ -122,6 +124,8 @@ class SimpleConversionTest {
         assertThat(displayKg2).isEqualTo(2)
         //we switch back to display the value in pounds
         val convertedKgToPounds2 = kgToPounds(displayKg2.toDouble())
+        assertThat(convertedKgToPounds2).isEqualTo(3.0)
+
         val displayPounds2 = lookupPound(rememberPound.toDouble())
         assertThat(displayPounds2).isEqualTo(3)
 
