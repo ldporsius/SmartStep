@@ -2,6 +2,7 @@ package nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping
 
 import android.util.Log.i
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepGoalCreator
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.Duration

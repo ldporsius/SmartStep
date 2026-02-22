@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationEnd

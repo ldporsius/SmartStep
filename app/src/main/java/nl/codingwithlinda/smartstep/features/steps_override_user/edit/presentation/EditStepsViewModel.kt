@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DatePicker

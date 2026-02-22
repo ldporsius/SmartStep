@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.weekly_average.components
+package nl.codingwithlinda.smartstep.features.weekly_average.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.CircularProgressIndicator
@@ -10,34 +10,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
+import nl.codingwithlinda.smartstep.features.weekly_average.presentation.model.DailyAverageUi
 import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun DayItem(
-    goal: DailyStepGoal,
-    steps: DailyStepCount,
+    day: DailyAverageUi,
     modifier: Modifier = Modifier) {
 
-    val weekday = remember {
-        LocalDate.ofEpochDay(steps.dayEpochDay).dayOfWeek.getDisplayName(
-            java.time.format.TextStyle.SHORT,
-            java.util.Locale.getDefault()
-        )
-    }
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator(
             progress = {
-                steps.stepCount.toFloat() / goal.goal
+                day.average
             }
         )
-        Text("${weekday}")
-        Text("${steps.stepCount}",
+        Text("${day.dateUi}")
+        Text("${day.stepCount.stepCount}",
             style = MaterialTheme.typography.labelSmall)
     }
 }
@@ -48,13 +45,15 @@ private fun PreviewDayItem() {
     val today = DailyStepCountCreator.getTodayAsYYYYMMDD()
     SmartStepTheme() {
         DayItem(
+            day = DailyAverageUi(
+                stepCount = DailyStepCount(
+                    YYYY = today.YYYY,
+                    MM = today.MM,
+                    DD = today.DD,
+                    2000),
             goal = DailyStepGoal(today.dateEpochDay,1000),
-            steps = DailyStepCount(
-                YYYY = today.YYYY,
-                MM = today.MM,
-                DD = today.DD,
-                2000)
-
+            )
         )
+
     }
 }

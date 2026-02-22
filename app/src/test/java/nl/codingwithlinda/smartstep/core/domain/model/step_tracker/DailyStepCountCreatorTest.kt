@@ -2,6 +2,7 @@ package nl.codingwithlinda.smartstep.core.domain.model.step_tracker
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import org.junit.Test
 import java.time.LocalDateTime
 import java.time.Year

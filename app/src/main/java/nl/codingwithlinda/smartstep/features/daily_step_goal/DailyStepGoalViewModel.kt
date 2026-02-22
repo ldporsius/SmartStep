@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.DailyStepGoalCreator
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepGoalCreator
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 
