@@ -18,7 +18,6 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,10 +35,8 @@ import nl.codingwithlinda.smartstep.design_system.ui.theme.white
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.components.PausePlayButton
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.components.StatisticsRow
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.components.StepsProgressText
-import nl.codingwithlinda.smartstep.features.statistics.presentation.components.StatisticsItem
 import nl.codingwithlinda.smartstep.features.statistics.presentation.model.StatisticsUi
-import nl.codingwithlinda.smartstep.tests.fakeStatistics
-import java.util.Locale
+import nl.codingwithlinda.smartstep.tests.util.fakeStatistics
 
 @Composable
 fun DailyStepCard(

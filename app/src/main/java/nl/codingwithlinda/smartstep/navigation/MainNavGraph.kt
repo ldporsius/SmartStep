@@ -32,6 +32,7 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsR
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.UserSettingsWrapper
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
+import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -108,6 +109,16 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
         }
     )
 
+    val weeklyAverageViewModel = viewModel<WeeklyAverageViewModel>(
+        factory = viewModelFactory {
+            initializer {
+                WeeklyAverageViewModel(
+                    repo = SmartStepApplication.dailyStepRepo
+                )
+            }
+        }
+    )
+
 
 
 
@@ -174,6 +185,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                         dailyStepCountViewModel = dailyStepCountViewModel,
                         statisticsViewModel = statisticsViewModel,
                         stepTrackerViewModel = stepTrackerViewModel,
+                        weeklyAverageViewModel = weeklyAverageViewModel
                     )
                 }
 

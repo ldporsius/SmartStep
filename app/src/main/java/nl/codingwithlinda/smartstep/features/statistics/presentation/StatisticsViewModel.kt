@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
@@ -32,7 +31,7 @@ import nl.codingwithlinda.smartstep.features.statistics.presentation.model.Stati
 import nl.codingwithlinda.smartstep.features.statistics.presentation.util.MinuteCounter
 import nl.codingwithlinda.smartstep.features.statistics.presentation.util.MinuteCounter.minuteCounter
 import nl.codingwithlinda.smartstep.features.statistics.presentation.util.toUi
-import nl.codingwithlinda.smartstep.tests.fakeStatistics
+import nl.codingwithlinda.smartstep.tests.util.fakeStatistics
 import kotlin.time.Duration.Companion.milliseconds
 
 class StatisticsViewModel(

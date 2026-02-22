@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.main.presentation.state
+package nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider
 
 import android.content.Intent
 import androidx.activity.compose.LocalActivity

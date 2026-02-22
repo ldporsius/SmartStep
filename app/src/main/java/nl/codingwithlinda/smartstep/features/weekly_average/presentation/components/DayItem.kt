@@ -2,18 +2,23 @@ package nl.codingwithlinda.smartstep.features.weekly_average.presentation.compon
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
+import nl.codingwithlinda.smartstep.design_system.ui.theme.white
 import nl.codingwithlinda.smartstep.features.weekly_average.presentation.model.DailyAverageUi
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -22,21 +27,32 @@ import java.util.Locale
 @Composable
 fun DayItem(
     day: DailyAverageUi,
+    textColor: Color = white,
     modifier: Modifier = Modifier) {
 
 
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircularProgressIndicator(
-            progress = {
-                day.average
-            }
+    CompositionLocalProvider(
+        LocalTextStyle.provides(
+            LocalTextStyle.current.copy(color = textColor)
         )
-        Text("${day.dateUi}")
-        Text("${day.stepCount.stepCount}",
-            style = MaterialTheme.typography.labelSmall)
+    ){
+        Column(
+            modifier = modifier,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator(
+                progress = {
+                    day.average
+                },
+                color = Color.Green
+            )
+            Text("${day.dateUi}")
+            Text(
+                "${day.stepCount.stepCount}",
+                style = MaterialTheme.typography.labelSmall,
+                color = LocalTextStyle.current.color
+            )
+        }
     }
 }
 
@@ -51,7 +67,7 @@ private fun PreviewDayItem() {
                     YYYY = today.YYYY,
                     MM = today.MM,
                     DD = today.DD,
-                    2000),
+                    200),
             goal = DailyStepGoal(
                 YYYY = today.YYYY,
                 MM = today.MM,

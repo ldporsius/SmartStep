@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.tests
+package nl.codingwithlinda.smartstep.tests.util
 
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.domain.util.UiText

@@ -1,5 +1,7 @@
 package nl.codingwithlinda.smartstep.core.domain.util.factories
 
+import android.R.id.input
+import androidx.core.util.toRange
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.days
@@ -11,36 +13,26 @@ object DateTimeHelper {
     enum class EpochValue{
         MILLIS,
         SECONDS,
-        DAYS
+        DAYS,
     }
-    fun localDateFromMillis(date: Long): LocalDate{
-        val epochValue = validateLongInput(date)
-        println("${date} with lengt: ${date.toString().length} is epoch value: $epochValue")
-
-        val dateInDays = when(epochValue){
-            EpochValue.MILLIS -> date.milliseconds.inWholeDays
-            EpochValue.SECONDS -> date.seconds.inWholeDays
-            EpochValue.DAYS -> date.days.inWholeDays
-        }
-
-        println("dateInDays: ${dateInDays.days}")
-        val localDate = LocalDate.ofEpochDay(dateInDays)
-
-        println("localDate: $localDate")
-        return localDate
-
-    }
-
 
     fun toDateYYYYMMDD(
         dayEpochSeconds: Long,
         ): DateYYYYMMDD {
-        val isInputMillis = dayEpochSeconds.toString().length >= 13
-        val day = when(isInputMillis) {
-            true -> dayEpochSeconds.milliseconds.inWholeDays
-            false -> dayEpochSeconds.seconds.inWholeDays
+        val epochValue = validateLongInput(dayEpochSeconds)
+        println("${dayEpochSeconds} with lengt: ${dayEpochSeconds.toString().length} is epoch value: $epochValue")
+
+        val day = when(epochValue) {
+            EpochValue.MILLIS -> dayEpochSeconds.milliseconds.inWholeDays
+            EpochValue.SECONDS -> dayEpochSeconds.seconds.inWholeDays
+            EpochValue.DAYS -> dayEpochSeconds.days.inWholeDays
+
         }
-        val local = LocalDate.ofEpochDay(day)
+
+        val local = if(!isInDayRange(day))
+            LocalDate.ofEpochDay(LocalDate.MIN.toEpochDay())
+            else
+            LocalDate.ofEpochDay(day)
 
         return DateYYYYMMDD(
             YYYY = local.year,
@@ -49,12 +41,22 @@ object DateTimeHelper {
         )
     }
 
+    private fun isInDayRange(day: Long): Boolean {
+        val lowest = LocalDate.MIN.toEpochDay()
+        val highest = LocalDate.MAX.toEpochDay()
+        val validDateRange = lowest..highest
+
+        return (day in validDateRange)
+
+    }
+
     private fun validateLongInput(input: Long): EpochValue{
-        val isDateMillis = input.toString().length >= 13
-        if (isDateMillis) return EpochValue.MILLIS
+
+       if(input.toString().length >= 13)
+            return EpochValue.MILLIS
 
         if (input.toString().length >= 9)
-        return EpochValue.SECONDS
+            return EpochValue.SECONDS
 
         return EpochValue.DAYS
 

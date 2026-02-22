@@ -7,12 +7,12 @@ import java.time.temporal.ChronoUnit
 object DailyStepGoalCreator {
 
     fun create(goal: Int, date: Long = System.currentTimeMillis()): DailyStepGoal {
-        val localDate = DateTimeHelper.localDateFromMillis(date)
+        val localDate = DateTimeHelper.toDateYYYYMMDD(date)
 
         return DailyStepGoal(
-            YYYY = localDate.year,
-            MM = localDate.monthValue,
-            DD = localDate.dayOfMonth,
+            YYYY = localDate.YYYY,
+            MM = localDate.MM,
+            DD = localDate.DD,
             goal = goal
         )
     }

@@ -6,8 +6,11 @@ import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -55,12 +58,13 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.Permi
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.canStartStepTrackerService
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPermissionUiState
-import nl.codingwithlinda.smartstep.features.main.presentation.state.MainScreenDecorator
+import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenDecorator
 import nl.codingwithlinda.smartstep.features.main.step_tracker.presentation.StepTrackerViewModel
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepsNavActionDecorator
+import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageScreen
+import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +73,7 @@ fun MainScreen(
     dailyStepCountViewModel: DailyStepCountViewModel,
     statisticsViewModel: StatisticsViewModel,
     stepTrackerViewModel: StepTrackerViewModel,
+    weeklyAverageViewModel: WeeklyAverageViewModel
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -171,34 +176,44 @@ fun MainScreen(
                     .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
-                DailyStepCard(
-                    stepsTaken = dailyStepCountViewModel.stepsToday.collectAsStateWithLifecycle().value,
-                    dailyGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
-                    statisticsUi = statisticsViewModel.statistics.collectAsStateWithLifecycle().value,
-                    stepTrackerState = stepTrackerViewModel.state.collectAsStateWithLifecycle().value,
-                    actionEdit = {
-                        StepNavActionHandler.handleAction(StepNavAction.EDIT_STEPS)
-                    },
-                    actionPause = {
-                        stepTrackerViewModel.pause()
-                    },
-                    actionPlay = {
-                        stepTrackerViewModel.start()
-                    },
-                    modifier = Modifier
-                        .semantics {
-                            contentDescription = "Daily Step Card"
-                        }
-                        .padding(16.dp)
-                )
 
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    DailyStepCard(
+                        stepsTaken = dailyStepCountViewModel.stepsToday.collectAsStateWithLifecycle().value,
+                        dailyGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
+                        statisticsUi = statisticsViewModel.statistics.collectAsStateWithLifecycle().value,
+                        stepTrackerState = stepTrackerViewModel.state.collectAsStateWithLifecycle().value,
+                        actionEdit = {
+                            StepNavActionHandler.handleAction(StepNavAction.EDIT_STEPS)
+                        },
+                        actionPause = {
+                            stepTrackerViewModel.pause()
+                        },
+                        actionPlay = {
+                            stepTrackerViewModel.start()
+                        },
+                        modifier = Modifier
+                            .semantics {
+                                contentDescription = "Daily Step Card"
+                            }
+                            .padding(16.dp)
+                    )
+
+                    WeeklyAverageScreen(
+                        days = weeklyAverageViewModel.lastSevenStepCounts.collectAsStateWithLifecycle().value,
+                        modifier = Modifier.fillMaxWidth().padding(16.dp)
+                    )
+                }
+
+
+                ///debug
                 Box(
                     modifier = Modifier.align(Alignment.BottomCenter)
                 ){
                     val count = stepTrackerViewModel.counter.collectAsStateWithLifecycle().value
-
                     Text("$count")
-
                 }
             }
 
@@ -230,6 +245,7 @@ fun MainScreen(
         )
     }
 
+    //debug
     ObserveAsEvents(stepTrackerViewModel.state) {
         Toast.makeText(context, it.name, Toast.LENGTH_SHORT).show()
     }

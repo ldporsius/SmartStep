@@ -19,11 +19,11 @@ object DailyStepCountCreator {
     }
 
     fun create(count: Int, date: Long = System.currentTimeMillis()): DailyStepCount {
-       val localDate = DateTimeHelper.localDateFromMillis(date)
+       val localDate = DateTimeHelper.toDateYYYYMMDD(date)
         return DailyStepCount(
-            YYYY = localDate.year,
-            MM = localDate.monthValue,
-            DD = localDate.dayOfMonth,
+            YYYY = localDate.YYYY,
+            MM = localDate.MM,
+            DD = localDate.DD,
             stepCount = count.coerceAtLeast(0)
         )
     }
