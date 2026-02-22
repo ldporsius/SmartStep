@@ -54,7 +54,7 @@ class StatisticsViewModelTest {
     @Test
     fun `test time update in StatisticsViewModel`() = runTest(testDispatcherProvider.testDispatcher) {
         val now = System.currentTimeMillis()
-        val today = DailyStepCountCreator.toDateYYYYMMDD(now)
+        val today = DailyStepCountCreator.create(1, now)
 
         walkDurationRepo.saveWalkDurationStart(
             WalkDurationStart(today.YYYY, today.MM, today.DD, now)

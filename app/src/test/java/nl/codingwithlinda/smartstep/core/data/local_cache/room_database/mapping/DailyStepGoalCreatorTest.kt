@@ -29,7 +29,7 @@ class DailyStepGoalCreatorTest {
         println(d1)
         println(d2)
 
-        assertEquals(d1.date, d2.date)
+        assertEquals(d1.epochDay, d2.epochDay)
 
     }
 
@@ -52,7 +52,7 @@ class DailyStepGoalCreatorTest {
 
         val todayGoal = DailyStepGoalCreator.getTodaysGoal(goals, today.toEpochMilli())
 
-        println(todayGoal)
+        println("todayGoal $todayGoal")
         assertEquals(todayGoal?.goal, 1002)
     }
     }

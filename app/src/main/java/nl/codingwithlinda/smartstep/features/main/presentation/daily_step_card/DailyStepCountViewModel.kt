@@ -9,8 +9,10 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 
 class DailyStepCountViewModel(
     dailyStepRepo: DailyStepRepo
@@ -20,14 +22,16 @@ class DailyStepCountViewModel(
 
    private val stepCount = dailyStepRepo.stepCount
 
+    private val today: DateYYYYMMDD
+        get() = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())
+
     val todaysStep = stepCount.mapNotNull{
         it.firstOrNull {
-            it.dayEpochDay == DailyStepCountCreator.getTodayAsYYYYMMDD().dateEpochDay
+            it.dayEpochDay == today.dateEpochDay
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     val stepsToday = userOverrides.combine(stepCount){ userOverrides, stepCount ->
-        val today = DailyStepCountCreator.getTodayAsYYYYMMDD()
         val userOverride = userOverrides.firstOrNull{
             it.dayEpochDay == today.dateEpochDay
         }?.stepCount ?:0

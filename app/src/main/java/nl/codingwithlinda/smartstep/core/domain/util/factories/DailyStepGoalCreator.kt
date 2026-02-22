@@ -7,25 +7,24 @@ import java.time.temporal.ChronoUnit
 object DailyStepGoalCreator {
 
     fun create(goal: Int, date: Long = System.currentTimeMillis()): DailyStepGoal {
+        val localDate = DateTimeHelper.localDateFromMillis(date)
+
         return DailyStepGoal(
-            date = date.toDate(),
+            YYYY = localDate.year,
+            MM = localDate.monthValue,
+            DD = localDate.dayOfMonth,
             goal = goal
         )
-
     }
 
     fun getTodaysGoal(goals: List<DailyStepGoal>, today: Long): DailyStepGoal?{
-        val day = today.toDate()
+
+        val localDate = DateTimeHelper.toDateYYYYMMDD(today)
+
 
         return goals.lastOrNull {
-            it.date == day
+            it.epochDay == localDate.dateEpochDay
         }
     }
 
-    private fun Long.toDate(): Long{
-        val instant = Instant.ofEpochMilli(this)
-        val day = instant.truncatedTo(ChronoUnit.DAYS)
-
-        return day.epochSecond
-    }
 }

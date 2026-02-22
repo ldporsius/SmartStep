@@ -8,11 +8,17 @@ import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
+import java.time.LocalDate
 
 class FakeDailyStepRepo: DailyStepRepo {
 
+    val dateToday = LocalDate.of(2026, 2, 21)
     private val goals =
-        listOf(DailyStepGoal(1, 1000))
+        listOf(DailyStepGoal(
+            YYYY = dateToday.year,
+            MM = dateToday.monthValue,
+            DD = dateToday.dayOfMonth,
+            1000))
 
     private val goalObservable = MutableStateFlow<DailyStepGoal?>(null)
     private val _stepCount:MutableStateFlow<List<DailyStepCount>> = MutableStateFlow(emptyList())

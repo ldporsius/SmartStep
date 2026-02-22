@@ -5,7 +5,6 @@ import assertk.assertions.isEqualTo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import org.junit.Test
 import java.time.LocalDateTime
-import java.time.Year
 import java.time.YearMonth
 import java.time.ZoneOffset
 import kotlin.time.Duration.Companion.milliseconds
@@ -150,22 +149,22 @@ class DailyStepCountCreatorTest {
     fun `Millisecond to Day truncation verification`() {
         // Verify that the custom MillisToDay extension correctly truncates time 
         // components (hours/minutes/seconds) using ChronoUnit.DAYS via Instant.
-        val todayAsSeconds = DailyStepCountCreator.getTodayAsYYYYMMDD()
+        val step = DailyStepCountCreator.create(1, System.currentTimeMillis())
         val expected = LocalDateTime.ofEpochSecond(System.currentTimeMillis().milliseconds.inWholeSeconds, 0, ZoneOffset.UTC)
 
-        println("todayAsSeconds: $todayAsSeconds")
+        println("todayAsSeconds: $step")
         println("expected: $expected")
 
-        assertThat(expected.year).isEqualTo(todayAsSeconds.YYYY)
-        assertThat(expected.monthValue).isEqualTo(todayAsSeconds.MM)
-        assertThat(expected.dayOfMonth).isEqualTo(todayAsSeconds.DD)
+        assertThat(expected.year).isEqualTo(step.YYYY)
+        assertThat(expected.monthValue).isEqualTo(step.MM)
+        assertThat(expected.dayOfMonth).isEqualTo(step.DD)
     }
 
     @Test
     fun `Timezone dependency check for date creation`() {
         // Validate if the conversion to LocalDate via ofEpochDay (which uses UTC) 
         // aligns with the expected local date or if system timezone offsets cause drift.
-        DailyStepCountCreator.toDateYYYYMMDD(System.currentTimeMillis()).also {
+        DailyStepCountCreator.create(1,System.currentTimeMillis()).also {
             val expected = LocalDateTime.ofEpochSecond(System.currentTimeMillis().milliseconds.inWholeSeconds, 0, ZoneOffset.UTC)
             assertThat(expected.year).isEqualTo(it.YYYY)
             assertThat(expected.monthValue).isEqualTo(it.MM)
@@ -177,7 +176,7 @@ class DailyStepCountCreatorTest {
     fun `Extreme future date handling`() {
         // Test with a very large Long value to ensure LocalDate.ofEpochDay does 
         // not throw a DateTimeException for dates exceeding supported ranges.
-        DailyStepCountCreator.toDateYYYYMMDD(System.currentTimeMillis() * 1000).also {
+        DailyStepCountCreator.create(1, System.currentTimeMillis() * 1000).also {
             val expected = LocalDateTime.ofEpochSecond(System.currentTimeMillis().times(1000).milliseconds.inWholeSeconds, 0, ZoneOffset.UTC)
             assertThat(expected.year).isEqualTo(it.YYYY)
             assertThat(expected.monthValue).isEqualTo(it.MM)

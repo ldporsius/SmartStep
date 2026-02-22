@@ -11,6 +11,7 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import nl.codingwithlinda.smartstep.util.BaseJunitTest
 import org.junit.After
@@ -62,7 +63,7 @@ class ResetStepsViewModelTest: BaseJunitTest() {
         fakeDailyStepRepo.stepCount.firstOrNull()?.also {
             println("stepCount: $it")
         }
-        val today = DailyStepCountCreator.getTodayAsYYYYMMDD()
+        val today = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())
         println("today: ${today.dateString}")
 
         val result = fakeDailyStepRepo.getStepCountForDate(today.dateEpochDay)
@@ -83,7 +84,7 @@ class ResetStepsViewModelTest: BaseJunitTest() {
         // Verify that when no step count for today exists, the baseline is not updated, and a new step count of 0 is created and saved.
         viewModel.reset()
         //runCurrent()
-        val today = DailyStepCountCreator.getTodayAsYYYYMMDD()
+        val today = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())
         println("today: ${today.dateString}")
 
         val result = fakeDailyStepRepo.getStepCountForDate(today.dateEpochDay)

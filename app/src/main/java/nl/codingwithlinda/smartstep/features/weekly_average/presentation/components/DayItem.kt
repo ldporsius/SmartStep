@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.weekly_average.presentation.model.DailyAverageUi
 import java.time.LocalDate
@@ -42,7 +43,7 @@ fun DayItem(
 @Preview
 @Composable
 private fun PreviewDayItem() {
-    val today = DailyStepCountCreator.getTodayAsYYYYMMDD()
+    val today = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())
     SmartStepTheme() {
         DayItem(
             day = DailyAverageUi(
@@ -51,7 +52,11 @@ private fun PreviewDayItem() {
                     MM = today.MM,
                     DD = today.DD,
                     2000),
-            goal = DailyStepGoal(today.dateEpochDay,1000),
+            goal = DailyStepGoal(
+                YYYY = today.YYYY,
+                MM = today.MM,
+                DD = today.DD
+                ,1000),
             )
         )
 

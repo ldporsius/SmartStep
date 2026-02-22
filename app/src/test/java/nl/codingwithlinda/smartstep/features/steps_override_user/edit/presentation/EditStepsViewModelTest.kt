@@ -10,6 +10,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import org.junit.After
@@ -73,11 +74,8 @@ class EditStepsViewModelTest {
 
             println("first emission received")
 
-            val tomorrow = DailyStepCountCreator.getTodayAsYYYYMMDD().dateEpochDay.days
-                .plus(365.days)
-                .plus(30.days)
-                .plus(1.days)
-            val tomorrowLocal = LocalDate.ofEpochDay(tomorrow.inWholeDays)
+            val tomorrowLocal = LocalDate.now().plusDays(1)
+
             viewModel.onAction(EditStepAction.InputYear(tomorrowLocal.year))
             val emYear = awaitItem()
 

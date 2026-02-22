@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
@@ -20,6 +21,7 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GramsWeig
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KG
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.convertWeight
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.calculateDistanceCm
 import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.caloriesBurned
 import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.KM
@@ -59,9 +61,13 @@ class StatisticsViewModel(
     val gender = userSettingsRepo.userSettingsObservable.map {
         it.gender
     }
+
+    private val today : DateYYYYMMDD
+        get() = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())
+
     val stepsTaken = dailyStepRepo.stepCount.map {
         it.firstOrNull {
-            it.dayEpochDay == DailyStepCountCreator.getTodayAsYYYYMMDD().dateEpochDay
+            it.dayEpochDay == today.dateEpochDay
         }?.stepCount ?:0
     }
 
@@ -93,8 +99,6 @@ class StatisticsViewModel(
 
 
     val timeWalked = walkDurationRepo.sessions.filter { sessions ->
-        val today = DailyStepCountCreator.toDateYYYYMMDD(System.currentTimeMillis())
-
         sessions.any{
             it.start.dateString == today.dateString
         }
