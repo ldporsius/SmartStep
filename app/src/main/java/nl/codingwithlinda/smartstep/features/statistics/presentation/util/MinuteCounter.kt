@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.yield
 import kotlin.time.Duration.Companion.seconds
 
-object MinuteCounter {
+class MinuteCounter {
 
     private var shouldCount = false
     val minuteCounter = flow {

@@ -88,10 +88,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
         factory = viewModelFactory {
             initializer {
                 StatisticsViewModel(
-                    userSettingsRepo = SmartStepApplication.userSettingsRepo,
-                    dailyStepRepo = SmartStepApplication.dailyStepRepo,
-                    walkDurationRepo = SmartStepApplication.walkDurationRepo,
-                    dispatcherProvider = AndroidDispatcherProvider()
+                   statisticsManager = SmartStepApplication.statisticsManager
                 )
             }
         }

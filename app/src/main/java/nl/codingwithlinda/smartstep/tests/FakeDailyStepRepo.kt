@@ -2,12 +2,14 @@ package nl.codingwithlinda.smartstep.tests
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import java.time.LocalDate
 
 class FakeDailyStepRepo: DailyStepRepo {
@@ -68,10 +70,10 @@ class FakeDailyStepRepo: DailyStepRepo {
         }
         val update = current?.let {
             it.copy(stepCount = it.stepCount + stepCount.stepCount)
-            }
+        }
             ?: stepCount
         _stepCount.update {
-           it.plus(update)
+            it.plus(update)
         }
     }
 
@@ -101,6 +103,20 @@ class FakeDailyStepRepo: DailyStepRepo {
     }
 
     override fun getDailyStepCountUserOverride(): Flow<List<DailyStepCount>> = _userStepCountOverride
+    override val stepCountPlusUserOverride: Flow<List<DailyStepCount>>
+        get() = combine(stepCount, _userStepCountOverride){
+                steps, override ->
+            steps.associateWith { step ->
+                override.find {
+                    it.dateYYYYMMDD == step.dateYYYYMMDD
+                }
+            }.map { (step, override) ->
+                DailyStepCountCreator.create(
+                    step.stepCount + (override?.stepCount ?: 0),
+                    step.dateYYYYMMDD
+                )
+            }
+        }
 
 
     fun reset() {

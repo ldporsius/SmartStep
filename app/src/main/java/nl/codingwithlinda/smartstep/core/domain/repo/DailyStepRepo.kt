@@ -26,5 +26,8 @@ interface DailyStepRepo {
 
     fun getDailyStepCountUserOverride(): Flow<List<DailyStepCount>>
 
+    val stepCountPlusUserOverride : Flow< List<DailyStepCount>>
+
+
 }
 

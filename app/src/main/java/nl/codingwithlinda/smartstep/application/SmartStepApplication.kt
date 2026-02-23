@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
@@ -23,6 +24,8 @@ import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
+import nl.codingwithlinda.smartstep.features.statistics.data.StatisticsManagerImpl
+import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -34,6 +37,7 @@ class SmartStepApplication: Application() {
         lateinit var dailyStepRepo: DailyStepRepo
         lateinit var walkDurationRepo: WalkDurationRepo
         lateinit var stepTracker: StepTracker
+        lateinit var statisticsManager: StatisticsManager
 
         lateinit var _applicationContext: Context
 
@@ -71,6 +75,13 @@ class SmartStepApplication: Application() {
         walkDurationRepo = WalkDurationRepoImpl()
 
         stepTracker = StepTrackerCounterImpl.getInstance(this.applicationContext)
+
+        statisticsManager = StatisticsManagerImpl(
+            userSettingsRepo = userSettingsRepo,
+            dailyStepRepo = dailyStepRepo,
+            walkDurationRepo = walkDurationRepo,
+            dispatcherProvider = AndroidDispatcherProvider()
+        )
 
 
         _applicationContext = this

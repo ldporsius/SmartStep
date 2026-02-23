@@ -4,27 +4,40 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.provider.SyncStateContract.Helpers.update
+import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dailyStepRepo
+import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
-import java.time.LocalDate
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.features.statistics.data.StatisticsManagerImpl
+import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
+import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
 
 class StepTrackerService : Service() {
 
     private lateinit var stepTracker: StepTracker
     private lateinit var dailyStepRepoRoomImpl: DailyStepRepoRoomImpl
     private lateinit var notificationManager: NotificationManager
+
+    private lateinit var statisticsManager: StatisticsManager
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -43,6 +56,12 @@ class StepTrackerService : Service() {
         )
         stepTracker = SmartStepApplication.stepTracker
 
+        statisticsManager = StatisticsManagerImpl(
+            userSettingsRepo = SmartStepApplication.userSettingsRepo,
+            dailyStepRepo = dailyStepRepoRoomImpl,
+            walkDurationRepo = SmartStepApplication.walkDurationRepo,
+            dispatcherProvider = AndroidDispatcherProvider()
+        )
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -56,16 +75,26 @@ class StepTrackerService : Service() {
 
     private fun start(){
         stepTracker.start()
-
+        val contentSmall = RemoteViews(packageName, R.layout.notification_small)
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("SmartStep is running")
-            .setContentText("SmartStep is tracking your steps")
-            .setSmallIcon(R.drawable.splash_icon)
-            .setOngoing(true)
+            .setSmallIcon(R.drawable.running)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setCustomContentView(contentSmall)
+            .setOngoing(false)
+        //.setCustomBigContentView(notificationLayoutExpanded)
 
-        if(notificationManager.areNotificationsEnabled()) {
-            notificationManager.notify(1, notification.build())
+        serviceScope.launch {
+            val update = statisticsManager.stepsToday.firstOrNull() ?: 0
+
+            update.let {
+                contentSmall.setTextViewText(R.id.step_count, update.toString())
+            }
+
+            if(notificationManager.areNotificationsEnabled()) {
+                notificationManager.notify(1, notification.build())
+            }
         }
+
         startForeground(1, notification.build())
 
         stepTracker.stepsTaken.onEach { step ->
@@ -88,6 +117,14 @@ class StepTrackerService : Service() {
 
         }.launchIn(serviceScope)
 
+        combine(statisticsManager.stepsToday, statisticsManager.caloriesBurned){steps, calories ->
+            contentSmall.setTextViewText(R.id.step_count, steps.toString())
+            contentSmall.setTextViewText(R.id.calories, calories.toString())
+
+            if(notificationManager.areNotificationsEnabled()) {
+                notificationManager.notify(1, notification.build())
+            }
+        }.launchIn(serviceScope)
 
     }
 
