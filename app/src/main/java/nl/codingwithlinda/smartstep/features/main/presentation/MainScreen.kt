@@ -199,7 +199,6 @@ fun MainScreen(
 
     Box(
         modifier = Modifier.systemBarsPadding()
-
     ) {
         MainScreenDecorator(
             mainNavAction = actions,

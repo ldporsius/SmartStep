@@ -69,7 +69,7 @@ class StepTrackerService : Service() {
 
         stepTracker.stepsTaken.onEach { step ->
             if(step.stepCount == 0) return@onEach
-            println("--- StepTrackerService --- steps taken: $step")
+
             val today = LocalDate.of(step.YYYY, step.MM, step.DD).toEpochDay()
             //check if we have a baseline
             val baseline = dailyStepRepoRoomImpl.getDailyStepCountBaselineForDate(today)
@@ -85,7 +85,10 @@ class StepTrackerService : Service() {
                     )
                 )
             }
+
         }.launchIn(serviceScope)
+
+
     }
 
     private fun stop(){
