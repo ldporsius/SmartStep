@@ -1,12 +1,12 @@
 package nl.codingwithlinda.smartstep.tests
 
-import android.provider.SyncStateContract.Helpers.update
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import java.time.LocalDate
 
@@ -37,7 +37,7 @@ class FakeDailyStepRepo: DailyStepRepo {
         emit(goals)
     }
 
-    override suspend fun getDailyStepGoalsForUser(): List<DailyStepGoal> {
+    override suspend fun getDailyStepGoalsLatest(): List<DailyStepGoal> {
         return goals
     }
 
@@ -59,7 +59,7 @@ class FakeDailyStepRepo: DailyStepRepo {
     }
 
 
-    override suspend fun addStepCountToToday(stepCount: DailyStepCount) {
+    suspend fun addStepCountToToday(stepCount: DailyStepCount) {
         val current = getStepCountForDate(stepCount.dayEpochDay)
         current?.run {
             _stepCount.update {
@@ -83,7 +83,7 @@ class FakeDailyStepRepo: DailyStepRepo {
         }
     }
 
-    override suspend fun getDailyStepCountBaselineForDate(date: Long): DailyStepCount? {
+    override suspend fun getDailyStepCountBaselineForDate(date: DateYYYYMMDD): DailyStepCount? {
         return _baseline.value
     }
 

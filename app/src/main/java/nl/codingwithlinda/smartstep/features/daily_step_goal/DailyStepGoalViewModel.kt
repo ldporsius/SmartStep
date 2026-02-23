@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,7 +26,7 @@ class DailyStepGoalViewModel(
     init {
 
         viewModelScope.launch {
-            dailyStepRepo.getDailyStepGoalsForUser().also {
+            dailyStepRepo.getDailyStepGoalsLatest().also {
                 val now = System.currentTimeMillis()
                 val today =
                     DailyStepGoalCreator.getTodaysGoal(goals = it, today = now)?.goal
@@ -56,7 +55,7 @@ class DailyStepGoalViewModel(
     fun dismissChanges(){
         viewModelScope.launch {
             _goal.update {
-                dailyStepRepo.getDailyStepGoalsForUser().first().goal
+                dailyStepRepo.getDailyStepGoalsLatest().first().goal
             }
         }
     }

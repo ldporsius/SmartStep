@@ -13,6 +13,7 @@ import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toUserOverrideEntity
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 
 class DailyStepRepoRoomImpl(
@@ -37,7 +38,7 @@ class DailyStepRepoRoomImpl(
         }
     }
 
-    override suspend fun getDailyStepGoalsForUser(): List<DailyStepGoal> {
+    override suspend fun getDailyStepGoalsLatest(): List<DailyStepGoal> {
         return dailyStepGoalDao.getAllDailyStepGoals().map { goalEntities ->
             goalEntities.map {
                 it.toDomain()
@@ -45,18 +46,14 @@ class DailyStepRepoRoomImpl(
         }.firstOrNull() ?: emptyList()
     }
 
+    //////////////////////////////////////////////////////////////////////////////////
     override suspend fun saveStepCount(stepCount: DailyStepCount) {
         stepCount.toEntity(userId).let {
             dailyStepCountDao.saveDailyStepCount(it)
         }
     }
 
-    override suspend fun addStepCountToToday(stepCount: DailyStepCount){
-        val entity =
-            stepCount.toEntity(userId)
 
-        dailyStepCountDao.saveDailyStepCount(entity)
-    }
 
     override suspend fun getStepCountForDate(date: Long): DailyStepCount? {
         return dailyStepCountDao.getDailyStepCount().firstOrNull()?.let { entities ->
@@ -77,8 +74,8 @@ class DailyStepRepoRoomImpl(
         dailyStepCountDao.saveDailyStepCountBaseline(dailyStepCount.toBaselineEntity())
     }
 
-    override suspend fun getDailyStepCountBaselineForDate(date: Long): DailyStepCount? {
-        return dailyStepCountDao.getDailyStepCountBaselineForDate(date)?.toDomain()
+    override suspend fun getDailyStepCountBaselineForDate(date: DateYYYYMMDD): DailyStepCount? {
+        return dailyStepCountDao.getDailyStepCountBaselineForDate(date.dateEpochDay)?.toDomain()
     }
 
     override suspend fun saveDailyStepCountUserOverride(dailyStepCount: DailyStepCount) {

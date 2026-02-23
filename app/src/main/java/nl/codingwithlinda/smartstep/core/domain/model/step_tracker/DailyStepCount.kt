@@ -10,4 +10,8 @@ data class DailyStepCount(
 ){
     val dayEpochDay: Long
         get() = LocalDate.of(YYYY, MM, DD).toEpochDay()
+
+    val dateYYYYMMDD : DateYYYYMMDD
+        = DateYYYYMMDD(YYYY, MM, DD)
+
 }
