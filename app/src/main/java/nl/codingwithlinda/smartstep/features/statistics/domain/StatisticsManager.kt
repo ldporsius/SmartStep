@@ -10,6 +10,9 @@ interface StatisticsManager {
     val caloriesBurned: Flow<Int>
     val timeWalked: Flow<Int>
 
+    val progressTowardsGoal: Flow<Float>
+
+
     fun startMinuteCounter()
     fun stopMinuteCounter()
 }

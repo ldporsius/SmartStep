@@ -1,6 +1,7 @@
 package nl.codingwithlinda.smartstep.core.data.step_tracker
 
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.MainActivity
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dailyStepRepo
@@ -30,6 +32,8 @@ import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCre
 import nl.codingwithlinda.smartstep.features.statistics.data.StatisticsManagerImpl
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
+import kotlin.jvm.java
+import kotlin.math.roundToInt
 
 class StepTrackerService : Service() {
 
@@ -75,25 +79,23 @@ class StepTrackerService : Service() {
 
     private fun start(){
         stepTracker.start()
+
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
         val contentSmall = RemoteViews(packageName, R.layout.notification_small)
+        val contentLarge = RemoteViews(packageName, R.layout.notification_large)
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.running)
+            .setSmallIcon(R.drawable.footprints)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setCustomContentView(contentSmall)
+            .setCustomBigContentView(contentLarge)
+            .setContentIntent(pendingIntent)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setOngoing(false)
-        //.setCustomBigContentView(notificationLayoutExpanded)
-
-        serviceScope.launch {
-            val update = statisticsManager.stepsToday.firstOrNull() ?: 0
-
-            update.let {
-                contentSmall.setTextViewText(R.id.step_count, update.toString())
-            }
-
-            if(notificationManager.areNotificationsEnabled()) {
-                notificationManager.notify(1, notification.build())
-            }
-        }
 
         startForeground(1, notification.build())
 
@@ -117,9 +119,16 @@ class StepTrackerService : Service() {
 
         }.launchIn(serviceScope)
 
-        combine(statisticsManager.stepsToday, statisticsManager.caloriesBurned){steps, calories ->
+        combine(statisticsManager.stepsToday, statisticsManager.caloriesBurned, statisticsManager.progressTowardsGoal){steps, calories , progress->
+
             contentSmall.setTextViewText(R.id.step_count, steps.toString())
             contentSmall.setTextViewText(R.id.calories, calories.toString())
+            contentSmall.setProgressBar(R.id.progress_bar, 100, (progress * 100).roundToInt(), false)
+
+            contentLarge.setTextViewText(R.id.step_count, steps.toString())
+            contentLarge.setTextViewText(R.id.calories, calories.toString())
+            contentLarge.setProgressBar(R.id.progress_bar, 100, (progress * 100).roundToInt(), false)
+
 
             if(notificationManager.areNotificationsEnabled()) {
                 notificationManager.notify(1, notification.build())
