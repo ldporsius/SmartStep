@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import nl.codingwithlinda.smartstep.features.main.presentation.common.CommonNumberPicker
+import nl.codingwithlinda.smartstep.design_system.components.CommonNumberPicker
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DatePicker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.months

@@ -13,7 +13,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weights
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
-import nl.codingwithlinda.smartstep.features.main.presentation.common.CommonNumberPicker
+import nl.codingwithlinda.smartstep.design_system.components.CommonNumberPicker
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogHeader
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.toUi

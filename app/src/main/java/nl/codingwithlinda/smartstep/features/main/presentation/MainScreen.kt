@@ -154,7 +154,6 @@ fun MainScreen(
                                     drawerState.open()
                                 }
                             }
-
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.menu_burger_square_1),

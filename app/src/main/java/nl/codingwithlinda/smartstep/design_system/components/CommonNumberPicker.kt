@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.main.presentation.common
+package nl.codingwithlinda.smartstep.design_system.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
