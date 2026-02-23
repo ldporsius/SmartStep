@@ -28,7 +28,7 @@ import nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentat
 import nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation.ResetStepsViewModel
 
 @Composable
-fun StepsNavActionDecorator(
+fun UserOverrideStepsNavActionDecorator(
    currentStep: DailyStepCount
 ) {
 

@@ -6,11 +6,8 @@ import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -30,9 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -49,10 +43,9 @@ import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawe
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.navDrawerItems
 import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
-import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavItemHandler
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCard
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenContent
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
@@ -61,9 +54,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPer
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenDecorator
 import nl.codingwithlinda.smartstep.features.step_tracker.presentation.StepTrackerViewModel
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
-import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepsNavActionDecorator
-import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageScreen
+import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.UserOverrideStepsNavActionDecorator
 import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -176,35 +167,13 @@ fun MainScreen(
                 contentAlignment = Alignment.Center
             ) {
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    DailyStepCard(
-                        stepsTaken = dailyStepCountViewModel.stepsToday.collectAsStateWithLifecycle().value,
-                        dailyGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
-                        statisticsUi = statisticsViewModel.statistics.collectAsStateWithLifecycle().value,
-                        stepTrackerState = stepTrackerViewModel.state.collectAsStateWithLifecycle().value,
-                        actionEdit = {
-                            StepNavActionHandler.handleAction(StepNavAction.EDIT_STEPS)
-                        },
-                        actionPause = {
-                            stepTrackerViewModel.pause()
-                        },
-                        actionPlay = {
-                            stepTrackerViewModel.start()
-                        },
-                        modifier = Modifier
-                            .semantics {
-                                contentDescription = "Daily Step Card"
-                            }
-                            .padding(16.dp)
-                    )
-
-                    WeeklyAverageScreen(
-                        days = weeklyAverageViewModel.lastSevenStepCounts.collectAsStateWithLifecycle().value,
-                        modifier = Modifier.fillMaxWidth().padding(16.dp)
-                    )
-                }
+                MainScreenContent(
+                    dailyStepGoalViewModel = dailyStepGoalViewModel,
+                    dailyStepCountViewModel = dailyStepCountViewModel,
+                    statisticsViewModel = statisticsViewModel,
+                    stepTrackerViewModel = stepTrackerViewModel,
+                    weeklyAverageViewModel = weeklyAverageViewModel
+                )
 
 
                 ///debug
@@ -238,7 +207,7 @@ fun MainScreen(
             parent = this
         )
 
-        StepsNavActionDecorator(
+        UserOverrideStepsNavActionDecorator(
            currentStep = dailyStepCountViewModel.todaysStep.collectAsStateWithLifecycle().value ?: return@Box
         )
     }
