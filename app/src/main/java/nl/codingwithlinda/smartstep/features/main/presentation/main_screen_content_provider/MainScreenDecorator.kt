@@ -33,7 +33,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
-import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.ShowBackgroundAccessDialog
+import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.AllowBackgroundAccessDialog
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalComponent
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalPickerContainer
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
@@ -86,8 +86,7 @@ fun MainScreenDecorator(
                         Surface(
                             shape = RoundedCornerShape(16.dp)
                         ) {
-                            ShowBackgroundAccessDialog(
-                                visible = true,
+                            AllowBackgroundAccessDialog(
                                 onDismiss = {
                                     navItemHandler.handleAction(MainNavAction.NA)
                                 }
@@ -101,8 +100,7 @@ fun MainScreenDecorator(
                             navItemHandler.handleAction(MainNavAction.NA)
                         }
                     ) {
-                        ShowBackgroundAccessDialog(
-                            visible = true,
+                        AllowBackgroundAccessDialog(
                             onDismiss = {
                                 navItemHandler.handleAction(MainNavAction.NA)
                             }

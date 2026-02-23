@@ -17,8 +17,7 @@ import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.BackgroundAccessRecommendedDialog
 
 @Composable
-fun ShowBackgroundAccessDialog(
-    visible: Boolean,
+fun AllowBackgroundAccessDialog(
     onDismiss: () -> Unit
 ){
     val context = LocalActivity.current
@@ -38,7 +37,6 @@ fun ShowBackgroundAccessDialog(
             onDismiss()
         }
 
-    if (visible){
         BackgroundAccessRecommendedDialog(
             onClick = {
                 context?.let {
@@ -60,7 +58,6 @@ fun ShowBackgroundAccessDialog(
                 .width(480.dp)
                 .padding(48.dp)
         )
-    }
 }
 
 fun isIgnoringBatteryOptimizations(context: Context): Boolean {
