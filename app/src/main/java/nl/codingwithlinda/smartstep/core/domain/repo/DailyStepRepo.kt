@@ -10,13 +10,13 @@ interface DailyStepRepo {
     fun getDailyStepGoals(): Flow<List<DailyStepGoal>>
     suspend fun getDailyStepGoalsLatest(): List<DailyStepGoal>
 
+    //////////////////////////////////////////////////////////////////////////
     suspend fun saveStepCount(stepCount: DailyStepCount)
     suspend fun getStepCountForDate(date: Long): DailyStepCount?
 
-    //suspend fun addStepCountToToday(_stepCount: DailyStepCount)
-
     val stepCount: Flow<List<DailyStepCount>>
 
+    /////////////////////////////////////////////////////////////////////
     suspend fun saveDailyStepCountBaseline(dailyStepCount: DailyStepCount)
     suspend fun getDailyStepCountBaselineForDate(date: DateYYYYMMDD): DailyStepCount?
 

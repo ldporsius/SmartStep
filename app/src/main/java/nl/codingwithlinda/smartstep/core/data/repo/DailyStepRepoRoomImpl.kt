@@ -53,8 +53,6 @@ class DailyStepRepoRoomImpl(
         }
     }
 
-
-
     override suspend fun getStepCountForDate(date: Long): DailyStepCount? {
         return dailyStepCountDao.getDailyStepCount().firstOrNull()?.let { entities ->
             entities.firstOrNull{
@@ -64,12 +62,14 @@ class DailyStepRepoRoomImpl(
     }
 
     override val stepCount: Flow<List<DailyStepCount>> =
-        dailyStepCountDao.getDailyStepCount().map {list->
+        dailyStepCountDao.getDailyStepCount()
+            .map {list->
             list.map {
                 it.toDomain()
             }
         }
 
+    ////////////////////////////////////////////////////////////////////////////////////////
     override suspend fun saveDailyStepCountBaseline(dailyStepCount: DailyStepCount) {
         dailyStepCountDao.saveDailyStepCountBaseline(dailyStepCount.toBaselineEntity())
     }
@@ -78,6 +78,7 @@ class DailyStepRepoRoomImpl(
         return dailyStepCountDao.getDailyStepCountBaselineForDate(date.dateEpochDay)?.toDomain()
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
     override suspend fun saveDailyStepCountUserOverride(dailyStepCount: DailyStepCount) {
         dailyStepCountDao.saveDailyStepCountUserOverride(dailyStepCount.toUserOverrideEntity())
     }

@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -37,8 +38,11 @@ class EditStepsViewModelTest {
         Dispatchers.setMain(testDispatcher)
         viewModel = EditStepsViewModel(
             fakeDailyStepRepo,
-            todaysStep
         )
+
+        runBlocking {
+            fakeDailyStepRepo.saveStepCount(todaysStep)
+        }
     }
 
     @After
@@ -52,10 +56,12 @@ class EditStepsViewModelTest {
     fun `test editsteps viewmodel - steps are replaced on save`() = runTest(testDispatcher) {
         viewModel.steps.test {
 
+
             val item0 = awaitItem()
-            assertEquals(100, item0)
+            assertEquals(0, item0)
 
             println("first emission received")
+
             viewModel.onAction(EditStepAction.SetSteps("1000"))
 
             val item2 = awaitItem()

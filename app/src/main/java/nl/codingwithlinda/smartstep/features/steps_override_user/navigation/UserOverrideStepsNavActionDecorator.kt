@@ -37,7 +37,7 @@ fun UserOverrideStepsNavActionDecorator(
             initializer {
                 EditStepsViewModel(
                     dailyStepRepo = SmartStepApplication.dailyStepRepo,
-                    currentStep = currentStep
+
                 )
             }
         }

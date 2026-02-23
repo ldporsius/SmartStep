@@ -19,6 +19,7 @@ import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DatePicker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.months
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.years
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
@@ -26,8 +27,16 @@ import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.Step
 
 class EditStepsViewModel(
     private val dailyStepRepo: DailyStepRepo,
-    private val currentStep: DailyStepCount
 ): ViewModel() {
+
+    private suspend fun currentOverride() : Int = dailyStepRepo.getDailyStepCountUserOverrideForDay(
+        System.currentTimeMillis()
+    )?.stepCount ?: 0
+
+    private suspend fun currentStep() : Int = dailyStepRepo.getStepCountForDate(
+        System.currentTimeMillis()
+    )?.stepCount ?: 0
+
     private val _steps = MutableStateFlow(0)
 
     private val _dateYYYYMMDD = MutableStateFlow(DateYYYYMMDD(years.first, months.first, 1))
@@ -35,11 +44,11 @@ class EditStepsViewModel(
     val steps = _steps
         .onStart {
             _steps.update {
-                currentStep.stepCount
+                currentStep() + currentOverride()
             }
 
             _dateYYYYMMDD.update {
-                DateYYYYMMDD(currentStep.YYYY, currentStep.MM, currentStep.DD)
+                DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
@@ -101,8 +110,15 @@ class EditStepsViewModel(
                         _steps.value,
                         _dateYYYYMMDD.value
                     )
-                    println("--- EDITSTEPS VIEWMODEL SAVE DATE --- $update")
+
                     dailyStepRepo.saveDailyStepCountUserOverride(update)
+
+                    val resetZero = DailyStepCountCreator.create(
+                        0,
+                        _dateYYYYMMDD.value
+                    )
+                    dailyStepRepo.saveStepCount(resetZero)
+
                     StepNavActionHandler.handleAction(StepNavAction.NA)
                 }
             }
