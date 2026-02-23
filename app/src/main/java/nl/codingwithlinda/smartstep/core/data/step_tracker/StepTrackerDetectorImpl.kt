@@ -20,7 +20,7 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
 import kotlin.concurrent.Volatile
 
-class StepTrackerImpl private constructor(
+class StepTrackerDetectorImpl private constructor(
     context: Context,
     private val scope: CoroutineScope,
 ): StepTracker, SensorEventListener{
@@ -44,21 +44,21 @@ class StepTrackerImpl private constructor(
 
     companion object{
         @Volatile
-        private var stepTrackerInstance: StepTrackerImpl? = null
+        private var stepTrackerInstance: StepTrackerDetectorImpl? = null
 
         val lock = Any()
         @Synchronized
         fun getInstance(
             context: Context,
             scope: CoroutineScope,
-        ): StepTrackerImpl {
+        ): StepTrackerDetectorImpl {
             synchronized(lock) {
                 val i = stepTrackerInstance
                 if (i != null) {
                     return i
                 }
 
-                stepTrackerInstance = StepTrackerImpl(context, scope)
+                stepTrackerInstance = StepTrackerDetectorImpl(context, scope)
                 return stepTrackerInstance!!
 
             }

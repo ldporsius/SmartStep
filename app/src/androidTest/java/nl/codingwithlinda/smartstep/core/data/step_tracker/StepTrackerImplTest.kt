@@ -21,7 +21,7 @@ class StepTrackerImplTest {
     }
     @Test
     fun testStepTrackerImpl(){
-        val stepTracker = StepTrackerImpl.getInstance(
+        val stepTracker = StepTrackerDetectorImpl.getInstance(
         context, scope)
 
 
