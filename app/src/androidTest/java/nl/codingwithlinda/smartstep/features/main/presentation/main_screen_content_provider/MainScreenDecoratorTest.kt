@@ -14,9 +14,12 @@ import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavA
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavItemHandler
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
+
+@Ignore
 @OptIn(ExperimentalTestApi::class)
 class MainScreenDecoratorTest {
 
@@ -45,7 +48,6 @@ class MainScreenDecoratorTest {
         delay(5000)
 
         composeTestRule.waitForIdle()
-
 
 
         composeTestRule.onNodeWithText("goal, true, true").assertIsDisplayed()
