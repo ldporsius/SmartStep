@@ -24,14 +24,13 @@ import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
-import nl.codingwithlinda.smartstep.features.main.step_tracker.presentation.StepTrackerViewModel
+import nl.codingwithlinda.smartstep.features.step_tracker.presentation.StepTrackerViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.UserSettingsWrapper
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
 import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.main.step_tracker.presentation
+package nl.codingwithlinda.smartstep.features.step_tracker.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

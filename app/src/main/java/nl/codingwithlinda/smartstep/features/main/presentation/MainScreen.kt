@@ -59,7 +59,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.Permi
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.canStartStepTrackerService
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenDecorator
-import nl.codingwithlinda.smartstep.features.main.step_tracker.presentation.StepTrackerViewModel
+import nl.codingwithlinda.smartstep.features.step_tracker.presentation.StepTrackerViewModel
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepsNavActionDecorator
