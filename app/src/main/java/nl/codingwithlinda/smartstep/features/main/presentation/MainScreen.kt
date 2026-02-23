@@ -236,7 +236,6 @@ fun MainScreen(
         MainScreenDecorator(
             mainNavAction = actions,
             navItemHandler = navItemHandler,
-            dailyStepGoalViewModel = dailyStepGoalViewModel,
             parent = this
         )
 

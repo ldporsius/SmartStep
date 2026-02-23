@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
+import nl.codingwithlinda.smartstep.design_system.components.CustomBottomSheet
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.AllowBackgroundAccessDialog
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalComponent
@@ -47,7 +48,6 @@ import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.c
 fun MainScreenDecorator(
     mainNavAction: MainNavAction,
     navItemHandler: MainNavActionControllerImpl = MainNavItemHandler,
-    dailyStepGoalViewModel: DailyStepGoalViewModel,
     parent: BoxScope
 
 ) {
@@ -57,16 +57,7 @@ fun MainScreenDecorator(
 
     @Composable
     fun getDailyStepGoal()=DailyStepGoalComponent(
-        selectedGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
-        onSelected = {
-            dailyStepGoalViewModel.setGoal(it)
-        },
-        onSave = {
-            dailyStepGoalViewModel.saveGoal(it)
-            navItemHandler.handleAction(MainNavAction.NA)
-        },
         onDismiss = {
-            dailyStepGoalViewModel.dismissChanges()
             navItemHandler.handleAction(MainNavAction.NA)
         },
         modifier = Modifier
@@ -124,51 +115,20 @@ fun MainScreenDecorator(
                     }
                 }
             } else {
-                var childTop by remember { mutableStateOf(0) }
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Color.Black.copy(alpha = 0.5f))
-                    .pointerInput(
-                        Unit
-                    ){
-                        detectTapGestures {
-                            if( it.y < childTop){
-                                navItemHandler.handleAction(MainNavAction.NA)
-                            }
-                        }
+                CustomBottomSheet(
+                    onDismiss = {
+                        navItemHandler.handleAction(MainNavAction.NA)
                     }
-
-                ){
-
-                        AnimatedVisibility(
-                            visible = true,
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .onGloballyPositioned(
-                                    onGloballyPositioned = {
-                                        childTop = it.size.height
-                                    }
-                                ),
-                            enter = slideInVertically(
-                                animationSpec = tween(1500)
-                            ) {
-                                -it / 2
-                            },
-                            exit = slideOutVertically {
-                                it
-                            }
-                        ) {
-                            DailyStepGoalPickerContainer(
-                                modifier = Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .fillMaxWidth()
-                            ) {
-                                getDailyStepGoal()
-                            }
-                        }
+                ) {
+                    DailyStepGoalPickerContainer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        getDailyStepGoal()
                     }
-
+                }
             }
+
         }
 
         MainNavAction.EXIT -> {
