@@ -5,25 +5,18 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.provider.SyncStateContract.Helpers.update
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.MainActivity
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dailyStepRepo
 import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
@@ -31,8 +24,6 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.features.statistics.data.StatisticsManagerImpl
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
-import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import kotlin.jvm.java
 import kotlin.math.roundToInt
 
 class StepTrackerService : Service() {

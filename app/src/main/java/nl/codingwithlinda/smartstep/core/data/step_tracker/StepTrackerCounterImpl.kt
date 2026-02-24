@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
@@ -26,7 +27,7 @@ class StepTrackerCounterImpl private constructor(
 
     private val _stateObservable = MutableStateFlow<StepTrackerState>(StepTrackerState.STOPPED)
 
-    override val stateObservable: Flow<StepTrackerState> = _stateObservable
+    override val stateObservable: StateFlow<StepTrackerState> = _stateObservable
 
     private val _stepsTaken = MutableStateFlow(DailyStepCount(0,0,0,0))
 
@@ -62,7 +63,7 @@ class StepTrackerCounterImpl private constructor(
     }
 
     override fun stop() {
-        //manager.unregisterListener(this)
+        manager.unregisterListener(this)
         _stateObservable.update {
             StepTrackerState.STOPPED
         }
@@ -77,25 +78,22 @@ class StepTrackerCounterImpl private constructor(
     override fun onSensorChanged(event: SensorEvent?) {
         if(event == null) return
 
+        if (stateObservable.value == StepTrackerState.PAUSED) return
 
         if (event.sensor?.type == Sensor.TYPE_STEP_COUNTER){
-            println("--- STEP TRACKER COUNTER IMPL --- onSensorChanged: ${event.values.toList()}")
-            println("--- STEP TRACKER COUNTER IMPL --- timestamp: ${event.timestamp}")
-            val nanosSinceBoot = SystemClock.elapsedRealtimeNanos()
-            val sensorTimeSinceLastBoot = event.timestamp.nanoseconds.inWholeNanoseconds
-            println("--- STEP TRACKER COUNTER IMPL --- sensorTimeInWholeMillis: $sensorTimeSinceLastBoot")
-            val now = System.currentTimeMillis()
-            println("--- STEP TRACKER COUNTER IMPL --- now: $now")
+            //println("--- STEP TRACKER COUNTER IMPL --- onSensorChanged: ${event.values.toList()}")
+            //println("--- STEP TRACKER COUNTER IMPL --- timestamp: ${event.timestamp}")
+
 
             val deviceLastBootedDate = System.currentTimeMillis() - SystemClock.elapsedRealtime()
-            println("--- STEP TRACKER COUNTER IMPL --- deviceLastBootedDate: ${LocalDate.ofEpochDay(deviceLastBootedDate.milliseconds.inWholeDays)}")
-            println("--- STEP TRACKER COUNTER IMPL --- deviceLastBootedInWholeMillis: ${deviceLastBootedDate.milliseconds.inWholeMilliseconds}")
+            //println("--- STEP TRACKER COUNTER IMPL --- deviceLastBootedDate: ${LocalDate.ofEpochDay(deviceLastBootedDate.milliseconds.inWholeDays)}")
+            //println("--- STEP TRACKER COUNTER IMPL --- deviceLastBootedInWholeMillis: ${deviceLastBootedDate.milliseconds.inWholeMilliseconds}")
 
             val momentEventTookPlace = deviceLastBootedDate.milliseconds.inWholeNanoseconds + event.timestamp
-            println("--- STEP TRACKER COUNTER IMPL --- momentEventTookPlace: ${momentEventTookPlace}")
+            //println("--- STEP TRACKER COUNTER IMPL --- momentEventTookPlace: ${momentEventTookPlace}")
             val dateOfEvent = LocalDate.ofEpochDay(momentEventTookPlace.nanoseconds.inWholeDays)
-            val dateTimeOfEvent = LocalDateTime.ofEpochSecond(momentEventTookPlace.nanoseconds.inWholeSeconds, 0, java.time.ZoneOffset.UTC)
-            println("--- STEP TRACKER COUNTER IMPL --- dateTimeOfEvent: $dateTimeOfEvent")
+            //val dateTimeOfEvent = LocalDateTime.ofEpochSecond(momentEventTookPlace.nanoseconds.inWholeSeconds, 0, java.time.ZoneOffset.UTC)
+            //println("--- STEP TRACKER COUNTER IMPL --- dateTimeOfEvent: $dateTimeOfEvent")
 
             val stepsReceivedFromEvent = event.values[0].toInt()
 
