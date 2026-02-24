@@ -1,6 +1,5 @@
 package nl.codingwithlinda.smartstep.features.main.presentation
 
-import android.content.Intent
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
@@ -34,26 +33,25 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
-import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.presentation.util.necessaryPermissionsOnly
 import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
+import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.main.domain.concrete_states.BackgroundRunningAllowed
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.navDrawerItems
-import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
-import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavItemHandler
+import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenContent
+import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.canStartStepTrackerService
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPermissionUiState
-import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenDecorator
-import nl.codingwithlinda.smartstep.features.step_tracker.presentation.StepTrackerViewModel
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
+import nl.codingwithlinda.smartstep.features.step_tracker.presentation.StepTrackerViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.UserOverrideStepsNavActionDecorator
 import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
 
@@ -83,21 +81,24 @@ fun MainScreen(
         }
         if(allGranted){
             permissionsViewModel.setPermissionState(PermissionUiState.NA)
-            val isIgnoringBatteryOptimizations = activity?.let { isIgnoringBatteryOptimizations(context)} ?: false
-            println("isIgnoringBatteryOptimizations: $isIgnoringBatteryOptimizations")
-            if (!isIgnoringBatteryOptimizations) {
-                navItemHandler.handleAction(MainNavAction.BACKGROUND_ACCESS_RECOMMENDED)
+
+            activity?.let { ac ->
+                val isIgnoringBatteryOptimizations = isIgnoringBatteryOptimizations(context)
+
+                println("isIgnoringBatteryOptimizations: $isIgnoringBatteryOptimizations")
+
+                when (isIgnoringBatteryOptimizations) {
+                    true ->{
+                        permissionsViewModel.setTrackingState(BackgroundRunningAllowed(ac))
+                    }
+                    false -> {
+                        navItemHandler.handleAction(MainNavAction.BACKGROUND_ACCESS_RECOMMENDED)
+                    }
+                }
             }
         }
 
-        activity?.let { ac->
-            if(ac.canStartStepTrackerService()){
-                val trackerIntent = Intent(ac, StepTrackerService::class.java).apply {
-                    action = StepTrackerService.ACTION_START
-                }
-                ac.startService(trackerIntent)
-            }
-        }
+        //handle remaining permissions
         resultMap.filter {
             it.value == false
         }.toList().firstOrNull()?.let {
@@ -125,7 +126,9 @@ fun MainScreen(
         }
     }
 
-
+    ObserveAsEvents(permissionsViewModel.startTrackingState) {
+        it.startTracking()
+    }
 
     MainNavDrawer(
         drawerState = drawerState,

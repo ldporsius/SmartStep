@@ -105,7 +105,7 @@ class StepTrackerService : Service() {
     private fun notificationInfo() =  notificationUpdater.receiveAsFlow().map {
       info, ->
 
-        println("--- STEP TRACKER SERVICE combined statistics --- steps: ${info.steps}, calories: , progress: $")
+        println("--- STEP TRACKER SERVICE combined statistics --- steps: ${info.steps}, calories: ${info.calories} , progress: ${info.progress}")
 
         createNotification(
             steps = info.steps,
@@ -115,7 +115,6 @@ class StepTrackerService : Service() {
     }
 
     private fun start(){
-        stepTracker.start()
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.footprints)
@@ -174,7 +173,7 @@ class StepTrackerService : Service() {
 
     private fun stop(){
         stopForeground(STOP_FOREGROUND_REMOVE)
-        stepTracker.stop()
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("SmartStep stopped running")
             .setContentText("SmartStep is no longer tracking your steps")

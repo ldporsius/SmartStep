@@ -60,21 +60,27 @@ class StepTrackerCounterImpl private constructor(
         }
     }
     override fun start() {
-        manager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL)
-        _stateObservable.value = StepTrackerState.STARTED
+        synchronized(this) {
+            manager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_UI)
+            _stateObservable.value = StepTrackerState.STARTED
+        }
     }
 
     override fun pause() {
-        manager.unregisterListener(this)
-        _stateObservable.update {
-            StepTrackerState.PAUSED
+        synchronized(this) {
+            //manager.unregisterListener(this)
+            _stateObservable.update {
+                StepTrackerState.PAUSED
+            }
         }
     }
 
     override fun stop() {
-        manager.unregisterListener(this)
-        _stateObservable.update {
-            StepTrackerState.STOPPED
+        synchronized(this) {
+            manager.unregisterListener(this)
+            _stateObservable.update {
+                StepTrackerState.STOPPED
+            }
         }
     }
 

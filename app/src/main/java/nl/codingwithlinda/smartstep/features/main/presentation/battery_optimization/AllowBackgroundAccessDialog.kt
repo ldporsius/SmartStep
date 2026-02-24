@@ -14,26 +14,22 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.BackgroundAccessRecommendedDialog
 
 @Composable
 fun AllowBackgroundAccessDialog(
+    onResult: (Boolean) -> Unit,
     onDismiss: () -> Unit
 ){
     val context = LocalActivity.current
 
     val batteryOptimizeLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            println("--- BATTERY OPTIMIZE LAUNCHER RETURNED WITH RESULT: ${activityResult.resultCode}, ${activityResult.data}")
 
-            println("--- BATTERY OPTIMIZE LAUNCHER RETURNED WITH RESULT: ${it.resultCode}, ${it.data}")
-            when(it.resultCode){
-                0 -> {
-                    //not granted
-                }
-                else -> {
-                    //granted
-                }
+            context?.let {
+                onResult(isIgnoringBatteryOptimizations(it))
             }
+
             onDismiss()
         }
 

@@ -1,13 +1,11 @@
 package nl.codingwithlinda.smartstep.features.statistics.data
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.stateIn
 import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
@@ -109,11 +107,11 @@ class StatisticsManagerImpl(
         duration.milliseconds.inWholeMinutes.toInt()
     }.flowOn(dispatcherProvider.default)
 
-    override val progressTowardsGoal: Flow<Float>
-         = combine(stepsToday,todaysGoal){
+    override val progressTowardsGoal: Flow<Float> = combine(stepsToday,todaysGoal){
             steps, goal ->
+        println("steps: $steps, goal: ${goal.goal}, percentage: ${steps.toFloat() / goal.goal}")
+
             steps.toFloat() / goal.goal
         }
-
 
 }

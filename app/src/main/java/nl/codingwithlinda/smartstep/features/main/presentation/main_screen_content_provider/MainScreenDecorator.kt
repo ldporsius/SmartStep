@@ -31,6 +31,9 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.stepTracker
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.design_system.components.CustomBottomSheet
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
@@ -38,9 +41,13 @@ import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimizat
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalComponent
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalPickerContainer
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.main.domain.StartTrackingState
+import nl.codingwithlinda.smartstep.features.main.domain.concrete_states.BackgroundRunningAllowed
+import nl.codingwithlinda.smartstep.features.main.domain.concrete_states.BackgroundRunningDenied
 import nl.codingwithlinda.smartstep.features.main.presentation.exit.ExitDialog
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavItemHandler
+import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +59,7 @@ fun MainScreenDecorator(
 
 ) {
 
+    val activity = LocalActivity.current
     val density = LocalDensity.current.density
     val isLargeScreen = LocalWindowInfo.current.containerSize.width > 840 * density
 
@@ -67,6 +75,29 @@ fun MainScreenDecorator(
         MainNavAction.NA -> Unit
 
         MainNavAction.BACKGROUND_ACCESS_RECOMMENDED -> {
+
+            val permissionsViewModel = viewModel<PermissionsViewModel>()
+            fun handleResult(allowed: Boolean){
+                when(allowed){
+                    true -> {
+                        activity?.let {
+                            permissionsViewModel.setTrackingState(
+                                BackgroundRunningAllowed(it)
+                            )
+                        }
+                    }
+                    false -> {
+                        activity?.let {
+                            permissionsViewModel.setTrackingState(
+                                BackgroundRunningDenied(
+                                    activity = activity,
+                                    stepTracker = SmartStepApplication.stepTracker
+                                )
+                            )
+                        }
+                    }
+                }
+            }
             with(parent) {
                 if (isLargeScreen){
                     Dialog(
@@ -78,6 +109,9 @@ fun MainScreenDecorator(
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             AllowBackgroundAccessDialog(
+                                onResult = {allowed ->
+                                   handleResult(allowed)
+                                },
                                 onDismiss = {
                                     navItemHandler.handleAction(MainNavAction.NA)
                                 }
@@ -92,6 +126,9 @@ fun MainScreenDecorator(
                         }
                     ) {
                         AllowBackgroundAccessDialog(
+                            onResult = {allowed ->
+                                handleResult(allowed)
+                            },
                             onDismiss = {
                                 navItemHandler.handleAction(MainNavAction.NA)
                             }
@@ -128,7 +165,6 @@ fun MainScreenDecorator(
                     }
                 }
             }
-
         }
 
         MainNavAction.EXIT -> {
