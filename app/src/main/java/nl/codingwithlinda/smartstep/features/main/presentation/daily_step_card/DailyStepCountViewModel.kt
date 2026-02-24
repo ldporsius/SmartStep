@@ -18,8 +18,6 @@ class DailyStepCountViewModel(
     dailyStepRepo: DailyStepRepo
 ): ViewModel() {
 
-   private val userOverrides = dailyStepRepo.getDailyStepCountUserOverride()
-
    private val stepCount = dailyStepRepo.stepCount
 
     private val today: DateYYYYMMDD
@@ -31,17 +29,13 @@ class DailyStepCountViewModel(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    val stepsToday = userOverrides.combine(stepCount){ userOverrides, stepCount ->
-        val userOverride = userOverrides.firstOrNull{
+
+    val stepsToday = dailyStepRepo.stepCountPlusUserOverride.map {
+        it.firstOrNull {
             it.dayEpochDay == today.dateEpochDay
         }?.stepCount ?:0
-
-        val stepsToday = stepCount.firstOrNull{
-            it.dayEpochDay == today.dateEpochDay
-        }?.stepCount ?: 0
-
-        userOverride + stepsToday
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
 
 
 }

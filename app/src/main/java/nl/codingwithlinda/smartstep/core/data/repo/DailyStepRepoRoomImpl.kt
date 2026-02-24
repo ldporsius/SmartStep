@@ -99,15 +99,19 @@ class DailyStepRepoRoomImpl(
 
     ///////////////////////////////////////////////////////////////////////////////////////////
     private val stepsTotal = dailyStepCountDao.getDailyStepCount()
-        .combine(dailyStepCountDao.getDailyStepCountUserOverride()){steps, override ->
+        .map {
+            it.map {
+                it.toDomain()
+            }
+        }.combine(dailyStepCountDao.getDailyStepCountUserOverride()){steps, override ->
             steps.associateWith { step ->
                 override.find { override ->
-                    override.dateEpochDay == step.date
+                    override.dateEpochDay == step.dayEpochDay
                 }.let {
                     it?.stepCount ?: 0
                 }
             }.map { (step, override) ->
-                step.toDomain().let { step ->
+                step.let { step ->
                     DailyStepCount(
                         YYYY = step.YYYY,
                         MM = step.MM,
@@ -121,11 +125,6 @@ class DailyStepRepoRoomImpl(
     override val stepCountPlusUserOverride: Flow<List<DailyStepCount>>
         = stepsTotal
 
-    val stepsTotalToday: Flow<DailyStepCount>
-        get() = stepCountPlusUserOverride.mapNotNull {
-        it.find{
-            it.dateYYYYMMDD == DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())
-        }
-    }
+
 
 }

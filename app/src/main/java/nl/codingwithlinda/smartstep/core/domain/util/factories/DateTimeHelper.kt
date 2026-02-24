@@ -1,7 +1,5 @@
 package nl.codingwithlinda.smartstep.core.domain.util.factories
 
-import android.R.id.input
-import androidx.core.util.toRange
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.days
@@ -20,7 +18,6 @@ object DateTimeHelper {
         dayEpochSeconds: Long,
         ): DateYYYYMMDD {
         val epochValue = validateLongInput(dayEpochSeconds)
-        println("${dayEpochSeconds} with lengt: ${dayEpochSeconds.toString().length} is epoch value: $epochValue")
 
         val day = when(epochValue) {
             EpochValue.MILLIS -> dayEpochSeconds.milliseconds.inWholeDays
