@@ -17,25 +17,29 @@ class DailyStepGoalViewModel(
     private val dailyStepRepo: DailyStepRepo,
 
 ): ViewModel() {
-
-
     private val _goal = MutableStateFlow(1)
     val goal = _goal.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 1)
 
-
     init {
-
         viewModelScope.launch {
             dailyStepRepo.getDailyStepGoalsLatest().also {
                 val now = System.currentTimeMillis()
-                val today =
-                    DailyStepGoalCreator.getTodaysGoal(goals = it, today = now)?.goal
-                        ?: stepGoalRange.first()
+                val existingGoal =
+                    DailyStepGoalCreator.getTodaysGoal(goals = it, today = now)
 
-                _goal.update {
-                    today
-                }
+                if(existingGoal == null){
+                    val today = DailyStepGoalCreator.create(goal = stepGoalRange.first())
+                    dailyStepRepo.saveDailyStepGoal(today)
+                    _goal.update {
+                        today.goal
+                    }
+                }else
+                    _goal.update {
+                        existingGoal.goal
+                    }
             }
+
+
         }
     }
     fun setGoal(goal: Int){
