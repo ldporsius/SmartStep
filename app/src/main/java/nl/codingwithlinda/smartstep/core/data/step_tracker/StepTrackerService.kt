@@ -90,7 +90,7 @@ class StepTrackerService : Service() {
 
         startForeground(1, notification.build())
 
-        stepTracker.stepsTaken.onEach { step ->
+       /* stepTracker.stepsTaken.onEach { step ->
             if(step.stepCount == 0) return@onEach
 
             //check if we have a baseline
@@ -108,7 +108,7 @@ class StepTrackerService : Service() {
                 )
             }
 
-        }.launchIn(serviceScope)
+        }.launchIn(serviceScope)*/
 
         combine(statisticsManager.stepsToday, statisticsManager.caloriesBurned, statisticsManager.progressTowardsGoal){steps, calories , progress->
 
@@ -138,7 +138,7 @@ class StepTrackerService : Service() {
             .setOngoing(true)
 
         if(notificationManager.areNotificationsEnabled()) {
-            notificationManager.notify(2, notification.build())
+            notificationManager.notify(1, notification.build())
         }
         stopSelf()
     }

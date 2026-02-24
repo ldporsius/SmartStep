@@ -22,7 +22,7 @@
             android:name=".core.data.step_tracker.StepTrackerService"
             android:foregroundServiceType= "dataSync"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="false"/>
 
         <activity
             android:name=".MainActivity"

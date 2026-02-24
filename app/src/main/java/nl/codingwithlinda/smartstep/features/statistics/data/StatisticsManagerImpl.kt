@@ -57,8 +57,8 @@ class StatisticsManagerImpl(
         }?.stepCount ?:0
     }
 
-    private val todaysGoal = dailyStepRepo.getDailyStepGoals().mapNotNull {
-        it.find {
+    private val todaysGoal = dailyStepRepo.getDailyStepGoals().mapNotNull { goals ->
+        goals.find {
             it.epochDay == today.dateEpochDay
         }
     }
@@ -98,7 +98,7 @@ class StatisticsManagerImpl(
     }
     override val timeWalked = walkDurationRepo.sessions.filter { sessions ->
         sessions.any{
-            it.start.dateString == today.dateString
+            it.start.dateYYYYMMDD.dateEpochDay == today.dateEpochDay
         }
     }.combine(minuteCounter.minuteCounter){session, minute ->
         val duration = session.sumOf {

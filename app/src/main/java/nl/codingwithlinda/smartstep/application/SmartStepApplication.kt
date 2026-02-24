@@ -53,15 +53,13 @@ class SmartStepApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(
-                CHANNEL_ID,
-                CHANNEL_ID,
-                NotificationManager.IMPORTANCE_LOW
-                )
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(notificationChannel)
-        }
+        val notificationChannel = NotificationChannel(
+            CHANNEL_ID,
+            CHANNEL_ID,
+            NotificationManager.IMPORTANCE_HIGH
+            )
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(notificationChannel)
 
         val db = SmartStepRoomDatabaseCreator.getInstance(this)
         dataStoreSettings = applicationContext.dataStore
@@ -74,7 +72,10 @@ class SmartStepApplication: Application() {
 
         walkDurationRepo = WalkDurationRepoImpl()
 
-        stepTracker = StepTrackerCounterImpl.getInstance(this.applicationContext)
+        stepTracker = StepTrackerCounterImpl.getInstance(
+            this.applicationContext,
+            dailyStepRepo
+        )
 
         statisticsManager = StatisticsManagerImpl(
             userSettingsRepo = userSettingsRepo,
