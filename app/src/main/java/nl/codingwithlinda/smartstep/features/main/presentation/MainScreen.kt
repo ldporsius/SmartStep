@@ -178,14 +178,6 @@ fun MainScreen(
                     weeklyAverageViewModel = weeklyAverageViewModel
                 )
 
-
-                ///debug
-                Box(
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                ){
-                    val count = stepTrackerViewModel.counter.collectAsStateWithLifecycle().value
-                    Text("$count")
-                }
             }
 
             PermissionDecorator(
@@ -200,6 +192,7 @@ fun MainScreen(
         }
     }
 
+    //put outside the main nav drawer because swipe action in lazycolumn interferes with opening drawer
     Box(
         modifier = Modifier.systemBarsPadding()
     ) {
@@ -215,9 +208,9 @@ fun MainScreen(
     }
 
     //debug
-    ObserveAsEvents(stepTrackerViewModel.state) {
+   /* ObserveAsEvents(stepTrackerViewModel.state) {
         Toast.makeText(context, it.name, Toast.LENGTH_SHORT).show()
-    }
+    }*/
 
 
 

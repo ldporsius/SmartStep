@@ -94,7 +94,7 @@ class StepTrackerService : Service() {
             .setCustomBigContentView(contentLarge)
             .setContentIntent(pendingIntent)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-            .setOngoing(false)
+            .setOngoing(true)
 
 
         return notification.build()

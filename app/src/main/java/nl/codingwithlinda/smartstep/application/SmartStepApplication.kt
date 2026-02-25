@@ -91,8 +91,5 @@ class SmartStepApplication: Application() {
                 UserSettingsMemento.save(this)
             }
         }
-
-
     }
-
 }
