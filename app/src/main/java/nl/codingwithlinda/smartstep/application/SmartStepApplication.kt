@@ -26,6 +26,8 @@ import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.statistics.data.StatisticsManagerImpl
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
+import nl.codingwithlinda.smartstep.features.step_tracker_admin.data.StepTrackerAdminRepo
+import nl.codingwithlinda.smartstep.features.step_tracker_admin.data.StepTrackerCounterAdmin
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -91,5 +93,10 @@ class SmartStepApplication: Application() {
                 UserSettingsMemento.save(this)
             }
         }
+
+        StepTrackerCounterAdmin(
+            this,
+            StepTrackerAdminRepo(db.stepSensorCounterDao)
+        ).start()
     }
 }

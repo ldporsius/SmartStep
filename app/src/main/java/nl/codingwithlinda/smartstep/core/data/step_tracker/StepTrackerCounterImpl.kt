@@ -96,19 +96,11 @@ class StepTrackerCounterImpl private constructor(
         if (stateObservable.value == StepTrackerState.PAUSED) return
 
         if (event.sensor?.type == Sensor.TYPE_STEP_COUNTER){
-            //println("--- STEP TRACKER COUNTER IMPL --- onSensorChanged: ${event.values.toList()}")
-            //println("--- STEP TRACKER COUNTER IMPL --- timestamp: ${event.timestamp}")
-
 
             val deviceLastBootedDate = System.currentTimeMillis() - SystemClock.elapsedRealtime()
-            //println("--- STEP TRACKER COUNTER IMPL --- deviceLastBootedDate: ${LocalDate.ofEpochDay(deviceLastBootedDate.milliseconds.inWholeDays)}")
-            //println("--- STEP TRACKER COUNTER IMPL --- deviceLastBootedInWholeMillis: ${deviceLastBootedDate.milliseconds.inWholeMilliseconds}")
 
             val momentEventTookPlace = deviceLastBootedDate.milliseconds.inWholeNanoseconds + event.timestamp
-            //println("--- STEP TRACKER COUNTER IMPL --- momentEventTookPlace: ${momentEventTookPlace}")
             val dateOfEvent = LocalDate.ofEpochDay(momentEventTookPlace.nanoseconds.inWholeDays)
-            //val dateTimeOfEvent = LocalDateTime.ofEpochSecond(momentEventTookPlace.nanoseconds.inWholeSeconds, 0, java.time.ZoneOffset.UTC)
-            //println("--- STEP TRACKER COUNTER IMPL --- dateTimeOfEvent: $dateTimeOfEvent")
 
             val stepsReceivedFromEvent = event.values[0].toInt()
 
