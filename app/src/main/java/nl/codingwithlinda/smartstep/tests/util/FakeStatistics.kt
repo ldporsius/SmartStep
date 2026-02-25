@@ -6,7 +6,7 @@ import nl.codingwithlinda.smartstep.features.statistics.presentation.model.Stati
 
 val fakeStatistics =
     StatisticsUi(
-        distance = UiText.DynamicText("42km"),
-        energy = UiText.StringResourceText(R.string.energy, "215" , "kcal"),
-        time = UiText.DynamicText("1min")
+        distance = UiText.DynamicText("0"),
+        energy = UiText.StringResourceText(R.string.energy, "0" , "kcal"),
+        time = UiText.DynamicText("0")
 )

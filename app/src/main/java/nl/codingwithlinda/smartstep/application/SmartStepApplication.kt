@@ -94,9 +94,10 @@ class SmartStepApplication: Application() {
             }
         }
 
-        StepTrackerCounterAdmin(
+        //debug to know what raw data the sensor contains
+       /* StepTrackerCounterAdmin(
             this,
             StepTrackerAdminRepo(db.stepSensorCounterDao)
-        ).start()
+        ).start()*/
     }
 }
