@@ -64,13 +64,6 @@ class DailyStepRepoRoomImpl(
         }
     }
 
-    private val stepCount: Flow<List<DailyStepCount>> =
-        dailyStepCountDao.getDailyStepCount()
-            .map {list->
-                list.map {
-                    it.toDomain()
-                }
-            }
 
     ////////////////////////////////////////////////////////////////////////////////////////
     override suspend fun saveDailyStepCountBaseline(dailyStepCount: DailyStepCount) {

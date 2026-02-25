@@ -17,6 +17,7 @@ import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
+import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerCounterImpl
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerDetectorImpl
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService.Companion.CHANNEL_ID
 import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
@@ -81,6 +82,10 @@ class SmartStepApplication: Application() {
             scope = applicationScope,
             repo = dailyStepRepo
         )
+      /*  stepTracker = StepTrackerCounterImpl.getInstance(
+            context = this.applicationContext,
+            dailyStepRepo = dailyStepRepo
+        )*/
 
         statisticsManager = StatisticsManagerImpl(
             userSettingsRepo = userSettingsRepo,

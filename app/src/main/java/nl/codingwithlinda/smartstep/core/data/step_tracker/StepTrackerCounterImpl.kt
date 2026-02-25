@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dailyStepRepo
@@ -35,7 +36,7 @@ class StepTrackerCounterImpl private constructor(
 
     override val stateObservable: StateFlow<StepTrackerState> = _stateObservable
 
-    private val _stepsTaken = MutableStateFlow(DailyStepCount(0,0,0,0))
+    //private val _stepsTaken = MutableStateFlow(DailyStepCount(0,0,0,0))
 
     private val manager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val stepCounterSensor = manager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
@@ -84,7 +85,7 @@ class StepTrackerCounterImpl private constructor(
         }
     }
 
-    override val stepsTaken: Flow<DailyStepCount> = _stepsTaken
+    override val stepsTaken: Flow<DailyStepCount> = emptyFlow()
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
        //ignore
@@ -128,9 +129,6 @@ class StepTrackerCounterImpl private constructor(
                     dailyStepRepo.saveStepCount(
                        update
                     )
-                    _stepsTaken.update {
-                        update
-                    }
                 }
             }
         }
