@@ -15,7 +15,7 @@ import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavA
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCard
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.step_tracker.presentation.StepTrackerViewModel
+import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
 import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageScreen
 import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
@@ -25,7 +25,7 @@ fun MainScreenContent(
     dailyStepGoalViewModel: DailyStepGoalViewModel,
     dailyStepCountViewModel: DailyStepCountViewModel,
     statisticsViewModel: StatisticsViewModel,
-    stepTrackerViewModel: StepTrackerViewModel,
+    walkDurationViewModel: WalkDurationViewModel,
     weeklyAverageViewModel: WeeklyAverageViewModel
     ) {
     Column(
@@ -35,15 +35,15 @@ fun MainScreenContent(
             stepsTaken = dailyStepCountViewModel.stepsToday.collectAsStateWithLifecycle().value,
             dailyGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
             statisticsUi = statisticsViewModel.statistics.collectAsStateWithLifecycle().value,
-            stepTrackerState = stepTrackerViewModel.state.collectAsStateWithLifecycle().value,
+            stepTrackerState = walkDurationViewModel.state.collectAsStateWithLifecycle().value,
             actionEdit = {
                 StepNavActionHandler.handleAction(StepNavAction.EDIT_STEPS)
             },
             actionPause = {
-                stepTrackerViewModel.pause()
+                walkDurationViewModel.pause()
             },
             actionPlay = {
-                stepTrackerViewModel.start()
+                walkDurationViewModel.start()
             },
             modifier = Modifier
                 .semantics {

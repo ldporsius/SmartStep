@@ -24,7 +24,7 @@ import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
-import nl.codingwithlinda.smartstep.features.step_tracker.presentation.StepTrackerViewModel
+import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
@@ -93,10 +93,10 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
             }
         }
     )
-    val stepTrackerViewModel = viewModel<StepTrackerViewModel>(
+    val walkDurationViewModel = viewModel<WalkDurationViewModel>(
         factory = viewModelFactory {
             initializer {
-                StepTrackerViewModel(
+                WalkDurationViewModel(
                     stepTracker = SmartStepApplication.stepTracker,
                     walkDurationRepo = SmartStepApplication.walkDurationRepo,
                     dispatcherProvider = AndroidDispatcherProvider()
@@ -180,7 +180,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
                         dailyStepGoalViewModel = dailyStepGoalViewModel,
                         dailyStepCountViewModel = dailyStepCountViewModel,
                         statisticsViewModel = statisticsViewModel,
-                        stepTrackerViewModel = stepTrackerViewModel,
+                        stepTrackerViewModel = walkDurationViewModel,
                         weeklyAverageViewModel = weeklyAverageViewModel
                     )
                 }

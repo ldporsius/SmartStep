@@ -1,7 +1,6 @@
 package nl.codingwithlinda.smartstep.features.main.presentation
 
 import android.os.Build
-import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -51,7 +50,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.Permi
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPermissionUiState
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.step_tracker.presentation.StepTrackerViewModel
+import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.UserOverrideStepsNavActionDecorator
 import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
 
@@ -61,7 +60,7 @@ fun MainScreen(
     dailyStepGoalViewModel: DailyStepGoalViewModel,
     dailyStepCountViewModel: DailyStepCountViewModel,
     statisticsViewModel: StatisticsViewModel,
-    stepTrackerViewModel: StepTrackerViewModel,
+    stepTrackerViewModel: WalkDurationViewModel,
     weeklyAverageViewModel: WeeklyAverageViewModel
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -174,7 +173,7 @@ fun MainScreen(
                     dailyStepGoalViewModel = dailyStepGoalViewModel,
                     dailyStepCountViewModel = dailyStepCountViewModel,
                     statisticsViewModel = statisticsViewModel,
-                    stepTrackerViewModel = stepTrackerViewModel,
+                    walkDurationViewModel = stepTrackerViewModel,
                     weeklyAverageViewModel = weeklyAverageViewModel
                 )
 

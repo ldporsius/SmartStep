@@ -39,7 +39,7 @@ fun WeeklyAverageScreen(
         LazyRow(
             modifier = modifier
                 .then(bgModifier),
-            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             items(days) { dayUi ->
                 DayItem(dayUi)

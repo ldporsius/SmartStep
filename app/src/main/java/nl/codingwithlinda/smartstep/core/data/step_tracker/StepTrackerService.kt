@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.MainActivity
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.stepTracker
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import kotlin.math.roundToInt
 
