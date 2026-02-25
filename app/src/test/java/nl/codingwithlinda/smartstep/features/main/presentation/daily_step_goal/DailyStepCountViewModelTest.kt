@@ -10,6 +10,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import nl.codingwithlinda.smartstep.tests.FakeStepTracker
@@ -64,9 +65,8 @@ class DailyStepCountViewModelTest {
             println("$em1")
 
             repo.saveDailyStepCountUserOverride(
-                DailyStepCountCreator.create(
-                    count = 2000,
-                )
+                dateYYYYMMDD = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis()),
+                stepCount = 2000
             )
             val em2 = awaitItem()
             assertEquals(em2, 2001)

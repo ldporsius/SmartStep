@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation
 
+import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isZero
@@ -10,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
@@ -25,7 +27,7 @@ import kotlin.time.Duration.Companion.seconds
 class ResetStepsViewModelTest: BaseJunitTest() {
 
     private lateinit var viewModel: ResetStepsViewModel
-    private val fakeDailyStepRepo = FakeDailyStepRepo()
+    private val fakeDailyStepRepo  = FakeDailyStepRepo()
 
     private val scope = CoroutineScope(testDispatcher)
 
@@ -50,31 +52,20 @@ class ResetStepsViewModelTest: BaseJunitTest() {
 
         fakeDailyStepRepo.saveStepCount(step)
         val userOverride = DailyStepCountCreator.create(200)
-        fakeDailyStepRepo.saveDailyStepCountUserOverride(userOverride)
-
-        val override1 = fakeDailyStepRepo.getDailyStepCountUserOverrideForDay(userOverride.dayEpochDay)?.stepCount ?: 0
-
-        assertThat(override1).isEqualTo(200)
+        fakeDailyStepRepo.saveDailyStepCountUserOverride(userOverride.dateYYYYMMDD, userOverride.stepCount)
 
         viewModel.reset()
 
-        //runCurrent()
-
-        fakeDailyStepRepo.stepCount.firstOrNull()?.also {
-            println("stepCount: $it")
-        }
         val today = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())
-        println("today: ${today.dateString}")
 
         val result = fakeDailyStepRepo.getStepCountForDate(today.dateEpochDay)
         assertThat(result!!.stepCount).isZero()
 
         val todaysSteps = fakeDailyStepRepo.getStepCountForDate(System.currentTimeMillis())?.stepCount ?: 0
-        val override = fakeDailyStepRepo.getDailyStepCountUserOverrideForDay(userOverride.dayEpochDay)?.stepCount ?: 0
-
-        val total = todaysSteps + override
-
-        assertThat(total).isZero()
+        fakeDailyStepRepo.stepCountPlusUserOverride.test {
+            val override = awaitItem()
+            assertThat(override).isEqualTo(200)
+        }
 
     }
 

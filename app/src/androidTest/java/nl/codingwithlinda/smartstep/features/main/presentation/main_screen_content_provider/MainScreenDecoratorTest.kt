@@ -11,7 +11,7 @@ import androidx.compose.ui.test.onNodeWithText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
-import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavItemHandler
+import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -31,7 +31,7 @@ class MainScreenDecoratorTest {
             Box(modifier = Modifier.fillMaxSize()) {
                 MainNavItemHandler(
                     mainNavAction = MainNavAction.DAILY_STEP_GOAL,
-                    navItemHandler = MainNavItemHandler,
+                    navItemHandler = MainNavActionControllerImpl,
                     parent = this
 
                 )
