@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,26 +33,26 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.presentation.util.necessaryPermissionsOnly
 import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
+import nl.codingwithlinda.smartstep.features.batteryOptimisation.domain.BatteryOptimisationController
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
-import nl.codingwithlinda.smartstep.features.main.domain.concrete_states.BackgroundRunningAllowed
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.navDrawerItems
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
-import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
-import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenContent
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainNavItemHandler
+import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenContent
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPermissionUiState
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.UserOverrideStepsNavActionDecorator
+import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,6 +73,8 @@ fun MainScreen(
     val navItemHandler = MainNavActionControllerImpl
     val actions = navItemHandler.actions.collectAsStateWithLifecycle(MainNavAction.NA).value
 
+    val batteryOptimisationController = SmartStepApplication.batteryOptimisationController
+
     val permissionsLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { resultMap ->
@@ -81,19 +84,10 @@ fun MainScreen(
         if(allGranted){
             permissionsViewModel.setPermissionState(PermissionUiState.NA)
 
-            activity?.let { ac ->
-                val isIgnoringBatteryOptimizations = isIgnoringBatteryOptimizations(context)
+            batteryOptimisationController.onResult()
 
-                println("isIgnoringBatteryOptimizations: $isIgnoringBatteryOptimizations")
-
-                when (isIgnoringBatteryOptimizations) {
-                    true ->{
-                        permissionsViewModel.setTrackingState(BackgroundRunningAllowed(ac))
-                    }
-                    false -> {
-                        navItemHandler.handleAction(MainNavAction.BACKGROUND_ACCESS_RECOMMENDED)
-                    }
-                }
+            if (batteryOptimisationController.canRunInBackgroundService() == false){
+                navItemHandler.handleAction(MainNavAction.BACKGROUND_ACCESS_RECOMMENDED)
             }
         }
 
@@ -125,7 +119,7 @@ fun MainScreen(
         }
     }
 
-    ObserveAsEvents(permissionsViewModel.startTrackingState) {
+    ObserveAsEvents(batteryOptimisationController.startTracking) {
         it.startTracking()
     }
 

@@ -1,16 +1,14 @@
 package nl.codingwithlinda.smartstep.features.main.navigation.drawer
 
-import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
-import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
 
 
 @Composable
 fun navDrawerItems(): List<NavDrawerItem> {
 
-    val activity = LocalActivity.current
     val navItemHandler = MainNavActionControllerImpl
     val stepsNavActionHandler = StepNavActionHandler
 
@@ -18,9 +16,7 @@ fun navDrawerItems(): List<NavDrawerItem> {
         FixStepProblemNavItem(
             title = "Fix step problem",
             shouldShowInDrawer = {
-                activity?.let {
-                    isIgnoringBatteryOptimizations(it)
-                }?.not() ?: false
+               SmartStepApplication.batteryOptimisationController.canRunInBackgroundService().not()
             },
             mainNavActionController = navItemHandler
         ),

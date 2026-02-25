@@ -1,9 +1,7 @@
-package nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization
+package nl.codingwithlinda.smartstep.features.batteryOptimisation.presentation
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.PowerManager
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
@@ -25,10 +23,7 @@ fun AllowBackgroundAccessDialog(
     val batteryOptimizeLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             println("--- BATTERY OPTIMIZE LAUNCHER RETURNED WITH RESULT: ${activityResult.resultCode}, ${activityResult.data}")
-
-            context?.let {
-                onResult(isIgnoringBatteryOptimizations(it))
-            }
+            onResult(true)
 
             onDismiss()
         }
@@ -56,7 +51,3 @@ fun AllowBackgroundAccessDialog(
         )
 }
 
-fun isIgnoringBatteryOptimizations(context: Context): Boolean {
-    val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-    return powerManager.isIgnoringBatteryOptimizations(context.packageName)
-}

@@ -1,11 +1,6 @@
 package nl.codingwithlinda.smartstep.features.main.presentation.permissions
 
 import android.app.Activity
-import android.content.pm.PackageManager
-import android.os.Build
-import nl.codingwithlinda.smartstep.core.presentation.util.necessaryPermissionsOnly
-import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
-import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
 
 enum class PermissionUiState {
     NA,

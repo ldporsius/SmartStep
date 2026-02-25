@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization
+package nl.codingwithlinda.smartstep.features.batteryOptimisation.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

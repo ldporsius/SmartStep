@@ -18,12 +18,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.design_system.components.CustomBottomSheet
+import nl.codingwithlinda.smartstep.features.batteryOptimisation.domain.BatteryOptimisationController
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
-import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.AllowBackgroundAccessDialog
+import nl.codingwithlinda.smartstep.features.batteryOptimisation.presentation.AllowBackgroundAccessDialog
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalComponent
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalPickerContainer
-import nl.codingwithlinda.smartstep.features.main.domain.concrete_states.BackgroundRunningAllowed
-import nl.codingwithlinda.smartstep.features.main.domain.concrete_states.BackgroundRunningDenied
+import nl.codingwithlinda.smartstep.features.batteryOptimisation.domain.concrete_states.BackgroundRunningAllowed
+import nl.codingwithlinda.smartstep.features.batteryOptimisation.domain.concrete_states.BackgroundRunningDenied
 import nl.codingwithlinda.smartstep.features.main.presentation.exit.ExitDialog
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
@@ -55,27 +56,8 @@ fun MainNavItemHandler(
 
         MainNavAction.BACKGROUND_ACCESS_RECOMMENDED -> {
 
-            val permissionsViewModel = viewModel<PermissionsViewModel>()
-            fun handleResult(allowed: Boolean){
-                when(allowed){
-                    true -> {
-                        activity?.let {
-                            permissionsViewModel.setTrackingState(
-                                BackgroundRunningAllowed(it)
-                            )
-                        }
-                    }
-                    false -> {
-                        activity?.let {
-                            permissionsViewModel.setTrackingState(
-                                BackgroundRunningDenied(
-                                    activity = activity,
-                                    stepTracker = SmartStepApplication.stepTracker
-                                )
-                            )
-                        }
-                    }
-                }
+            fun handleResult(){
+                SmartStepApplication.batteryOptimisationController.onResult()
             }
             with(parent) {
                 if (isLargeScreen){
@@ -88,8 +70,8 @@ fun MainNavItemHandler(
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             AllowBackgroundAccessDialog(
-                                onResult = {allowed ->
-                                   handleResult(allowed)
+                                onResult = {
+                                   handleResult()
                                 },
                                 onDismiss = {
                                     navItemHandler.handleAction(MainNavAction.NA)
@@ -105,8 +87,8 @@ fun MainNavItemHandler(
                         }
                     ) {
                         AllowBackgroundAccessDialog(
-                            onResult = {allowed ->
-                                handleResult(allowed)
+                            onResult = {
+                                handleResult()
                             },
                             onDismiss = {
                                 navItemHandler.handleAction(MainNavAction.NA)
