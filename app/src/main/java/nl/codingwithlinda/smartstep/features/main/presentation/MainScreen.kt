@@ -40,11 +40,11 @@ import nl.codingwithlinda.smartstep.features.main.domain.concrete_states.Backgro
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.navDrawerItems
-import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavItemHandler
+import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
 import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenContent
-import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenDecorator
+import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainNavItemHandler
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
@@ -69,7 +69,7 @@ fun MainScreen(
     val context = LocalContext.current
 
     val permissionsViewModel = viewModel<PermissionsViewModel>()
-    val navItemHandler = MainNavItemHandler
+    val navItemHandler = MainNavActionControllerImpl
     val actions = navItemHandler.actions.collectAsStateWithLifecycle(MainNavAction.NA).value
 
     val permissionsLauncher = rememberLauncherForActivityResult(
@@ -195,7 +195,7 @@ fun MainScreen(
     Box(
         modifier = Modifier.systemBarsPadding()
     ) {
-        MainScreenDecorator(
+        MainNavItemHandler(
             mainNavAction = actions,
             navItemHandler = navItemHandler,
             parent = this
@@ -205,12 +205,4 @@ fun MainScreen(
            currentStep = dailyStepCountViewModel.todaysStep.collectAsStateWithLifecycle().value ?: return@Box
         )
     }
-
-    //debug
-   /* ObserveAsEvents(stepTrackerViewModel.state) {
-        Toast.makeText(context, it.name, Toast.LENGTH_SHORT).show()
-    }*/
-
-
-
 }

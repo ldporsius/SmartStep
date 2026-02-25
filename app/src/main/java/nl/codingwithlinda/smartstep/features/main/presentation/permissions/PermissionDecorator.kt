@@ -16,13 +16,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.codingwithlinda.smartstep.core.presentation.util.openAppSettings
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
-import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavItemHandler
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PermissionDecorator(
     permissionsViewModel: PermissionsViewModel,
-    navItemHandler: MainNavActionControllerImpl = MainNavItemHandler,
+    navItemHandler: MainNavActionControllerImpl = MainNavActionControllerImpl,
     requestPermission: () -> Unit
     ) {
 

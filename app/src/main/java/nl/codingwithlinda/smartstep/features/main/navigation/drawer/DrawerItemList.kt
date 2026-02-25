@@ -2,8 +2,8 @@ package nl.codingwithlinda.smartstep.features.main.navigation.drawer
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
+import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
 import nl.codingwithlinda.smartstep.features.main.presentation.battery_optimization.isIgnoringBatteryOptimizations
-import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavItemHandler
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
 
 
@@ -11,7 +11,7 @@ import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.Step
 fun navDrawerItems(): List<NavDrawerItem> {
 
     val activity = LocalActivity.current
-    val navItemHandler = MainNavItemHandler
+    val navItemHandler = MainNavActionControllerImpl
     val stepsNavActionHandler = StepNavActionHandler
 
     val items: List<NavDrawerItem> = listOf(

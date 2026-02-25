@@ -12,7 +12,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavItemHandler
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -30,7 +29,7 @@ class MainScreenDecoratorTest {
     fun setup(){
         composeTestRule.setContent {
             Box(modifier = Modifier.fillMaxSize()) {
-                MainScreenDecorator(
+                MainNavItemHandler(
                     mainNavAction = MainNavAction.DAILY_STEP_GOAL,
                     navItemHandler = MainNavItemHandler,
                     parent = this
