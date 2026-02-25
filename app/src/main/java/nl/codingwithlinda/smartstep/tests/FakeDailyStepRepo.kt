@@ -77,7 +77,7 @@ class FakeDailyStepRepo: DailyStepRepo {
         }
     }
 
-    override val stepCount: Flow<List<DailyStepCount>> = _stepCount
+    private val stepCount: Flow<List<DailyStepCount>> = _stepCount
 
     override suspend fun saveDailyStepCountBaseline(dailyStepCount: DailyStepCount) {
         _baseline.update {
@@ -89,20 +89,30 @@ class FakeDailyStepRepo: DailyStepRepo {
         return _baseline.value
     }
 
-    override suspend fun saveDailyStepCountUserOverride(dailyStepCount: DailyStepCount) {
-        val current = getDailyStepCountUserOverrideForDay(dailyStepCount.dayEpochDay) ?: dailyStepCount
+    override suspend fun saveDailyStepCountUserOverride(
+        dateYYYYMMDD: DateYYYYMMDD,
+        stepCount: Int
+    ) {
+        val current = getDailyStepCountUserOverrideForDay(dateYYYYMMDD.dateEpochDay)
+
+        current?.run {
+            _userStepCountOverride.update {
+                it.minus(current)
+            }
+        }
+        val new = current ?: DailyStepCountCreator.create(stepCount, dateYYYYMMDD)
         _userStepCountOverride.update {
-            it.minus(current).plus(dailyStepCount)
+            it.plus(new)
         }
     }
 
-    override suspend fun getDailyStepCountUserOverrideForDay(date: Long): DailyStepCount? {
+    private suspend fun getDailyStepCountUserOverrideForDay(date: Long): DailyStepCount? {
         return _userStepCountOverride.value.singleOrNull {
             it.dayEpochDay == date
         }
     }
 
-    override fun getDailyStepCountUserOverride(): Flow<List<DailyStepCount>> = _userStepCountOverride
+    private fun getDailyStepCountUserOverride(): Flow<List<DailyStepCount>> = _userStepCountOverride
     override val stepCountPlusUserOverride: Flow<List<DailyStepCount>>
         get() = combine(stepCount, _userStepCountOverride){
                 steps, override ->

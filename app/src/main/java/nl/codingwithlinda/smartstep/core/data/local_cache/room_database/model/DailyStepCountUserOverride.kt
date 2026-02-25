@@ -9,5 +9,6 @@ import androidx.room.Entity
 data class DailyStepCountUserOverride(
     val dateEpochDay: Long,
     val stepCount: Int,
-    val userId: String
+    val userId: String,
+    val timeStamp: Long = System.currentTimeMillis()
 )

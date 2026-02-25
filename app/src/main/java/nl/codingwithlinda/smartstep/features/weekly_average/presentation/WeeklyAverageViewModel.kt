@@ -26,7 +26,7 @@ class WeeklyAverageViewModel(
         DateTimeHelper.toDateYYYYMMDD(it.toEpochDay())
     }
 
-    val lastSevenStepCounts = repo.stepCount.map{steps ->
+    val lastSevenStepCounts = repo.stepCountPlusUserOverride.map{steps ->
        pastWeek.map { weekday ->
            steps.find {
                it.dayEpochDay == weekday.dateEpochDay

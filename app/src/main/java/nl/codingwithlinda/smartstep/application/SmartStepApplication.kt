@@ -69,6 +69,7 @@ class SmartStepApplication: Application() {
         dailyStepRepo = DailyStepRepoRoomImpl(
             dailyStepGoalDao = db.dailyStepGoalDao,
             dailyStepCountDao = db.dailyStepCountDao,
+            userStepOverrideDao = db.userStepOverrideDao,
             userId = "todo"
         )
 
@@ -95,9 +96,9 @@ class SmartStepApplication: Application() {
         }
 
         //debug to know what raw data the sensor contains
-       /* StepTrackerCounterAdmin(
+        StepTrackerCounterAdmin(
             this,
             StepTrackerAdminRepo(db.stepSensorCounterDao)
-        ).start()*/
+        ).start()
     }
 }

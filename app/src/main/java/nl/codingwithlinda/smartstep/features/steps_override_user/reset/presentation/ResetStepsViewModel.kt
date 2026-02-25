@@ -22,12 +22,8 @@ class ResetStepsViewModel(
                 val update = copy(stepCount = 0)
                 println("--- RESETSTEPSVIEWMODEL --- update: $update")
                 dailyStepRepo.saveDailyStepCountUserOverride(
-                    update
+                    currentStep.dateYYYYMMDD, 0
                 )
-                dailyStepRepo.saveStepCount(
-                    update
-                )
-
             }
         }
     }

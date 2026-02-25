@@ -18,7 +18,7 @@ class DailyStepCountViewModel(
     dailyStepRepo: DailyStepRepo
 ): ViewModel() {
 
-   private val stepCount = dailyStepRepo.stepCount
+   private val stepCount = dailyStepRepo.stepCountPlusUserOverride
 
     private val today: DateYYYYMMDD
         get() = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())

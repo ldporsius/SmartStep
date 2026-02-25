@@ -93,6 +93,9 @@ fun UserOverrideStepsNavActionDecorator(
                         numSteps = editStepsViewModel.steps.collectAsStateWithLifecycle().value,
                         onSave = {
                             editStepsViewModel.onAction(EditStepAction.Save)
+                            StepNavActionHandler.handleAction(
+                                StepNavAction.NA
+                            )
                         },
                         modifier = Modifier.padding(24.dp)
                     )
@@ -131,6 +134,9 @@ fun UserOverrideStepsNavActionDecorator(
                        },
                        onReset = {
                            resetStepsViewModel.reset()
+                           StepNavActionHandler.handleAction(
+                               StepNavAction.NA
+                           )
                        },
                        modifier = Modifier.fillMaxWidth().padding(16.dp)
                    )

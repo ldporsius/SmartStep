@@ -1,7 +1,7 @@
 package nl.codingwithlinda.smartstep.features.step_tracker_admin.data
 
 import android.os.SystemClock
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SensorStepCounterDao
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.SensorStepCounterDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.model.SensorStepCounterData
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.milliseconds

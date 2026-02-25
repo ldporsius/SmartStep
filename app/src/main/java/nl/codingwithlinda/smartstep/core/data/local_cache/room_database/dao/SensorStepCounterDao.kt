@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.core.data.local_cache.room_database
+package nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao
 
 import androidx.room.Dao
 import androidx.room.Query

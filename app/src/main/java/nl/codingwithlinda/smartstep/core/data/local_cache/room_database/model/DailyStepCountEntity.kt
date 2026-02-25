@@ -6,6 +6,7 @@ import androidx.room.Entity
 data class DailyStepCountEntity(
     val date: Long,
     val stepCount: Int,
-    val userId: String
+    val userId: String,
+    val timestamp: Long = System.currentTimeMillis()
 )
 

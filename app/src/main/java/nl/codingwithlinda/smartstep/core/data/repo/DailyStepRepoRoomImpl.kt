@@ -4,9 +4,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.DailyStepCountDao
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.DailyStepGoalDao
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.DailyStepCountDao
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.DailyStepGoalDao
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.UserStepOverrideDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toBaselineEntity
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toDomain
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toEntity
@@ -16,11 +16,12 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCoun
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 
 class DailyStepRepoRoomImpl(
     private val dailyStepGoalDao: DailyStepGoalDao,
     private val dailyStepCountDao: DailyStepCountDao,
+    private val userStepOverrideDao: UserStepOverrideDao,
     private var userId: String
 ): DailyStepRepo {
 
@@ -53,6 +54,7 @@ class DailyStepRepoRoomImpl(
         stepCount.toEntity(userId).let {
             dailyStepCountDao.saveDailyStepCount(it)
         }
+
     }
 
     override suspend fun getStepCountForDate(date: Long): DailyStepCount? {
@@ -63,7 +65,7 @@ class DailyStepRepoRoomImpl(
         }
     }
 
-    override val stepCount: Flow<List<DailyStepCount>> =
+    private val stepCount: Flow<List<DailyStepCount>> =
         dailyStepCountDao.getDailyStepCount()
             .map {list->
                 list.map {
@@ -81,29 +83,24 @@ class DailyStepRepoRoomImpl(
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
-    override suspend fun saveDailyStepCountUserOverride(dailyStepCount: DailyStepCount) {
-        dailyStepCountDao.saveDailyStepCountUserOverride(dailyStepCount.toUserOverrideEntity())
-    }
-
-    override suspend fun getDailyStepCountUserOverrideForDay(date: Long): DailyStepCount? {
-        return dailyStepCountDao.getDailyStepGoalUserOverrideForDay(date)?.toDomain()
-    }
-
-    override fun getDailyStepCountUserOverride(): Flow<List<DailyStepCount>> {
-        return dailyStepCountDao.getDailyStepCountUserOverride().map {
-            it.map {
-                it.toDomain()
-            }
-        }
+    override suspend fun saveDailyStepCountUserOverride(
+        dateYYYYMMDD: DateYYYYMMDD,
+        stepCount: Int
+    ) {
+        val current  = getStepCountForDate(dateYYYYMMDD.dateEpochDay)?.stepCount ?: 0
+        val override = stepCount - current
+        val entity = DailyStepCountCreator.create(override, dateYYYYMMDD)
+        userStepOverrideDao.saveDailyStepUserOverride(entity.toUserOverrideEntity())
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
+
     private val stepsTotal = dailyStepCountDao.getDailyStepCount()
         .map {
             it.map {
                 it.toDomain()
             }
-        }.combine(dailyStepCountDao.getDailyStepCountUserOverride()){steps, override ->
+        }.combine(userStepOverrideDao.getDailyStepCountUserOverride()){steps, override ->
             steps.associateWith { step ->
                 override.find { override ->
                     override.dateEpochDay == step.dayEpochDay
@@ -124,7 +121,5 @@ class DailyStepRepoRoomImpl(
 
     override val stepCountPlusUserOverride: Flow<List<DailyStepCount>>
         = stepsTotal
-
-
 
 }

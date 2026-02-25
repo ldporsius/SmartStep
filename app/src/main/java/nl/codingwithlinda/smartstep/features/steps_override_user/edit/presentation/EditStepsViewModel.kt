@@ -29,13 +29,10 @@ class EditStepsViewModel(
     private val dailyStepRepo: DailyStepRepo,
 ): ViewModel() {
 
-    private suspend fun currentOverride() : Int = dailyStepRepo.getDailyStepCountUserOverrideForDay(
-        System.currentTimeMillis()
-    )?.stepCount ?: 0
+    private suspend fun currentOverride() : Int = dailyStepRepo.stepCountPlusUserOverride.firstOrNull()?.firstOrNull{
+        it.dayEpochDay == DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis()).dateEpochDay
+    }?.stepCount ?: 0
 
-    private suspend fun currentStep() : Int = dailyStepRepo.getStepCountForDate(
-        System.currentTimeMillis()
-    )?.stepCount ?: 0
 
     private val _steps = MutableStateFlow(0)
 
@@ -44,7 +41,7 @@ class EditStepsViewModel(
     val steps = _steps
         .onStart {
             _steps.update {
-                currentStep() + currentOverride()
+                currentOverride()
             }
 
             _dateYYYYMMDD.update {
@@ -106,18 +103,7 @@ class EditStepsViewModel(
             EditStepAction.Save -> {
                 viewModelScope.launch {
 
-                    val update = DailyStepCountCreator.create(
-                        _steps.value,
-                        _dateYYYYMMDD.value
-                    )
-
-                    dailyStepRepo.saveDailyStepCountUserOverride(update)
-
-                    val resetZero = DailyStepCountCreator.create(
-                        0,
-                        _dateYYYYMMDD.value
-                    )
-                    dailyStepRepo.saveStepCount(resetZero)
+                    dailyStepRepo.saveDailyStepCountUserOverride(_dateYYYYMMDD.value, _steps.value)
 
                     StepNavActionHandler.handleAction(StepNavAction.NA)
                 }
