@@ -36,11 +36,13 @@ class StepTrackerDetectorImpl private constructor(
 
     override val stateObservable: Flow<StepTrackerState> = _stateObservable
 
-    //private val _stepsTaken = Channel<Int>()
-
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
-    lateinit var motionSensor: Sensor
+    val motionSensor: Sensor = sensorManager.getSensorList(Sensor.TYPE_STEP_DETECTOR)
+        .also {
+            println("StepTracker motionSensors detected: $it")
+        }
+        .firstOrNull() ?: throw Exception("Device has no step detector sensor")
 
 
     companion object{
@@ -66,15 +68,6 @@ class StepTrackerDetectorImpl private constructor(
 
             }
         }
-    }
-
-    init {
-        motionSensor = sensorManager.getSensorList(Sensor.TYPE_STEP_DETECTOR)
-            .also {
-                println("StepTracker motionSensors detected: $it")
-            }
-            .firstOrNull() ?: throw Exception("Device has no step detector sensor")
-
     }
 
     override fun pause() {
@@ -132,7 +125,6 @@ class StepTrackerDetectorImpl private constructor(
                             repo.getStepCountForDate(dateYYYYMMDD.dateEpochDay)?.stepCount ?: 0
 
                         val update = DailyStepCountCreator.create(stepsToday + 1, dateYYYYMMDD)
-                        println("--- STEP TRACKER TYPE DETECTOR --- event step detector. date = ${update.dateYYYYMMDD.dateString}, count = ${update.stepCount}")
 
                         repo.saveStepCount(update)
                     }
