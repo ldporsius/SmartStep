@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.os.Process
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -16,7 +17,7 @@ import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
-import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerCounterImpl
+import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerDetectorImpl
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService.Companion.CHANNEL_ID
 import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
@@ -46,7 +47,7 @@ class SmartStepApplication: Application() {
         val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
         fun killAll(){
-            android.os.Process.killProcess(android.os.Process.myPid());
+            Process.killProcess(Process.myPid());
         }
     }
 
@@ -60,7 +61,7 @@ class SmartStepApplication: Application() {
             CHANNEL_ID,
             NotificationManager.IMPORTANCE_HIGH
             )
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChannel)
 
         val db = SmartStepRoomDatabaseCreator.getInstance(this)
@@ -75,9 +76,10 @@ class SmartStepApplication: Application() {
 
         walkDurationRepo = WalkDurationRepoImpl()
 
-        stepTracker = StepTrackerCounterImpl.getInstance(
-            this.applicationContext,
-            dailyStepRepo
+        stepTracker = StepTrackerDetectorImpl.getInstance(
+            context = this.applicationContext,
+            scope = applicationScope,
+            repo = dailyStepRepo
         )
 
         statisticsManager = StatisticsManagerImpl(

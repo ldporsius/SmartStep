@@ -101,14 +101,14 @@ class StepTrackerCounterImpl private constructor(
 
             val momentEventTookPlace = deviceLastBootedDate.milliseconds.inWholeNanoseconds + event.timestamp
             val dateOfEvent = LocalDate.ofEpochDay(momentEventTookPlace.nanoseconds.inWholeDays)
+            val eventDateYYYYMMDD = DateYYYYMMDD(dateOfEvent.year, dateOfEvent.monthValue, dateOfEvent.dayOfMonth)
 
             val stepsReceivedFromEvent = event.values[0].toInt()
 
             println("--- STEP TRACKER COUNTER IMPL --- stepsReceivedFromEvent: $stepsReceivedFromEvent")
 
             CoroutineScope(Dispatchers.IO).launch {
-                val eventDateYYYYMMDD = DateYYYYMMDD(dateOfEvent.year, dateOfEvent.monthValue, dateOfEvent.dayOfMonth)
-                //check if we have a baseline
+                 //check if we have a baseline
                 val baseline = dailyStepRepo.getDailyStepCountBaselineForDate(eventDateYYYYMMDD)
 
                 if(baseline == null){

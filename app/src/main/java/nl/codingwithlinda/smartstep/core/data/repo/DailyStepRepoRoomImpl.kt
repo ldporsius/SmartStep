@@ -54,7 +54,6 @@ class DailyStepRepoRoomImpl(
         stepCount.toEntity(userId).let {
             dailyStepCountDao.saveDailyStepCount(it)
         }
-
     }
 
     override suspend fun getStepCountForDate(date: Long): DailyStepCount? {

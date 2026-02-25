@@ -7,6 +7,8 @@ data class DailyStepCountEntity(
     val date: Long,
     val stepCount: Int,
     val userId: String,
-    val timestamp: Long = System.currentTimeMillis()
-)
+
+){
+    var timestamp: Long = System.currentTimeMillis()
+}
 

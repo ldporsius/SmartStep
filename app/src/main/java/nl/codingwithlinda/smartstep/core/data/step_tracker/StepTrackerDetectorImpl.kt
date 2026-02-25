@@ -6,10 +6,12 @@ import android.hardware.Sensor.TYPE_STEP_DETECTOR
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.util.Log.d
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -18,11 +20,14 @@ import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCre
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
+import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepGoalCreator
 import kotlin.concurrent.Volatile
 
 class StepTrackerDetectorImpl private constructor(
     context: Context,
     private val scope: CoroutineScope,
+    private val repo: DailyStepRepo
 ): StepTracker, SensorEventListener{
 
     private var state: StepTrackerState = StepTrackerState.STOPPED
@@ -31,16 +36,12 @@ class StepTrackerDetectorImpl private constructor(
 
     override val stateObservable: Flow<StepTrackerState> = _stateObservable
 
-    private val _stepsTaken = Channel<Int>()
+    //private val _stepsTaken = Channel<Int>()
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    val motionSensor = sensorManager.getSensorList(Sensor.TYPE_STEP_DETECTOR)
-        .also {
-            println("StepTracker motionSensors detected: $it")
-        }
-        .firstOrNull {
-            it.isWakeUpSensor
-        }
+
+    lateinit var motionSensor: Sensor
+
 
     companion object{
         @Volatile
@@ -51,6 +52,7 @@ class StepTrackerDetectorImpl private constructor(
         fun getInstance(
             context: Context,
             scope: CoroutineScope,
+            repo: DailyStepRepo
         ): StepTrackerDetectorImpl {
             synchronized(lock) {
                 val i = stepTrackerInstance
@@ -58,11 +60,21 @@ class StepTrackerDetectorImpl private constructor(
                     return i
                 }
 
-                stepTrackerInstance = StepTrackerDetectorImpl(context, scope)
+                stepTrackerInstance = StepTrackerDetectorImpl(context, scope, repo)
+
                 return stepTrackerInstance!!
 
             }
         }
+    }
+
+    init {
+        motionSensor = sensorManager.getSensorList(Sensor.TYPE_STEP_DETECTOR)
+            .also {
+                println("StepTracker motionSensors detected: $it")
+            }
+            .firstOrNull() ?: throw Exception("Device has no step detector sensor")
+
     }
 
     override fun pause() {
@@ -77,16 +89,22 @@ class StepTrackerDetectorImpl private constructor(
         _stateObservable.update {
             StepTrackerState.STARTED
         }
-        println("StepTracker started")
-        motionSensor?.let {sensor ->
+
+        motionSensor.let {sensor ->
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL).also {registered ->
                 println("StepTracker registered listener: $registered")
             }
         }
+        println("StepTracker started")
     }
 
     override fun stop() {
-        sensorManager.unregisterListener(this)
+        try {
+            sensorManager.unregisterListener(this)
+        }catch (e: Exception) {
+            //ignore
+        }
+
         state = StepTrackerState.STOPPED
         _stateObservable.update {
             StepTrackerState.STOPPED
@@ -94,26 +112,32 @@ class StepTrackerDetectorImpl private constructor(
         println("StepTracker stopped")
     }
 
-    override val stepsTaken: Flow<DailyStepCount>
-            = _stepsTaken.receiveAsFlow().map {
-                DailyStepCountCreator.create(
-                    count = it
-                )
-    }
+    override val stepsTaken: Flow<DailyStepCount> = emptyFlow()
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
         println("--- onAccuracyChanged: sensor: $p0, accuracy: $p1")
     }
 
     override fun onSensorChanged(p0: SensorEvent?) {
-        println("--- onSensorChanged: ${p0?.sensor}, values: ${p0?.values?.toList()}")
 
         p0?.let {event ->
-            if (event.sensor.type == TYPE_STEP_DETECTOR)
-                println("--- event is step detector. ${event.values.toList()}")
-                scope.launch {
-                    _stepsTaken.send(1)
+            if (event.sensor.type == TYPE_STEP_DETECTOR) {
+
+                synchronized(this) {
+                    scope.launch {
+                        val timestamp = event.timestamp
+                        val localDate = SensorTimeStampHelper.timeStampToLocalDate(timestamp)
+                        val dateYYYYMMDD = SensorTimeStampHelper.localDateToDomain(localDate)
+                        val stepsToday =
+                            repo.getStepCountForDate(dateYYYYMMDD.dateEpochDay)?.stepCount ?: 0
+
+                        val update = DailyStepCountCreator.create(stepsToday + 1, dateYYYYMMDD)
+                        println("--- STEP TRACKER TYPE DETECTOR --- event step detector. date = ${update.dateYYYYMMDD.dateString}, count = ${update.stepCount}")
+
+                        repo.saveStepCount(update)
+                    }
                 }
+            }
         }
     }
 }
