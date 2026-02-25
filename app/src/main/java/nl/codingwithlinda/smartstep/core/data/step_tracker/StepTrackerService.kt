@@ -174,8 +174,8 @@ class StepTrackerService : Service() {
         stopForeground(STOP_FOREGROUND_REMOVE)
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("SmartStep stopped running")
-            .setContentText("SmartStep is no longer tracking your steps")
+            .setContentTitle("SmartStep is not running in background")
+            .setContentText("You can enable this in the app by allowing background access")
             .setSmallIcon(R.drawable.splash_icon)
             .setOngoing(false)
 

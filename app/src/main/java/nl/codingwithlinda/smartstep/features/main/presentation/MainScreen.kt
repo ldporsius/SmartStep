@@ -67,7 +67,6 @@ fun MainScreen(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val activity = LocalActivity.current
-    val context = LocalContext.current
 
     val permissionsViewModel = viewModel<PermissionsViewModel>()
     val navItemHandler = MainNavActionControllerImpl
