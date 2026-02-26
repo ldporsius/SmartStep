@@ -124,7 +124,7 @@ fun UserOverrideStepsNavActionDecorator(
            ) {
                Surface(
                    shape = MaterialTheme.shapes.medium,
-                   modifier = Modifier.fillMaxWidth()
+                   modifier = Modifier
                ) {
                    ResetStepsDialog(
                        onDismiss = {

@@ -173,10 +173,16 @@ class StepTrackerService : Service() {
     private fun stop(){
         stopForeground(STOP_FOREGROUND_REMOVE)
 
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("SmartStep is not running in background")
             .setContentText("You can enable this in the app by allowing background access")
             .setSmallIcon(R.drawable.splash_icon)
+            .setContentIntent(pendingIntent)
             .setOngoing(false)
 
         if(notificationManager.areNotificationsEnabled()) {

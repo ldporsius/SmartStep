@@ -3,6 +3,19 @@
   <component name="AndroidTestResultsUserPreferences">
     <option name="androidTestResultsTableState">
       <map>
+        <entry key="-1858664963">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Tests" value="360" />
+                  <entry key="motorola motorola edge 60 neo" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="-1707910733">
           <value>
             <AndroidTestResultsTableState>
@@ -200,6 +213,20 @@
                 <map>
                   <entry key="Duration" value="90" />
                   <entry key="Medium_Tablet" value="120" />
+                  <entry key="Tests" value="360" />
+                  <entry key="motorola motorola edge 60 neo" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="1140341238">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="LENOVO Lenovo TB125FU" value="120" />
                   <entry key="Tests" value="360" />
                   <entry key="motorola motorola edge 60 neo" value="120" />
                 </map>

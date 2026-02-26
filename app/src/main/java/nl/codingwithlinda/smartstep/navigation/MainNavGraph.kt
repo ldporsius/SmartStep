@@ -21,7 +21,7 @@ import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.userSettingsRepo
 import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
@@ -37,7 +37,7 @@ import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyA
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNavGraph(
-    smartStepStateController: SmartStepStateController,
+    smartStepStateController: SmartStepStateControllerImpl,
     modifier: Modifier = Modifier) {
 
     val backStack = rememberNavBackStack(StartRoute)

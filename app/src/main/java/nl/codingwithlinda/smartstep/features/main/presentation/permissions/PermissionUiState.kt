@@ -10,7 +10,7 @@ enum class PermissionUiState {
     DENIED_NOTIFICATIONS_PERMANENTLY
 }
 
-fun Activity.toPermissionUiState(permission: String): PermissionUiState{
+fun Activity.PermissionActivityRecognitionToUiState(permission: String): PermissionUiState{
     if (permission == android.Manifest.permission.ACTIVITY_RECOGNITION)
     {
         val shouldShowRationale = shouldShowRequestPermissionRationale(permission)

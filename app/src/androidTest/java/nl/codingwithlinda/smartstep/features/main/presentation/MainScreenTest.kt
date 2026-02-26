@@ -1,42 +1,27 @@
 package nl.codingwithlinda.smartstep.features.main.presentation
 
 import android.Manifest
-import android.app.Application
-import android.app.UiAutomation
 import android.os.Build
-import android.os.UserHandle
 import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasClickAction
-import androidx.compose.ui.test.hasContentDescription
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.datastore.preferences.core.edit
-import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.internal.platform.content.PermissionGranter
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.GrantPermissionRule
-import androidx.test.runner.AndroidJUnitRunner
 import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiSelector
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.smartstep.MainActivity
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.application.dataStore
+import nl.codingwithlinda.smartstep.features.main.util.TestPermissionsRobot
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
+
 
 @OptIn(ExperimentalTestApi::class)
 @RunWith(AndroidJUnit4::class)
@@ -48,17 +33,12 @@ class MainScreenTest {
     )
     //@get:Rule
     //val allowNotifications: GrantPermissionRule? = GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)
+    //val context: SmartStepApplication = ApplicationProvider.getApplicationContext<SmartStepApplication>()
     val packageName = InstrumentationRegistry.getInstrumentation().targetContext.packageName
-    val context: SmartStepApplication = ApplicationProvider.getApplicationContext<SmartStepApplication>()
 
 
     @Before
     fun setUp() {
-        runBlocking {
-            context.dataStore.edit {
-                it.clear()
-            }
-        }
     }
 
     @After
@@ -66,12 +46,12 @@ class MainScreenTest {
 
     }
 
-    @Ignore
+
     @Test
-    fun testBodySensorsPermissionDeclined(){
+    fun testActivityRecognitionPermissionDeclined() = runBlocking{
 
         if(Build.VERSION.SDK_INT >= 28){
-            InstrumentationRegistry.getInstrumentation().uiAutomation.grantRuntimePermission(
+            InstrumentationRegistry.getInstrumentation().uiAutomation.revokeRuntimePermission(
                 packageName,
                 Manifest.permission.ACTIVITY_RECOGNITION,
             )
@@ -83,6 +63,36 @@ class MainScreenTest {
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         val mainActivity = composeTestRule.activity
         mainActivity.isChecking = false
+
+        val robot = TestPermissionsRobot(
+            testRule = composeTestRule,
+            device = device
+        )
+
+        composeTestRule.waitUntilAtLeastOneExists(
+            isRoot()
+        )
+
+        composeTestRule . onNodeWithText ("Start").performClick()
+
+        composeTestRule . waitForIdle ()
+
+        delay (1000)
+
+        robot.clickOnDeny()
+
+        delay(1000)
+        robot.clickOnAllow()
+
+        delay (1000)
+        robot.clickOnDeny()
+
+        delay(1000)
+        robot.openSettings()
+            .allowRecognitionManually()
+
+
+        delay (1000)
 
 
     }

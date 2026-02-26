@@ -5,6 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import nl.codingwithlinda.smartstep.design_system.ui.theme.secondary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.white
 import java.util.Locale
@@ -25,13 +27,19 @@ fun StepsProgressText(
         Text(
             formattedSteps,
             style = MaterialTheme.typography.headlineLarge,
-            color = textColor
+            color = textColor,
+            modifier = Modifier.semantics(){
+                contentDescription = "steps_taken"
+            }
         )
         if (isPaused){
             Text("Paused", color = white)
         }
         else {
-            Text("/$dailyGoal Steps")
+            Text("/$dailyGoal Steps",
+                modifier = Modifier.semantics(){
+                    contentDescription = "goal"
+                })
         }
     }
 

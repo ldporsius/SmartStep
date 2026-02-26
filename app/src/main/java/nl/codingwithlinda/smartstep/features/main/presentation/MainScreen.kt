@@ -14,16 +14,23 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import nl.codingwithlinda.smartstep.R
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
+import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
@@ -47,7 +54,7 @@ fun MainScreen(
     statisticsViewModel: StatisticsViewModel,
     stepTrackerViewModel: WalkDurationViewModel,
     weeklyAverageViewModel: WeeklyAverageViewModel,
-    smartStepStateController: SmartStepStateController
+    smartStepStateController: SmartStepStateControllerImpl
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -57,6 +64,18 @@ fun MainScreen(
     val actions = navItemHandler.actions.collectAsStateWithLifecycle(MainNavAction.NA).value
 
 
+    ObserveAsEvents(smartStepStateController.startTrackingState) {
+        it.startTracking()
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect (lifecycleOwner){
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+            withContext(Dispatchers.Main.immediate) {
+                smartStepStateController.onResult()
+            }
+        }
+    }
     MainNavDrawer(
         drawerState = drawerState,
         scope = scope,
@@ -107,6 +126,7 @@ fun MainScreen(
             }
 
             PermissionDecorator(
+                smartStepStateController = smartStepStateController,
                 permissionsViewModel = permissionsViewModel,
                 navItemHandler = navItemHandler,
                 requestPermission = {

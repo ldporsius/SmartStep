@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
+import nl.codingwithlinda.smartstep.design_system.components.CommonNumberPicker
 
 @Composable
 fun DailyStepGoalComponent(
@@ -49,8 +50,9 @@ fun DailyStepGoalComponent(
             modifier = Modifier.padding(top = 48.dp,bottom = 16.dp)
         )
 
-        DailyStepGoalPicker(
-            goals = stepGoalRange,
+        CommonNumberPicker(
+            label = "",
+            values = stepGoalRange,
             selectedGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
             onGoalSelected = {
                 dailyStepGoalViewModel.setGoal(it)
@@ -59,7 +61,6 @@ fun DailyStepGoalComponent(
                 .fillMaxWidth()
                 .weight(1f)
                 .padding(horizontal = 48.dp)
-
         )
 
         Spacer(modifier = Modifier.weight(1f))

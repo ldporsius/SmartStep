@@ -15,12 +15,14 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
-import nl.codingwithlinda.smartstep.design_system.components.CustomBottomSheet
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
+import nl.codingwithlinda.smartstep.design_system.components.CustomBottomSheet
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.batteryOptimisation.presentation.AllowBackgroundAccessDialog
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalComponent
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalPickerContainer
+import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavActionController
 import nl.codingwithlinda.smartstep.features.main.presentation.exit.ExitDialog
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
 
@@ -29,7 +31,7 @@ import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.c
 @Composable
 fun MainNavItemHandler(
     mainNavAction: MainNavAction,
-    navItemHandler: MainNavActionControllerImpl = MainNavActionControllerImpl,
+    navItemHandler: MainNavActionController = MainNavActionControllerImpl,
     smartStepStateController: SmartStepStateController,
     parent: BoxScope
 

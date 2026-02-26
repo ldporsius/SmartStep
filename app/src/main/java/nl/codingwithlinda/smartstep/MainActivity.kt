@@ -12,14 +12,14 @@ import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.u
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.StepTrackerFiniteState
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.navigation.MainNavGraph
 
 
 class MainActivity : ComponentActivity(), StepTrackerFiniteState {
 
-    lateinit var smartStepStateController: SmartStepStateController
+    lateinit var smartStepStateController: SmartStepStateControllerImpl
     var isChecking = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity(), StepTrackerFiniteState {
 
         enableEdgeToEdge()
 
-        smartStepStateController = SmartStepStateController(this)
+        smartStepStateController = SmartStepStateControllerImpl(this)
 
         setContent {
             val viewModel = viewModel<ShouldShowSettingsViewModel>(
@@ -57,9 +57,7 @@ class MainActivity : ComponentActivity(), StepTrackerFiniteState {
                 )
             }
 
-            ObserveAsEvents(smartStepStateController.startTracking) {
-                it.startTracking()
-            }
+
         }
     }
 
@@ -67,10 +65,6 @@ class MainActivity : ComponentActivity(), StepTrackerFiniteState {
         smartStepStateController.onResult()
     }
 
-    override fun onResume() {
-        println("--- MAIN ACTIVITY --- On resume")
-        super.onResume()
-        setState()
-    }
+
 
 }
