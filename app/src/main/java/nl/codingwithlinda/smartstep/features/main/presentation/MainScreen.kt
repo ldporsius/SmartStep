@@ -1,9 +1,5 @@
 package nl.codingwithlinda.smartstep.features.main.presentation
 
-import android.os.Build
-import androidx.activity.compose.LocalActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,26 +14,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.R
-import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
-import nl.codingwithlinda.smartstep.core.presentation.util.necessaryPermissionsOnly
-import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
-import nl.codingwithlinda.smartstep.features.batteryOptimisation.domain.BatteryOptimisationController
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
@@ -47,9 +33,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.D
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainNavItemHandler
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenContent
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionUiState
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.toPermissionUiState
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.UserOverrideStepsNavActionDecorator
 import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
@@ -62,65 +46,16 @@ fun MainScreen(
     dailyStepCountViewModel: DailyStepCountViewModel,
     statisticsViewModel: StatisticsViewModel,
     stepTrackerViewModel: WalkDurationViewModel,
-    weeklyAverageViewModel: WeeklyAverageViewModel
+    weeklyAverageViewModel: WeeklyAverageViewModel,
+    smartStepStateController: SmartStepStateController
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    val activity = LocalActivity.current
 
     val permissionsViewModel = viewModel<PermissionsViewModel>()
     val navItemHandler = MainNavActionControllerImpl
     val actions = navItemHandler.actions.collectAsStateWithLifecycle(MainNavAction.NA).value
 
-    val batteryOptimisationController = SmartStepApplication.batteryOptimisationController
-
-    val permissionsLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { resultMap ->
-        val allGranted = resultMap.all {
-            it.value
-        }
-        if(allGranted){
-            permissionsViewModel.setPermissionState(PermissionUiState.NA)
-
-            batteryOptimisationController.onResult()
-
-            if (batteryOptimisationController.canRunInBackgroundService() == false){
-                navItemHandler.handleAction(MainNavAction.BACKGROUND_ACCESS_RECOMMENDED)
-            }
-        }
-
-        //handle remaining permissions
-        resultMap.filter {
-            it.value == false
-        }.toList().firstOrNull()?.let {
-            val perm = it.first
-            val uiState = activity?.toPermissionUiState(perm) ?: PermissionUiState.NA
-
-            permissionsViewModel.setPermissionState(uiState)
-        }
-    }
-
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_START) {
-                permissionsPerBuild(Build.VERSION.SDK_INT).let {requiredPerms ->
-                    permissionsLauncher.launch(
-                        requiredPerms.toTypedArray()
-                    )
-                }
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
-
-    ObserveAsEvents(batteryOptimisationController.startTracking) {
-        it.startTracking()
-    }
 
     MainNavDrawer(
         drawerState = drawerState,
@@ -169,16 +104,13 @@ fun MainScreen(
                     walkDurationViewModel = stepTrackerViewModel,
                     weeklyAverageViewModel = weeklyAverageViewModel
                 )
-
             }
 
             PermissionDecorator(
                 permissionsViewModel = permissionsViewModel,
                 navItemHandler = navItemHandler,
                 requestPermission = {
-                    necessaryPermissionsOnly().let {
-                        permissionsLauncher.launch(it.toTypedArray())
-                    }
+                    smartStepStateController.onResult()
                 }
             )
         }
@@ -191,6 +123,7 @@ fun MainScreen(
         MainNavItemHandler(
             mainNavAction = actions,
             navItemHandler = navItemHandler,
+            smartStepStateController = smartStepStateController,
             parent = this
         )
 

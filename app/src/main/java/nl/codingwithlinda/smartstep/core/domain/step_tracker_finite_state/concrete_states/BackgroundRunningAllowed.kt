@@ -1,14 +1,13 @@
-package nl.codingwithlinda.smartstep.features.batteryOptimisation.domain.concrete_states
+package nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.concrete_states
 
 import android.app.Activity
-import android.app.Application
 import android.content.Intent
-import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.stepTracker
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
-import nl.codingwithlinda.smartstep.features.batteryOptimisation.domain.StartTrackingState
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.StartTrackingState
 
 class BackgroundRunningAllowed(
-    private val activity: Application
+    private val activity: Activity
 ): StartTrackingState {
     override fun startTracking() {
         println("Background running allowed")
@@ -17,6 +16,9 @@ class BackgroundRunningAllowed(
             action = StepTrackerService.ACTION_START
         }
         activity.startService(trackerIntent)
+
+        SmartStepApplication.stepTracker.start()
+
     }
 }
 

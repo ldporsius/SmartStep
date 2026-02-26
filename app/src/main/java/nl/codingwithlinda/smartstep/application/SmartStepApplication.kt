@@ -4,7 +4,6 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import android.os.Process
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -17,7 +16,6 @@ import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
-import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerCounterImpl
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerDetectorImpl
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService.Companion.CHANNEL_ID
 import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
@@ -25,7 +23,6 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
-import nl.codingwithlinda.smartstep.features.batteryOptimisation.domain.BatteryOptimisationController
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.statistics.data.StatisticsManagerImpl
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
@@ -43,7 +40,6 @@ class SmartStepApplication: Application() {
         lateinit var walkDurationRepo: WalkDurationRepo
         lateinit var stepTracker: StepTracker
         lateinit var statisticsManager: StatisticsManager
-        lateinit var batteryOptimisationController: BatteryOptimisationController
 
         lateinit var _applicationContext: Context
 
@@ -96,7 +92,6 @@ class SmartStepApplication: Application() {
             dispatcherProvider = AndroidDispatcherProvider()
         )
 
-        batteryOptimisationController = BatteryOptimisationController(this)
 
 
 

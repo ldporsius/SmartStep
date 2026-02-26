@@ -14,20 +14,15 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
-import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.design_system.components.CustomBottomSheet
-import nl.codingwithlinda.smartstep.features.batteryOptimisation.domain.BatteryOptimisationController
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.batteryOptimisation.presentation.AllowBackgroundAccessDialog
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalComponent
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalPickerContainer
-import nl.codingwithlinda.smartstep.features.batteryOptimisation.domain.concrete_states.BackgroundRunningAllowed
-import nl.codingwithlinda.smartstep.features.batteryOptimisation.domain.concrete_states.BackgroundRunningDenied
 import nl.codingwithlinda.smartstep.features.main.presentation.exit.ExitDialog
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
-import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,11 +30,11 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.Permi
 fun MainNavItemHandler(
     mainNavAction: MainNavAction,
     navItemHandler: MainNavActionControllerImpl = MainNavActionControllerImpl,
+    smartStepStateController: SmartStepStateController,
     parent: BoxScope
 
 ) {
 
-    val activity = LocalActivity.current
     val density = LocalDensity.current.density
     val isLargeScreen = LocalWindowInfo.current.containerSize.width > 840 * density
 
@@ -57,7 +52,7 @@ fun MainNavItemHandler(
         MainNavAction.BACKGROUND_ACCESS_RECOMMENDED -> {
 
             fun handleResult(){
-                SmartStepApplication.batteryOptimisationController.onResult()
+               smartStepStateController.onResult()
             }
             with(parent) {
                 if (isLargeScreen){
