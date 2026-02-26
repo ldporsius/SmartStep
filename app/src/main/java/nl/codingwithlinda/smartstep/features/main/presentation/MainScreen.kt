@@ -31,6 +31,7 @@ import kotlinx.coroutines.withContext
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
@@ -134,21 +135,24 @@ fun MainScreen(
                 }
             )
         }
-    }
 
-    //put outside the main nav drawer because swipe action in lazycolumn interferes with opening drawer
-    Box(
-        modifier = Modifier.systemBarsPadding()
-    ) {
-        MainNavItemHandler(
-            mainNavAction = actions,
-            navItemHandler = navItemHandler,
-            smartStepStateController = smartStepStateController,
-            parent = this
-        )
 
-        UserOverrideStepsNavActionDecorator(
-           currentStep = dailyStepCountViewModel.todaysStep.collectAsStateWithLifecycle().value ?: return@Box
-        )
+        //put outside the main nav drawer because swipe action in lazycolumn interferes with opening drawer
+        Box(
+            modifier = Modifier.systemBarsPadding()
+        ) {
+            MainNavItemHandler(
+                mainNavAction = actions,
+                navItemHandler = navItemHandler,
+                smartStepStateController = smartStepStateController,
+                parent = this
+            )
+
+            UserOverrideStepsNavActionDecorator(
+                currentStep = dailyStepCountViewModel.todaysStep.collectAsStateWithLifecycle().value
+                    ?: DailyStepCountCreator.create(0)
+
+            )
+        }
     }
 }

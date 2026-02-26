@@ -45,6 +45,8 @@ fun UserOverrideStepsNavActionDecorator(
     var action: StepNavAction by remember { mutableStateOf(StepNavAction.NA) }
 
     ObserveAsEvents(StepNavActionHandler.actions) { _action ->
+
+        println("user override steps nav action decorator Observed Action: $_action")
         action = _action
     }
 
