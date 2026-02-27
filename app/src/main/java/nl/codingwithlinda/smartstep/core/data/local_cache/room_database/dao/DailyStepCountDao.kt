@@ -17,6 +17,9 @@ interface DailyStepCountDao {
     @Query("SELECT * FROM daily_step_count")
     fun getDailyStepCount(): Flow<List<DailyStepCountEntity>>
 
+    @Query("SELECT * FROM daily_step_count WHERE date = :date")
+    suspend fun getDailyStepCountForDate(date: Long): DailyStepCountEntity?
+
     @Upsert
     suspend fun saveDailyStepCountBaseline(dailyStepCountBaseline: DailyStepCountBaseline)
 

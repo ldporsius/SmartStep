@@ -13,11 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
@@ -29,19 +24,10 @@ import nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentat
 
 @Composable
 fun UserOverrideStepsNavActionDecorator(
-   currentStep: DailyStepCount
+    editStepsViewModel: EditStepsViewModel,
+    resetStepsViewModel: ResetStepsViewModel,
 ) {
 
-    val editStepsViewModel: EditStepsViewModel = viewModel(
-        factory = viewModelFactory {
-            initializer {
-                EditStepsViewModel(
-                    dailyStepRepo = SmartStepApplication.dailyStepRepo,
-
-                )
-            }
-        }
-    )
     var action: StepNavAction by remember { mutableStateOf(StepNavAction.NA) }
 
     ObserveAsEvents(StepNavActionHandler.actions) { _action ->
@@ -105,45 +91,34 @@ fun UserOverrideStepsNavActionDecorator(
             }
         }
         StepNavAction.RESET_STEPS -> {
-            val resetStepsViewModel = viewModel<ResetStepsViewModel>(
-                factory = viewModelFactory {
 
-                    initializer {
-                        ResetStepsViewModel(
-                            dailyStepRepo = SmartStepApplication.dailyStepRepo,
-                            currentStep = currentStep,
-                            scope = SmartStepApplication.applicationScope
-                        )
-                    }
+            Dialog(
+                onDismissRequest = {
+                    StepNavActionHandler.handleAction(
+                        StepNavAction.NA
+                    )
                 }
-            )
-           Dialog(
-               onDismissRequest = {
-                   StepNavActionHandler.handleAction(
-                       StepNavAction.NA
-                   )
-               }
-           ) {
-               Surface(
-                   shape = MaterialTheme.shapes.medium,
-                   modifier = Modifier
-               ) {
-                   ResetStepsDialog(
-                       onDismiss = {
-                           StepNavActionHandler.handleAction(
-                               StepNavAction.NA
-                           )
-                       },
-                       onReset = {
-                           resetStepsViewModel.reset()
-                           StepNavActionHandler.handleAction(
-                               StepNavAction.NA
-                           )
-                       },
-                       modifier = Modifier.fillMaxWidth().padding(16.dp)
-                   )
-               }
-           }
+            ) {
+                Surface(
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier
+                ) {
+                    ResetStepsDialog(
+                        onDismiss = {
+                            StepNavActionHandler.handleAction(
+                                StepNavAction.NA
+                            )
+                        },
+                        onReset = {
+                            resetStepsViewModel.reset()
+                            StepNavActionHandler.handleAction(
+                                StepNavAction.NA
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth().padding(16.dp)
+                    )
+                }
+            }
         }
     }
 

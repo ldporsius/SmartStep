@@ -29,7 +29,7 @@ class MainScreenTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>(
-        effectContext = SmartStepApplication.applicationScope.coroutineContext
+       // effectContext = SmartStepApplication.applicationScope.coroutineContext
     )
     //@get:Rule
     //val allowNotifications: GrantPermissionRule? = GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)

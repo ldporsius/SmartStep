@@ -22,15 +22,15 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.MainActivity
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.statisticsManager
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import kotlin.math.roundToInt
 
-class StepTrackerService : Service() {
+class StepTrackerService: Service() {
 
     private lateinit var notificationManager: NotificationManager
 
-    private lateinit var statisticsManager: StatisticsManager
-
+    private val statisticsManager: StatisticsManager = SmartStepApplication.statisticsManager
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onBind(intent: Intent): IBinder? {
@@ -41,7 +41,6 @@ class StepTrackerService : Service() {
         super.onCreate()
         notificationManager =  getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-        statisticsManager = SmartStepApplication.statisticsManager
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

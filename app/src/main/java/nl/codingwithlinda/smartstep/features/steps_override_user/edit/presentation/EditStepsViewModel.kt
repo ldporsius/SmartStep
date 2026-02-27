@@ -2,6 +2,7 @@ package nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,14 +13,11 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dailyStepRepo
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.DatePicker
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.months
 import nl.codingwithlinda.smartstep.features.steps_override_user.domain.model.years
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
@@ -27,6 +25,7 @@ import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.Step
 
 class EditStepsViewModel(
     private val dailyStepRepo: DailyStepRepo,
+    private val appScope: CoroutineScope,
 ): ViewModel() {
 
     private suspend fun currentOverride() : Int = dailyStepRepo.stepCountPlusUserOverride.firstOrNull()?.firstOrNull{
@@ -101,9 +100,12 @@ class EditStepsViewModel(
             }
 
             EditStepAction.Save -> {
-                viewModelScope.launch {
+                appScope.launch {
 
+                    println("--- EDITSTEPS VIEWMODEL SAVE --- ${_steps.value}")
                     dailyStepRepo.saveDailyStepCountUserOverride(_dateYYYYMMDD.value, _steps.value)
+
+                    println("--- EDITSTEPS VIEWMODEL SAVE completed --- ${_steps.value}")
 
                     StepNavActionHandler.handleAction(StepNavAction.NA)
                 }

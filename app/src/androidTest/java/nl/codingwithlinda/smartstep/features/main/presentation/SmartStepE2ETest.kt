@@ -25,7 +25,7 @@ class SmartStepE2ETest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>(
-        effectContext = SmartStepApplication.applicationScope.coroutineContext
+        //effectContext = SmartStepApplication.applicationScope.coroutineContext
     )
 
     val context: SmartStepApplication = ApplicationProvider.getApplicationContext<SmartStepApplication>()

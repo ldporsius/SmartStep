@@ -14,29 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
 import nl.codingwithlinda.smartstep.design_system.components.CommonNumberPicker
 
 @Composable
 fun DailyStepGoalComponent(
+    dailyStepGoalViewModel: DailyStepGoalViewModel,
     onDismiss: ()-> Unit,
     modifier: Modifier = Modifier) {
-
-
-    val dailyStepGoalViewModel = viewModel<DailyStepGoalViewModel>(
-        factory = viewModelFactory {
-            initializer {
-                DailyStepGoalViewModel(
-                    appScope = SmartStepApplication.applicationScope,
-                    dailyStepRepo = SmartStepApplication.dailyStepRepo
-                )
-            }
-        }
-    )
 
     Column(
         modifier = modifier
@@ -50,7 +35,14 @@ fun DailyStepGoalComponent(
             modifier = Modifier.padding(top = 48.dp,bottom = 16.dp)
         )
 
-        CommonNumberPicker(
+        DailyStepGoalPicker(
+            goals = stepGoalRange,
+            selectedGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
+            onGoalSelected = {
+                dailyStepGoalViewModel.setGoal(it)
+            }
+        )
+        /*CommonNumberPicker(
             label = "",
             values = stepGoalRange,
             selectedGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
@@ -61,7 +53,7 @@ fun DailyStepGoalComponent(
                 .fillMaxWidth()
                 .weight(1f)
                 .padding(horizontal = 48.dp)
-        )
+        )*/
 
         Spacer(modifier = Modifier.weight(1f))
         Button(

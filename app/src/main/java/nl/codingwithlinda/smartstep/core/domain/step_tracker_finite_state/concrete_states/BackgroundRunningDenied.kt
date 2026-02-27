@@ -8,6 +8,7 @@ import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.StartT
 
 class BackgroundRunningDenied(
     private val context: Activity,
+    private val start: () -> Unit
 ): StartTrackingState {
     override fun startTracking() {
         println("Background running denied")
@@ -15,8 +16,7 @@ class BackgroundRunningDenied(
             action = StepTrackerService.ACTION_STOP
         }
         context.startService(trackerIntent)
-
-        SmartStepApplication.stepTracker.start()
+        start()
 
     }
 }

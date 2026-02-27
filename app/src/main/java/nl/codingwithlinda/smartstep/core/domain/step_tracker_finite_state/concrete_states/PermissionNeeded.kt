@@ -11,7 +11,8 @@ import nl.codingwithlinda.smartstep.features.main.presentation.permissions.Permi
 
 class PermissionNeeded(
     private val context: Activity,
-    private val neededPermissions: Map<String, Boolean>
+    private val neededPermissions: Map<String, Boolean>,
+    private val stop: () -> Unit
 ): StartTrackingState {
 
     fun getFirstNeededPermission() = neededPermissions.toList().firstOrNull()
@@ -28,8 +29,7 @@ class PermissionNeeded(
             action = StepTrackerService.ACTION_STOP
         }
         context.startService(trackerIntent)
-
-        SmartStepApplication.stepTracker.stop()
+        stop()
 
     }
 }

@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import nl.codingwithlinda.smartstep.application.di.AppContainer
 import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.concrete_states.BackgroundRunningAllowed
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.concrete_states.BackgroundRunningDenied
@@ -16,9 +17,16 @@ import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.concre
 
 class SmartStepStateControllerImpl(
     private val context: ComponentActivity,
+    private val appContainer: AppContainer
 ) : SmartStepStateController{
     private val _state = MutableStateFlow<StartTrackingState>(
-        PermissionNeeded(context, emptyMap()))
+        PermissionNeeded(context,
+            emptyMap(),
+            stop = {
+                appContainer.stepTracker.stop()
+            }
+        )
+    )
     val startTrackingState = _state.asStateFlow()
 
 
@@ -35,7 +43,10 @@ class SmartStepStateControllerImpl(
             _state.update {
                 PermissionNeeded(
                     context = context,
-                    neededPermissions = notGranted
+                    neededPermissions = notGranted,
+                    stop = {
+                        appContainer.stepTracker.stop()
+                    }
                 )
             }
         }
@@ -50,12 +61,19 @@ class SmartStepStateControllerImpl(
         }
         when(isIgnoringBatteryOptimizations()){
             true -> {
-                val state = BackgroundRunningAllowed(context)
+                val state = BackgroundRunningAllowed(
+                    context,
+                    start = {
+                        appContainer.stepTracker.start()
+                    }
+                )
                 _state.update { state }
             }
 
             false -> {
-                val state = BackgroundRunningDenied(context)
+                val state = BackgroundRunningDenied(context){
+                    appContainer.stepTracker.start()
+                }
                 _state.update { state }
             }
         }

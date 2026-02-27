@@ -66,6 +66,7 @@ dependencies {
 
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0")
     implementation("androidx.datastore:datastore-preferences:1.2.0")
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.core.splashscreen)

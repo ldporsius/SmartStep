@@ -15,7 +15,7 @@ class Milestone2Test {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>(
-        effectContext = SmartStepApplication.applicationScope.coroutineContext
+        //effectContext = SmartStepApplication.applicationScope.coroutineContext
     )
     val packageName: String = InstrumentationRegistry.getInstrumentation().targetContext.packageName
 

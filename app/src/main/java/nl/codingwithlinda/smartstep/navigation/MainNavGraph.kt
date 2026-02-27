@@ -12,43 +12,42 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.lifecycle.viewmodel.viewModelFactory
-import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.userSettingsRepo
-import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
-import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
+import nl.codingwithlinda.smartstep.application.di.AppContainer
+import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFactoryHelper
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
+import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
-import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.UserSettingsWrapper
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNavGraph(
+    appContainer: AppContainer,
     smartStepStateController: SmartStepStateControllerImpl,
     modifier: Modifier = Modifier) {
 
     val backStack = rememberNavBackStack(StartRoute)
 
     val shouldShowSettingsViewModel = viewModel<ShouldShowSettingsViewModel>(
-        factory = viewModelFactory {
-            initializer {
-                ShouldShowSettingsViewModel(
-                    userSettingsRepo = userSettingsRepo
-                )
-            }
+        factory = viewModelFactoryHelper {
+            ShouldShowSettingsViewModel(
+                appContainer.userSettingsRepo
+            )
         }
     )
     val shouldShowSettings = shouldShowSettingsViewModel.shouldShowSettings.collectAsStateWithLifecycle().value
@@ -62,134 +61,111 @@ fun MainNavGraph(
         true -> {
             backStack.add(UserSettingsOnboardingRoute)
             backStack.remove(StartRoute)
-
         }
     }
 
-    val dailyStepGoalViewModel = viewModel<DailyStepGoalViewModel>(
-        factory = viewModelFactory {
-            initializer {
-                DailyStepGoalViewModel(
-                    appScope = SmartStepApplication.applicationScope,
-                    dailyStepRepo = SmartStepApplication.dailyStepRepo,
-                    )
-            }
-        }
-    )
 
-    val dailyStepCountViewModel = viewModel<DailyStepCountViewModel>(
-        factory = viewModelFactory {
-            initializer {
-                DailyStepCountViewModel(
-                    dailyStepRepo = SmartStepApplication.dailyStepRepo
-                )
-            }
-        }
-    )
 
     val statisticsViewModel = viewModel<StatisticsViewModel>(
         factory = viewModelFactory {
             initializer {
                 StatisticsViewModel(
-                   statisticsManager = SmartStepApplication.statisticsManager
+                    statisticsManager = SmartStepApplication.statisticsManager
                 )
             }
         }
     )
-    val walkDurationViewModel = viewModel<WalkDurationViewModel>(
-        factory = viewModelFactory {
-            initializer {
-                WalkDurationViewModel(
-                    stepTracker = SmartStepApplication.stepTracker,
-                    walkDurationRepo = SmartStepApplication.walkDurationRepo,
-                    dispatcherProvider = AndroidDispatcherProvider()
-                )
-            }
-        }
-    )
-
-    val weeklyAverageViewModel = viewModel<WeeklyAverageViewModel>(
-        factory = viewModelFactory {
-            initializer {
-                WeeklyAverageViewModel(
-                    repo = SmartStepApplication.dailyStepRepo
-                )
-            }
-        }
-    )
-
-
-
 
     NavDisplay(
         backStack = backStack,
         modifier = modifier,
-        entryProvider = {
-            when (it) {
-                StartRoute -> NavEntry(StartRoute) {
-                    Text("...")
-                }
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
+        entryProvider = entryProvider{
 
-                UserSettingsOnboardingRoute -> NavEntry(UserSettingsRoute) {
-                    UserSettingsOnboardingWrapper(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .safeContentPadding()
+            entry<StartRoute>{
+                Text("...")
+            }
+            entry<UserSettingsOnboardingRoute> {
+                val userSettingsRepo = appContainer.userSettingsRepo
+                UserSettingsOnboardingWrapper(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .safeContentPadding()
 
-                        ,
-                        onSkip = {
-                            shouldShowSettingsViewModel.skip()
-                            backStack.add(MainRoute)
-                            backStack.retainAll(listOf(MainRoute))
-                        },
-                        action = {
-                            SmartStepApplication.applicationScope.launch {
-                                val userSettings = UserSettingsMemento.restoreLast()
-                                userSettingsRepo.saveSettings(userSettings)
-                                userSettingsRepo.setIsOnboardingFalse()
-                                NavigationController.navigateTo(MainRoute)
-                            }
+                    ,
+                    onSkip = {
+                        shouldShowSettingsViewModel.skip()
+                        backStack.add(MainRoute)
+                        backStack.retainAll(listOf(MainRoute))
+                    },
+                    action = {
+                        appContainer.applicationWideScope.launch {
+                            val userSettings = UserSettingsMemento.restoreLast()
+                            userSettingsRepo.saveSettings(userSettings)
+                            userSettingsRepo.setIsOnboardingFalse()
+                            NavigationController.navigateTo(MainRoute)
                         }
-                    ) {
-                        UserSettingsRoot(
-                            userSettingsRepo = SmartStepApplication.userSettingsRepo,
-                            modifier = Modifier.width(480.dp)
-                        )
                     }
-                }
-                UserSettingsRoute -> NavEntry(UserSettingsRoute) {
-                    UserSettingsWrapper(
-                        modifier = Modifier
-                            .safeContentPadding()
-                            .width(480.dp)
-                            .fillMaxHeight()
-                        ,
-                        action = {
-                            SmartStepApplication.applicationScope.launch {
-                                val userSettings = UserSettingsMemento.restoreLast()
-                                userSettingsRepo.saveSettings(userSettings)
-                                NavigationController.navigateTo(MainRoute)
-                            }
-                        }
-                    ) {
-                        UserSettingsRoot(
-                            userSettingsRepo = SmartStepApplication.userSettingsRepo,
-                        )
-                    }
-                }
-
-                MainRoute -> NavEntry(MainRoute) {
-                    MainScreen(
-                        dailyStepGoalViewModel = dailyStepGoalViewModel,
-                        dailyStepCountViewModel = dailyStepCountViewModel,
-                        statisticsViewModel = statisticsViewModel,
-                        stepTrackerViewModel = walkDurationViewModel,
-                        weeklyAverageViewModel = weeklyAverageViewModel,
-                        smartStepStateController = smartStepStateController
+                ) {
+                    UserSettingsRoot(
+                        userSettingsRepo = appContainer.userSettingsRepo,
+                        modifier = Modifier.width(480.dp)
                     )
                 }
+            }
+            entry<UserSettingsRoute> {
+                UserSettingsWrapper(
+                    modifier = Modifier
+                        .safeContentPadding()
+                        .width(480.dp)
+                        .fillMaxHeight()
+                    ,
+                    action = {
+                        appContainer.applicationWideScope.launch {
+                            val userSettings = UserSettingsMemento.restoreLast()
+                            appContainer.userSettingsRepo.saveSettings(userSettings)
+                            NavigationController.navigateTo(MainRoute)
+                        }
+                    }
+                ) {
+                    UserSettingsRoot(
+                        userSettingsRepo = appContainer.userSettingsRepo ,
+                    )
+                }
+            }
 
-                else -> error("Unknown route")
+            entry<MainRoute> {
+                val dailyStepGoalViewModel = SmartStepApplication
+                    .viewModelServiceLocator.createDailyStepGoalViewModel()
+
+                val dailyStepCountViewModel = SmartStepApplication
+                    .viewModelServiceLocator.createDailyStepCountViewModel()
+
+
+                val editStepsViewModel = SmartStepApplication
+                    .viewModelServiceLocator.createEditStepsViewModel()
+
+                val resetStepsViewModel = SmartStepApplication
+                    .viewModelServiceLocator.createResetStepsViewModel(
+                        currentStep = dailyStepCountViewModel.todaysStep.collectAsStateWithLifecycle().value ?: DailyStepCountCreator.create(0)
+                    )
+                val walkDurationViewModel = SmartStepApplication.viewModelServiceLocator.createWalkDurationViewModel()
+
+                val weeklyAverageViewModel = SmartStepApplication.viewModelServiceLocator.createWeeklyAverageViewModel()
+
+                MainScreen(
+                    dailyStepGoalViewModel = dailyStepGoalViewModel,
+                    dailyStepCountViewModel = dailyStepCountViewModel,
+                    statisticsViewModel = statisticsViewModel,
+                    stepTrackerViewModel = walkDurationViewModel,
+                    weeklyAverageViewModel = weeklyAverageViewModel,
+                    editStepsViewModel = editStepsViewModel,
+                    resetStepsViewModel = resetStepsViewModel,
+                    smartStepStateController = smartStepStateController
+                )
             }
         }
     )

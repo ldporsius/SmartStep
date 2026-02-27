@@ -1,9 +1,12 @@
 package nl.codingwithlinda.smartstep.core.data.repo
 
+import androidx.constraintlayout.compose.DesignElements.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onStart
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.DailyStepCountDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.DailyStepGoalDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.UserStepOverrideDao
@@ -79,6 +82,11 @@ class DailyStepRepoRoomImpl(
         dateYYYYMMDD: DateYYYYMMDD,
         stepCount: Int
     ) {
+        /*
+        Because we keep track of actual counts from the sensor and the user override in separate tables
+        we need to make a calculation here. Otherwise, the actual values, over which we have no control, will interfere
+        with the user override.
+         */
         val current  = getStepCountForDate(dateYYYYMMDD.dateEpochDay)?.stepCount ?: 0
         val override = stepCount - current
         val entity = DailyStepCountCreator.create(override, dateYYYYMMDD)
@@ -87,31 +95,31 @@ class DailyStepRepoRoomImpl(
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    private val stepsTotal = dailyStepCountDao.getDailyStepCount()
-        .map {
-            it.map {
-                it.toDomain()
-            }
-        }.combine(userStepOverrideDao.getDailyStepCountUserOverride()){steps, override ->
-            steps.associateWith { step ->
-                override.find { override ->
-                    override.dateEpochDay == step.dayEpochDay
-                }.let {
-                    it?.stepCount ?: 0
-                }
-            }.map { (step, override) ->
-                step.let { step ->
-                    DailyStepCount(
-                        YYYY = step.YYYY,
-                        MM = step.MM,
-                        DD = step.DD,
-                        stepCount = step.stepCount + override
-                    )
-                }
-            }
+    private val stepCount = dailyStepCountDao.getDailyStepCount().map { entities ->
+        entities.map {
+            it.toDomain()
         }
+    }
+    private val userOverride = userStepOverrideDao.getDailyStepCountUserOverride().map {
+        it.map { entity ->
+            entity.toDomain()
+        }
+    }
+    private val stepsTotal = merge(stepCount, userOverride).map {
+        it.groupBy { dailyStepCount ->
+            dailyStepCount.dayEpochDay
+        }.map { (dayEpochDay, dailyStepCounts) ->
+            val actualSteps = dailyStepCountDao.getDailyStepCountForDate(dayEpochDay)?.stepCount ?:0
+            val overrideSteps = userStepOverrideDao.getDailyStepUserOverrideForDay(dayEpochDay)?.stepCount ?:0
+            DailyStepCountCreator.create(
+                count = actualSteps + overrideSteps,
+                date = dayEpochDay
+            )
+        }
+    }
 
     override val stepCountPlusUserOverride: Flow<List<DailyStepCount>>
-        = stepsTotal
+        get() = stepsTotal
+
 
 }

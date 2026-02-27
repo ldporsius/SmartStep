@@ -6,7 +6,6 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.SystemClock
-import android.provider.SyncStateContract.Helpers.update
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.dailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
@@ -23,7 +21,6 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerSt
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import java.time.LocalDate
-import java.time.LocalDateTime
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.nanoseconds
 
@@ -35,8 +32,6 @@ class StepTrackerCounterImpl private constructor(
     private val _stateObservable = MutableStateFlow<StepTrackerState>(StepTrackerState.STOPPED)
 
     override val stateObservable: StateFlow<StepTrackerState> = _stateObservable
-
-    //private val _stepsTaken = MutableStateFlow(DailyStepCount(0,0,0,0))
 
     private val manager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val stepCounterSensor = manager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)

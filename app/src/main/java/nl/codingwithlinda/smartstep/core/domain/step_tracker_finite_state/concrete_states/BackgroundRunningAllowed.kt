@@ -7,7 +7,8 @@ import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.StartTrackingState
 
 class BackgroundRunningAllowed(
-    private val activity: Activity
+    private val activity: Activity,
+    private val start: () -> Unit
 ): StartTrackingState {
     override fun startTracking() {
         println("Background running allowed")
@@ -17,7 +18,7 @@ class BackgroundRunningAllowed(
         }
         activity.startService(trackerIntent)
 
-        SmartStepApplication.stepTracker.start()
+        start()
 
     }
 }

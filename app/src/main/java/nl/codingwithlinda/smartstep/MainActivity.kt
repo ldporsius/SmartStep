@@ -5,21 +5,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.userSettingsRepo
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.application.di.AppContainerImpl
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.StepTrackerFiniteState
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
-import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.navigation.MainNavGraph
 
 
 class MainActivity : ComponentActivity(), StepTrackerFiniteState {
 
     lateinit var smartStepStateController: SmartStepStateControllerImpl
+
     var isChecking = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,37 +32,28 @@ class MainActivity : ComponentActivity(), StepTrackerFiniteState {
 
         enableEdgeToEdge()
 
-        smartStepStateController = SmartStepStateControllerImpl(this)
+        val appContainer = AppContainerImpl(this.application)
+        smartStepStateController = SmartStepStateControllerImpl(
+            this, appContainer
+        )
 
         setContent {
-            val viewModel = viewModel<ShouldShowSettingsViewModel>(
-                factory = viewModelFactory {
-                    initializer {
-                        ShouldShowSettingsViewModel(
-                            userSettingsRepo = userSettingsRepo
-                        )
-                    }
-                }
-            )
+            val viewModel = SmartStepApplication.viewModelServiceLocator.createShouldShowSettingsViewModel(this)
             ObserveAsEvents(viewModel.isChecking) {
                 isChecking = it
             }
 
-
             SmartStepTheme {
                 MainNavGraph(
+                    appContainer = appContainer,
                     smartStepStateController = smartStepStateController
                 )
             }
-
-
         }
     }
 
     override fun setState() {
         smartStepStateController.onResult()
     }
-
-
 
 }

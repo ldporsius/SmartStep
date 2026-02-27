@@ -43,7 +43,9 @@ import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_conte
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
+import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.UserOverrideStepsNavActionDecorator
+import nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation.ResetStepsViewModel
 import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
 
@@ -55,6 +57,8 @@ fun MainScreen(
     statisticsViewModel: StatisticsViewModel,
     stepTrackerViewModel: WalkDurationViewModel,
     weeklyAverageViewModel: WeeklyAverageViewModel,
+    editStepsViewModel: EditStepsViewModel,
+    resetStepsViewModel: ResetStepsViewModel,
     smartStepStateController: SmartStepStateControllerImpl
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -135,24 +139,25 @@ fun MainScreen(
                 }
             )
         }
-
-
-        //put outside the main nav drawer because swipe action in lazycolumn interferes with opening drawer
-        Box(
-            modifier = Modifier.systemBarsPadding()
-        ) {
-            MainNavItemHandler(
-                mainNavAction = actions,
-                navItemHandler = navItemHandler,
-                smartStepStateController = smartStepStateController,
-                parent = this
-            )
-
-            UserOverrideStepsNavActionDecorator(
-                currentStep = dailyStepCountViewModel.todaysStep.collectAsStateWithLifecycle().value
-                    ?: DailyStepCountCreator.create(0)
-
-            )
-        }
     }
+
+    //put outside the main nav drawer because swipe action in lazycolumn interferes with opening drawer
+    Box(
+        modifier = Modifier.systemBarsPadding()
+    ) {
+        MainNavItemHandler(
+            dailyStepGoalViewModel = dailyStepGoalViewModel,
+            mainNavAction = actions,
+            navItemHandler = navItemHandler,
+            smartStepStateController = smartStepStateController,
+            parent = this
+        )
+
+        UserOverrideStepsNavActionDecorator(
+            editStepsViewModel = editStepsViewModel,
+            resetStepsViewModel = resetStepsViewModel
+
+        )
+    }
+
 }

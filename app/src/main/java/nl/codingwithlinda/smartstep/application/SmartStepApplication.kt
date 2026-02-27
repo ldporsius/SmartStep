@@ -13,6 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
+import nl.codingwithlinda.smartstep.application.di.AppContainerImpl
+import nl.codingwithlinda.smartstep.application.di.viewmodel_service.ViewModelServiceLocator
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
@@ -34,26 +36,21 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 class SmartStepApplication: Application() {
 
     companion object {
-        lateinit var dataStoreSettings: DataStore<Preferences>
-        lateinit var userSettingsRepo: UserSettingsRepo
-        lateinit var dailyStepRepo: DailyStepRepo
-        lateinit var walkDurationRepo: WalkDurationRepo
-        lateinit var stepTracker: StepTracker
-        lateinit var statisticsManager: StatisticsManager
-
-        lateinit var _applicationContext: Context
-
-        val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-
         fun killAll(){
             Process.killProcess(Process.myPid());
         }
+        lateinit var viewModelServiceLocator: ViewModelServiceLocator
+        lateinit var statisticsManager: StatisticsManager
+
     }
-
-
 
     override fun onCreate() {
         super.onCreate()
+        val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+        val appContainer = AppContainerImpl(this)
+
+        viewModelServiceLocator = ViewModelServiceLocator(appContainer)
+        statisticsManager = appContainer.statisticsManager
 
         val notificationChannel = NotificationChannel(
             CHANNEL_ID,
@@ -63,49 +60,17 @@ class SmartStepApplication: Application() {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChannel)
 
-        val db = SmartStepRoomDatabaseCreator.getInstance(this)
-        dataStoreSettings = applicationContext.dataStore
-        userSettingsRepo = PreferencesUserSettingsRepo(dataStoreSettings)
-        dailyStepRepo = DailyStepRepoRoomImpl(
-            dailyStepGoalDao = db.dailyStepGoalDao,
-            dailyStepCountDao = db.dailyStepCountDao,
-            userStepOverrideDao = db.userStepOverrideDao,
-            userId = "todo"
-        )
 
-        walkDurationRepo = WalkDurationRepoImpl()
-
-        stepTracker = StepTrackerDetectorImpl.getInstance(
-            context = this.applicationContext,
-            scope = applicationScope,
-            repo = dailyStepRepo
-        )
-      /*  stepTracker = StepTrackerCounterImpl.getInstance(
-            context = this.applicationContext,
-            dailyStepRepo = dailyStepRepo
-        )*/
-
-        statisticsManager = StatisticsManagerImpl(
-            userSettingsRepo = userSettingsRepo,
-            dailyStepRepo = dailyStepRepo,
-            walkDurationRepo = walkDurationRepo,
-            dispatcherProvider = AndroidDispatcherProvider()
-        )
-
-
-
-
-        _applicationContext = this
         applicationScope.launch {
-            userSettingsRepo.loadSettings().run {
+            appContainer.userSettingsRepo.loadSettings().run {
                 UserSettingsMemento.save(this)
             }
         }
 
         //debug to know what raw data the sensor contains
-        StepTrackerCounterAdmin(
+       /* StepTrackerCounterAdmin(
             this,
-            StepTrackerAdminRepo(db.stepSensorCounterDao)
-        ).start()
+            StepTrackerAdminRepo(appContainer.db.stepSensorCounterDao)
+        ).start()*/
     }
 }

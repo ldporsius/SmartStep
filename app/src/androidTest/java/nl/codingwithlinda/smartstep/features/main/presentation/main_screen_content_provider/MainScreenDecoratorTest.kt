@@ -9,12 +9,16 @@ import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.StandardTestDispatcher
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavActionController
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
+import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import nl.codingwithlinda.smartstep.tests.FakeSmartStepStateController
 import org.junit.Before
 import org.junit.Rule
@@ -32,6 +36,11 @@ class MainScreenDecoratorTest {
 
     val smartStepStateController = FakeSmartStepStateController()
 
+    val dailyStepGoalViewModel = DailyStepGoalViewModel(
+        appScope = CoroutineScope(StandardTestDispatcher()),
+        dailyStepRepo = FakeDailyStepRepo()
+    )
+
     val fakeNavActionController = object : MainNavActionController {
         override fun handleAction(action: MainNavAction) {
             println("fake nav action controller handle action")
@@ -43,6 +52,7 @@ class MainScreenDecoratorTest {
         composeTestRule.setContent {
             Box(modifier = Modifier.fillMaxSize()) {
                 MainNavItemHandler(
+                    dailyStepGoalViewModel = dailyStepGoalViewModel,
                     mainNavAction = MainNavAction.DAILY_STEP_GOAL,
                     navItemHandler = fakeNavActionController,
                     smartStepStateController = smartStepStateController,

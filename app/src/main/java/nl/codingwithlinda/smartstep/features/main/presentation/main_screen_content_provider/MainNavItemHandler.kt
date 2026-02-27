@@ -14,6 +14,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.viewModelServiceLocator
+import nl.codingwithlinda.smartstep.application.di.viewmodel_service.ViewModelServiceLocator
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
 import nl.codingwithlinda.smartstep.design_system.components.CustomBottomSheet
@@ -22,6 +24,7 @@ import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavA
 import nl.codingwithlinda.smartstep.features.batteryOptimisation.presentation.AllowBackgroundAccessDialog
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalComponent
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalPickerContainer
+import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavActionController
 import nl.codingwithlinda.smartstep.features.main.presentation.exit.ExitDialog
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
@@ -30,6 +33,7 @@ import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.c
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNavItemHandler(
+    dailyStepGoalViewModel: DailyStepGoalViewModel,
     mainNavAction: MainNavAction,
     navItemHandler: MainNavActionController = MainNavActionControllerImpl,
     smartStepStateController: SmartStepStateController,
@@ -40,13 +44,7 @@ fun MainNavItemHandler(
     val density = LocalDensity.current.density
     val isLargeScreen = LocalWindowInfo.current.containerSize.width > 840 * density
 
-    @Composable
-    fun getDailyStepGoal()=DailyStepGoalComponent(
-        onDismiss = {
-            navItemHandler.handleAction(MainNavAction.NA)
-        },
-        modifier = Modifier
-    )
+
 
     when (mainNavAction) {
         MainNavAction.NA -> Unit
@@ -97,6 +95,16 @@ fun MainNavItemHandler(
         }
 
         MainNavAction.DAILY_STEP_GOAL -> {
+
+            @Composable
+            fun getDailyStepGoal()=DailyStepGoalComponent(
+                dailyStepGoalViewModel = dailyStepGoalViewModel,
+                onDismiss = {
+                    navItemHandler.handleAction(MainNavAction.NA)
+                },
+                modifier = Modifier
+            )
+
             if (isLargeScreen) {
                 Dialog(
                     onDismissRequest = {
