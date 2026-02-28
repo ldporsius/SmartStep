@@ -7,4 +7,8 @@ class FakeSmartStepStateController: SmartStepStateController {
     override fun onResult() {
         println("fake smart step state controller on result")
     }
+
+    override fun exit() {
+        println("fake smart step state controller exit")
+    }
 }

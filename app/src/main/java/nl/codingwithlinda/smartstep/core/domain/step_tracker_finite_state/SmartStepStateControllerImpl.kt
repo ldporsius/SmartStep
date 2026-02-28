@@ -1,6 +1,7 @@
 package nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.PowerManager
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.smartstep.application.di.AppContainer
+import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.concrete_states.BackgroundRunningAllowed
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.concrete_states.BackgroundRunningDenied
@@ -52,6 +54,13 @@ class SmartStepStateControllerImpl(
         }
     }
 
+    override fun exit() {
+        val trackerIntent = Intent(context, StepTrackerService::class.java).apply {
+            action = StepTrackerService.ACTION_STOP
+        }
+        context.startService(trackerIntent)
+        context.finish()
+    }
     override fun onResult(){
         println("--- SMART STEP STATE CONTROLLER --- on result")
         if(!hasPermissions()){
@@ -86,12 +95,12 @@ class SmartStepStateControllerImpl(
 
     private fun hasPermissions(): Boolean {
         val hasPermissions = permissionsPerBuild(Build.VERSION.SDK_INT).map{
-             context.checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
+            context.checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED
         }.all { granted ->
             granted
         }
 
-       return hasPermissions
+        return hasPermissions
     }
 
     private fun checkPermissions(){

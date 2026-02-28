@@ -150,7 +150,6 @@ fun MainScreen(
             mainNavAction = actions,
             navItemHandler = navItemHandler,
             smartStepStateController = smartStepStateController,
-            parent = this
         )
 
         UserOverrideStepsNavActionDecorator(

@@ -40,7 +40,11 @@ fun DailyStepGoalComponent(
             selectedGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
             onGoalSelected = {
                 dailyStepGoalViewModel.setGoal(it)
-            }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(horizontal = 48.dp)
         )
         /*CommonNumberPicker(
             label = "",
