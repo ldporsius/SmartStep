@@ -1,6 +1,7 @@
 package nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation
 
 import app.cash.turbine.test
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
@@ -14,6 +15,7 @@ import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCre
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
+import nl.codingwithlinda.smartstep.tests.di.TestDispatcherProvider
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -28,8 +30,6 @@ class EditStepsViewModelTest {
     private lateinit var viewModel: EditStepsViewModel
     private val fakeDailyStepRepo = FakeDailyStepRepo()
     private val todaysStep = DailyStepCountCreator.create(100)
-
-
     val testDispatcher = UnconfinedTestDispatcher()
 
 
@@ -38,6 +38,7 @@ class EditStepsViewModelTest {
         Dispatchers.setMain(testDispatcher)
         viewModel = EditStepsViewModel(
             fakeDailyStepRepo,
+            appScope = CoroutineScope(testDispatcher),
         )
 
         runBlocking {
@@ -56,9 +57,8 @@ class EditStepsViewModelTest {
     fun `test editsteps viewmodel - steps are replaced on save`() = runTest(testDispatcher) {
         viewModel.steps.test {
 
-
             val item0 = awaitItem()
-            assertEquals(0, item0)
+            assertEquals(100, item0)
 
             println("first emission received")
 
@@ -78,9 +78,9 @@ class EditStepsViewModelTest {
         viewModel.dateYYYYMMDD.test {
             val item = awaitItem()
 
-            println("first emission received")
+            println("first emission received $item")
 
-            val tomorrowLocal = LocalDate.now().plusDays(1)
+            val tomorrowLocal = LocalDate.ofEpochDay(todaysStep.dayEpochDay).plusDays(10)
 
             viewModel.onAction(EditStepAction.InputYear(tomorrowLocal.year))
             val emYear = awaitItem()
@@ -92,17 +92,16 @@ class EditStepsViewModelTest {
             viewModel.onAction(EditStepAction.InputMonth(tomorrowLocal.monthValue))
 
             val emMonth = awaitItem()
-            println("month emission received")
+            println("month emission received: ${emMonth.MM} ${emMonth.DD}")
 
             assertEquals(tomorrowLocal.monthValue, emMonth.MM)
 
             viewModel.onAction(EditStepAction.InputDay(tomorrowLocal.dayOfMonth))
 
-
             val emDay = awaitItem()
-                assertEquals(tomorrowLocal.dayOfMonth, emDay.DD)
+            println("day emission received")
 
-               // assertThat(fakeDailyStepRepo.getStepCountForYYYYMMDD(date)?.stepCount).isEqualTo(1000)
+            assertEquals(tomorrowLocal.dayOfMonth, emDay.DD)
             }
         }
 

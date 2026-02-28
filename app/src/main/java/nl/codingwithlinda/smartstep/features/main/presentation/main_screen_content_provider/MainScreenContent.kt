@@ -17,7 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCard
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
+import nl.codingwithlinda.smartstep.features.daily_step_count.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
 import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler

@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal
+package nl.codingwithlinda.smartstep.features.daily_step_count
 
 import app.cash.turbine.test
 import kotlinx.coroutines.CoroutineScope
@@ -9,13 +9,11 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import nl.codingwithlinda.smartstep.tests.FakeStepTracker
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
@@ -44,7 +42,7 @@ class DailyStepCountViewModelTest {
     }
 
     @Test
-    fun `test dailystepviewmodel - step count updated`()= runTest{
+    fun `test dailystepviewmodel - step count updated`()= runTest {
 
         backgroundScope.launch {
             fakeStepTracker.stepsTaken.collect {
@@ -58,10 +56,10 @@ class DailyStepCountViewModelTest {
             fakeStepTracker.start()
 
             val em0 = awaitItem()
-            assertEquals(em0, 0)
+            Assert.assertEquals(em0, 0)
 
             val em1 = awaitItem()
-            assertEquals(em1, 1)
+            Assert.assertEquals(em1, 1)
             println("$em1")
 
             repo.saveDailyStepCountUserOverride(
@@ -69,7 +67,7 @@ class DailyStepCountViewModelTest {
                 stepCount = 2000
             )
             val em2 = awaitItem()
-            assertEquals(em2, 2001)
+            Assert.assertEquals(em2, 2001)
             println("$em2")
 
             fakeStepTracker.stop()

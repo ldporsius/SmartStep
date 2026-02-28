@@ -8,7 +8,7 @@ import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.application.di.AppContainer
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCountViewModel
+import nl.codingwithlinda.smartstep.features.daily_step_count.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation.ResetStepsViewModel

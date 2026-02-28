@@ -6,6 +6,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isZero
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runCurrent
@@ -29,7 +30,7 @@ class ResetStepsViewModelTest: BaseJunitTest() {
     private lateinit var viewModel: ResetStepsViewModel
     private val fakeDailyStepRepo  = FakeDailyStepRepo()
 
-    private val scope = CoroutineScope(testDispatcher)
+    private val scope = CoroutineScope(testDispatcher + NonCancellable)
 
     private val step = DailyStepCountCreator.create(100)
     @Before
@@ -48,23 +49,31 @@ class ResetStepsViewModelTest: BaseJunitTest() {
 
     @Test
     fun `reset   success   today s step count exists`() : Unit = runTest (testDispatcher){
-        // Verify that when a step count for today exists, it is fetched and its value is saved as the new baseline.
-
+        // Verify that when a step count for today exists, it is fetched and its value is used to reset the user override.
+        val step = DailyStepCountCreator.create(100)
         fakeDailyStepRepo.saveStepCount(step)
         val userOverride = DailyStepCountCreator.create(200)
         fakeDailyStepRepo.saveDailyStepCountUserOverride(userOverride.dateYYYYMMDD, userOverride.stepCount)
+        println(" counts : ${fakeDailyStepRepo.stepCountPlusUserOverride.firstOrNull()} ")
 
-        viewModel.reset()
-
-        val today = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())
-
-        val result = fakeDailyStepRepo.getStepCountForDate(today.dateEpochDay)
-        assertThat(result!!.stepCount).isZero()
-
-        val todaysSteps = fakeDailyStepRepo.getStepCountForDate(System.currentTimeMillis())?.stepCount ?: 0
         fakeDailyStepRepo.stepCountPlusUserOverride.test {
-            val override = awaitItem()
-            assertThat(override).isEqualTo(200)
+            val em0 = awaitItem().find {
+                it.dayEpochDay == step.dayEpochDay
+            }
+
+            assertThat(em0!!.stepCount).isEqualTo(200)
+
+            viewModel.reset()
+
+            runCurrent()
+
+            val em1 = awaitItem()
+            println(" counts : $em1 ")
+            val today = em1.find {
+                it.dayEpochDay == step.dayEpochDay
+            }
+            assertThat(today!!.stepCount).isEqualTo(0)
+            cancelAndConsumeRemainingEvents()
         }
 
     }
