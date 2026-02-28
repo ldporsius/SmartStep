@@ -1,18 +1,13 @@
 package nl.codingwithlinda.smartstep.core.data.repo
 
-import androidx.constraintlayout.compose.DesignElements.map
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onStart
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.DailyStepCountDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.DailyStepGoalDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.UserStepOverrideDao
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toBaselineEntity
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toDomain
-import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toEntity
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toGoalEntity
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toUserOverrideEntity
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
