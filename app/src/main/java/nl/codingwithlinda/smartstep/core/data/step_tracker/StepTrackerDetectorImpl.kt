@@ -20,6 +20,7 @@ import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCre
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
+import nl.codingwithlinda.smartstep.core.domain.repo.ActivityRecognitionRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepGoalCreator
 import kotlin.concurrent.Volatile
@@ -27,7 +28,7 @@ import kotlin.concurrent.Volatile
 class StepTrackerDetectorImpl private constructor(
     context: Context,
     private val scope: CoroutineScope,
-    private val repo: DailyStepRepo
+    private val repo: ActivityRecognitionRepo
 ): StepTracker, SensorEventListener{
 
     private var state: StepTrackerState = StepTrackerState.STOPPED
@@ -54,7 +55,7 @@ class StepTrackerDetectorImpl private constructor(
         fun getInstance(
             context: Context,
             scope: CoroutineScope,
-            repo: DailyStepRepo
+            repo: ActivityRecognitionRepo
         ): StepTrackerDetectorImpl {
             synchronized(lock) {
                 val i = stepTrackerInstance

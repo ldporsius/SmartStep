@@ -18,7 +18,7 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCoun
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
-import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
+import nl.codingwithlinda.smartstep.core.domain.repo.ActivityRecognitionRepo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.milliseconds
@@ -26,7 +26,7 @@ import kotlin.time.Duration.Companion.nanoseconds
 
 class StepTrackerCounterImpl private constructor(
     context: Context,
-    private val dailyStepRepo: DailyStepRepo
+    private val repo: ActivityRecognitionRepo
 ): StepTracker , SensorEventListener {
 
     private val _stateObservable = MutableStateFlow<StepTrackerState>(StepTrackerState.STOPPED)
@@ -43,7 +43,7 @@ class StepTrackerCounterImpl private constructor(
         @Synchronized
         fun getInstance(
             context: Context,
-            dailyStepRepo: DailyStepRepo
+            dailyStepRepo: ActivityRecognitionRepo
         ): StepTracker{
             synchronized(this) {
                 val i = instance
@@ -105,10 +105,10 @@ class StepTrackerCounterImpl private constructor(
 
             CoroutineScope(Dispatchers.IO).launch {
                  //check if we have a baseline
-                val baseline = dailyStepRepo.getDailyStepCountBaselineForDate(eventDateYYYYMMDD)
+                val baseline = repo.getDailyStepCountBaselineForDate(eventDateYYYYMMDD)
 
                 if(baseline == null){
-                    dailyStepRepo.saveDailyStepCountBaseline(
+                    repo.saveDailyStepCountBaseline(
                         DailyStepCountCreator.create(
                             count = stepsReceivedFromEvent,
                             date = eventDateYYYYMMDD
@@ -121,7 +121,7 @@ class StepTrackerCounterImpl private constructor(
                         count = difference,
                         date = eventDateYYYYMMDD
                     )
-                    dailyStepRepo.saveStepCount(
+                    repo.saveStepCount(
                        update
                     )
                 }

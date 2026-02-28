@@ -15,7 +15,9 @@ import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import java.time.LocalDate
 
-class FakeDailyStepRepo: DailyStepRepo {
+class FakeDailyStepRepo(
+    private val getStepCountForDate: suspend (Long) -> DailyStepCount?
+): DailyStepRepo {
 
     val dateToday: LocalDate = LocalDate.of(2026, 2, 21)
     private val goals =
@@ -46,27 +48,7 @@ class FakeDailyStepRepo: DailyStepRepo {
         return goals
     }
 
-    override suspend fun saveStepCount(stepCount: DailyStepCount) {
-        println("--- FakeDailyStepRepo --- saveStepCount: $stepCount")
-        _stepCount.update {
-            it.plus(stepCount.dayEpochDay to stepCount)
-        }
-    }
 
-    override suspend fun getStepCountForDate(date: Long): DailyStepCount? {
-        return _stepCount.value[date]
-    }
-
-
-    override suspend fun saveDailyStepCountBaseline(dailyStepCount: DailyStepCount) {
-        _baseline.update {
-            dailyStepCount
-        }
-    }
-
-    override suspend fun getDailyStepCountBaselineForDate(date: DateYYYYMMDD): DailyStepCount? {
-        return _baseline.value
-    }
 
     override suspend fun saveDailyStepCountUserOverride(
         dateYYYYMMDD: DateYYYYMMDD,
@@ -95,7 +77,9 @@ class FakeDailyStepRepo: DailyStepRepo {
                println("--- FAKE DAILY STEP REPO --- userOverride: $userOverride, actual: $actual")
                mergeCount ++
                println("--- FAKE DAILY STEP REPO --- mergeCount: $mergeCount")
-               dailyStepCount.copy(stepCount = actual + userOverride)
+               val update = dailyStepCount.copy(stepCount = actual + userOverride)
+               println("--- FAKE DAILY STEP REPO --- update: $update")
+               update
            }
     }
 

@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import nl.codingwithlinda.smartstep.application.dataStore
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
+import nl.codingwithlinda.smartstep.core.data.repo.ActivityRecognitionRepoImpl
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerDetectorImpl
@@ -44,7 +45,12 @@ class AppContainerImpl(
     override val walkDurationRepo: WalkDurationRepo by lazy {
         WalkDurationRepoImpl()
     }
-    override val stepTracker: StepTracker by lazy {
+
+    private val activityRecognitionRepo = ActivityRecognitionRepoImpl(
+        dailyStepCountDao = SmartStepRoomDatabaseCreator.getInstance(context).dailyStepCountDao,
+        userId = "todo"
+    )
+        override val stepTracker: StepTracker by lazy {
 
         /*  stepTracker = StepTrackerCounterImpl.getInstance(
            context = this.applicationContext,
@@ -53,7 +59,7 @@ class AppContainerImpl(
         StepTrackerDetectorImpl.getInstance(
             context = context,
             scope = applicationWideScope,
-            repo = dailyStepRepo
+            repo = activityRecognitionRepo
         )
     }
     override val statisticsManager: StatisticsManager by lazy {

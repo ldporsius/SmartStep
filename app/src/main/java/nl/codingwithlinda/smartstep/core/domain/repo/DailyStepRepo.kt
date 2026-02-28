@@ -11,12 +11,6 @@ interface DailyStepRepo {
     suspend fun getDailyStepGoalsLatest(): List<DailyStepGoal>
 
     //////////////////////////////////////////////////////////////////////////
-    suspend fun saveStepCount(stepCount: DailyStepCount)
-    suspend fun getStepCountForDate(date: Long): DailyStepCount?
-
-    /////////////////////////////////////////////////////////////////////
-    suspend fun saveDailyStepCountBaseline(dailyStepCount: DailyStepCount)
-    suspend fun getDailyStepCountBaselineForDate(date: DateYYYYMMDD): DailyStepCount?
 
     suspend fun saveDailyStepCountUserOverride(dateYYYYMMDD: DateYYYYMMDD, stepCount: Int)
 

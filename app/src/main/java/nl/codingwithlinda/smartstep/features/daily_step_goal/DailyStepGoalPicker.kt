@@ -1,7 +1,5 @@
 package nl.codingwithlinda.smartstep.features.daily_step_goal
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -37,10 +34,12 @@ fun DailyStepGoalPicker(
     onGoalSelected: (Int) -> Unit,
     modifier: Modifier = Modifier) {
 
-    val listState = rememberLazyListState()
+    val listState = rememberLazyListState(
+        initialFirstVisibleItemIndex = goals.indexOf(selectedGoal).coerceAtLeast(0)
+    )
     val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
     val snap = snapshotFlow {
-        listState.firstVisibleItemIndex
+        listState.firstVisibleItemIndex.coerceAtLeast(0)
     }
 
 
@@ -52,17 +51,18 @@ fun DailyStepGoalPicker(
         )
     }
 
-
-    LaunchedEffect(Unit){
+    /*LaunchedEffect(Unit){
         listState.animateScrollToItem(goals.indexOf(selectedGoal))
-    }
+    }*/
     LaunchedEffect(true,listState){
         snap.onEach {
             onGoalSelected(goals.getOrNull(it) ?: 0)
             centerGoalText = "${goals.getOrNull(it)} "
         }.collect()
     }
-    Box() {
+    Box(
+        modifier = modifier
+    ) {
 
         LazyColumn(
             modifier = Modifier
@@ -87,12 +87,6 @@ fun DailyStepGoalPicker(
                 }
             }
             items(goals) { goal ->
-                val isSelected = goal == selectedGoal
-                val bgColor = if (isSelected) secondary else Color.Transparent
-                val colorAnimation = animateColorAsState(
-                    targetValue = bgColor,
-                    animationSpec = tween(durationMillis = 50)
-                )
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()

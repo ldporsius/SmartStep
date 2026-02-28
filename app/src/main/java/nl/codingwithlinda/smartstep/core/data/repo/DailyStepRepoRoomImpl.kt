@@ -53,29 +53,7 @@ class DailyStepRepoRoomImpl(
     }
 
     //////////////////////////////////////////////////////////////////////////////////
-    override suspend fun saveStepCount(stepCount: DailyStepCount) {
-        stepCount.toEntity(userId).let {
-            dailyStepCountDao.saveDailyStepCount(it)
-        }
-    }
 
-    override suspend fun getStepCountForDate(date: Long): DailyStepCount? {
-        return dailyStepCountDao.getDailyStepCount().firstOrNull()?.let { entities ->
-            entities.firstOrNull{
-                it.date == date
-            }?.toDomain()
-        }
-    }
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    override suspend fun saveDailyStepCountBaseline(dailyStepCount: DailyStepCount) {
-        dailyStepCountDao.saveDailyStepCountBaseline(dailyStepCount.toBaselineEntity())
-    }
-
-    override suspend fun getDailyStepCountBaselineForDate(date: DateYYYYMMDD): DailyStepCount? {
-        return dailyStepCountDao.getDailyStepCountBaselineForDate(date.dateEpochDay)?.toDomain()
-    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     override suspend fun saveDailyStepCountUserOverride(
@@ -87,7 +65,7 @@ class DailyStepRepoRoomImpl(
         we need to make a calculation here. Otherwise, the actual values, over which we have no control, will interfere
         with the user override.
          */
-        val current  = getStepCountForDate(dateYYYYMMDD.dateEpochDay)?.stepCount ?: 0
+        val current  = dailyStepCountDao.getDailyStepCountForDate(dateYYYYMMDD.dateEpochDay)?.stepCount ?: 0
         val override = stepCount - current
         val entity = DailyStepCountCreator.create(override, dateYYYYMMDD)
         userStepOverrideDao.saveDailyStepUserOverride(entity.toUserOverrideEntity())

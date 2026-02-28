@@ -28,7 +28,9 @@ class StatisticsViewModelTest {
 
     private lateinit var statisticsViewModel: StatisticsViewModel
     private val userSettingsRepo = FakeUserSettingsRepo()
-    val dailyStepRepo = FakeDailyStepRepo()
+    val dailyStepRepo = FakeDailyStepRepo(){
+        DailyStepCountCreator.create(1)
+    }
     val walkDurationRepo = WalkDurationRepoImpl()
 
     val testDispatcher = UnconfinedTestDispatcher()

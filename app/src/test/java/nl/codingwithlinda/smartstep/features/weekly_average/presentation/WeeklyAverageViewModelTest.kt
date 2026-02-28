@@ -1,20 +1,16 @@
 package nl.codingwithlinda.smartstep.features.weekly_average.presentation
 
-import androidx.core.util.toClosedRange
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
 import kotlinx.coroutines.test.runTest
-import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import nl.codingwithlinda.smartstep.util.BaseJunitTest
-import org.junit.Assert.*
 import org.junit.Test
 
 class WeeklyAverageViewModelTest : BaseJunitTest(){
 
-    val repo = FakeDailyStepRepo()
-    val vm = WeeklyAverageViewModel(repo)
 
+    val vm = WeeklyAverageViewModel(fakeDailyStepRepo)
 
     @Test
     fun `test past week - all seven days in range`()= runTest(testDispatcher) {

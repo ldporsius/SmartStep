@@ -14,8 +14,10 @@ import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
+import nl.codingwithlinda.smartstep.tests.FakeActivityRecognitionRepo
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import nl.codingwithlinda.smartstep.tests.di.TestDispatcherProvider
+import nl.codingwithlinda.smartstep.util.BaseJunitTest
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -25,30 +27,29 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class EditStepsViewModelTest {
+class EditStepsViewModelTest: BaseJunitTest() {
 
     private lateinit var viewModel: EditStepsViewModel
-    private val fakeDailyStepRepo = FakeDailyStepRepo()
+
     private val todaysStep = DailyStepCountCreator.create(100)
-    val testDispatcher = UnconfinedTestDispatcher()
 
 
     @Before
-    fun setup() {
-        Dispatchers.setMain(testDispatcher)
+    override fun setup() {
+        super.setup()
         viewModel = EditStepsViewModel(
             fakeDailyStepRepo,
             appScope = CoroutineScope(testDispatcher),
         )
 
         runBlocking {
-            fakeDailyStepRepo.saveStepCount(todaysStep)
+            activityRecognitionRepo.saveStepCount(todaysStep)
         }
     }
 
     @After
-    fun tearDown() {
-        Dispatchers.resetMain()
+    override fun tearDown() {
+        super.tearDown()
         fakeDailyStepRepo.reset()
     }
 

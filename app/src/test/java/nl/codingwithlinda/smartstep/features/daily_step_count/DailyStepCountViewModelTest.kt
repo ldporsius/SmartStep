@@ -1,6 +1,8 @@
 package nl.codingwithlinda.smartstep.features.daily_step_count
 
 import app.cash.turbine.test
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -10,69 +12,64 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
+import nl.codingwithlinda.smartstep.tests.FakeActivityRecognitionRepo
 import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import nl.codingwithlinda.smartstep.tests.FakeStepTracker
+import nl.codingwithlinda.smartstep.util.BaseJunitTest
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DailyStepCountViewModelTest {
+class DailyStepCountViewModelTest: BaseJunitTest() {
 
-    val testDispatcher = StandardTestDispatcher()
     lateinit var viewModel: DailyStepCountViewModel
     lateinit var fakeStepTracker: FakeStepTracker
-    lateinit var repo : FakeDailyStepRepo
 
 
     @Before
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
+    override fun setup() {
+        super.setup()
+
         fakeStepTracker = FakeStepTracker(CoroutineScope(testDispatcher))
-        repo = FakeDailyStepRepo()
+
         viewModel = DailyStepCountViewModel(
-            dailyStepRepo = repo,
+            dailyStepRepo = fakeDailyStepRepo,
             )
+
     }
 
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
-    fun `test dailystepviewmodel - step count updated`()= runTest {
+    fun `test dailystepviewmodel - step count updated`()= runTest(testDispatcher) {
+        fakeStepTracker.start()
 
         backgroundScope.launch {
             fakeStepTracker.stepsTaken.collect {
                 println("--- test step taken : $it")
-                repo.saveStepCount(
+                activityRecognitionRepo.saveStepCount(
                     it
                 )
             }
         }
-        viewModel.stepsToday.test {
-            fakeStepTracker.start()
 
-            val em0 = awaitItem()
-            Assert.assertEquals(em0, 0)
+            viewModel.stepsToday.test {
 
-            val em1 = awaitItem()
-            Assert.assertEquals(em1, 1)
-            println("$em1")
+                val em0 = awaitItem()
 
-            repo.saveDailyStepCountUserOverride(
-                dateYYYYMMDD = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis()),
-                stepCount = 2000
-            )
-            val em2 = awaitItem()
-            Assert.assertEquals(em2, 2001)
-            println("$em2")
+                val em1 = awaitItem()
+                println("$em1")
 
-            fakeStepTracker.stop()
-            cancelAndIgnoreRemainingEvents()
-        }
+                val em2 = awaitItem()
+
+                println("$em2")
+                assertThat(em2).isEqualTo(2000)
+                fakeStepTracker.stop()
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
     }
 
 }
