@@ -22,11 +22,15 @@ class AIMessageViewModel(
         message = "What is the sum of 2 and 2",
         origin = AIMessageOrigin.USER
     )
+    val testMessageSteps = AIMessage(
+        message = "I am tracking my steps. My daily goal is 10000 steps. I have set 200 so far. What would you recommend?",
+        origin = AIMessageOrigin.USER
+    )
     val latestMessage = aiMessenger.messages.map {
         it.firstOrNull() ?: emptyMessage
     }.onStart {
         aiMessenger.send(
-            testMessage
+            testMessageSteps
         )
     }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMessage)

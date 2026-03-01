@@ -7,7 +7,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
@@ -35,10 +42,15 @@ fun MainScreenContent(
     weeklyAverageViewModel: WeeklyAverageViewModel,
     aiMessageComponent: @Composable () -> Unit,
     ) {
+
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.width(480.dp).padding(16.dp)
+        modifier = Modifier
+            .width(480.dp)
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         DailyStepCard(
             stepsTaken = dailyStepCountViewModel.stepsToday.collectAsStateWithLifecycle().value,
