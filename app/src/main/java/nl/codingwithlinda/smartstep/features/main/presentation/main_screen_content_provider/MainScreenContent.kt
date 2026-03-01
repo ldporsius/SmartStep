@@ -14,6 +14,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageComponent
+import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageViewModel
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCard
@@ -30,12 +32,13 @@ fun MainScreenContent(
     dailyStepCountViewModel: DailyStepCountViewModel,
     statisticsViewModel: StatisticsViewModel,
     walkDurationViewModel: WalkDurationViewModel,
-    weeklyAverageViewModel: WeeklyAverageViewModel
+    weeklyAverageViewModel: WeeklyAverageViewModel,
+    aiMessageComponent: @Composable () -> Unit,
     ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.width(480.dp)
+        modifier = Modifier.width(480.dp).padding(16.dp)
     ) {
         DailyStepCard(
             stepsTaken = dailyStepCountViewModel.stepsToday.collectAsStateWithLifecycle().value,
@@ -55,12 +58,14 @@ fun MainScreenContent(
                 .semantics {
                     contentDescription = "Daily Step Card"
                 }
-                .padding(16.dp)
+
         )
 
         WeeklyAverageScreen(
             days = weeklyAverageViewModel.lastSevenStepCounts.collectAsStateWithLifecycle().value,
-            modifier = Modifier.fillMaxWidth().padding(16.dp)
+            modifier = Modifier.fillMaxWidth()
         )
+
+        aiMessageComponent()
     }
 }

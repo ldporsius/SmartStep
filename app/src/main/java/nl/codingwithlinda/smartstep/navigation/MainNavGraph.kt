@@ -25,6 +25,9 @@ import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFa
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
+import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageComponent
+import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageViewModel
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
@@ -39,6 +42,7 @@ import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsV
 fun MainNavGraph(
     appContainer: AppContainer,
     smartStepStateController: SmartStepStateControllerImpl,
+    aiMessenger: AIMessenger,
     modifier: Modifier = Modifier) {
 
     val backStack = rememberNavBackStack(StartRoute)
@@ -156,6 +160,23 @@ fun MainNavGraph(
 
                 val weeklyAverageViewModel = SmartStepApplication.viewModelServiceLocator.createWeeklyAverageViewModel()
 
+                val aiMessageViewModel = viewModel<AIMessageViewModel>(
+                    factory = viewModelFactoryHelper {
+                        AIMessageViewModel(
+                            aiMessenger = aiMessenger
+                        )
+                    }
+                )
+                @Composable
+                fun aiMessageComponent() =
+                    AIMessageComponent(
+                        message = aiMessageViewModel.latestMessage.collectAsStateWithLifecycle().value,
+                        onMore = {
+                            //nav to details
+                        }
+                    )
+
+
                 MainScreen(
                     dailyStepGoalViewModel = dailyStepGoalViewModel,
                     dailyStepCountViewModel = dailyStepCountViewModel,
@@ -164,7 +185,10 @@ fun MainNavGraph(
                     weeklyAverageViewModel = weeklyAverageViewModel,
                     editStepsViewModel = editStepsViewModel,
                     resetStepsViewModel = resetStepsViewModel,
-                    smartStepStateController = smartStepStateController
+                    smartStepStateController = smartStepStateController,
+                    aiMessageComponent = {
+                        aiMessageComponent()
+                    }
                 )
             }
         }

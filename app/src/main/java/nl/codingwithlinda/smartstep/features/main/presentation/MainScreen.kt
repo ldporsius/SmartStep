@@ -32,6 +32,7 @@ import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageViewModel
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
@@ -59,7 +60,8 @@ fun MainScreen(
     weeklyAverageViewModel: WeeklyAverageViewModel,
     editStepsViewModel: EditStepsViewModel,
     resetStepsViewModel: ResetStepsViewModel,
-    smartStepStateController: SmartStepStateControllerImpl
+    smartStepStateController: SmartStepStateControllerImpl,
+    aiMessageComponent: @Composable () -> Unit
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -126,7 +128,8 @@ fun MainScreen(
                     dailyStepCountViewModel = dailyStepCountViewModel,
                     statisticsViewModel = statisticsViewModel,
                     walkDurationViewModel = stepTrackerViewModel,
-                    weeklyAverageViewModel = weeklyAverageViewModel
+                    weeklyAverageViewModel = weeklyAverageViewModel,
+                    aiMessageComponent = aiMessageComponent
                 )
             }
 

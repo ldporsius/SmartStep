@@ -12,6 +12,7 @@ import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.StepTr
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.navigation.MainNavGraph
+import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIMessenger
 
 
 class MainActivity : ComponentActivity(), StepTrackerFiniteState {
@@ -46,7 +47,8 @@ class MainActivity : ComponentActivity(), StepTrackerFiniteState {
             SmartStepTheme {
                 MainNavGraph(
                     appContainer = appContainer,
-                    smartStepStateController = smartStepStateController
+                    smartStepStateController = smartStepStateController,
+                    aiMessenger = FakeAIMessenger()
                 )
             }
         }
