@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 interface AIMessenger {
 
     fun create(text: String): AIMessage
-    fun send(message: AIMessage)
+    suspend fun send(message: AIMessage)
     fun receive(text: String)
     val messages: Flow<List<AIMessage>>
 }

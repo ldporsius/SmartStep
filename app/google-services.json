@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "217951904224",
+    "project_id": "smartstep-4abb5",
+    "storage_bucket": "smartstep-4abb5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217951904224:android:0c472efdd01d411b460b85",
+        "android_client_info": {
+          "package_name": "nl.codingwithlinda.smartstep"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3RGISJN8QmyWSw9FHkdfmeHCEQuoJldo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

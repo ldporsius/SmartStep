@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="nl.codingwithlinda.smartstep" />
+                  <option name="mobileSdkAppId" value="1:217951904224:android:0c472efdd01d411b460b85" />
+                  <option name="projectId" value="smartstep-4abb5" />
+                  <option name="projectNumber" value="217951904224" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

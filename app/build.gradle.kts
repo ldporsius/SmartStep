@@ -1,5 +1,5 @@
-import org.gradle.kotlin.dsl.androidTestImplementation
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    id("com.google.gms.google-services")
 
 }
 
@@ -23,6 +24,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
+
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+
+        buildConfigField("String", "GEMINI_AI_KEY", properties.getProperty("GEMINI_AI_KEY"))
 
     }
 
@@ -80,6 +86,12 @@ dependencies {
 
     //constraint layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.1")
+
+    //ai
+    //implementation("com.google.ai.client.generativeai:common:0.10.0")
+    //implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+    implementation(platform("com.google.firebase:firebase-bom:34.9.0"))
+    implementation("com.google.firebase:firebase-ai")
     //jvm tests
     testImplementation(libs.junit)
     testImplementation(libs.turbine)

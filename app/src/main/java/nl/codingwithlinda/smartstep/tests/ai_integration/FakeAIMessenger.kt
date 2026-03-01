@@ -24,7 +24,7 @@ class FakeAIMessenger: AIMessenger {
             origin = AIMessageOrigin.USER
         )
     }
-    override fun send(message: AIMessage) {
+    override suspend fun send(message: AIMessage) {
         _messages.update {
             it + message
         }
