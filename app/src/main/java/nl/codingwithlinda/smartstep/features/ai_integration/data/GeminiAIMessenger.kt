@@ -23,7 +23,8 @@ import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 
-class GeminiAIMessenger: AIMessenger {
+class GeminiAIMessenger(
+): AIMessenger {
 
     private val chatHistory = mutableListOf<Content>()
     private val messageHistory = mutableListOf<AIMessage>()
@@ -89,6 +90,7 @@ class GeminiAIMessenger: AIMessenger {
     }
 
     override suspend fun send(message: AIMessage): SSResult<AIMessage, Exception> {
+
         return withContext(Dispatchers.IO){
             try {
                 val prompt = completePrompt.appendLine( message.message).toString()

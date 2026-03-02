@@ -11,6 +11,7 @@ import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartS
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.StepTrackerFiniteState
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
+import nl.codingwithlinda.smartstep.features.ai_integration.data.ConnectivityCheck
 import nl.codingwithlinda.smartstep.features.ai_integration.data.GeminiAIMessenger
 import nl.codingwithlinda.smartstep.navigation.MainNavGraph
 import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIMessenger
@@ -38,6 +39,8 @@ class MainActivity : ComponentActivity(), StepTrackerFiniteState {
         smartStepStateController = SmartStepStateControllerImpl(
             this, appContainer
         )
+
+        val connectivityMonitor = ConnectivityCheck(this)
 
         setContent {
             val viewModel = SmartStepApplication.viewModelServiceLocator.createShouldShowSettingsViewModel(this)

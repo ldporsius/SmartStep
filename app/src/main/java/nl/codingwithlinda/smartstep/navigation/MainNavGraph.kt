@@ -8,6 +8,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,6 +26,7 @@ import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFa
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.features.ai_integration.data.ConnectivityCheck
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageComponent
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageViewModel
@@ -160,17 +162,19 @@ fun MainNavGraph(
 
                 val weeklyAverageViewModel = SmartStepApplication.viewModelServiceLocator.createWeeklyAverageViewModel()
 
+                val context = LocalContext.current
                 val aiMessageViewModel = viewModel<AIMessageViewModel>(
                     factory = viewModelFactoryHelper {
                         AIMessageViewModel(
-                            aiMessenger = aiMessenger
+                            aiMessenger = aiMessenger,
+                            connectivityMonitor = ConnectivityCheck(context)
                         )
                     }
                 )
                 @Composable
                 fun aiMessageComponent() =
                     AIMessageComponent(
-                        message = aiMessageViewModel.latestMessage.collectAsStateWithLifecycle().value,
+                        uiState =  aiMessageViewModel.uiState.collectAsStateWithLifecycle().value,
                         onMore = {
                             //nav to details
                         }

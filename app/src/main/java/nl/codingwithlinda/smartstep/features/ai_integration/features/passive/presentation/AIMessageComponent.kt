@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,62 +28,91 @@ import nl.codingwithlinda.smartstep.design_system.ui.theme.secondary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.white
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
+import nl.codingwithlinda.smartstep.features.ai_integration.presentation.AIConnectivityUiState
 
 @Composable
 fun AIMessageComponent(
-    message: AIMessage?,
+    uiState: AIConnectivityUiState,
     onMore: () -> Unit,
     modifier: Modifier = Modifier) {
 
+    @Composable
+    fun AIIcon(){
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .background(color = secondary)
+                .padding(12.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ai_artificial_intelligence),
+                contentDescription = "AI logo",
+                tint = primary
+            )
+        }
+    }
     ElevatedCard(modifier = modifier,
         colors = CardDefaults.elevatedCardColors().copy(
             containerColor = white
         )
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(color = secondary)
-                    .padding(12.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ai_artificial_intelligence),
-                    contentDescription = "AI logo",
-                    tint = primary
-                )
 
-            }
-            Text(
-                "More    >",
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .clickable(){
-                        onMore()
+        AnimatedContent(uiState) { state ->
+            when (state) {
+
+                is AIConnectivityUiState.OffLine -> {
+                    Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                        Text(
+                            "Try again ",
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .clickable() {
+                                    onMore()
+                                },
+                            style = MaterialTheme.typography.labelLarge
+                        )
+
+                        Column() {
+                            AIIcon()
+                            Text(
+                                state.message.message,
+                                modifier = Modifier.padding(
+                                    24.dp
+                                )
+                            )
+                        }
                     }
-                ,
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
-
-        AnimatedContent(message != null) {
-            if (it) {
-                message?.let {
-                    Text(message.message,
-                        modifier = Modifier.padding(
-                            24.dp
-                        ))
                 }
 
-            }
-            else{
-                LinearProgressIndicator()
+                is AIConnectivityUiState.OnLine -> {
+                    Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                        Text(
+                            "More    >",
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .clickable() {
+                                    onMore()
+                                },
+                            style = MaterialTheme.typography.labelLarge
+                        )
+
+                        Column() {
+                            AIIcon()
+                            if (state.message != null) {
+                                Text(
+                                    state.message.message,
+                                    modifier = Modifier.padding(
+                                        24.dp
+                                    )
+                                )
+                            } else {
+                                LinearProgressIndicator()
+                            }
+                        }
+                    }
+                }
             }
         }
-
     }
 }
 
@@ -91,9 +121,11 @@ fun AIMessageComponent(
 private fun PreviewAIMessageComponent() {
     SmartStepTheme() {
         AIMessageComponent(
-            message = AIMessage(
-                "hello",
-                AIMessageOrigin.ASSISTANT
+            uiState = AIConnectivityUiState.OnLine(
+                message = AIMessage(
+                    "hello",
+                    AIMessageOrigin.ASSISTANT
+                )
             ),
             onMore = {},
             modifier = Modifier.fillMaxWidth()

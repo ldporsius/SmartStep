@@ -11,11 +11,5 @@ fun AIIntegrationRoot(
     aiMessenger: AIMessenger
 ) {
 
-    val aiMessageViewModel = viewModel<AIMessageViewModel>(
-        factory = viewModelFactoryHelper {
-            AIMessageViewModel(
-                aiMessenger = aiMessenger
-            )
-        }
-    )
+
 }
