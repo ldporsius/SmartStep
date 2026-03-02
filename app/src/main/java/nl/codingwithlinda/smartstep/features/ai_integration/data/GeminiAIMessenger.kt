@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.data
 
+import androidx.compose.ui.text.intl.Locale
 import com.google.firebase.Firebase
 import com.google.firebase.ai.Chat
 import com.google.firebase.ai.ai
@@ -60,6 +61,8 @@ class GeminiAIMessenger(
         .appendLine(promptInstructions.toString())
         .appendLine("Use the following as a guide to generate your response:")
         .appendLine(promptExamples)
+        .appendLine("Be encouraging and enthusiast.")
+        .appendLine("respond in the locale: ${java.util.Locale.getDefault()}.")
         .appendLine("Here is what the user says: ")
     private val generationConfig = GenerationConfig.builder()
         .setThinkingConfig(ThinkingConfig.Builder()
