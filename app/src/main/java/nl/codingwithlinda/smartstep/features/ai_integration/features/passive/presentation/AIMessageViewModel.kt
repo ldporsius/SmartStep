@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -17,15 +19,22 @@ import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.presentation.AIConnectivityUiState
+import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import kotlin.time.Duration.Companion.milliseconds
 
 class AIMessageViewModel(
     private val aiMessenger: AIMessenger,
-    private val connectivityMonitor: ConnectivityMonitor
+    private val connectivityMonitor: ConnectivityMonitor,
+    private val statisticsManager: StatisticsManager
 ): ViewModel() {
 
     val emptyMessage = AIMessage(
-        message = "empty message",
-        origin = AIMessageOrigin.ASSISTANT
+        message = "Please introduce yourself",
+        origin = AIMessageOrigin.USER
     )
 
     val isLoading = MutableStateFlow(false)
@@ -36,28 +45,15 @@ class AIMessageViewModel(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
     }
 
-    val testMessageSteps = AIMessage(
-        message = "I am tracking my steps. My daily goal is 10000 steps. I have set 200 so far. It is early in the morning.",
-        origin = AIMessageOrigin.USER
-    )
-    val latestMessage = aiMessenger.messages.map {
-        it.firstOrNull()
-    }.onStart {
-        aiMessenger.send(
-            testMessageSteps
-        ).let {res ->
-            isLoading.value = false
-            when(res){
-                is Result.Failure -> {
-                    println("failure ${res.error.message}")
-                }
-                is Result.Success -> {
-                    println("success ${res.data.message}")
-                }
-            }
 
-        }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    val aiMessage = statisticsManager.progressTowardsGoal.map {
+        val zonedDateTime = ZonedDateTime.now()
+        val timeOfDay = zonedDateTime.hour
+        AIMessage(
+            message = "I am tracking my steps. My progress is $it. It is ${timeOfDay} o'clock.",
+            origin = AIMessageOrigin.USER
+        )
+    }
 
 
     val uiState = connectivityMonitor.isConnected.combine(aiMessenger.messages){ connected, messages ->
@@ -74,15 +70,19 @@ class AIMessageViewModel(
                 AIConnectivityUiState.OffLine(
                     onButtonClick = {
                         viewModelScope.launch {
-                            aiMessenger.send(testMessageSteps)
+                            aiMessage.lastOrNull()?.let {msg ->
+                                aiMessenger.send(msg)
+                            }
                         }
                     }
                 )
             }
         }
     }.onStart {
+
+        val msg = aiMessage.firstOrNull()?: emptyMessage
         aiMessenger.send(
-            testMessageSteps
+            msg
         ).let { res ->
             isLoading.value = false
             when (res) {
@@ -96,6 +96,5 @@ class AIMessageViewModel(
             }
 
         }
-    }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AIConnectivityUiState.OnLine(message = null))
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AIConnectivityUiState.OnLine(message = null))
 }

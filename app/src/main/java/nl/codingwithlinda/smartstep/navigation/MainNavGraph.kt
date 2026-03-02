@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.navigation
 
+import android.system.Os.stat
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeContentPadding
@@ -167,7 +168,8 @@ fun MainNavGraph(
                     factory = viewModelFactoryHelper {
                         AIMessageViewModel(
                             aiMessenger = aiMessenger,
-                            connectivityMonitor = ConnectivityCheck(context)
+                            connectivityMonitor = ConnectivityCheck(context),
+                            statisticsManager = SmartStepApplication.statisticsManager
                         )
                     }
                 )

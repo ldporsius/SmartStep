@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.features.ai_integration.features.passive.pr
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -96,7 +97,10 @@ fun AIMessageComponent(
                             style = MaterialTheme.typography.labelLarge
                         )
 
-                        Column() {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+
+                        ) {
                             AIIcon()
                             if (state.message != null) {
                                 Text(
@@ -106,7 +110,9 @@ fun AIMessageComponent(
                                     )
                                 )
                             } else {
-                                LinearProgressIndicator()
+                                LinearProgressIndicator(
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                )
                             }
                         }
                     }
