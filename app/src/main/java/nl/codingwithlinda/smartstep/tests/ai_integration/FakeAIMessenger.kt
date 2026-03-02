@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.tests.ai_integration
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import nl.codingwithlinda.smartstep.core.domain.util.Result
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
@@ -24,10 +25,16 @@ class FakeAIMessenger: AIMessenger {
             origin = AIMessageOrigin.USER
         )
     }
-    override suspend fun send(message: AIMessage) {
+    override suspend fun send(message: AIMessage): Result<AIMessage, Exception> {
         _messages.update {
             it + message
         }
+        return Result.Success(
+            AIMessage(
+                message = responses.random(),
+                origin = AIMessageOrigin.ASSISTANT
+            )
+        )
     }
 
     override fun receive(text: String) {

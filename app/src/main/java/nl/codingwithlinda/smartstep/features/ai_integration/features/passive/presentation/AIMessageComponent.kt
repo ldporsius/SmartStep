@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +30,7 @@ import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrig
 
 @Composable
 fun AIMessageComponent(
-    message: AIMessage,
+    message: AIMessage?,
     onMore: () -> Unit,
     modifier: Modifier = Modifier) {
 
@@ -66,10 +68,21 @@ fun AIMessageComponent(
             )
         }
 
-        Text(message.message,
-            modifier = Modifier.padding(
-                24.dp
-            ))
+        AnimatedContent(message != null) {
+            if (it) {
+                message?.let {
+                    Text(message.message,
+                        modifier = Modifier.padding(
+                            24.dp
+                        ))
+                }
+
+            }
+            else{
+                LinearProgressIndicator()
+            }
+        }
+
     }
 }
 
