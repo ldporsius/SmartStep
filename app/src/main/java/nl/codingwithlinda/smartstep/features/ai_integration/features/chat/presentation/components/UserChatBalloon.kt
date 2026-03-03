@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation
+package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

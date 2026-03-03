@@ -1,6 +1,5 @@
 package nl.codingwithlinda.smartstep.navigation
 
-import android.system.Os.stat
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeContentPadding
@@ -9,7 +8,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -27,12 +25,9 @@ import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFa
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
-import nl.codingwithlinda.smartstep.features.ai_integration.data.ConnectivityCheck
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.AIIntegrationRoot
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.AIChatRoot
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageComponent
-import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageViewModel
-import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
@@ -192,7 +187,7 @@ fun MainNavGraph(
 
 
             entry<AIChatRoute>{
-                AIIntegrationRoot(
+                AIChatRoot(
                     aiMessenger = aiMessenger,
                     onNavBack = {
                         backStack.remove(AIChatRoute)

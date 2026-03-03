@@ -25,9 +25,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFactoryHelper
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.components.AIChatHistory
 
 @Composable
-fun AIIntegrationRoot(
+fun AIChatRoot(
     aiMessenger: AIMessenger,
     onNavBack: () -> Unit
 ) {
@@ -63,7 +64,7 @@ fun AIIntegrationRoot(
             }
             Text("AI Coach")
         }
-        AIChatScreen(
+        AIChatHistory(
             messages = chatViewModel.chats.collectAsStateWithLifecycle().value
         )
 

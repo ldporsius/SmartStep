@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation
+package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -12,7 +12,7 @@ import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 
 @Composable
-fun AIChatScreen(
+fun AIChatHistory(
     messages: List<AIMessage>
 ) {
 
