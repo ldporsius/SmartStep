@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -31,6 +32,7 @@ import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presen
 fun AIChatInput(
     message: String = "",
     onAction: (AIChatAction) -> Unit,
+    isChatEnabled: Boolean,
     quickSuggestions: @Composable () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -58,6 +60,8 @@ fun AIChatInput(
         AnimatedVisibility(shouldShowQuickSuggestions) {
             quickSuggestions()
         }
+        HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -73,7 +77,6 @@ fun AIChatInput(
             )
 
             Box(modifier = Modifier
-
                 .clickable {
                     onAction(AIChatAction.SendMessage(message))
                 }
@@ -94,6 +97,7 @@ private fun PreviewAIChatInput() {
         AIChatInput(
             message = "",
             onAction = {},
+            isChatEnabled = true,
             quickSuggestions = { QuickSuggestions(
                 suggestions = emptyList()
             ) }

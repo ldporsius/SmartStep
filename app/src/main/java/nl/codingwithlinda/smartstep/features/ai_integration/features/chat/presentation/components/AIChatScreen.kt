@@ -84,6 +84,7 @@ fun AIChatScreen(
             AIChatInput(
                 message = uiState.message,
                 onAction = onAction,
+                isChatEnabled = uiState.isChatEnabled,
                 quickSuggestions = {
                     QuickSuggestions(
                         quickSuggestions

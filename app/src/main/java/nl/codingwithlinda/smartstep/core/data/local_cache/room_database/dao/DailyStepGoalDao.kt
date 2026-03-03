@@ -9,8 +9,8 @@ import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.model.Da
 @Dao
 interface DailyStepGoalDao {
 
-    @Query("SELECT * FROM daily_step_goal WHERE date = :date AND userId = :userId")
-    suspend fun getDailyStepGoal(date: Long, userId: String): DailyStepGoalEntity?
+    @Query("SELECT * FROM daily_step_goal WHERE date = :date")
+    suspend fun getDailyStepGoal(date: Long): DailyStepGoalEntity?
 
     @Query("SELECT * FROM daily_step_goal")
     fun getAllDailyStepGoals(): Flow<List<DailyStepGoalEntity>>

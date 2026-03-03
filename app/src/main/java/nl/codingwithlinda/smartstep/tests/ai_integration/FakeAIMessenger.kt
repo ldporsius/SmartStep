@@ -72,13 +72,13 @@ class FakeAIMessenger: AIMessenger {
             origin = AIMessageOrigin.USER
         )
         _messages.update {
-            it + question
+            it.toMutableList().plus(question).toList()
         }
 
-        delay(2.seconds)
+        delay(1.seconds)
        val response = fakeAIAssistantMessages().random()
         _messages.update {
-            it + response
+            it.toMutableList().plus(response).toList()
         }
     }
 

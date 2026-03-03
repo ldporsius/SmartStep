@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.transform
 import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
@@ -120,16 +121,16 @@ class StatisticsManagerImpl(
 
 
     override val trend = dailyStepRepo.stepCountPlusUserOverride
-        .take(7)
-        .map {items ->
-            val counts = items.map { it.stepCount }
+        .map { items ->
 
-            val goals = dailyStepRepo.getDailyStepGoalsLatest().filter { goal -> goal.epochDay  in items.map { it.dayEpochDay } }
-                .map { it.goal }
+          val percentage =  items.map {count ->
+                val goal = dailyStepRepo.getGoalForDay(count.dateYYYYMMDD)?.goal ?: stepGoalRange.first()
+                val percent = count.stepCount.toFloat() / goal
 
-            counts.zip(goals).map { (count, goal) ->
-                count.toFloat() / goal
-            }
+              count.dateYYYYMMDD to percent
+            }.toMap()
+
+           percentage
         }
 
 }

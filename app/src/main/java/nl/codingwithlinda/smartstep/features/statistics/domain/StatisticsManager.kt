@@ -1,6 +1,9 @@
 package nl.codingwithlinda.smartstep.features.statistics.domain
 
 import kotlinx.coroutines.flow.Flow
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.ConcreteDistance
 
 interface StatisticsManager {
@@ -13,7 +16,7 @@ interface StatisticsManager {
 
     val progressTowardsGoal: Flow<Float>
 
-    val trend: Flow<List<Float>>
+    val trend: Flow<Map<DateYYYYMMDD, Float>>
 
 
     fun startMinuteCounter()

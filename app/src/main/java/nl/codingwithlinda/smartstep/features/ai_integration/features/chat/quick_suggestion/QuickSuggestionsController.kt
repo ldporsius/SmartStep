@@ -1,5 +1,10 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion
 
+import android.icu.lang.UCharacter.getAge
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.util.fastJoinToString
+import androidx.constraintlayout.compose.Dimension.Companion.percent
+import androidx.core.util.toRange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -10,6 +15,8 @@ import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 import nl.codingwithlinda.smartstep.features.settings.presentation.gender_settings.toUi
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import java.time.LocalDateTime
+import java.time.temporal.TemporalQueries.localDate
+import java.util.Locale
 
 class QuickSuggestionsController(
     private val userSettingsRepo: UserSettingsRepo,
@@ -19,7 +26,7 @@ class QuickSuggestionsController(
 ) {
 
     suspend fun activityProgress() = statisticsManager.progressTowardsGoal.firstOrNull()
-    fun today() = LocalDateTime.now()
+    private fun today(): LocalDateTime = LocalDateTime.now()
 
     private suspend fun getAge(): Int{
         return 55
@@ -30,6 +37,26 @@ class QuickSuggestionsController(
             return it.gender.name
         }
         return "male"
+    }
+
+    private suspend fun printTrend(): String{
+        val pastWeek = List(7){
+            today().minusDays(it.toLong())
+        }.map{
+            it.toLocalDate()
+        }
+        val trend = statisticsManager.trend.firstOrNull() ?: return ""
+       val result = pastWeek.map {  day ->
+           day to trend.filter {
+               it.key.dateEpochDay == day.toEpochDay()
+           }
+        }.map {(localDate, values) ->
+            val dayOfWeekShort = localDate.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault())
+           val percent = values.values.sum() * 100
+           "$dayOfWeekShort: $percent%"
+        }
+        return result.fastJoinToString()
+
     }
     fun recommendWorkout() =  QuickSuggestion(
         title = UiText.DynamicText("Recommend workout"),
@@ -52,7 +79,7 @@ class QuickSuggestionsController(
             CoroutineScope(dispatcherProvider.io).launch {
                 val msg =   """
             Can you explain today\'s trend?
-            The past week I achieved: ${statisticsManager.trend} percent of my goal.
+            The past week I achieved: ${printTrend()} percent of my goal.
             Today is ${today().dayOfWeek}
             In what direction am I going?.
         """.trimIndent()

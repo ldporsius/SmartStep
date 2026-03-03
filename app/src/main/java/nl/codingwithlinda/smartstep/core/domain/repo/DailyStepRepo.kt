@@ -10,6 +10,8 @@ interface DailyStepRepo {
     fun getDailyStepGoals(): Flow<List<DailyStepGoal>>
     suspend fun getDailyStepGoalsLatest(): List<DailyStepGoal>
 
+    suspend fun getGoalForDay(dateYYYYMMDD: DateYYYYMMDD): DailyStepGoal?
+
     //////////////////////////////////////////////////////////////////////////
 
     suspend fun saveDailyStepCountUserOverride(dateYYYYMMDD: DateYYYYMMDD, stepCount: Int)

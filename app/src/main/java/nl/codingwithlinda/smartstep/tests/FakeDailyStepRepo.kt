@@ -13,6 +13,7 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepGoalCreator
 import java.time.LocalDate
 
 class FakeDailyStepRepo(
@@ -48,6 +49,14 @@ class FakeDailyStepRepo(
         return goals
     }
 
+    override suspend fun getGoalForDay(dateYYYYMMDD: DateYYYYMMDD): DailyStepGoal? {
+        return goals.find {
+            it.epochDay == dateYYYYMMDD.dateEpochDay
+        }?: DailyStepGoalCreator.create(
+            goal = 1000,
+            date = dateYYYYMMDD.dateEpochDay
+        )
+    }
 
 
     override suspend fun saveDailyStepCountUserOverride(

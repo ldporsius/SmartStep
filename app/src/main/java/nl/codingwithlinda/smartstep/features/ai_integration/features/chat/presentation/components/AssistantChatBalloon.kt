@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.R
+import nl.codingwithlinda.smartstep.design_system.ui.theme.textSecondary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.white
 
 @Composable
@@ -42,7 +43,7 @@ fun AssistantChatBalloon(
         Box(
             modifier = modifier
                 .background(color = white, shape = boxShape)
-                .border(width = 1.dp, color = white, shape = boxShape)
+                .border(width = 1.dp, color = textSecondary, shape = boxShape)
                 .padding(24.dp)
         ) {
             Text(message)

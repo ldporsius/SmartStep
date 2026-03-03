@@ -1,6 +1,7 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
@@ -22,7 +23,9 @@ fun AIChatRoot(
    /* val geminiMessenger = GeminiAIMessenger(
         geminiGonfig = Gemini_2_5_Chat_Config()
     )*/
-    val geminiMessenger = FakeAIMessenger()
+    val geminiMessenger = remember(Unit) {
+        FakeAIMessenger()
+    }
     val chatViewModel = viewModel<AIChatViewModel>(
         factory = viewModelFactoryHelper {
             AIChatViewModel(

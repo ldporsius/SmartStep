@@ -49,6 +49,10 @@ class DailyStepRepoRoomImpl(
         }.firstOrNull() ?: emptyList()
     }
 
+    override suspend fun getGoalForDay(dateYYYYMMDD: DateYYYYMMDD): DailyStepGoal? {
+       return dailyStepGoalDao.getDailyStepGoal(dateYYYYMMDD.dateEpochDay)?.toDomain()
+    }
+
     //////////////////////////////////////////////////////////////////////////////////
 
 

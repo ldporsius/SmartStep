@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state
 
 data class AIChatUiState(
-    val message: String = ""
+    val message: String = "",
+    val isChatEnabled: Boolean = false
 )
