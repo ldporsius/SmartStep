@@ -10,14 +10,11 @@ sealed interface AIConnectivityUiState {
             message = "\uD83D\uDCE1 Connect to the internet to get AI insights",
             origin = AIMessageOrigin.ASSISTANT
         ),
-        val buttonText: String = "Retry",
         val onButtonClick: () -> Unit = {}
     ): AIConnectivityUiState
 
     data class OnLine(
         val message: AIMessage?,
-        val buttonText: String = "More",
-        val onButtonClick: () -> Unit = {}
     ): AIConnectivityUiState
 
 

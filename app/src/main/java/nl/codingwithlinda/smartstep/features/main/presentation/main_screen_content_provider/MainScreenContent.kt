@@ -2,34 +2,25 @@ package nl.codingwithlinda.smartstep.features.main.presentation.main_screen_cont
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageComponent
-import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageViewModel
+import nl.codingwithlinda.smartstep.features.daily_step_count.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCard
-import nl.codingwithlinda.smartstep.features.daily_step_count.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
+import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageScreen
 import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
 

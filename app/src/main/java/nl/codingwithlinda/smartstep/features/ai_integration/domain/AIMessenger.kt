@@ -7,7 +7,7 @@ interface AIMessenger {
 
     fun create(text: String): AIMessage
     suspend fun send(message: AIMessage): Result<AIMessage, Exception>
-    fun receive(text: String)
+    suspend fun chat(text: String)
     val messages: Flow<List<AIMessage>>
 }
 

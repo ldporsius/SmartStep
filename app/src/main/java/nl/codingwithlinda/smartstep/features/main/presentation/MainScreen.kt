@@ -31,14 +31,12 @@ import kotlinx.coroutines.withContext
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
-import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageViewModel
+import nl.codingwithlinda.smartstep.features.daily_step_count.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.navDrawerItems
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
-import nl.codingwithlinda.smartstep.features.daily_step_count.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainNavItemHandler
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenContent
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator

@@ -1,11 +1,16 @@
 package nl.codingwithlinda.smartstep.features.statistics.data
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.transform
 import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
@@ -57,10 +62,10 @@ class StatisticsManagerImpl(
         }?.stepCount
     }
 
-    private val todaysGoal = dailyStepRepo.getDailyStepGoals().mapNotNull { goals ->
+    override val todaysGoal = dailyStepRepo.getDailyStepGoals().mapNotNull { goals ->
         goals.find {
             it.epochDay == today.dateEpochDay
-        }
+        }?.goal
     }
 
     val currentSystem = userSettingsRepo.unitSystemObservable.map{
@@ -109,9 +114,11 @@ class StatisticsManagerImpl(
 
     override val progressTowardsGoal: Flow<Float> = combine(stepsToday,todaysGoal){
             steps, goal ->
-        println("steps: $steps, goal: ${goal.goal}, percentage: ${steps.toFloat() / goal.goal}")
+        println("steps: $steps, goal: ${goal}, percentage: ${steps.toFloat() / goal}")
 
-            steps.toFloat() / goal.goal
+            steps.toFloat() / goal
         }
+
+
 
 }

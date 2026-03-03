@@ -1,22 +1,11 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.data
 
-import androidx.compose.ui.text.intl.Locale
-import com.google.firebase.Firebase
-import com.google.firebase.ai.Chat
-import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.Content
-import com.google.firebase.ai.type.GenerationConfig
-import com.google.firebase.ai.type.GenerativeBackend
-import com.google.firebase.ai.type.ThinkingConfig
-import com.google.firebase.ai.type.ThinkingLevel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.codingwithlinda.smartstep.core.domain.util.Result
 import nl.codingwithlinda.smartstep.core.domain.util.SSResult
@@ -25,6 +14,7 @@ import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrig
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 
 class GeminiAIMessenger(
+    var geminiGonfig: GeminiGonfig = MinimalisticGeminiConfig()
 ): AIMessenger {
 
     private val chatHistory = mutableListOf<Content>()
@@ -37,52 +27,7 @@ class GeminiAIMessenger(
         modelName = "gemini-2.5-flash"
     )*/
 
-    private val systemInstruction = Content.Builder().setRole(
-        "You are a fitness trainer assistant. " +
-            "You encourage someone to reach their step count goal. " +
-            "You never use more then one sentence." +
-        "You speak Dutch"
-    ).build()
 
-    private val promptInstructions = StringBuilder()
-        .appendLine("You must generate one short textual message - ONE SENTENCE ONLY - that:")
-        .appendLine("interprets the current activity state")
-        .appendLine("does not contain medical advice")
-        .appendLine("does not repeate any values of the users input")
-        .appendLine("has a motivational or analytical tone")
-
-    private val promptExamples = StringBuilder()
-        .appendLine("You’re on track today. Keep the pace steady.")
-        .appendLine("You’re a bit behind your goal — a short walk could help.")
-        .appendLine("Great job! You’ve already reached today’s goal.")
-        .toString()
-
-    private val completePrompt = StringBuilder()
-        .appendLine(promptInstructions.toString())
-        .appendLine("Use the following as a guide to generate your response:")
-        .appendLine(promptExamples)
-        .appendLine("Be encouraging and enthusiast.")
-        .appendLine("respond in the locale: ${java.util.Locale.getDefault()}.")
-        .appendLine("Here is what the user says: ")
-    private val generationConfig = GenerationConfig.builder()
-        .setThinkingConfig(ThinkingConfig.Builder()
-            .setThinkingLevel(ThinkingLevel.LOW)
-            .setIncludeThoughts(false)
-            .build()
-        )
-        .build()
-
-    private val model1 = Firebase.ai(backend = GenerativeBackend.googleAI())
-        .generativeModel(
-            modelName = "gemini-3-flash-preview",
-            generationConfig = generationConfig,
-            systemInstruction =  systemInstruction
-        )
-
-    private val chat = Chat(
-        model = model1,
-        history = chatHistory
-    )
 
 
     override fun create(text: String): AIMessage {
@@ -96,30 +41,72 @@ class GeminiAIMessenger(
 
         return withContext(Dispatchers.IO){
             try {
-                val prompt = completePrompt.appendLine( message.message).toString()
+                val prompt = geminiGonfig.promptInstructions() + message.message
                 println("--- GEMINI AI MESSENGER -- prompt: $prompt")
-                val response = model1.generateContent(prompt)
+                val response = geminiGonfig.model().generateContent(prompt)
                 println("--- GEMINI AI MESSENGER -- response: ${response.text}")
                 val msg =  AIMessage(
                     message = response.text ?: "no comment from AI",
                     origin = AIMessageOrigin.ASSISTANT
                 )
-                messageHistory.add(
-                   msg
-                )
+
                 _messages.update {
-                    messageHistory
+                    listOf(msg)
                 }
                 Result.Success(msg)
             }catch (e: Exception){
-                e.printStackTrace()
+                //e.printStackTrace()
+
+                _messages.update {
+                    listOf(
+                        AIMessage(e.message ?: "Something went wrong",
+                            origin = AIMessageOrigin.ASSISTANT)
+                    )
+                }
+
                 Result.Failure(e)
             }
         }
     }
 
-    override fun receive(text: String) {
-        //todo
+    override suspend fun chat(text: String) {
+        val msg = AIMessage(
+            message = text,
+            origin = AIMessageOrigin.USER
+        )
+        messageHistory.add(
+            msg
+        )
+        _messages.update {
+            messageHistory
+        }
+        try {
+            val prompt = geminiGonfig.promptInstructions() + text
+            println("--- GEMINI AI MESSENGER -- prompt: $prompt")
+            val response = geminiGonfig.model().generateContent(prompt)
+            println("--- GEMINI AI MESSENGER -- response: ${response.text}")
+            val msgResponse =  AIMessage(
+                message = response.text ?: "no comment from AI",
+                origin = AIMessageOrigin.ASSISTANT
+            )
+            messageHistory.add(
+                msgResponse
+            )
+            _messages.update {
+                messageHistory
+            }
+        }catch (e: Exception){
+            //e.printStackTrace()
+            messageHistory.add(
+                AIMessage(
+                    message = e.message ?: "Something went wrong",
+                    origin = AIMessageOrigin.ASSISTANT
+                )
+            )
+            _messages.update {
+                messageHistory
+            }
+        }
     }
 
     override val messages: Flow<List<AIMessage>>

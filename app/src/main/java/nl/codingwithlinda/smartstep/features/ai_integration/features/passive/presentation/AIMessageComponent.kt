@@ -16,27 +16,59 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.codingwithlinda.smartstep.R
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFactoryHelper
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.design_system.ui.theme.primary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.secondary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.white
+import nl.codingwithlinda.smartstep.features.ai_integration.data.ConnectivityCheck
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.presentation.AIConnectivityUiState
+import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIMessenger
 
 @Composable
 fun AIMessageComponent(
-    uiState: AIConnectivityUiState,
+    aiMessenger: AIMessenger,
     onMore: () -> Unit,
     modifier: Modifier = Modifier) {
 
+    val context = LocalContext.current
+
+    val aiMessageViewModel = viewModel<AIMessageViewModel>(
+        factory = viewModelFactoryHelper {
+            AIMessageViewModel(
+                aiMessenger = aiMessenger,
+                connectivityMonitor = ConnectivityCheck(context),
+                statisticsManager = SmartStepApplication.statisticsManager
+            )
+        }
+    )
+
+    val uiState: AIConnectivityUiState =  aiMessageViewModel.uiState.collectAsStateWithLifecycle().value
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+            aiMessageViewModel.makeRequest()
+        }
+    }
     @Composable
     fun AIIcon(){
         Box(
@@ -122,19 +154,3 @@ fun AIMessageComponent(
     }
 }
 
-@Preview
-@Composable
-private fun PreviewAIMessageComponent() {
-    SmartStepTheme() {
-        AIMessageComponent(
-            uiState = AIConnectivityUiState.OnLine(
-                message = AIMessage(
-                    "hello",
-                    AIMessageOrigin.ASSISTANT
-                )
-            ),
-            onMore = {},
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}

@@ -1,9 +1,11 @@
 package nl.codingwithlinda.smartstep.core.data.repo
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onStart
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.DailyStepCountDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.DailyStepGoalDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.UserStepOverrideDao
@@ -72,27 +74,42 @@ class DailyStepRepoRoomImpl(
         entities.map {
             it.toDomain()
         }
+    }.onStart {
+        emit(emptyList())
     }
     private val userOverride = userStepOverrideDao.getDailyStepCountUserOverride().map {
         it.map { entity ->
             entity.toDomain()
         }
+    }.onStart {
+        emit(emptyList())
     }
-    private val stepsTotal = merge(stepCount, userOverride).map {
-        it.groupBy { dailyStepCount ->
+    private val stepsTotal = merge(stepCount, userOverride).map { stepCounts ->
+        stepCounts.groupBy { dailyStepCount ->
             dailyStepCount.dayEpochDay
         }.map { (dayEpochDay, dailyStepCounts) ->
-            val actualSteps = dailyStepCountDao.getDailyStepCountForDate(dayEpochDay)?.stepCount ?:0
-            val overrideSteps = userStepOverrideDao.getDailyStepUserOverrideForDay(dayEpochDay)?.stepCount ?:0
+//            val actualSteps = dailyStepCountDao.getDailyStepCountForDate(dayEpochDay)?.stepCount ?:0
+//            val overrideSteps = userStepOverrideDao.getDailyStepUserOverrideForDay(dayEpochDay)?.stepCount ?:0
             DailyStepCountCreator.create(
-                count = actualSteps + overrideSteps,
+                count = dailyStepCounts.sumOf { it.stepCount },
                 date = dayEpochDay
             )
         }
     }
 
-    override val stepCountPlusUserOverride: Flow<List<DailyStepCount>>
-        get() = stepsTotal
+    private val stepsTotalCombined = combine(stepCount, userOverride) { stepCounts, userOverrides ->
+        stepCounts.plus(userOverrides)
+            .groupBy { it.dayEpochDay }
+            .mapValues {(dayEpochDay, dailyStepCounts) ->
+                DailyStepCountCreator.create(
+                    date = dayEpochDay,
+                    count = dailyStepCounts.sumOf { it.stepCount }
+                )
+            }.values.toList()
+
+    }
+
+    override val stepCountPlusUserOverride: Flow<List<DailyStepCount>> = stepsTotalCombined
 
 
 }

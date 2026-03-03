@@ -15,3 +15,9 @@ object UserSettingsRoute: NavKey
 
 @Serializable
 object MainRoute: NavKey
+
+
+@Serializable
+data object AIChatRoute: NavKey
+
+

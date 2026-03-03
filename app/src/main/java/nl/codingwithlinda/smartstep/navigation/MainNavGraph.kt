@@ -29,6 +29,7 @@ import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.features.ai_integration.data.ConnectivityCheck
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.AIIntegrationRoot
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageComponent
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageViewModel
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
@@ -163,22 +164,13 @@ fun MainNavGraph(
 
                 val weeklyAverageViewModel = SmartStepApplication.viewModelServiceLocator.createWeeklyAverageViewModel()
 
-                val context = LocalContext.current
-                val aiMessageViewModel = viewModel<AIMessageViewModel>(
-                    factory = viewModelFactoryHelper {
-                        AIMessageViewModel(
-                            aiMessenger = aiMessenger,
-                            connectivityMonitor = ConnectivityCheck(context),
-                            statisticsManager = SmartStepApplication.statisticsManager
-                        )
-                    }
-                )
+
                 @Composable
                 fun aiMessageComponent() =
                     AIMessageComponent(
-                        uiState =  aiMessageViewModel.uiState.collectAsStateWithLifecycle().value,
+                        aiMessenger = aiMessenger,
                         onMore = {
-                            //nav to details
+                            NavigationController.navigateTo(AIChatRoute)
                         }
                     )
 
@@ -194,6 +186,16 @@ fun MainNavGraph(
                     smartStepStateController = smartStepStateController,
                     aiMessageComponent = {
                         aiMessageComponent()
+                    }
+                )
+            }
+
+
+            entry<AIChatRoute>{
+                AIIntegrationRoot(
+                    aiMessenger = aiMessenger,
+                    onNavBack = {
+                        backStack.remove(AIChatRoute)
                     }
                 )
             }

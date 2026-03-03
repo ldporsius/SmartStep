@@ -6,6 +6,7 @@ import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.C
 interface StatisticsManager {
 
     val stepsToday: Flow<Int>
+    val todaysGoal: Flow<Int>
     val distanceWalked: Flow<ConcreteDistance>
     val caloriesBurned: Flow<Int>
     val timeWalked: Flow<Int>

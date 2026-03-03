@@ -37,7 +37,7 @@ class FakeAIMessenger: AIMessenger {
         )
     }
 
-    override fun receive(text: String) {
+    override suspend fun chat(text: String) {
        val response = AIMessage(
             message = text,
             origin = AIMessageOrigin.ASSISTANT
