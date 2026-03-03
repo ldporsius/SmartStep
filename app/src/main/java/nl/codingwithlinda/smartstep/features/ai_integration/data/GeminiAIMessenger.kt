@@ -14,7 +14,7 @@ import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrig
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 
 class GeminiAIMessenger(
-    var geminiGonfig: GeminiGonfig = MinimalisticGeminiConfig()
+    var geminiGonfig: GeminiGonfig = Gemini_3_Config()
 ): AIMessenger {
 
     private val chatHistory = mutableListOf<Content>()

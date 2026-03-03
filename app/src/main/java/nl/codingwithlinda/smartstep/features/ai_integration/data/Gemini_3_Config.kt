@@ -9,7 +9,7 @@ import com.google.firebase.ai.type.GenerativeBackend
 import com.google.firebase.ai.type.ThinkingConfig
 import com.google.firebase.ai.type.ThinkingLevel
 
-open class MinimalisticGeminiConfig: GeminiGonfig {
+open class Gemini_3_Config: GeminiGonfig {
 
     private val systemInstruction = Content.Builder().setRole(
         "You are a fitness trainer assistant. " +
