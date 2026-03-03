@@ -13,6 +13,8 @@ interface StatisticsManager {
 
     val progressTowardsGoal: Flow<Float>
 
+    val trend: Flow<List<Float>>
+
 
     fun startMinuteCounter()
     fun stopMinuteCounter()

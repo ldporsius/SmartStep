@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.transform
 import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
@@ -114,11 +115,21 @@ class StatisticsManagerImpl(
 
     override val progressTowardsGoal: Flow<Float> = combine(stepsToday,todaysGoal){
             steps, goal ->
-        println("steps: $steps, goal: ${goal}, percentage: ${steps.toFloat() / goal}")
-
             steps.toFloat() / goal
         }
 
 
+    override val trend = dailyStepRepo.stepCountPlusUserOverride
+        .take(7)
+        .map {items ->
+            val counts = items.map { it.stepCount }
+
+            val goals = dailyStepRepo.getDailyStepGoalsLatest().filter { goal -> goal.epochDay  in items.map { it.dayEpochDay } }
+                .map { it.goal }
+
+            counts.zip(goals).map { (count, goal) ->
+                count.toFloat() / goal
+            }
+        }
 
 }

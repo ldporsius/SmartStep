@@ -49,12 +49,13 @@ fun AIMessageComponent(
     onMore: () -> Unit,
     modifier: Modifier = Modifier) {
 
+    val fakeMessenger = FakeAIMessenger()
     val context = LocalContext.current
 
     val aiMessageViewModel = viewModel<AIMessageViewModel>(
         factory = viewModelFactoryHelper {
             AIMessageViewModel(
-                aiMessenger = aiMessenger,
+                aiMessenger = fakeMessenger,
                 connectivityMonitor = ConnectivityCheck(context),
                 statisticsManager = SmartStepApplication.statisticsManager
             )

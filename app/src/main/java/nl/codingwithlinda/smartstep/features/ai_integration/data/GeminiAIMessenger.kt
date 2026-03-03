@@ -1,6 +1,6 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.data
 
-import com.google.firebase.ai.type.Content
+import com.google.firebase.ai.type.FirebaseAIException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,18 +17,9 @@ class GeminiAIMessenger(
     var geminiGonfig: GeminiGonfig = Gemini_3_Config()
 ): AIMessenger {
 
-    private val chatHistory = mutableListOf<Content>()
     private val messageHistory = mutableListOf<AIMessage>()
 
     private val _messages = MutableStateFlow<List<AIMessage>>(emptyList())
-
-
-   /* private val model = com.google.firebase.ai.FirebaseAI.instance.generativeModel(
-        modelName = "gemini-2.5-flash"
-    )*/
-
-
-
 
     override fun create(text: String): AIMessage {
         return AIMessage(
@@ -42,7 +33,7 @@ class GeminiAIMessenger(
         return withContext(Dispatchers.IO){
             try {
                 val prompt = geminiGonfig.promptInstructions() + message.message
-                println("--- GEMINI AI MESSENGER -- prompt: $prompt")
+
                 val response = geminiGonfig.model().generateContent(prompt)
                 println("--- GEMINI AI MESSENGER -- response: ${response.text}")
                 val msg =  AIMessage(
@@ -78,11 +69,11 @@ class GeminiAIMessenger(
             msg
         )
         _messages.update {
-            messageHistory
+            messageHistory.toList()
         }
         try {
             val prompt = geminiGonfig.promptInstructions() + text
-            println("--- GEMINI AI MESSENGER -- prompt: $prompt")
+
             val response = geminiGonfig.model().generateContent(prompt)
             println("--- GEMINI AI MESSENGER -- response: ${response.text}")
             val msgResponse =  AIMessage(
@@ -93,18 +84,18 @@ class GeminiAIMessenger(
                 msgResponse
             )
             _messages.update {
-                messageHistory
+                messageHistory.toList()
             }
-        }catch (e: Exception){
+        }catch (e: FirebaseAIException){
             //e.printStackTrace()
             messageHistory.add(
                 AIMessage(
-                    message = e.message ?: "Something went wrong",
+                    message = e.localizedMessage ?: "Something went wrong",
                     origin = AIMessageOrigin.ASSISTANT
                 )
             )
             _messages.update {
-                messageHistory
+                messageHistory.toList()
             }
         }
     }

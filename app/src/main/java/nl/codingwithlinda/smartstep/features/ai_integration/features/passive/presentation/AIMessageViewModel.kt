@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.features.ai_integration.features.passive.pr
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityMonitor
@@ -43,11 +45,13 @@ class AIMessageViewModel(
         )
     }
 
-    val uiState = connectivityMonitor.isConnected.combine(aiMessenger.messages){ connected, messages ->
+    private val _response = MutableStateFlow<AIMessage?>(null)
+
+    val uiState = connectivityMonitor.isConnected.combine(_response){ connected, message ->
         when(connected){
             true -> {
                 AIConnectivityUiState.OnLine(
-                    message = messages.lastOrNull(),
+                    message = message,
                 )
             }
             false -> {
@@ -87,6 +91,9 @@ class AIMessageViewModel(
 
                     is Result.Success -> {
                         println("success ${res.data.message}")
+                        _response.update {
+                            res.data
+                        }
                     }
                 }
             }

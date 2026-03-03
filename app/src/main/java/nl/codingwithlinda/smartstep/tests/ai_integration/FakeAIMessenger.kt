@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.tests.ai_integration
 
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -7,6 +8,33 @@ import nl.codingwithlinda.smartstep.core.domain.util.Result
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
+import kotlin.time.Duration.Companion.seconds
+
+
+fun fakeAIUserMessages() = List(5){
+    AIMessage(
+        message = "message $it",
+        origin = AIMessageOrigin.USER
+    )
+}
+fun fakeAIAssistantMessages() = List(5){
+    AIMessage(
+        message = """
+            You’re on track today. Keep the pace steady.
+            You’re on track today. Keep the pace steady.
+            You’re on track today. Keep the pace steady.
+            You’re on track today. Keep the pace steady.
+            You’re on track today. Keep the pace steady.
+            You’re on track today. Keep the pace steady.
+        """.trimIndent(),
+        origin = AIMessageOrigin.ASSISTANT
+    )
+}
+
+fun fakeChatHistory() = fakeAIUserMessages().mapIndexed { index, message ->
+    listOf(message,fakeAIAssistantMessages()[index])
+}.flatten()
+
 
 class FakeAIMessenger: AIMessenger {
 
@@ -26,22 +54,29 @@ class FakeAIMessenger: AIMessenger {
         )
     }
     override suspend fun send(message: AIMessage): Result<AIMessage, Exception> {
+        val response =   AIMessage(
+            message = responses.random(),
+            origin = AIMessageOrigin.ASSISTANT
+        )
         _messages.update {
-            it + message
+            listOf( response )
         }
         return Result.Success(
-            AIMessage(
-                message = responses.random(),
-                origin = AIMessageOrigin.ASSISTANT
-            )
+          response
         )
     }
 
     override suspend fun chat(text: String) {
-       val response = AIMessage(
+        val question = AIMessage(
             message = text,
-            origin = AIMessageOrigin.ASSISTANT
+            origin = AIMessageOrigin.USER
         )
+        _messages.update {
+            it + question
+        }
+
+        delay(2.seconds)
+       val response = fakeAIAssistantMessages().random()
         _messages.update {
             it + response
         }
