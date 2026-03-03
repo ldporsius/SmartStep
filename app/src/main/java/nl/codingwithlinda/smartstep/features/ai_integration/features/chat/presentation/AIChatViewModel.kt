@@ -29,11 +29,16 @@ class AIChatViewModel(
                 )
             }
             is AIChatAction.SendMessage -> {
-                sendMessage(action.message)
+                if(validateChatInput(action.message)){
+                    sendMessage(action.message)
+                }
             }
         }
     }
 
+    private fun validateChatInput(input: String): Boolean{
+        return input.length > 100
+    }
 
     private fun sendMessage(msg: String){
         println("Sending message to chat: $msg")
