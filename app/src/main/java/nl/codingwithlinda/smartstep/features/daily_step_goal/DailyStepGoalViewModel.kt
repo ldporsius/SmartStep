@@ -38,8 +38,6 @@ class DailyStepGoalViewModel(
                         existingGoal.goal
                     }
             }
-
-
         }
     }
     fun setGoal(goal: Int){

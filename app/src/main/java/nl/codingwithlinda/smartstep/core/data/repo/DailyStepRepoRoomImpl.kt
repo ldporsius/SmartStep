@@ -84,6 +84,7 @@ class DailyStepRepoRoomImpl(
     }.onStart {
         emit(emptyList())
     }
+
     private val stepsTotal = merge(stepCount, userOverride).map { stepCounts ->
         stepCounts.groupBy { dailyStepCount ->
             dailyStepCount.dayEpochDay
