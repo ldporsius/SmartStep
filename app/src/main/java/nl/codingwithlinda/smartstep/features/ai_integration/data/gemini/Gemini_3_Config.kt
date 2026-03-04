@@ -8,15 +8,15 @@ import com.google.firebase.ai.type.GenerationConfig
 import com.google.firebase.ai.type.GenerativeBackend
 import com.google.firebase.ai.type.ThinkingConfig
 import com.google.firebase.ai.type.ThinkingLevel
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.models.GeminiModels
 import java.util.Locale
 
-class Gemini_3_Config: GeminiGonfig {
+class Gemini_3_Config: GeminiFlashConfig {
 
     private val systemInstruction = Content.Builder().setRole(
         "You are a fitness trainer assistant. " +
                 "You encourage someone to reach their step count goal. " +
-                "You never use more then one sentence." +
-                "You speak Dutch"
+                "You never use more then one sentence."
     ).build()
 
 
@@ -30,7 +30,7 @@ class Gemini_3_Config: GeminiGonfig {
 
     override fun model(): GenerativeModel = Firebase.ai(backend = GenerativeBackend.googleAI())
         .generativeModel(
-            modelName = "gemini-3-flash",
+            modelName = GeminiModels.FLASH3.modelName,
             generationConfig = generationConfig,
             systemInstruction =  systemInstruction
         )

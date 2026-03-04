@@ -5,9 +5,10 @@ import com.google.firebase.ai.GenerativeModel
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.Content
 import com.google.firebase.ai.type.GenerativeBackend
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.models.GeminiModels
 import java.util.Locale
 
-class Gemini_2_5_Config: GeminiGonfig {
+class Gemini_2_5_Config: GeminiFlashConfig {
 
     private val systemInstruction = Content.Builder().setRole(
         "You are a fitness trainer assistant. " +
@@ -18,9 +19,10 @@ class Gemini_2_5_Config: GeminiGonfig {
 
     override fun model(): GenerativeModel = Firebase.ai(backend = GenerativeBackend.googleAI())
         .generativeModel(
-            modelName = "gemini-2.5-flash",
+            modelName = GeminiModels.FLASH2.modelName,
             systemInstruction =  systemInstruction
         )
+
     private val promptInstructions = StringBuilder()
         .appendLine("You must generate one short textual message - ONE SENTENCE ONLY - that:")
         .appendLine("interprets the current activity state")

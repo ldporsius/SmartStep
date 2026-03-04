@@ -37,6 +37,7 @@ import nl.codingwithlinda.smartstep.design_system.ui.theme.primary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.secondary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.white
 import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityCheck
+import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
@@ -46,6 +47,7 @@ import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIMessenger
 @Composable
 fun AIMessageComponent(
     aiMessenger: AIMessenger,
+    aiSessionRepo: AISessionRepo,
     onMore: () -> Unit,
     modifier: Modifier = Modifier) {
 
@@ -55,7 +57,8 @@ fun AIMessageComponent(
     val aiMessageViewModel = viewModel<AIMessageViewModel>(
         factory = viewModelFactoryHelper {
             AIMessageViewModel(
-                aiMessenger = fakeMessenger,
+                aiMessenger = aiMessenger,
+                aiSessionRepo = aiSessionRepo,
                 connectivityMonitor = ConnectivityCheck(context),
                 statisticsManager = SmartStepApplication.statisticsManager
             )

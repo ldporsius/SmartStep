@@ -8,13 +8,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import nl.codingwithlinda.smartstep.application.dataStore
+import nl.codingwithlinda.smartstep.application.dataStoreAI
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
+import nl.codingwithlinda.smartstep.core.data.repo.AISessionRepoImpl
 import nl.codingwithlinda.smartstep.core.data.repo.ActivityRecognitionRepoImpl
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerDetectorImpl
 import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
+import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
@@ -46,11 +49,18 @@ class AppContainerImpl(
         WalkDurationRepoImpl()
     }
 
-    private val activityRecognitionRepo = ActivityRecognitionRepoImpl(
+    override val aiSessionRepo: AISessionRepo by lazy {
+        AISessionRepoImpl(context.dataStoreAI)
+    }
+
+    private
+    val activityRecognitionRepo = ActivityRecognitionRepoImpl(
         dailyStepCountDao = SmartStepRoomDatabaseCreator.getInstance(context).dailyStepCountDao,
         userId = "todo"
     )
-        override val stepTracker: StepTracker by lazy {
+
+    override
+    val stepTracker: StepTracker by lazy {
 
         /*  stepTracker = StepTrackerCounterImpl.getInstance(
            context = this.applicationContext,
@@ -62,7 +72,8 @@ class AppContainerImpl(
             repo = activityRecognitionRepo
         )
     }
-    override val statisticsManager: StatisticsManager by lazy {
+    override
+    val statisticsManager: StatisticsManager by lazy {
         StatisticsManagerImpl(
             userSettingsRepo = userSettingsRepo,
             dailyStepRepo = dailyStepRepo,

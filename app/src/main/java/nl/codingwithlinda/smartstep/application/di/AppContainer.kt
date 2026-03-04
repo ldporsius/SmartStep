@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModelStoreOwner
 import kotlinx.coroutines.CoroutineScope
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
+import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
@@ -18,6 +19,7 @@ abstract class AppContainer(
     abstract val userSettingsRepo: UserSettingsRepo
     abstract val dailyStepRepo: DailyStepRepo
     abstract val walkDurationRepo: WalkDurationRepo
+    abstract val aiSessionRepo: AISessionRepo
     abstract val stepTracker: StepTracker
     abstract val statisticsManager: StatisticsManager
 

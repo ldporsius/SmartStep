@@ -17,10 +17,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
+import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
 import nl.codingwithlinda.smartstep.core.domain.util.Result
+import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AINormalState
+import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIResourceExhaustedState
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.finite_state.AIState
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIConnectivityUiState
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import java.time.ZonedDateTime
@@ -29,10 +33,21 @@ import kotlin.time.Duration.Companion.minutes
 @OptIn(FlowPreview::class)
 class AIMessageViewModel(
     private val aiMessenger: AIMessenger,
+    private val aiSessionRepo: AISessionRepo,
     connectivityMonitor: ConnectivityMonitor,
     statisticsManager: StatisticsManager
 ): ViewModel() {
 
+    private val aiNormalState = AINormalState(
+        aiMessenger = aiMessenger,
+        aiSessionRepo = aiSessionRepo
+    )
+    private val aiResourceExhaustedState = AIResourceExhaustedState(
+        aiMessenger = aiMessenger,
+        aiSessionRepo = aiSessionRepo
+    )
+
+    private val aiState = MutableStateFlow<AIState>(aiNormalState)
 
     private val goal = statisticsManager.todaysGoal
     private val statisticsMessage = statisticsManager.stepsToday.combine(goal) {steps, goal ->
@@ -72,31 +87,36 @@ class AIMessageViewModel(
         goal
             .debounce(5.minutes)
             .onEach {
-            makeRequest()
-        }.launchIn(viewModelScope)
+                makeRequest()
+            }.launchIn(viewModelScope)
     }
 
 
-    fun makeRequest()=viewModelScope
-        .launch {
+    fun makeRequest()=viewModelScope.launch {
             val msg = statisticsMessage.firstOrNull()?: return@launch
             yield()
-            aiMessenger.send(
-                msg
-            ).let { res ->
-                when (res) {
-                    is Result.Failure -> {
-                        println("failure ${res.error.message}")
-                    }
 
-                    is Result.Success -> {
-                        println("success ${res.data.message}")
-                        _response.update {
-                            res.data
-                        }
+            val result = aiState.value.sendMessage(msg)
+            when(result){
+                is Result.Failure -> {
+                    aiState.update {
+                        aiResourceExhaustedState
+                    }
+                    _response.update {
+                        AIMessage(
+                            message = "Something went wrong",
+                            origin = AIMessageOrigin.ASSISTANT
+                        )
+                    }
+                }
+                is Result.Success -> {
+                    aiState.update {
+                        aiNormalState
+                    }
+                    _response.update {
+                        result.data
                     }
                 }
             }
-
         }
 }

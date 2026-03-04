@@ -32,6 +32,7 @@ import nl.codingwithlinda.smartstep.features.step_tracker_admin.data.StepTracker
 import nl.codingwithlinda.smartstep.features.step_tracker_admin.data.StepTrackerCounterAdmin
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+val Context.dataStoreAI: DataStore<Preferences> by preferencesDataStore(name = "ai_session")
 
 class SmartStepApplication: Application() {
 

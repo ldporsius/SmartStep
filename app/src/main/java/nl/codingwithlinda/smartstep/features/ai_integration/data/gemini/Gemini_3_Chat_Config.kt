@@ -1,16 +1,19 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.data.gemini
 
 import com.google.firebase.Firebase
-import com.google.firebase.ai.GenerativeModel
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.Content
 import com.google.firebase.ai.type.GenerationConfig
 import com.google.firebase.ai.type.GenerativeBackend
+import com.google.firebase.ai.type.PublicPreviewAPI
 import com.google.firebase.ai.type.ThinkingConfig
 import com.google.firebase.ai.type.ThinkingLevel
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.models.GeminiModels
 import java.util.Locale
 
-open class Gemini_Chat_Config: GeminiGonfig {
+
+@OptIn(PublicPreviewAPI::class)
+open class Gemini_Chat_Config: GeminiFlashConfig {
 
     val systemInstruction = Content.Builder().setRole(
         "You are a fitness trainer assistant. " +
@@ -18,7 +21,7 @@ open class Gemini_Chat_Config: GeminiGonfig {
     ).build()
 
 
-    private val generationConfig = GenerationConfig.builder()
+   private val generationConfig = GenerationConfig.builder()
         .setThinkingConfig(ThinkingConfig.Builder()
             .setThinkingLevel(ThinkingLevel.LOW)
             .setIncludeThoughts(false)
@@ -26,9 +29,11 @@ open class Gemini_Chat_Config: GeminiGonfig {
         )
         .build()
 
-    override fun model(): GenerativeModel = Firebase.ai(backend = GenerativeBackend.googleAI())
+
+
+    override fun model() = Firebase.ai(backend = GenerativeBackend.googleAI())
         .generativeModel(
-            modelName = "gemini-3-flash",
+            modelName = GeminiModels.FLASH3.modelName,
             generationConfig = generationConfig,
             systemInstruction =  systemInstruction
         )

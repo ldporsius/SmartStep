@@ -4,6 +4,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import nl.codingwithlinda.smartstep.core.domain.util.FireBaseAIError
 import nl.codingwithlinda.smartstep.core.domain.util.Result
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
@@ -53,7 +54,7 @@ class FakeAIMessenger: AIMessenger {
             origin = AIMessageOrigin.USER
         )
     }
-    override suspend fun send(message: AIMessage): Result<AIMessage, Exception> {
+    override suspend fun send(message: AIMessage): Result<AIMessage, FireBaseAIError> {
         val response =   AIMessage(
             message = responses.random(),
             origin = AIMessageOrigin.ASSISTANT

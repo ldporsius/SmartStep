@@ -164,6 +164,7 @@ fun MainNavGraph(
                 fun aiMessageComponent() =
                     AIMessageComponent(
                         aiMessenger = aiMessenger,
+                        aiSessionRepo = appContainer.aiSessionRepo,
                         onMore = {
                             NavigationController.navigateTo(AIChatRoute)
                         }

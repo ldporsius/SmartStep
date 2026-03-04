@@ -1,20 +1,24 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.data.gemini
 
 import com.google.firebase.ai.type.FirebaseAIException
+import com.google.firebase.ai.type.PublicPreviewAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
+import nl.codingwithlinda.smartstep.core.domain.util.FireBaseAIError
 import nl.codingwithlinda.smartstep.core.domain.util.Result
 import nl.codingwithlinda.smartstep.core.domain.util.SSResult
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
+import kotlin.time.Duration.Companion.milliseconds
 
+@OptIn(PublicPreviewAPI::class)
 class GeminiAIMessenger(
-    var geminiGonfig: GeminiGonfig = Gemini_3_Config()
+    var geminiGonfig: GeminiFlashConfig
 ): AIMessenger {
 
     private val messageHistory = mutableListOf<AIMessage>()
@@ -28,7 +32,7 @@ class GeminiAIMessenger(
         )
     }
 
-    override suspend fun send(message: AIMessage): SSResult<AIMessage, Exception> {
+    override suspend fun send(message: AIMessage): SSResult<AIMessage, FireBaseAIError> {
 
         return withContext(Dispatchers.IO){
             try {
@@ -45,17 +49,22 @@ class GeminiAIMessenger(
                     listOf(msg)
                 }
                 Result.Success(msg)
-            }catch (e: Exception){
-                //e.printStackTrace()
+            }catch (e: FirebaseAIException){
+                e.printStackTrace()
 
-                _messages.update {
-                    listOf(
-                        AIMessage(e.message ?: "Something went wrong",
-                            origin = AIMessageOrigin.ASSISTANT)
-                    )
+                if (e.message?.contains("RESOURCE_EXHAUSTED") == true){
+                    val retryInSeconds = e.message?.let {
+                        it.substringAfterLast("Please retry in ").substringBefore("s")
+                            .toDoubleOrNull() ?: 0.0
+                    } ?: 0.0
+                    println("retryInSeconds: $retryInSeconds")
+
+                    val retryAtTime = System.currentTimeMillis().milliseconds.inWholeSeconds + (retryInSeconds).toLong()
+
+                    System.currentTimeMillis().milliseconds.inWholeSeconds
+                    return@withContext Result.Failure(FireBaseAIError.ResourceExhausted(retryAtTime))
                 }
-
-                Result.Failure(e)
+                Result.Failure(FireBaseAIError.OtherError)
             }
         }
     }
