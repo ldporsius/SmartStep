@@ -40,7 +40,7 @@ import nl.codingwithlinda.smartstep.features.ai_integration.data.ConnectivityChe
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
-import nl.codingwithlinda.smartstep.features.ai_integration.presentation.AIConnectivityUiState
+import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIConnectivityUiState
 import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIMessenger
 
 @Composable
@@ -97,11 +97,11 @@ fun AIMessageComponent(
                 is AIConnectivityUiState.OffLine -> {
                     Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                         Text(
-                            "Try again ",
+                            "Try again ⟳",
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                                 .clickable() {
-                                    onMore()
+                                   //todo
                                 },
                             style = MaterialTheme.typography.labelLarge
                         )

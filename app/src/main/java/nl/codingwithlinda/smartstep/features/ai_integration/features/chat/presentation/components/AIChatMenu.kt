@@ -1,18 +1,14 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,14 +22,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.AIChatAction
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.AIChatState
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.ToUi
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestion
 
 @Composable
-fun AIChatInput(
-    message: String = "",
-    onAction: (AIChatAction) -> Unit,
-    isChatEnabled: Boolean,
-    quickSuggestions: @Composable () -> Unit,
+fun AIChatMenu(
+    aiChatState: AIChatState,
+    quickSuggestions: List<QuickSuggestion> = emptyList(),
     modifier: Modifier = Modifier
 ) {
 
@@ -58,49 +54,27 @@ fun AIChatInput(
                 contentDescription = null)
         }
         AnimatedVisibility(shouldShowQuickSuggestions) {
-            quickSuggestions()
+            QuickSuggestions(
+                suggestions = quickSuggestions,
+                isChatEnabled = aiChatState is AIChatState.Online
+            )
         }
         HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            OutlinedTextField(
-                value = message,
-                onValueChange = {
-                    onAction(AIChatAction.ChatInput(it))
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            )
+        aiChatState.ToUi()
 
-            Box(modifier = Modifier
-                .clickable {
-                    onAction(AIChatAction.SendMessage(message))
-                }
-            ){
-                Image(
-                    painter = painterResource(R.drawable.send),
-                    contentDescription = "send"
-                )
-            }
-        }
     }
 }
 
 @Preview
 @Composable
-private fun PreviewAIChatInput() {
+private fun PreviewAIChatMenu() {
     SmartStepTheme() {
-        AIChatInput(
-            message = "",
-            onAction = {},
-            isChatEnabled = true,
-            quickSuggestions = { QuickSuggestions(
-                suggestions = emptyList()
-            ) }
+        AIChatMenu(
+            aiChatState = AIChatState.Online(
+                message = "",
+                onAction = {}
+            ),
         )
 
     }

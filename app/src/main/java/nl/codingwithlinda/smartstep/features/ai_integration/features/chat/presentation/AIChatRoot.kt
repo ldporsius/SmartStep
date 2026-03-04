@@ -2,12 +2,15 @@ package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.prese
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFactoryHelper
+import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+import nl.codingwithlinda.smartstep.features.ai_integration.data.ConnectivityCheck
 import nl.codingwithlinda.smartstep.features.ai_integration.data.GeminiAIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.data.Gemini_2_5_Chat_Config
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.components.AIChatScreen
@@ -26,10 +29,14 @@ fun AIChatRoot(
     val geminiMessenger = remember(Unit) {
         FakeAIMessenger()
     }
+
+    val context = LocalContext.current
+    val connectivityMonitor: ConnectivityMonitor = ConnectivityCheck(context)
     val chatViewModel = viewModel<AIChatViewModel>(
         factory = viewModelFactoryHelper {
             AIChatViewModel(
-                aiMessenger = geminiMessenger
+                aiMessenger = geminiMessenger,
+                connectivityMonitor = connectivityMonitor
             )
         }
     )
@@ -47,7 +54,6 @@ fun AIChatRoot(
         quickSuggestions = quickSuggestions.quickSuggestions,
         history = chatViewModel.chats.collectAsStateWithLifecycle().value,
         uiState = chatViewModel.uiState.collectAsStateWithLifecycle().value,
-        onAction = chatViewModel::onAction,
         onNavBack = onNavBack
     )
 

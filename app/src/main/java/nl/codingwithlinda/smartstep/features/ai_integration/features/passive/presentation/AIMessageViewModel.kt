@@ -21,7 +21,7 @@ import nl.codingwithlinda.smartstep.core.domain.util.Result
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
-import nl.codingwithlinda.smartstep.features.ai_integration.presentation.AIConnectivityUiState
+import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIConnectivityUiState
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import java.time.ZonedDateTime
 import kotlin.time.Duration.Companion.minutes

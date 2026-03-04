@@ -2,31 +2,43 @@ package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.prese
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.AIChatAction
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.AIChatUiState
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.AIChatState
 
 class AIChatViewModel(
-    private val aiMessenger: AIMessenger
+    private val aiMessenger: AIMessenger,
+    connectivityMonitor: ConnectivityMonitor
 ): ViewModel() {
 
     val chats = aiMessenger.messages
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private val _uiState = MutableStateFlow(AIChatUiState())
-    val uiState = _uiState.asStateFlow()
+    private var message = ""
+    private val _uiState = connectivityMonitor.isConnected.map { connected ->
+        when(connected){
+            true -> {
+                AIChatState.Online(
+                    message = message,
+                    onAction = ::onAction
+                )
+            }
+            false -> {
+                AIChatState.Offline
+            }
+        }
+    }
+    val uiState = _uiState.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AIChatState.Offline)
 
     fun onAction(action: AIChatAction){
         when(action){
             is AIChatAction.ChatInput -> {
-                _uiState.value = _uiState.value.copy(
                     message = action.message
-                )
             }
             is AIChatAction.SendMessage -> {
                 if(validateChatInput(action.message)){

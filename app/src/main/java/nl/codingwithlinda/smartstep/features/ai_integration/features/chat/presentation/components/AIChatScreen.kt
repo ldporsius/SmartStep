@@ -29,7 +29,7 @@ import nl.codingwithlinda.smartstep.design_system.ui.theme.bg
 import nl.codingwithlinda.smartstep.design_system.ui.theme.white
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.AIChatAction
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.AIChatUiState
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.AIChatState
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestion
 import nl.codingwithlinda.smartstep.tests.ai_integration.fakeChatHistory
 
@@ -37,8 +37,7 @@ import nl.codingwithlinda.smartstep.tests.ai_integration.fakeChatHistory
 fun AIChatScreen(
     quickSuggestions: List<QuickSuggestion>,
     history: List<AIMessage>,
-    uiState: AIChatUiState,
-    onAction: (AIChatAction) -> Unit,
+    uiState: AIChatState,
     onNavBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -81,15 +80,9 @@ fun AIChatScreen(
             modifier = Modifier,
             color = white
         ) {
-            AIChatInput(
-                message = uiState.message,
-                onAction = onAction,
-                isChatEnabled = uiState.isChatEnabled,
-                quickSuggestions = {
-                    QuickSuggestions(
-                        quickSuggestions
-                    )
-                },
+            AIChatMenu(
+                aiChatState = uiState,
+                quickSuggestions = quickSuggestions,
                 modifier = Modifier.padding(16.dp),
             )
         }
@@ -104,8 +97,7 @@ private fun PreviewAIChatScreen() {
         AIChatScreen(
             quickSuggestions = emptyList(),
             history = fakeChatHistory(),
-            uiState = AIChatUiState(),
-            onAction = {},
+            uiState = AIChatState.Offline,
             onNavBack = {}
         )
 

@@ -1,7 +1,6 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.components
 
-import android.R
-import androidx.compose.foundation.BorderStroke
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,19 +9,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.design_system.ui.theme.bg
-import nl.codingwithlinda.smartstep.design_system.ui.theme.secondary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.textPrimary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.textSecondary
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestion
@@ -30,8 +27,11 @@ import nl.codingwithlinda.smartstep.tests.ai_integration.fakeQuickSuggestionsCon
 
 @Composable
 fun QuickSuggestions(
+    isChatEnabled: Boolean,
     suggestions: List<QuickSuggestion>,
-    modifier: Modifier = Modifier) {
+   ) {
+
+    val context = LocalContext.current
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -39,7 +39,13 @@ fun QuickSuggestions(
             QuickSuggestionButton(
                 text = qs.title.asString()
             ) {
-                qs.onAction()
+                if (isChatEnabled){
+                    qs.onAction()
+                }
+                else{
+                    Toast.makeText(context, "You are offline", Toast.LENGTH_SHORT).show()
+                }
+
             }
         }
 
@@ -58,7 +64,8 @@ fun QuickSuggestionButton(
         contentColor = textPrimary
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .clickable() {
                     onClick()
                 }
@@ -77,6 +84,7 @@ fun QuickSuggestionButton(
 private fun PreviewQuickSuggestions() {
     SmartStepTheme() {
         QuickSuggestions(
+            isChatEnabled = true,
             suggestions = fakeQuickSuggestionsController.quickSuggestions
         )
     }

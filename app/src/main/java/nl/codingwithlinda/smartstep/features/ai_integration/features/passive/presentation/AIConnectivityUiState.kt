@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.ai_integration.presentation
+package nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation
 
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
@@ -10,7 +10,7 @@ sealed interface AIConnectivityUiState {
             message = "\uD83D\uDCE1 Connect to the internet to get AI insights",
             origin = AIMessageOrigin.ASSISTANT
         ),
-        val onButtonClick: () -> Unit = {}
+        val onButtonClick: () -> Unit
     ): AIConnectivityUiState
 
     data class OnLine(

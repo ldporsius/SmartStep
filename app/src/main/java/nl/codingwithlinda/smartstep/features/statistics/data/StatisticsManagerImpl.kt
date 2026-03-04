@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.transform
@@ -62,12 +63,16 @@ class StatisticsManagerImpl(
         stepCounts.firstOrNull {
             it.dayEpochDay == today.dateEpochDay
         }?.stepCount
+    }.onStart {
+        emit(0)
     }
 
     override val todaysGoal = dailyStepRepo.getDailyStepGoals().mapNotNull { goals ->
         goals.find {
             it.epochDay == today.dateEpochDay
         }?.goal
+    }.onStart {
+        emit(stepGoalRange.first())
     }
 
     val currentSystem = userSettingsRepo.unitSystemObservable.map{
