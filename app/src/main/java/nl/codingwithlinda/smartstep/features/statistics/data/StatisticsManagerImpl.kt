@@ -77,9 +77,7 @@ class StatisticsManagerImpl(
     override val distanceWalked = combine(userHeightCm, stepsToday){height, steps ->
         val distance = calculateDistanceCm(height, steps)
         cm(distance)
-    }.combine(currentSystem){
-            distance, system ->
-
+    }.combine(currentSystem){ distance, system ->
         when(system){
             UnitSystems.IMPERIAL ->{
                 convertDistance(distance, MILE)
@@ -118,7 +116,6 @@ class StatisticsManagerImpl(
 
     override val trend = dailyStepRepo.stepCountPlusUserOverride
         .map { items ->
-
           val percentage =  items.map {count ->
                 val goal = dailyStepRepo.getGoalForDay(count.dateYYYYMMDD)?.goal ?: stepGoalRange.first()
                 val percent = count.stepCount.toFloat() / goal
