@@ -5,7 +5,6 @@ import com.google.firebase.ai.LiveGenerativeModel
 import com.google.firebase.ai.type.PublicPreviewAPI
 
 interface GeminiGonfig {
-
     fun promptInstructions(): String
 }
 

@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.core.data.repo
 
+import android.R.attr.y
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -14,7 +15,7 @@ class AISessionRepoImpl(
     private val dataStore: DataStore<Preferences>
 ): AISessionRepo {
 
-    private val KEY_REQUESTS_MADE_MINUTE = intPreferencesKey("requests_made_minute")
+    private val KEY_REQUESTS_MADE_MINUTE = stringPreferencesKey("requests_made_minute")
     private val KEY_REQUESTS_MADE_DAY = intPreferencesKey("requests_made_day")
     private val KEY_SESSION_TIMED_OUT = longPreferencesKey("session_timed_out")
 
@@ -31,13 +32,15 @@ class AISessionRepoImpl(
         }
     }
 
-    override suspend fun requestsMadeMinute(): Int
-      = dataStore.data.firstOrNull()?.get(KEY_REQUESTS_MADE_MINUTE) ?: 0
+    override suspend fun requestsMadeMinute(): List<Long>
+      = dataStore.data.firstOrNull()?.get(KEY_REQUESTS_MADE_MINUTE)?.split(",")?.map { it.toLong() } ?: emptyList()
 
 
-    override suspend fun saveRequestsMadeMinute(requests: Int) {
+
+    override suspend fun saveRequestsMadeMinute(requestTimestampMillis: Long) {
         dataStore.edit {
-            it[KEY_REQUESTS_MADE_MINUTE] = requests
+            val timestamps = it[KEY_REQUESTS_MADE_MINUTE]?.split(",")?.map { it.toLong() }?.toMutableList() ?: mutableListOf()
+            timestamps.add(requestTimestampMillis)
         }
     }
 

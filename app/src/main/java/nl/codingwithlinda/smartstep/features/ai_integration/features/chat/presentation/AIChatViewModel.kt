@@ -7,12 +7,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIChatMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.AIChatAction
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.AIChatState
 
 class AIChatViewModel(
-    private val aiMessenger: AIMessenger,
+    private val aiMessenger: AIChatMessenger,
     connectivityMonitor: ConnectivityMonitor
 ): ViewModel() {
 

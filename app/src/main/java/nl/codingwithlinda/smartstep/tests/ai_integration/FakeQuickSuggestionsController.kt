@@ -21,6 +21,6 @@ val fakeStatisticsManager =  StatisticsManagerImpl(
 val fakeQuickSuggestionsController = QuickSuggestionsController(
     userSettingsRepo = FakeUserSettingsRepo(),
     statisticsManager = fakeStatisticsManager,
-    aiMessenger = FakeAIMessenger(),
+    aiMessenger = FakeAIChatMessenger(),
     dispatcherProvider = TestDispatcherProvider(Dispatchers.Main),
 )

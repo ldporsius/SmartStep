@@ -1,27 +1,21 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion
 
-import android.icu.lang.UCharacter.getAge
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.util.fastJoinToString
-import androidx.constraintlayout.compose.Dimension.Companion.percent
-import androidx.core.util.toRange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
-import nl.codingwithlinda.smartstep.features.settings.presentation.gender_settings.toUi
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIChatMessenger
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import java.time.LocalDateTime
-import java.time.temporal.TemporalQueries.localDate
 import java.util.Locale
 
 class QuickSuggestionsController(
     private val userSettingsRepo: UserSettingsRepo,
     private val statisticsManager: StatisticsManager,
-    private val aiMessenger: AIMessenger,
+    private val aiMessenger: AIChatMessenger,
     private val dispatcherProvider: DispatcherProvider
 ) {
 
