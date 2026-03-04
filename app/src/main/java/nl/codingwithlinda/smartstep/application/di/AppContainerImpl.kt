@@ -72,8 +72,7 @@ class AppContainerImpl(
             repo = activityRecognitionRepo
         )
     }
-    override
-    val statisticsManager: StatisticsManager by lazy {
+    override val statisticsManager: StatisticsManager by lazy {
         StatisticsManagerImpl(
             userSettingsRepo = userSettingsRepo,
             dailyStepRepo = dailyStepRepo,
