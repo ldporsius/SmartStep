@@ -156,7 +156,7 @@ class UserSettingsScreenTest {
             .pressStart()
 
         val actual = usersettingsRepo.loadSettings().weightGrams
-        val expected = convertWeight( LBSWeight(200.0), GRAM).weight.toDouble()
+        val expected = convertWeight( LBSWeight(200.0), GRAM).weight
         println("actual: $actual")
         println("expected: $expected")
         assertThat(

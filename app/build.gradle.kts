@@ -88,8 +88,6 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.1")
 
     //ai
-    //implementation("com.google.ai.client.generativeai:common:0.10.0")
-    //implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
     implementation(platform("com.google.firebase:firebase-bom:34.9.0"))
     implementation("com.google.firebase:firebase-ai")
     implementation("com.google.firebase:firebase-config")

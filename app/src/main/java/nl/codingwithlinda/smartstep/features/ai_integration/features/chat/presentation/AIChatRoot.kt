@@ -8,11 +8,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFactoryHelper
-import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityMonitor
+import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
-import nl.codingwithlinda.smartstep.features.ai_integration.data.ConnectivityCheck
-import nl.codingwithlinda.smartstep.features.ai_integration.data.GeminiAIMessenger
-import nl.codingwithlinda.smartstep.features.ai_integration.data.Gemini_2_5_Chat_Config
+import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityCheck
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.components.AIChatScreen
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestionsController
 import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIMessenger

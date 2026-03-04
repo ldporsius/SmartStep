@@ -1,15 +1,9 @@
-package nl.codingwithlinda.smartstep.features.ai_integration.data
+package nl.codingwithlinda.smartstep.features.ai_integration.data.gemini
 
 import com.google.firebase.Firebase
 import com.google.firebase.ai.GenerativeModel
 import com.google.firebase.ai.ai
-import com.google.firebase.ai.type.Content
-import com.google.firebase.ai.type.GenerationConfig
 import com.google.firebase.ai.type.GenerativeBackend
-import com.google.firebase.ai.type.ThinkingConfig
-import com.google.firebase.ai.type.ThinkingLevel
-import com.google.firebase.ai.type.generationConfig
-import java.util.Locale
 
 class Gemini_2_5_Chat_Config: Gemini_Chat_Config(){
 

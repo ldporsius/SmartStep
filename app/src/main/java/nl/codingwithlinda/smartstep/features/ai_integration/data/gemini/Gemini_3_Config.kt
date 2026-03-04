@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.ai_integration.data
+package nl.codingwithlinda.smartstep.features.ai_integration.data.gemini
 
 import com.google.firebase.Firebase
 import com.google.firebase.ai.GenerativeModel
@@ -10,11 +10,13 @@ import com.google.firebase.ai.type.ThinkingConfig
 import com.google.firebase.ai.type.ThinkingLevel
 import java.util.Locale
 
-open class Gemini_Chat_Config: GeminiGonfig {
+class Gemini_3_Config: GeminiGonfig {
 
-    val systemInstruction = Content.Builder().setRole(
+    private val systemInstruction = Content.Builder().setRole(
         "You are a fitness trainer assistant. " +
-                "You encourage someone to reach their step count goal. "
+                "You encourage someone to reach their step count goal. " +
+                "You never use more then one sentence." +
+                "You speak Dutch"
     ).build()
 
 
@@ -33,23 +35,23 @@ open class Gemini_Chat_Config: GeminiGonfig {
             systemInstruction =  systemInstruction
         )
     private val promptInstructions = StringBuilder()
-        .appendLine("You must generate one short textual message - a maximum of three sentences - that:")
+        .appendLine("You must generate one short textual message - ONE SENTENCE ONLY - that:")
         .appendLine("interprets the current activity state")
         .appendLine("does not contain medical advice")
         .appendLine("does not repeate any values of the users input")
         .appendLine("has a motivational or analytical tone")
 
     private val promptExamples = StringBuilder()
-        .appendLine("A walk in a park or a run, depending on your age and physical condition.")
-        .appendLine("Walk to the groceries store, don't drive.")
-        .appendLine("Have you considered walking the dog of your elderly neighbour?")
+        .appendLine("You’re on track today. Keep the pace steady.")
+        .appendLine("You’re a bit behind your goal — a short walk could help.")
+        .appendLine("Great job! You’ve already reached today’s goal.")
         .toString()
 
     private val completePrompt = StringBuilder()
         .appendLine(promptInstructions.toString())
-        .appendLine("Use the following as an inspiration to generate your response:")
+        .appendLine("Use the following as a guide to generate your response:")
         .appendLine(promptExamples)
-        .appendLine("Don't judge. Offer practical solutions.")
+        .appendLine("Be encouraging and enthusiast.")
         .appendLine("respond in the locale: ${Locale.getDefault()}.")
         .appendLine("Here is what the user says: ")
 

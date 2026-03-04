@@ -36,7 +36,7 @@ import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.design_system.ui.theme.primary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.secondary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.white
-import nl.codingwithlinda.smartstep.features.ai_integration.data.ConnectivityCheck
+import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityCheck
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger

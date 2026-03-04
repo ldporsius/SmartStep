@@ -1,36 +1,24 @@
-package nl.codingwithlinda.smartstep.features.ai_integration.data
+package nl.codingwithlinda.smartstep.features.ai_integration.data.gemini
 
 import com.google.firebase.Firebase
 import com.google.firebase.ai.GenerativeModel
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.Content
-import com.google.firebase.ai.type.GenerationConfig
 import com.google.firebase.ai.type.GenerativeBackend
-import com.google.firebase.ai.type.ThinkingConfig
-import com.google.firebase.ai.type.ThinkingLevel
+import java.util.Locale
 
-class Gemini_3_Config: GeminiGonfig {
+class Gemini_2_5_Config: GeminiGonfig {
 
     private val systemInstruction = Content.Builder().setRole(
         "You are a fitness trainer assistant. " +
                 "You encourage someone to reach their step count goal. " +
-                "You never use more then one sentence." +
-                "You speak Dutch"
+                "You never use more then one sentence."
+
     ).build()
-
-
-    private val generationConfig = GenerationConfig.builder()
-        .setThinkingConfig(ThinkingConfig.Builder()
-            .setThinkingLevel(ThinkingLevel.LOW)
-            .setIncludeThoughts(false)
-            .build()
-        )
-        .build()
 
     override fun model(): GenerativeModel = Firebase.ai(backend = GenerativeBackend.googleAI())
         .generativeModel(
-            modelName = "gemini-3-flash",
-            generationConfig = generationConfig,
+            modelName = "gemini-2.5-flash",
             systemInstruction =  systemInstruction
         )
     private val promptInstructions = StringBuilder()
@@ -51,7 +39,7 @@ class Gemini_3_Config: GeminiGonfig {
         .appendLine("Use the following as a guide to generate your response:")
         .appendLine(promptExamples)
         .appendLine("Be encouraging and enthusiast.")
-        .appendLine("respond in the locale: ${java.util.Locale.getDefault()}.")
+        .appendLine("respond in the locale: ${Locale.getDefault()}.")
         .appendLine("Here is what the user says: ")
 
     override fun promptInstructions(): String {

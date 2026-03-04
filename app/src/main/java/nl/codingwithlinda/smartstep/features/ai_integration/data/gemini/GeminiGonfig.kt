@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.ai_integration.data
+package nl.codingwithlinda.smartstep.features.ai_integration.data.gemini
 
 import com.google.firebase.ai.GenerativeModel
 

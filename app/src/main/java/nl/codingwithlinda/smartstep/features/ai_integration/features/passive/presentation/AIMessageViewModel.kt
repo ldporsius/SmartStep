@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
-import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityMonitor
+import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.smartstep.core.domain.util.Result
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
