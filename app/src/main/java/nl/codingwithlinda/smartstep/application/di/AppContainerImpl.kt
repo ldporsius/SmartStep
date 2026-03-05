@@ -28,7 +28,7 @@ class AppContainerImpl(
     private val context: Application
 ): AppContainer() {
 
-    override val applicationWideScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    override val applicationWideScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
 
     override val dataStoreSettings: DataStore<Preferences> = context.dataStore
@@ -77,7 +77,8 @@ class AppContainerImpl(
             userSettingsRepo = userSettingsRepo,
             dailyStepRepo = dailyStepRepo,
             walkDurationRepo = walkDurationRepo,
-            dispatcherProvider = AndroidDispatcherProvider()
+            dispatcherProvider = AndroidDispatcherProvider(),
+            applicationScope = applicationWideScope
         )
     }
 

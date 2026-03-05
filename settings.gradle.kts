@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "SmartStep"
 include(":app")
+include(":ai_scitely")

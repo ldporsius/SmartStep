@@ -1,12 +1,16 @@
 package nl.codingwithlinda.smartstep.features.statistics.data
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.shareIn
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
@@ -33,7 +37,8 @@ class StatisticsManagerImpl(
     userSettingsRepo: UserSettingsRepo,
     dailyStepRepo: DailyStepRepo,
     walkDurationRepo: WalkDurationRepo,
-    dispatcherProvider: DispatcherProvider
+    dispatcherProvider: DispatcherProvider,
+    applicationScope: CoroutineScope
 ): StatisticsManager {
 
     val userHeightCm = userSettingsRepo.userSettingsObservable.map {
@@ -53,17 +58,25 @@ class StatisticsManagerImpl(
     private val today : DateYYYYMMDD
         get() = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())
 
-    override val stepsToday = dailyStepRepo.stepCountPlusUserOverride.mapNotNull { stepCounts ->
+    override val stepsToday = dailyStepRepo.stepCountPlusUserOverride.map{ stepCounts ->
         stepCounts.firstOrNull {
             it.dayEpochDay == today.dateEpochDay
-        }?.stepCount
-    }
+        }?.stepCount ?: 0
+    }.shareIn(
+        applicationScope,
+        SharingStarted.Eagerly,
+        replay = 10
+    )
 
     override val todaysGoal = dailyStepRepo.getDailyStepGoals().mapNotNull { goals ->
         goals.find {
             it.epochDay == today.dateEpochDay
         }?.goal
-    }
+    }.shareIn(
+        applicationScope,
+        SharingStarted.Eagerly,
+        replay = 10
+    )
 
     override val progressTowardsGoal: Flow<Float> = combine(stepsToday,todaysGoal){
             steps, goal ->

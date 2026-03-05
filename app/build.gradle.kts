@@ -60,6 +60,7 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 dependencies {
+    implementation(project(":ai_scitely"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
@@ -80,6 +81,7 @@ dependencies {
     //room
     implementation(libs.room.ktx)
     implementation(libs.androidx.room.runtime)
+
     ksp(libs.androidx.room.compiler)
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")

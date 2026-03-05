@@ -148,7 +148,7 @@ class StepTrackerService: Service() {
         }
 
         serviceScope.launch {
-            statisticsManager.progressTowardsGoal.collect {progress ->
+            statisticsManager.progressTowardsGoal.collectLatest {progress ->
                 val update = _notificationInfo.updateAndGet {
                     it.copy(
                         progress = progress

@@ -50,8 +50,14 @@ class AIMessageViewModel(
     private val aiState = MutableStateFlow<AIState>(aiNormalState)
 
     private val goal = statisticsManager.todaysGoal
-    private val statisticsMessage = statisticsManager.stepsToday.combine(goal) {steps, goal ->
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), -1)
+    private val steps = statisticsManager.stepsToday
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), 0)
+    private val statisticsMessage = steps.combine(goal) {steps, goal ->
 
+        if(goal == -1 || steps == -1){
+            return@combine null
+        }
         val zonedDateTime = ZonedDateTime.now()
         val timeOfDay = zonedDateTime.hour
         AIMessage(

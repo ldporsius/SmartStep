@@ -192,6 +192,19 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="708763775">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Tests" value="360" />
+                  <entry key="motorola motorola edge 60 neo" value="120" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="726795470">
           <value>
             <AndroidTestResultsTableState>

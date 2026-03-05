@@ -1,6 +1,7 @@
 package nl.codingwithlinda.smartstep.tests.ai_integration
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestionsController
 import nl.codingwithlinda.smartstep.features.statistics.data.StatisticsManagerImpl
 import nl.codingwithlinda.smartstep.tests.FakeActivityRecognitionRepo
@@ -16,7 +17,8 @@ val fakeStatisticsManager =  StatisticsManagerImpl(
         FakeActivityRecognitionRepo().getStepCountForDate(it)
     },
     walkDurationRepo = FakeWalkDurationRepo(),
-    dispatcherProvider = TestDispatcherProvider(Dispatchers.Main)
+    dispatcherProvider = TestDispatcherProvider(Dispatchers.Main),
+    applicationScope = GlobalScope
 )
 val fakeQuickSuggestionsController = QuickSuggestionsController(
     userSettingsRepo = FakeUserSettingsRepo(),
