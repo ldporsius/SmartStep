@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
+import nl.codingwithlinda.smartstep.core.domain.util.FireBaseAIError
 import nl.codingwithlinda.smartstep.core.domain.util.Result
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AINormalState
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIResourceExhaustedState
@@ -98,21 +99,34 @@ class AIMessageViewModel(
     }
 
 
-    fun makeRequest()=viewModelScope.launch {
+    fun makeRequest() = viewModelScope.launch {
             val msg = statisticsMessage.firstOrNull()?: return@launch
             yield()
 
             val result = aiState.value.sendMessage(msg)
             when(result){
                 is Result.Failure -> {
-                    aiState.update {
-                        aiResourceExhaustedState
-                    }
-                    _response.update {
-                        AIMessage(
-                            message = "Something went wrong",
-                            origin = AIMessageOrigin.ASSISTANT
-                        )
+                    when(result.error){
+                        is FireBaseAIError.ResourceExhausted -> {
+                            aiState.update {
+                                aiResourceExhaustedState
+
+                            }
+                            _response.update {
+                                AIMessage(
+                                    message = "AI has reached the maximum request allowed",
+                                    origin = AIMessageOrigin.ASSISTANT
+                                )
+                            }
+                        }
+                        FireBaseAIError.OtherError -> {
+                            _response.update {
+                                AIMessage(
+                                    message = "Something went wrong",
+                                    origin = AIMessageOrigin.ASSISTANT
+                                )
+                            }
+                        }
                     }
                 }
                 is Result.Success -> {

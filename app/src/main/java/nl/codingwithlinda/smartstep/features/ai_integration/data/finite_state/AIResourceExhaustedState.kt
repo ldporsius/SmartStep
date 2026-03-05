@@ -15,32 +15,8 @@ class AIResourceExhaustedState(
 ): AIState {
 
     override suspend fun sendMessage(msg: AIMessage): Result<AIMessage, FireBaseAIError> {
-        if (aiSessionRepo.sessionTimedOut() < System.currentTimeMillis()) {
-            //we can retry sending the message
-            val result = aiMessenger.send(
-               msg
-            )
-            when(result){
-                is Result.Failure -> {
-                    when (result.error) {
-                        is FireBaseAIError.ResourceExhausted -> {
-                            aiSessionRepo.saveSessionTimedOut(result.error.retryIn)
-                        }
-
-                        is FireBaseAIError.OtherError -> {
-                            //todo
-                        }
-                    }
-                }
-                is Result.Success -> {
-                    aiSessionRepo.saveSessionTimedOut(System.currentTimeMillis())
-                    aiSessionRepo.saveInHistory(result.data.message)
-                }
-            }
-            return result
-        }
-
-        val fakeIt = aiSessionRepo.history.firstOrNull()?.random() ?: ""
+        println("--- AI RESOURCE EXHAUSTED STATE --- returning fake")
+        val fakeIt = aiSessionRepo.history.firstOrNull()?.random() ?: "No history"
         return Result.Success(
             AIMessage(
                 message = fakeIt,

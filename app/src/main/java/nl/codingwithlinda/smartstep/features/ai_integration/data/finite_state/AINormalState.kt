@@ -10,7 +10,6 @@ import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.finite_state.AIState
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class AINormalState(
@@ -29,19 +28,19 @@ class AINormalState(
             val requestMinuteCount = aiSessionRepo.requestsMadeMinute()
             println("--- AI NORMAL STATE --- requestMinuteCount: $requestMinuteCount")
 
-            val durationsMinutes = requestMinuteCount.count {
+            val minutesLeft = requestMinuteCount.count {
                 (now - it) < 60.seconds.inWholeMilliseconds
             }
-            println("--- AI NORMAL STATE --- Duration: $durationsMinutes")
+            println("--- AI NORMAL STATE --- Duration: $minutesLeft")
 
-            val hasMaxRequestsInMinute = durationsMinutes >= max_requests_per_minute
+            val canMakeRequest = minutesLeft > 0
 
             aiSessionRepo.saveRequestsMadeMinute(now)
 
-            if (hasMaxRequestsInMinute) {
+          /*  if (!canMakeRequest) {
                 val fakeIt =  aiSessionRepo.history.firstOrNull()?.lastOrNull() ?: ""
                 val fakeAppend = fakeIt.run{
-                    this.plus("\nPlease wait before making another request")
+                    this.plus("\n\nPlease wait before making another request")
                 }
 
                 return Result.Success(
@@ -49,15 +48,13 @@ class AINormalState(
                       fakeAppend , AIMessageOrigin.ASSISTANT
                 )
                 )
-            }
+            }*/
 
-            println("--- AI NORMAL STATE --- hasMaxRequestsInMinute: $hasMaxRequestsInMinute")
+            println("--- AI NORMAL STATE --- hasMaxRequestsInMinute: $canMakeRequest")
 
             val result = aiMessenger.send(
                 msg
             )
-
-
             when (result) {
                 is Result.Failure -> {
                     when (result.error) {

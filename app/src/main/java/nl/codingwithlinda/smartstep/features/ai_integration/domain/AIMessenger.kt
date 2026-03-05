@@ -1,6 +1,8 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.domain
 
+import android.util.Log.e
 import com.google.firebase.ai.type.FirebaseAIException
+import com.google.firebase.ai.type.QuotaExceededException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -27,28 +29,35 @@ abstract class AIMessenger(
                 )
 
                 Result.Success(msg)
-            } catch (e: FirebaseAIException) {
+            }
+            catch (e: QuotaExceededException){
+                Result.Failure(FireBaseAIError.ResourceExhausted(0))
+            }
+            catch (e: FirebaseAIException) {
                 e.printStackTrace()
 
-                if (e.message?.contains("RESOURCE_EXHAUSTED") == true) {
-                    val retryInSeconds = e.message?.let {
-                        it.substringAfterLast("Please retry in ").substringBefore("s")
-                            .toDoubleOrNull() ?: 0.0
-                    } ?: 0.0
-                    println("retryInSeconds: $retryInSeconds")
-
-                    val retryAtTime =
-                        System.currentTimeMillis().milliseconds.inWholeSeconds + (retryInSeconds).toLong()
-
-                    System.currentTimeMillis().milliseconds.inWholeSeconds
-                    return@withContext nl.codingwithlinda.smartstep.core.domain.util.Result.Failure(
-                        FireBaseAIError.ResourceExhausted(retryAtTime)
-                    )
+                e.message?.run {
+                    Result.Failure(FireBaseAIError.ResourceExhausted(extractRetryTime(this)))
                 }
+               
                 Result.Failure(FireBaseAIError.OtherError)
             }
         }
     }
+
+    private fun extractRetryTime(message: String): Long {
+        val retryInSeconds = message.let {
+            it.substringAfterLast("Please retry in ").substringBefore("s")
+                .toDoubleOrNull() ?: 0.0
+        } ?: 0.0
+        println("retryInSeconds: $retryInSeconds")
+
+        val retryAtTime =
+            System.currentTimeMillis().milliseconds.inWholeSeconds + (retryInSeconds).toLong()
+
+        return retryAtTime
+    }
+
 
 }
 

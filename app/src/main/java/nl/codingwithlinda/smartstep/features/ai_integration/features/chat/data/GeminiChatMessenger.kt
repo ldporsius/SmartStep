@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data
 
+import android.util.Log.e
 import com.google.firebase.ai.type.FirebaseAIException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,7 @@ import nl.codingwithlinda.smartstep.features.ai_integration.domain.finite_state.
 
 class GeminiChatMessenger(
     geminiGonfig: GeminiFlashConfig,
-   private val aiSessionRepo: AISessionRepo
+    private val aiSessionRepo: AISessionRepo
 
 ): AIChatMessenger(geminiGonfig) {
     override fun create(text: String): AIMessage {
@@ -44,46 +45,40 @@ class GeminiChatMessenger(
         _messages.update {
             messageHistory.toList()
         }
-        try {
 
-            val result = state.sendMessage(msg)
-            when(result){
-                is Result.Failure -> {
-                    when(result.error){
-                        FireBaseAIError.OtherError -> {
-                            //todo
-                        }
-                        is FireBaseAIError.ResourceExhausted -> {
-                            state = exhaustedState
-                        }
+        val result = state.sendMessage(msg)
+        when(result){
+            is Result.Failure -> {
+                when(result.error){
+                    FireBaseAIError.OtherError -> {
+                        //todo
                     }
-                }
-                is Result.Success -> {
-                    messageHistory.add(
-                        result.data
-                    )
-                    _messages.update {
-                        messageHistory.toList()
+                    is FireBaseAIError.ResourceExhausted -> {
+                        state = exhaustedState
+                        _messages.update {
+                            it.plus(
+                                AIMessage(
+                                    "Not able to respond",
+                                    AIMessageOrigin.ASSISTANT
+                                )
+                            )
+                        }
                     }
                 }
             }
-
-        }catch (e: FirebaseAIException){
-            //e.printStackTrace()
-            messageHistory.add(
-                AIMessage(
-                    message = e.localizedMessage ?: "Something went wrong",
-                    origin = AIMessageOrigin.ASSISTANT
+            is Result.Success -> {
+                messageHistory.add(
+                    result.data
                 )
-            )
-            _messages.update {
-                messageHistory.toList()
+                _messages.update {
+                    messageHistory.toList()
+                }
             }
         }
     }
 
     override suspend fun send(message: AIMessage): SSResult<AIMessage, FireBaseAIError> {
-       return super.send(message)
+        return super.send(message)
     }
 
     override val messages: Flow<List<AIMessage>> = _messages
