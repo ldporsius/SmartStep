@@ -47,9 +47,5 @@ class AIResourceExhaustedState(
                 origin = AIMessageOrigin.ASSISTANT
             )
         )
-        /*val retryIn = aiSessionRepo.sessionTimedOut()
-
-       return Result.Failure(error = FireBaseAIError.ResourceExhausted(retryIn = retryIn))
-        */
     }
 }

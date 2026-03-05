@@ -18,17 +18,17 @@ class ScitelyAIService(
     private val httpClient: HttpClient = KtorClient.client()
 
     private val chatbody = """
-        "model": "qwen3-32b",
-    "messages": [
-      {"role": "user", "content": "Hello!"}
-    ]
+       {
+        "model": "gpt-5.2",
+        "input": "Write a one-sentence bedtime story about a unicorn."
+    }
     """.trimIndent()
     override suspend fun sendMessage(message: AIRequest): AIResponse? {
         println("--- SCITELY AI SERVICE --- SENDS MESSAGE")
         try {
             val result = httpClient.post(HttpRoutes.CHAT_COMPLETIONS_ENDPOINT) {
                 this.contentType(ContentType.Application.Json)
-                this.header("Authorization", "Bearer sk-scitely-${BuildConfig.SKITELY_AI_KEY}")
+                this.header("Authorization", "Bearer ${BuildConfig.OPEN_AI_KEY}")
                 this.setBody(chatbody)
 
             }

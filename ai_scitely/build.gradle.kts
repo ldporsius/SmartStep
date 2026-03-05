@@ -19,7 +19,7 @@ android {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
 
-        buildConfigField("String", "SKITELY_AI_KEY", properties.getProperty("SKITELY_AI_KEY"))
+        buildConfigField("String", "OPEN_AI_KEY", properties.getProperty("OPEN_AI_KEY"))
 
     }
 
