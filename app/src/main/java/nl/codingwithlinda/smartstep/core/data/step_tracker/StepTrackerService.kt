@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.MainActivity
@@ -40,7 +41,6 @@ class StepTrackerService: Service() {
     override fun onCreate() {
         super.onCreate()
         notificationManager =  getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -98,9 +98,9 @@ class StepTrackerService: Service() {
         return notification.build()
     }
 
-    private val notificationUpdater = Channel<SmartStepNotification>()
+    //private val notificationUpdater = Channel<SmartStepNotification>()
     private val _notificationInfo = MutableStateFlow<SmartStepNotification>(SmartStepNotification(0,0,0f))
-    private fun notificationInfo() =  notificationUpdater.receiveAsFlow().map {
+    private fun notificationInfo() =  _notificationInfo.map {
       info, ->
 
         println("--- STEP TRACKER SERVICE combined statistics --- steps: ${info.steps}, calories: ${info.calories} , progress: ${info.progress}")
@@ -132,7 +132,8 @@ class StepTrackerService: Service() {
                        steps = newSteps
                    )
                }
-                notificationUpdater.send(update)
+                _notificationInfo.update { update }
+
             }
         }
 
@@ -143,7 +144,7 @@ class StepTrackerService: Service() {
                         calories = newCalories
                     )
                 }
-                notificationUpdater.send(update)
+                _notificationInfo.update { update }
             }
         }
 
@@ -154,7 +155,7 @@ class StepTrackerService: Service() {
                         progress = progress
                     )
                 }
-                notificationUpdater.send(update)
+                _notificationInfo.update { update }
             }
         }
 
