@@ -190,6 +190,7 @@ fun MainNavGraph(
             entry<AIChatRoute>{
                 AIChatRoot(
                     userSettingsRepo = appContainer.userSettingsRepo,
+                    aiSessionRepo = appContainer.aiSessionRepo,
                     onNavBack = {
                         backStack.remove(AIChatRoute)
                     }

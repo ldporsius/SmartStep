@@ -11,6 +11,9 @@ import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFa
 import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityCheck
+import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.Gemini_2_5_Chat_Config
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.GeminiChatMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.components.AIChatScreen
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestionsController
 import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIChatMessenger
@@ -19,14 +22,16 @@ import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIMessenger
 @Composable
 fun AIChatRoot(
     userSettingsRepo: UserSettingsRepo,
+    aiSessionRepo: AISessionRepo,
     onNavBack: () -> Unit
 ) {
 
-   /* val geminiMessenger = GeminiAIMessenger(
-        geminiGonfig = Gemini_2_5_Chat_Config()
-    )*/
+
     val geminiMessenger = remember(Unit) {
-        FakeAIChatMessenger()
+        GeminiChatMessenger(
+            geminiGonfig = Gemini_2_5_Chat_Config(),
+            aiSessionRepo = aiSessionRepo
+        )
     }
 
     val context = LocalContext.current
