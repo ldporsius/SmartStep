@@ -17,8 +17,8 @@ class FakeAISessionRepo: AISessionRepo {
     }
 
     override suspend fun requestsMadeMinute(): List<Long> {
-        return (6 downTo 0).map{
-            System.currentTimeMillis() - it * 1000 * 60L
+        return (10 downTo 0).map{
+            System.currentTimeMillis() - it * 1000 * 10L
         }
     }
 

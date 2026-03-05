@@ -11,6 +11,7 @@ import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrig
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.finite_state.AIState
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class AINormalState(
     private val aiMessenger: AIMessenger,
@@ -28,18 +29,16 @@ class AINormalState(
             val requestMinuteCount = aiSessionRepo.requestsMadeMinute()
             println("--- AI NORMAL STATE --- requestMinuteCount: $requestMinuteCount")
 
-            val durationsMinutes = requestMinuteCount.chunked(6).map {
-                it.last() - it.first()
-            }.map {
-                it.milliseconds.inWholeMinutes
+            val durationsMinutes = requestMinuteCount.count {
+                (now - it) < 60.seconds.inWholeMilliseconds
             }
             println("--- AI NORMAL STATE --- Duration: $durationsMinutes")
 
-            val isWithinMinute = (durationsMinutes.lastOrNull() ?: 0) < max_requests_per_minute
+            val hasMaxRequestsInMinute = durationsMinutes >= max_requests_per_minute
 
             aiSessionRepo.saveRequestsMadeMinute(now)
 
-            if (!isWithinMinute) {
+            if (hasMaxRequestsInMinute) {
                 val fakeIt =  aiSessionRepo.history.firstOrNull()?.lastOrNull() ?: ""
                 val fakeAppend = fakeIt.run{
                     this.plus("\nPlease wait before making another request")
@@ -47,13 +46,12 @@ class AINormalState(
 
                 return Result.Success(
                     AIMessage(
-                      fakeAppend ,
-                        AIMessageOrigin.ASSISTANT
+                      fakeAppend , AIMessageOrigin.ASSISTANT
                 )
                 )
             }
 
-            println("--- AI NORMAL STATE --- isWithinMinute: $isWithinMinute")
+            println("--- AI NORMAL STATE --- hasMaxRequestsInMinute: $hasMaxRequestsInMinute")
 
             val result = aiMessenger.send(
                 msg

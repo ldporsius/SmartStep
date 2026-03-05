@@ -28,7 +28,9 @@ class GeminiChatMessenger(
         )
     }
 
-    private var state: AIState = AINormalState(this, aiSessionRepo)
+    private val normalState = AINormalState(this, aiSessionRepo)
+    private val exhaustedState = AIResourceExhaustedState(this, aiSessionRepo)
+    private var state: AIState = normalState
     private val messageHistory = mutableListOf<AIMessage>()
     private val _messages = MutableStateFlow<List<AIMessage>>(emptyList())
 
@@ -52,7 +54,7 @@ class GeminiChatMessenger(
                             //todo
                         }
                         is FireBaseAIError.ResourceExhausted -> {
-                            state = AIResourceExhaustedState(this, aiSessionRepo)
+                            state = exhaustedState
                         }
                     }
                 }

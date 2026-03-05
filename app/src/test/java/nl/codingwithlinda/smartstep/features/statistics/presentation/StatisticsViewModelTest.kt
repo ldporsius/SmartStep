@@ -3,8 +3,10 @@ package nl.codingwithlinda.smartstep.features.statistics.presentation
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -40,7 +42,8 @@ class StatisticsViewModelTest {
         userSettingsRepo = userSettingsRepo,
         dailyStepRepo = dailyStepRepo,
         walkDurationRepo = walkDurationRepo,
-        dispatcherProvider = testDispatcherProvider
+        dispatcherProvider = testDispatcherProvider,
+        applicationScope = CoroutineScope(testDispatcher)
     )
 
     @Before

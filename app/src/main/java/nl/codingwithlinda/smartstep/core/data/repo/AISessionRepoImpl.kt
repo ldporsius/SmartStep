@@ -1,6 +1,7 @@
 package nl.codingwithlinda.smartstep.core.data.repo
 
 import android.R.attr.y
+import androidx.compose.ui.util.fastJoinToString
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -35,12 +36,11 @@ class AISessionRepoImpl(
     override suspend fun requestsMadeMinute(): List<Long>
       = dataStore.data.firstOrNull()?.get(KEY_REQUESTS_MADE_MINUTE)?.split(",")?.map { it.toLong() } ?: emptyList()
 
-
-
     override suspend fun saveRequestsMadeMinute(requestTimestampMillis: Long) {
+        val timestamps = requestsMadeMinute().plus(requestTimestampMillis)
+
         dataStore.edit {
-            val timestamps = it[KEY_REQUESTS_MADE_MINUTE]?.split(",")?.map { it.toLong() }?.toMutableList() ?: mutableListOf()
-            timestamps.add(requestTimestampMillis)
+            it[KEY_REQUESTS_MADE_MINUTE] = timestamps.fastJoinToString(",")
         }
     }
 

@@ -26,7 +26,6 @@ fun AIChatRoot(
     onNavBack: () -> Unit
 ) {
 
-
     val geminiMessenger = remember(Unit) {
         GeminiChatMessenger(
             geminiGonfig = Gemini_2_5_Chat_Config(),
@@ -36,6 +35,7 @@ fun AIChatRoot(
 
     val context = LocalContext.current
     val connectivityMonitor: ConnectivityMonitor = ConnectivityCheck(context)
+
     val chatViewModel = viewModel<AIChatViewModel>(
         factory = viewModelFactoryHelper {
             AIChatViewModel(
