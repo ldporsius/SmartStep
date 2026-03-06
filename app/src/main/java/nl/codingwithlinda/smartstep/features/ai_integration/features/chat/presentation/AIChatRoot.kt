@@ -7,7 +7,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
-import nl.codingwithlinda.smartstep.application.di.ai_plugin.AIPluginProvider
+import nl.codingwithlinda.smartstep.features.ai_integration.data.ai_plugin.AIPluginProvider
 import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFactoryHelper
 import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo

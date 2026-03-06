@@ -15,9 +15,7 @@ import nl.codingwithlinda.ai_integration.groq.data.dto.response.GroqResponse
 import nl.codingwithlinda.ai_integration.groq.domain.remote.AIService
 
 
-class AIServiceImpl(
-
-): AIService {
+class AIServiceImpl: AIService {
     private val httpClient: HttpClient = KtorClient.client()
 
     override suspend fun sendMessage(message: AIRequest): AIResponse {

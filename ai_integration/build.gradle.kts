@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.material)
 
     implementation(libs.bundles.ktor)
+    implementation(project(":core"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
