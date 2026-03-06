@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import nl.codingwithlinda.smartstep.core.domain.util.UiText
+import nl.codingwithlinda.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 
 @Composable

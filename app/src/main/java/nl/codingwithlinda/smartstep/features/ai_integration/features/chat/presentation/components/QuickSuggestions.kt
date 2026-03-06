@@ -15,15 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
-import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.design_system.ui.theme.bg
 import nl.codingwithlinda.smartstep.design_system.ui.theme.textPrimary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.textSecondary
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestion
-import nl.codingwithlinda.smartstep.tests.ai_integration.fakeQuickSuggestionsController
 
 @Composable
 fun QuickSuggestions(
@@ -76,16 +73,5 @@ fun QuickSuggestionButton(
             Text(text,
                 style = MaterialTheme.typography.labelLarge)
         }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewQuickSuggestions() {
-    SmartStepTheme() {
-        QuickSuggestions(
-            isChatEnabled = true,
-            suggestions = fakeQuickSuggestionsController.quickSuggestions
-        )
     }
 }

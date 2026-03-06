@@ -1,7 +1,7 @@
 package nl.codingwithlinda.smartstep.tests.di
 
 import kotlinx.coroutines.CoroutineDispatcher
-import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
+import nl.codingwithlinda.core.di.DispatcherProvider
 
 class TestDispatcherProvider(
     var testDispatcher: CoroutineDispatcher

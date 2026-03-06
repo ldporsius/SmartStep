@@ -7,8 +7,8 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBS
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.TestConverter
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weights
-import nl.codingwithlinda.smartstep.core.domain.util.UiText
-import nl.codingwithlinda.smartstep.core.domain.util.UiText.DynamicText
+import nl.codingwithlinda.core.domain.util.UiText
+import nl.codingwithlinda.core.domain.util.UiText.DynamicText
 
 fun Weight.toUi(): UiText{
     return when(this) {

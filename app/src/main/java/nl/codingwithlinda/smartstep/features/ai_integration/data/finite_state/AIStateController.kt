@@ -2,14 +2,16 @@ package nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AISessionRepo
-import nl.codingwithlinda.smartstep.core.domain.util.AIError
-import nl.codingwithlinda.smartstep.core.domain.util.Result
-import nl.codingwithlinda.smartstep.core.domain.util.SSResult
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.finite_state.AIState
+import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.core.domain.util.Result
+import nl.codingwithlinda.core.domain.util.SSResult
+import nl.codingwithlinda.ai.AIMessage
+import nl.codingwithlinda.ai.AIMessageOrigin
+import nl.codingwithlinda.ai.AIMessenger
+import nl.codingwithlinda.ai.data.finite_state.AINormalState
+import nl.codingwithlinda.ai.data.finite_state.AIResourceExhaustedState
+import nl.codingwithlinda.ai.domain.error.AIError
+import nl.codingwithlinda.ai.domain.finite_state.AIState
 
 class AIStateController(
     val aiMessenger: AIMessenger,

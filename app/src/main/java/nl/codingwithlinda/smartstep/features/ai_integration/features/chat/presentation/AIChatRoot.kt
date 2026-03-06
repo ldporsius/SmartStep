@@ -12,16 +12,16 @@ import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFa
 import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityCheck
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AISessionRepo
-import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.chat.Gemini_2_5_Chat_Config
-import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.chat.GeminiChatMessengerImpl
+import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.ai.domain.plugin_provider.AIapi
+import nl.codingwithlinda.ai.domain.plugin_provider.AImode
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.components.AIChatScreen
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestionsController
 
 @Composable
 fun AIChatRoot(
-    mode: AIPluginProvider.Companion.AImode,
-    api: AIPluginProvider.Companion.AIapi,
+    mode: AImode,
+    api: AIapi,
     userSettingsRepo: UserSettingsRepo,
     aiSessionRepo: AISessionRepo,
     onNavBack: () -> Unit

@@ -81,6 +81,8 @@ dependencies {
     //room
     implementation(libs.room.ktx)
     implementation(libs.androidx.room.runtime)
+    implementation(project(":core"))
+    implementation(project(":ai_firebase"))
 
     ksp(libs.androidx.room.compiler)
 

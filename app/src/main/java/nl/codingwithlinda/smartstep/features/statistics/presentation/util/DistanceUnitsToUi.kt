@@ -1,6 +1,5 @@
 package nl.codingwithlinda.smartstep.features.statistics.presentation.util
 
-import nl.codingwithlinda.smartstep.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.CM
 import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.Distance
 import nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion.KM

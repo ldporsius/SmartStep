@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.core.domain.util.UiText
+import nl.codingwithlinda.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import nl.codingwithlinda.smartstep.features.statistics.presentation.model.StatisticsUi
 import nl.codingwithlinda.smartstep.features.statistics.presentation.util.toUi

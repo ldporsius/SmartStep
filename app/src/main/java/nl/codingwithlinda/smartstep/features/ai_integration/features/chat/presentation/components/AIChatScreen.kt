@@ -27,11 +27,10 @@ import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.design_system.ui.theme.bg
 import nl.codingwithlinda.smartstep.design_system.ui.theme.white
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.AIChatAction
+import nl.codingwithlinda.ai.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.AIChatState
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestion
-import nl.codingwithlinda.smartstep.tests.ai_integration.fakeChatHistory
+import nl.codingwithlinda.ai_firebase.tests.fakeChatHistory
 
 @Composable
 fun AIChatScreen(

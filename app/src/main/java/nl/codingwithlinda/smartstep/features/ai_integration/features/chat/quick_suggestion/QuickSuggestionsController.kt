@@ -4,9 +4,9 @@ import androidx.compose.ui.util.fastJoinToString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
+import nl.codingwithlinda.core.di.DispatcherProvider
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
-import nl.codingwithlinda.smartstep.core.domain.util.UiText
+import nl.codingwithlinda.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import java.time.LocalDateTime

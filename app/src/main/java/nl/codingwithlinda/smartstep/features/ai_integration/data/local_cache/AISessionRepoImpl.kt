@@ -1,19 +1,16 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.data.local_cache
 
 import androidx.compose.ui.util.fastJoinToString
-import androidx.constraintlayout.compose.DesignElements.map
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AIMessageDto
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.ai.AIMessage
+import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import kotlin.collections.take
 
 class AISessionRepoImpl(
@@ -37,15 +34,26 @@ class AISessionRepoImpl(
 
     override val history = dataStore.data.mapNotNull {
         val list = it[KEY_HISTORY]?.split("@") ?: emptyList()
-        list.map { historyToDto(it) }
+        try {
+            list.map { historyToDto(it).toDomain() }
+        }
+        catch (e: Exception){
+            e.printStackTrace()
+            emptyList()
+        }
+
     }
 
 
-    override suspend fun saveInHistory(message: AIMessageDto) {
-        dataStore.edit {
-            val history = it[KEY_HISTORY]?.split("@")?.toMutableList() ?: mutableListOf()
-            history.add(message.message + "," + message.origin )
-            it[KEY_HISTORY] = history.fastJoinToString("@")
+    override suspend fun saveInHistory(message: AIMessage) {
+        try {
+            dataStore.edit {
+                val history = it[KEY_HISTORY]?.split("@")?.toMutableList() ?: mutableListOf()
+                history.add(message.message + "," + message.origin.name )
+                it[KEY_HISTORY] = history.fastJoinToString("@")
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
         }
     }
 

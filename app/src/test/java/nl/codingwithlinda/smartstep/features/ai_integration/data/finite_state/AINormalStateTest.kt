@@ -1,14 +1,13 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state
 
 import kotlinx.coroutines.test.runTest
-import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.passive.Gemini_2_5_Config
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
-import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIMessenger
-import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAISessionRepo
+import nl.codingwithlinda.ai.AIMessage
+import nl.codingwithlinda.ai.AIMessageOrigin
+import nl.codingwithlinda.ai.data.finite_state.AINormalState
+import nl.codingwithlinda.ai_firebase.tests.FakeAIMessenger
+import nl.codingwithlinda.ai_firebase.tests.FakeAISessionRepo
 import nl.codingwithlinda.smartstep.tests.di.TestDispatcherProvider
 import nl.codingwithlinda.smartstep.util.BaseJunitTest
-import org.junit.Assert.*
 import org.junit.Test
 
 class AINormalStateTest : BaseJunitTest(){

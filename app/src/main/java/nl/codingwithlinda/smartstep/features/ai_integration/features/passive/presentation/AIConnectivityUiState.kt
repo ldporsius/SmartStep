@@ -1,7 +1,7 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation
 
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
+import nl.codingwithlinda.ai.AIMessage
+import nl.codingwithlinda.ai.AIMessageOrigin
 
 sealed interface AIConnectivityUiState {
 

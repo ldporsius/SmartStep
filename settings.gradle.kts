@@ -22,3 +22,5 @@ dependencyResolutionManagement {
 rootProject.name = "SmartStep"
 include(":app")
 include(":ai_integration")
+include(":ai_firebase")
+include(":core")

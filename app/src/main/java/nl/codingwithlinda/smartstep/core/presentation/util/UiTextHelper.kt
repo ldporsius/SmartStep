@@ -2,7 +2,7 @@ package nl.codingwithlinda.smartstep.core.presentation.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import nl.codingwithlinda.smartstep.core.domain.util.UiText
+import nl.codingwithlinda.core.domain.util.UiText
 
 @Composable
 fun UiText.asString(): String{

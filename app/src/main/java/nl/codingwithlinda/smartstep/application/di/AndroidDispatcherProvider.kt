@@ -2,6 +2,7 @@ package nl.codingwithlinda.smartstep.application.di
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import nl.codingwithlinda.core.di.DispatcherProvider
 
 class AndroidDispatcherProvider: DispatcherProvider {
     override val main: CoroutineDispatcher

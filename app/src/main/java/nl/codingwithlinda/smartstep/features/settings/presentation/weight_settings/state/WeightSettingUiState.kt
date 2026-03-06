@@ -1,15 +1,12 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state
 
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GramsWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KGWeight
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBS
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.convertWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.maxWeightPounds
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.minWeightPounds
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
-import nl.codingwithlinda.smartstep.core.domain.util.UiText
+import nl.codingwithlinda.core.domain.util.UiText
 import kotlin.math.roundToInt
 
 interface WeightSettingUiState {

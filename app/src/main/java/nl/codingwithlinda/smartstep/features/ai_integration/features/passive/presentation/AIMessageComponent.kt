@@ -37,15 +37,14 @@ import nl.codingwithlinda.smartstep.design_system.ui.theme.primary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.secondary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.white
 import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityCheck
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AISessionRepo
-import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
-import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.core.GeminiAIMessenger
-import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIMessenger
+import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.ai.domain.plugin_provider.AIapi
+import nl.codingwithlinda.ai.domain.plugin_provider.AImode
 
 @Composable
 fun AIMessageComponent(
-    aiApi: AIPluginProvider.Companion.AIapi,
-    aiMode: AIPluginProvider.Companion.AImode = AIPluginProvider.Companion.AImode.PASSIVE,
+    aiApi: AIapi,
+    aiMode: AImode = AImode.PASSIVE,
     aiSessionRepo: AISessionRepo,
     onMore: () -> Unit,
     modifier: Modifier = Modifier) {
