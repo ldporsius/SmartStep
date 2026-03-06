@@ -1,10 +1,10 @@
 package nl.codingwithlinda.ai_scitely.data.remote
 
 import kotlinx.coroutines.runBlocking
-import nl.codingwithlinda.ai_scitely.data.dto.AIRequest
-import nl.codingwithlinda.ai_scitely.data.dto.Message
+import nl.codingwithlinda.ai_integration.groq.data.remote.AIServiceImpl
+import nl.codingwithlinda.ai_integration.groq.data.dto.AIRequest
+import nl.codingwithlinda.ai_integration.groq.data.dto.Message
 import org.junit.Test
-import kotlin.String
 
 class AIServiceImplTest {
     val service = AIServiceImpl()

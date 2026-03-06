@@ -60,8 +60,8 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 dependencies {
-    implementation(project(":ai_scitely"))
 
+    implementation(project(":ai_integration"))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
