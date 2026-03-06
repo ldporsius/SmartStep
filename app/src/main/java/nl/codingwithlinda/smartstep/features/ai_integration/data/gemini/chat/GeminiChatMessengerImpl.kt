@@ -1,27 +1,28 @@
-package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data
+package nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.chat
 
-import android.util.Log.e
-import com.google.firebase.ai.type.FirebaseAIException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
+import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.smartstep.core.domain.util.AIError
 import nl.codingwithlinda.smartstep.core.domain.util.FireBaseAIError
 import nl.codingwithlinda.smartstep.core.domain.util.Result
 import nl.codingwithlinda.smartstep.core.domain.util.SSResult
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AINormalState
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIResourceExhaustedState
-import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.GeminiFlashConfig
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIChatMessenger
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.core.GeminiFlashConfig
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.finite_state.AIState
+import kotlin.collections.plus
 
-class GeminiChatMessenger(
+class GeminiChatMessengerImpl(
     geminiGonfig: GeminiFlashConfig,
-    private val aiSessionRepo: AISessionRepo
+    aiSessionRepo: AISessionRepo,
+    dispatcherProvider: DispatcherProvider
 
-): AIChatMessenger(geminiGonfig) {
+): GeminiAIChatMessenger(geminiGonfig, dispatcherProvider) {
     override fun create(text: String): AIMessage {
         return AIMessage(
             message = text,
@@ -50,10 +51,10 @@ class GeminiChatMessenger(
         when(result){
             is Result.Failure -> {
                 when(result.error){
-                    FireBaseAIError.OtherError -> {
+                    AIError.OtherError -> {
                         //todo
                     }
-                    is FireBaseAIError.ResourceExhausted -> {
+                    is AIError.ResourceExhausted -> {
                         state = exhaustedState
                         _messages.update {
                             it.plus(
@@ -77,7 +78,7 @@ class GeminiChatMessenger(
         }
     }
 
-    override suspend fun send(message: AIMessage): SSResult<AIMessage, FireBaseAIError> {
+    override suspend fun send(message: AIMessage): SSResult<AIMessage, AIError> {
         return super.send(message)
     }
 

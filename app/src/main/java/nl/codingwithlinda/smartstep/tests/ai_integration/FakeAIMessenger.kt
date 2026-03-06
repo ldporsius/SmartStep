@@ -1,19 +1,13 @@
 package nl.codingwithlinda.smartstep.tests.ai_integration
 
-import com.google.firebase.ai.GenerativeModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
+import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
+import nl.codingwithlinda.smartstep.core.domain.util.AIError
 import nl.codingwithlinda.smartstep.core.domain.util.FireBaseAIError
 import nl.codingwithlinda.smartstep.core.domain.util.Result
-import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.GeminiFlashConfig
-import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.GeminiGonfig
-import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.Gemini_2_5_Config
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.passive.Gemini_2_5_Config
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
-import kotlin.time.Duration.Companion.seconds
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.core.GeminiAIMessenger
 
 
 fun fakeAIUserMessages() = List(5){
@@ -40,8 +34,11 @@ fun fakeChatHistory() = fakeAIUserMessages().mapIndexed { index, message ->
     listOf(message,fakeAIAssistantMessages()[index])
 }.flatten()
 
-class FakeAIMessenger: AIMessenger(
-    Gemini_2_5_Config()
+class FakeAIMessenger(
+    dispatcherProvider: DispatcherProvider
+): GeminiAIMessenger(
+    Gemini_2_5_Config(),
+    dispatcherProvider = dispatcherProvider
 ) {
 
     companion object {
@@ -52,7 +49,7 @@ class FakeAIMessenger: AIMessenger(
         )
     }
 
-    override suspend fun send(message: AIMessage): Result<AIMessage, FireBaseAIError> {
+    override suspend fun send(message: AIMessage): Result<AIMessage, AIError> {
         val response =   AIMessage(
             message = responses.random(),
             origin = AIMessageOrigin.ASSISTANT
@@ -61,7 +58,4 @@ class FakeAIMessenger: AIMessenger(
           response
         )
     }
-
-
-
 }

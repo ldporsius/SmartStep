@@ -7,31 +7,35 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
+import nl.codingwithlinda.smartstep.application.di.ai_plugin.AIPluginProvider
 import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFactoryHelper
 import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityCheck
-import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
-import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.Gemini_2_5_Chat_Config
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.GeminiChatMessenger
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.chat.Gemini_2_5_Chat_Config
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.chat.GeminiChatMessengerImpl
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.components.AIChatScreen
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestionsController
-import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIChatMessenger
-import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIMessenger
 
 @Composable
 fun AIChatRoot(
+    mode: AIPluginProvider.Companion.AImode,
+    api: AIPluginProvider.Companion.AIapi,
     userSettingsRepo: UserSettingsRepo,
     aiSessionRepo: AISessionRepo,
     onNavBack: () -> Unit
 ) {
 
-    val geminiMessenger = remember(Unit) {
-        GeminiChatMessenger(
-            geminiGonfig = Gemini_2_5_Chat_Config(),
+    val aiStateController = remember {
+        AIPluginProvider(
             aiSessionRepo = aiSessionRepo
+        ).getAIStateController(
+            mode = mode,
+            api = api
         )
     }
+
 
     val context = LocalContext.current
     val connectivityMonitor: ConnectivityMonitor = ConnectivityCheck(context)
@@ -39,7 +43,8 @@ fun AIChatRoot(
     val chatViewModel = viewModel<AIChatViewModel>(
         factory = viewModelFactoryHelper {
             AIChatViewModel(
-                aiMessenger = geminiMessenger,
+                aiStateController = aiStateController,
+                aiSessionRepo = aiSessionRepo,
                 connectivityMonitor = connectivityMonitor
             )
         }
@@ -49,7 +54,7 @@ fun AIChatRoot(
     val quickSuggestions = QuickSuggestionsController(
         userSettingsRepo = userSettingsRepo,
         statisticsManager = SmartStepApplication.statisticsManager,
-        aiMessenger = geminiMessenger,
+        aiStateController = aiStateController,
         dispatcherProvider = AndroidDispatcherProvider()
     )
 

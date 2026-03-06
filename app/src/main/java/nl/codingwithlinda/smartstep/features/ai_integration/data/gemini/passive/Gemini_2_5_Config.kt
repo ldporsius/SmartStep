@@ -1,10 +1,11 @@
-package nl.codingwithlinda.smartstep.features.ai_integration.data.gemini
+package nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.passive
 
 import com.google.firebase.Firebase
 import com.google.firebase.ai.GenerativeModel
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.Content
 import com.google.firebase.ai.type.GenerativeBackend
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.core.GeminiFlashConfig
 import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.models.GeminiModels
 import java.util.Locale
 

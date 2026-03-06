@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.util.UiText
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIChatMessenger
+import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import java.time.LocalDateTime
 import java.util.Locale
@@ -15,7 +15,7 @@ import java.util.Locale
 class QuickSuggestionsController(
     private val userSettingsRepo: UserSettingsRepo,
     private val statisticsManager: StatisticsManager,
-    private val aiMessenger: AIChatMessenger,
+    private val aiStateController: AIStateController,
     private val dispatcherProvider: DispatcherProvider
 ) {
 
@@ -63,7 +63,7 @@ class QuickSuggestionsController(
             It is now ${today().hour} o'clock.
             Please suggest some activity that fits my age and gender.
         """.trimIndent()
-                aiMessenger.chat(msg)
+                aiStateController.sendMessage(msg)
             }
         }
     )
@@ -77,7 +77,7 @@ class QuickSuggestionsController(
             Today is ${today().dayOfWeek}
             In what direction am I going?.
         """.trimIndent()
-                aiMessenger.chat(msg)
+                aiStateController.sendMessage(msg)
             }
         }
     )
@@ -91,7 +91,7 @@ class QuickSuggestionsController(
             I have reached ${activityProgress()} percent of my goal.
             What can I still do today to reach my goal?
         """.trimIndent()
-                aiMessenger.chat(msg)
+                aiStateController.sendMessage(msg)
             }
         }
     )

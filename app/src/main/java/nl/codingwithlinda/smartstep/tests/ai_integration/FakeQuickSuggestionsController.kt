@@ -2,6 +2,7 @@ package nl.codingwithlinda.smartstep.tests.ai_integration
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestionsController
 import nl.codingwithlinda.smartstep.features.statistics.data.StatisticsManagerImpl
 import nl.codingwithlinda.smartstep.tests.FakeActivityRecognitionRepo
@@ -20,9 +21,16 @@ val fakeStatisticsManager =  StatisticsManagerImpl(
     dispatcherProvider = TestDispatcherProvider(Dispatchers.Main),
     applicationScope = GlobalScope
 )
+
+val aiStateController = AIStateController(
+    aiMessenger = FakeAIChatMessenger(
+        dispatcherProvider = TestDispatcherProvider(Dispatchers.Main)
+    ),
+    aiSessionRepo = FakeAISessionRepo()
+)
 val fakeQuickSuggestionsController = QuickSuggestionsController(
     userSettingsRepo = FakeUserSettingsRepo(),
     statisticsManager = fakeStatisticsManager,
-    aiMessenger = FakeAIChatMessenger(),
+    aiStateController = aiStateController,
     dispatcherProvider = TestDispatcherProvider(Dispatchers.Main),
 )

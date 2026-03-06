@@ -1,15 +1,16 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state
 
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.smartstep.core.domain.util.AIError
 import nl.codingwithlinda.smartstep.core.domain.util.FireBaseAIError
 import nl.codingwithlinda.smartstep.core.domain.util.Result
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.core.GeminiAIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.finite_state.AIState
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.toDto
 import kotlin.time.Duration.Companion.seconds
 
 class AINormalState(
@@ -21,7 +22,7 @@ class AINormalState(
     private val mutex = Mutex()
 
 
-    override suspend fun sendMessage(msg: AIMessage): Result<AIMessage, FireBaseAIError> {
+    override suspend fun sendMessage(msg: AIMessage): Result<AIMessage, AIError> {
 
         mutex.withLock {
             val now = System.currentTimeMillis()
@@ -58,18 +59,18 @@ class AINormalState(
             when (result) {
                 is Result.Failure -> {
                     when (result.error) {
-                        is FireBaseAIError.ResourceExhausted -> {
+                        is AIError.ResourceExhausted -> {
                             aiSessionRepo.saveSessionTimedOut(result.error.retryIn)
                         }
 
-                        is FireBaseAIError.OtherError -> {
+                        is AIError.OtherError -> {
                             //todo
                         }
                     }
                 }
 
                 is Result.Success -> {
-                    aiSessionRepo.saveInHistory(result.data.message)
+                    aiSessionRepo.saveInHistory(result.data.toDto())
                 }
             }
             return result

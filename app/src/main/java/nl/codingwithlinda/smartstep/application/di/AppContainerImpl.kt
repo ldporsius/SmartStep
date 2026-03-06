@@ -10,14 +10,14 @@ import kotlinx.coroutines.SupervisorJob
 import nl.codingwithlinda.smartstep.application.dataStore
 import nl.codingwithlinda.smartstep.application.dataStoreAI
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.SmartStepRoomDatabaseCreator
-import nl.codingwithlinda.smartstep.core.data.repo.AISessionRepoImpl
+import nl.codingwithlinda.smartstep.features.ai_integration.data.local_cache.AISessionRepoImpl
 import nl.codingwithlinda.smartstep.core.data.repo.ActivityRecognitionRepoImpl
 import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerDetectorImpl
 import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
-import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo

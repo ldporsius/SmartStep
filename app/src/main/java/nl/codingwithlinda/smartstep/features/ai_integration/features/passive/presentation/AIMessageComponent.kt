@@ -17,12 +17,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -31,34 +31,38 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
+import nl.codingwithlinda.smartstep.application.di.ai_plugin.AIPluginProvider
 import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFactoryHelper
-import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.design_system.ui.theme.primary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.secondary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.white
 import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityCheck
-import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
-import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIConnectivityUiState
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.core.GeminiAIMessenger
 import nl.codingwithlinda.smartstep.tests.ai_integration.FakeAIMessenger
 
 @Composable
 fun AIMessageComponent(
-    aiMessenger: AIMessenger,
+    aiApi: AIPluginProvider.Companion.AIapi,
+    aiMode: AIPluginProvider.Companion.AImode = AIPluginProvider.Companion.AImode.PASSIVE,
     aiSessionRepo: AISessionRepo,
     onMore: () -> Unit,
     modifier: Modifier = Modifier) {
 
-    val fakeMessenger = FakeAIMessenger()
     val context = LocalContext.current
+
+    val aiStateController = remember {
+        AIPluginProvider(aiSessionRepo).getAIStateController(
+            mode = aiMode,
+            api = aiApi
+        )
+    }
 
     val aiMessageViewModel = viewModel<AIMessageViewModel>(
         factory = viewModelFactoryHelper {
             AIMessageViewModel(
-                aiMessenger = aiMessenger,
-                aiSessionRepo = aiSessionRepo,
+                aiStateController = aiStateController,
                 connectivityMonitor = ConnectivityCheck(context),
                 statisticsManager = SmartStepApplication.statisticsManager
             )
@@ -104,7 +108,7 @@ fun AIMessageComponent(
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                                 .clickable() {
-                                   //todo
+                                    //todo
                                 },
                             style = MaterialTheme.typography.labelLarge
                         )
@@ -136,7 +140,7 @@ fun AIMessageComponent(
                         Column(
                             verticalArrangement = Arrangement.spacedBy(16.dp),
 
-                        ) {
+                            ) {
                             AIIcon()
                             if (state.message != null) {
                                 Text(

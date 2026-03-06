@@ -10,45 +10,35 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
-import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.smartstep.core.domain.util.AIError
 import nl.codingwithlinda.smartstep.core.domain.util.FireBaseAIError
 import nl.codingwithlinda.smartstep.core.domain.util.Result
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AINormalState
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIResourceExhaustedState
+import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.core.GeminiAIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.finite_state.AIState
-import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIConnectivityUiState
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import java.time.ZonedDateTime
 import kotlin.time.Duration.Companion.minutes
 
 @OptIn(FlowPreview::class)
 class AIMessageViewModel(
-    private val aiMessenger: AIMessenger,
-    private val aiSessionRepo: AISessionRepo,
+    private val aiStateController: AIStateController,
     connectivityMonitor: ConnectivityMonitor,
     statisticsManager: StatisticsManager
 ): ViewModel() {
 
-    private val aiNormalState = AINormalState(
-        aiMessenger = aiMessenger,
-        aiSessionRepo = aiSessionRepo
-    )
-    private val aiResourceExhaustedState = AIResourceExhaustedState(
-        aiMessenger = aiMessenger,
-        aiSessionRepo = aiSessionRepo
-    )
-
-    private val aiState = MutableStateFlow<AIState>(aiNormalState)
 
     private val goal = statisticsManager.todaysGoal
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), -1)
@@ -81,7 +71,7 @@ class AIMessageViewModel(
                     onButtonClick = {
                         viewModelScope.launch {
                             statisticsMessage.lastOrNull()?.let { msg ->
-                                aiMessenger.send(msg)
+                                aiStateController.sendMessage(msg)
                             }
                         }
                     }
@@ -103,15 +93,11 @@ class AIMessageViewModel(
             val msg = statisticsMessage.firstOrNull()?: return@launch
             yield()
 
-            val result = aiState.value.sendMessage(msg)
+            val result = aiStateController.sendMessage(msg)
             when(result){
                 is Result.Failure -> {
                     when(result.error){
-                        is FireBaseAIError.ResourceExhausted -> {
-                            aiState.update {
-                                aiResourceExhaustedState
-
-                            }
+                        is AIError.ResourceExhausted -> {
                             _response.update {
                                 AIMessage(
                                     message = "AI has reached the maximum request allowed",
@@ -119,7 +105,7 @@ class AIMessageViewModel(
                                 )
                             }
                         }
-                        FireBaseAIError.OtherError -> {
+                        AIError.OtherError -> {
                             _response.update {
                                 AIMessage(
                                     message = "Something went wrong",
@@ -130,9 +116,6 @@ class AIMessageViewModel(
                     }
                 }
                 is Result.Success -> {
-                    aiState.update {
-                        aiNormalState
-                    }
                     _response.update {
                         result.data
                     }

@@ -1,16 +1,20 @@
-package nl.codingwithlinda.smartstep.core.data.repo
+package nl.codingwithlinda.smartstep.features.ai_integration.data.local_cache
 
-import android.R.attr.y
 import androidx.compose.ui.util.fastJoinToString
+import androidx.constraintlayout.compose.DesignElements.map
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import nl.codingwithlinda.smartstep.core.domain.repo.AISessionRepo
+import kotlinx.coroutines.flow.mapNotNull
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AIMessageDto
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AISessionRepo
+import kotlin.collections.take
 
 class AISessionRepoImpl(
     private val dataStore: DataStore<Preferences>
@@ -22,14 +26,26 @@ class AISessionRepoImpl(
 
     private val KEY_HISTORY = stringPreferencesKey("AI_history")
 
-
-    override val history = dataStore.data.map {
-        it[KEY_HISTORY]?.split(",") ?: emptyList()
+    private fun historyToDto(history: String): AIMessageDto{
+        history.split(",").take(2).let {
+            return AIMessageDto(
+                message = it[0],
+                origin = it[1]
+            )
+        }
     }
-    override suspend fun saveInHistory(message: String) {
+
+    override val history = dataStore.data.mapNotNull {
+        val list = it[KEY_HISTORY]?.split("@") ?: emptyList()
+        list.map { historyToDto(it) }
+    }
+
+
+    override suspend fun saveInHistory(message: AIMessageDto) {
         dataStore.edit {
-            val history = it[KEY_HISTORY]?.split(",")?.toMutableList() ?: mutableListOf()
-            history.add(message)
+            val history = it[KEY_HISTORY]?.split("@")?.toMutableList() ?: mutableListOf()
+            history.add(message.message + "," + message.origin )
+            it[KEY_HISTORY] = history.fastJoinToString("@")
         }
     }
 

@@ -4,18 +4,20 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.GeminiFlashConfig
-import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.Gemini_2_5_Config
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIChatMessenger
+import nl.codingwithlinda.smartstep.application.di.DispatcherProvider
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.chat.GeminiAIChatMessenger
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.core.GeminiFlashConfig
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.passive.Gemini_2_5_Config
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessageOrigin
-import kotlin.collections.plus
-import kotlin.collections.toList
 import kotlin.time.Duration.Companion.seconds
 
 class FakeAIChatMessenger(
-   config: GeminiFlashConfig = Gemini_2_5_Config()
-): AIChatMessenger(config) {
+   config: GeminiFlashConfig = Gemini_2_5_Config(),
+    dispatcherProvider: DispatcherProvider
+): GeminiAIChatMessenger(
+    config,dispatcherProvider
+) {
 
     private val _messages = MutableStateFlow<List<AIMessage>>(emptyList())
 

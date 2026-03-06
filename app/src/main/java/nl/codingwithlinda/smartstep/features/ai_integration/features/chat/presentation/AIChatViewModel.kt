@@ -7,17 +7,22 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIChatMessenger
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
+import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache.toDomain
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.AIChatAction
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.AIChatState
 
 class AIChatViewModel(
-    private val aiMessenger: AIChatMessenger,
+    private val aiStateController: AIStateController,
+    private val aiSessionRepo: AISessionRepo,
     connectivityMonitor: ConnectivityMonitor
 ): ViewModel() {
 
-    val chats = aiMessenger.messages
+    val chats = aiSessionRepo.history
+        .map { 
+            it.map { it.toDomain() }
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private var message = ""
@@ -56,7 +61,7 @@ class AIChatViewModel(
     private fun sendMessage(msg: String){
         println("Sending message to chat: $msg")
         viewModelScope.launch {
-            aiMessenger.chat(msg)
+            aiStateController.sendMessage(msg)
         }
     }
 

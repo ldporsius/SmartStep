@@ -21,11 +21,13 @@ import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.di.AppContainer
+import nl.codingwithlinda.smartstep.application.di.ai_plugin.AIPluginProvider
 import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFactoryHelper
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
-import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessenger
+import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
+import nl.codingwithlinda.smartstep.features.ai_integration.data.gemini.core.GeminiAIMessenger
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.AIChatRoot
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageComponent
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
@@ -41,7 +43,6 @@ import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsV
 fun MainNavGraph(
     appContainer: AppContainer,
     smartStepStateController: SmartStepStateControllerImpl,
-    aiMessenger: AIMessenger,
     modifier: Modifier = Modifier) {
 
     val backStack = rememberNavBackStack(StartRoute)
@@ -163,7 +164,7 @@ fun MainNavGraph(
                 @Composable
                 fun aiMessageComponent() =
                     AIMessageComponent(
-                        aiMessenger = aiMessenger,
+                        aiApi = AIPluginProvider.Companion.AIapi.GEMINI,
                         aiSessionRepo = appContainer.aiSessionRepo,
                         onMore = {
                             NavigationController.navigateTo(AIChatRoute)
@@ -189,6 +190,8 @@ fun MainNavGraph(
 
             entry<AIChatRoute>{
                 AIChatRoot(
+                    mode = AIPluginProvider.Companion.AImode.PASSIVE,
+                    api = AIPluginProvider.Companion.AIapi.GEMINI,
                     userSettingsRepo = appContainer.userSettingsRepo,
                     aiSessionRepo = appContainer.aiSessionRepo,
                     onNavBack = {

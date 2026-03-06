@@ -1,11 +1,12 @@
-package nl.codingwithlinda.smartstep.core.domain.repo
+package nl.codingwithlinda.smartstep.features.ai_integration.domain.local_cache
 
 import kotlinx.coroutines.flow.Flow
+import nl.codingwithlinda.smartstep.features.ai_integration.domain.AIMessage
 
 interface AISessionRepo {
 
-    val history: Flow<List<String>>
-    suspend fun saveInHistory(message: String)
+    val history: Flow<List<AIMessageDto>>
+    suspend fun saveInHistory(message: AIMessageDto)
 
     suspend fun requestsMadeMinute(): List<Long>
     suspend fun saveRequestsMadeMinute(requestTimestampMillis: Long)
