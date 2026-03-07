@@ -20,7 +20,7 @@ import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design_system.ui.theme.bg
 import nl.codingwithlinda.smartstep.design_system.ui.theme.textPrimary
 import nl.codingwithlinda.smartstep.design_system.ui.theme.textSecondary
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestion
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.quick_suggestion.QuickSuggestion
 
 @Composable
 fun QuickSuggestions(

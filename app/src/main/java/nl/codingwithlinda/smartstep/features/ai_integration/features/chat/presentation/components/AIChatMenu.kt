@@ -24,7 +24,7 @@ import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.AIChatState
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.ToUi
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestion
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.quick_suggestion.QuickSuggestion
 
 @Composable
 fun AIChatMenu(

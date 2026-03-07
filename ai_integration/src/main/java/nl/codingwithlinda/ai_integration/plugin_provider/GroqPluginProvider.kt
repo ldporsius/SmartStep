@@ -5,32 +5,38 @@ import nl.codingwithlinda.ai.domain.plugin_provider.AImode
 import nl.codingwithlinda.ai_integration.groq.data.GroqAIMessenger
 import nl.codingwithlinda.ai_integration.groq.data.remote.AIServiceImpl
 import nl.codingwithlinda.ai_integration.groq.data.remote.system_prompts.activityCoachSystemPromptAverage
+import nl.codingwithlinda.ai_integration.groq.data.remote.system_prompts.activityCoachSystemPromptShort
 
 
 class GroqPluginProvider() {
 
     val aiService = AIServiceImpl()
     fun getAIMessenger(mode: AImode): AIMessenger {
-        when (mode) {
+        return when (mode) {
             AImode.PASSIVE -> {
-                return passive.first()
+                passive
             }
+
             AImode.ACTIVE -> {
-                return active.first()
+                active
             }
         }
     }
 
-    private val passive = listOf(
-        GroqAIMessenger(aiService)
-    )
+    private val passive =
+        GroqAIMessenger(
+            aiService = aiService,
+            systemPrompt = activityCoachSystemPromptShort,
+            maxTokens = 200
+        )
 
-    private val active = listOf(
+
+    private val active =
         GroqAIMessenger(
             aiService = aiService,
             systemPrompt = activityCoachSystemPromptAverage,
             maxTokens = 500
         )
-    )
+
 
 }

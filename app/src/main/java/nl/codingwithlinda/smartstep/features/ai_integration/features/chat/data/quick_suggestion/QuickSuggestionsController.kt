@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion
+package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.quick_suggestion
 
 import androidx.compose.ui.util.fastJoinToString
 import kotlinx.coroutines.CoroutineScope
@@ -8,15 +8,17 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.ai.AIMessage
+import nl.codingwithlinda.ai.AIMessageOrigin
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.core.di.DispatcherProvider
+import nl.codingwithlinda.core.domain.util.Result
 import nl.codingwithlinda.core.domain.util.UiText
-import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.statisticsManager
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import java.time.LocalDateTime
+import java.time.format.TextStyle
 import java.util.Locale
 
 class QuickSuggestionsController private constructor(
@@ -82,7 +84,7 @@ class QuickSuggestionsController private constructor(
                it.key.dateEpochDay == day.toEpochDay()
            }
         }.map {(localDate, values) ->
-            val dayOfWeekShort = localDate.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault())
+            val dayOfWeekShort = localDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
            val percent = values.values.sum() * 100
            "$dayOfWeekShort: $percent%"
         }
@@ -90,15 +92,15 @@ class QuickSuggestionsController private constructor(
 
     }
 
-    private fun handleResponse(result: nl.codingwithlinda.core.domain.util.Result<AIMessage, AIError>){
+    private fun handleResponse(result: Result<AIMessage, AIError>){
         when(result){
-            is nl.codingwithlinda.core.domain.util.Result.Failure -> {
+            is Result.Failure -> {
                 _responses.value = _responses.value.plus(AIMessage(
                     message = "oops, something went wrong",
-                    origin = nl.codingwithlinda.ai.AIMessageOrigin.ASSISTANT
+                    origin = AIMessageOrigin.ASSISTANT
                 ))
             }
-            is nl.codingwithlinda.core.domain.util.Result.Success -> {
+            is Result.Success -> {
                 println("--- QUICK SUGGESTIONS CONTROLLER --- Message received: ${result.data}")
                 _responses.update {
                     it.plus(result.data)

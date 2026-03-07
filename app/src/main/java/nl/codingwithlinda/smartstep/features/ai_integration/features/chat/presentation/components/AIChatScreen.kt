@@ -29,7 +29,7 @@ import nl.codingwithlinda.smartstep.design_system.ui.theme.bg
 import nl.codingwithlinda.smartstep.design_system.ui.theme.white
 import nl.codingwithlinda.ai.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.AIChatState
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestion
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.quick_suggestion.QuickSuggestion
 import nl.codingwithlinda.ai_firebase.tests.fakeChatHistory
 
 @Composable

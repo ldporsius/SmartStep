@@ -13,7 +13,7 @@ import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.components.AIChatScreen
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestionsController
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.quick_suggestion.QuickSuggestionsController
 
 @Composable
 fun AIChatRoot(

@@ -1,13 +1,11 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation
 
-import android.R.id.message
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -16,13 +14,11 @@ import nl.codingwithlinda.ai.AIMessage
 import nl.codingwithlinda.ai.AIMessageOrigin
 import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
-import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
-import nl.codingwithlinda.ai_firebase.tests.FakeAIMessenger.Companion.responses
 import nl.codingwithlinda.core.di.DispatcherProvider
 import nl.codingwithlinda.core.domain.util.Result
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.AIChatAction
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.AIChatState
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestionsController
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.quick_suggestion.QuickSuggestionsController
 
 class AIChatViewModel(
     private val aiStateController: AIStateController,
