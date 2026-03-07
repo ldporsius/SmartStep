@@ -2,22 +2,53 @@ package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick
 
 import androidx.compose.ui.util.fastJoinToString
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.ai.AIMessage
+import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.core.di.DispatcherProvider
-import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.core.domain.util.UiText
+import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.statisticsManager
+import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import java.time.LocalDateTime
 import java.util.Locale
 
-class QuickSuggestionsController(
+class QuickSuggestionsController private constructor(
     private val userSettingsRepo: UserSettingsRepo,
     private val statisticsManager: StatisticsManager,
     private val aiStateController: AIStateController,
     private val dispatcherProvider: DispatcherProvider
 ) {
+
+    companion object{
+        @Volatile
+        var instance: QuickSuggestionsController? = null
+
+        @Synchronized
+        fun getInstance(
+            userSettingsRepo: UserSettingsRepo,
+            statisticsManager: StatisticsManager,
+            aiStateController: AIStateController,
+            dispatcherProvider: DispatcherProvider
+        ): QuickSuggestionsController{
+            synchronized(this) {
+                if (instance == null) {
+                    instance = QuickSuggestionsController(
+                        userSettingsRepo, statisticsManager, aiStateController, dispatcherProvider
+                    )
+                }
+                return instance!!
+            }
+        }
+    }
+    private val _responses = MutableStateFlow<List<AIMessage>>(emptyList())
+    val responses = _responses.asStateFlow()
+
 
     suspend fun activityProgress() = statisticsManager.progressTowardsGoal.firstOrNull()
     private fun today(): LocalDateTime = LocalDateTime.now()
@@ -52,6 +83,24 @@ class QuickSuggestionsController(
         return result.fastJoinToString()
 
     }
+
+    private fun handleResponse(result: nl.codingwithlinda.core.domain.util.Result<AIMessage, AIError>){
+        when(result){
+            is nl.codingwithlinda.core.domain.util.Result.Failure -> {
+                _responses.value = _responses.value.plus(AIMessage(
+                    message = "oops, something went wrong",
+                    origin = nl.codingwithlinda.ai.AIMessageOrigin.ASSISTANT
+                ))
+            }
+            is nl.codingwithlinda.core.domain.util.Result.Success -> {
+                println("--- QUICK SUGGESTIONS CONTROLLER --- Message received: ${result.data}")
+                _responses.update {
+                    it.plus(result.data)
+                }
+            }
+        }
+    }
+
     fun recommendWorkout() =  QuickSuggestion(
         title = UiText.DynamicText("Recommend workout"),
         onAction = {
@@ -63,7 +112,9 @@ class QuickSuggestionsController(
             It is now ${today().hour} o'clock.
             Please suggest some activity that fits my age and gender.
         """.trimIndent()
-                aiStateController.sendMessage(msg)
+                aiStateController.sendMessage(msg).also {res ->
+                   handleResponse(res)
+                }
             }
         }
     )
@@ -77,7 +128,9 @@ class QuickSuggestionsController(
             Today is ${today().dayOfWeek}
             In what direction am I going?.
         """.trimIndent()
-                aiStateController.sendMessage(msg)
+                aiStateController.sendMessage(msg).also {
+                    handleResponse(it)
+                }
             }
         }
     )
@@ -91,7 +144,9 @@ class QuickSuggestionsController(
             I have reached ${activityProgress()} percent of my goal.
             What can I still do today to reach my goal?
         """.trimIndent()
-                aiStateController.sendMessage(msg)
+                aiStateController.sendMessage(msg).also {
+                    handleResponse(it)
+                }
             }
         }
     )

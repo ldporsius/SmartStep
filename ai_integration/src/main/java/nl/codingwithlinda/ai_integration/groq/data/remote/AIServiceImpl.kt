@@ -20,8 +20,7 @@ class AIServiceImpl: AIService {
 
     override suspend fun sendMessage(message: AIRequest): AIResponse {
 
-        val json = Json.encodeToString(message)
-        println("--- AI SERVICE --- SENDS MESSAGE json: $json")
+        println("--- AI SERVICE --- SENDS MESSAGE TO Groq: $message")
         try {
             val result = httpClient.post(HttpRoutes.CHAT_COMPLETIONS_ENDPOINT) {
                 this.contentType(ContentType.Application.Json)
@@ -29,6 +28,8 @@ class AIServiceImpl: AIService {
                 this.setBody(message)
 
             }.body<GroqResponse>()
+
+
             return AIResponse(
                 result.choices.firstOrNull()?.message?.content ?: "error"
             )

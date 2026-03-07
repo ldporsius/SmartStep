@@ -3,9 +3,12 @@ package nl.codingwithlinda.smartstep.features.ai_integration.di
 import android.content.Context
 import nl.codingwithlinda.ai.domain.plugin_provider.AIapi
 import nl.codingwithlinda.ai.domain.plugin_provider.AImode
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.dataStoreAI
+import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.features.ai_integration.data.ai_plugin.AIPluginProvider
 import nl.codingwithlinda.smartstep.features.ai_integration.data.local_cache.AISessionRepoImpl
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_suggestion.QuickSuggestionsController
 
 class AIContainer(
     private val context: Context,
@@ -14,6 +17,7 @@ class AIContainer(
     private val aiSessionRepo = AISessionRepoImpl(
         context.dataStoreAI
     )
+
      val aiPluginProvider = AIPluginProvider(
             aiSessionRepo = aiSessionRepo
         )
@@ -27,4 +31,5 @@ class AIContainer(
         mode = AImode.ACTIVE,
         api = AIapi.GROQ
     )
+
 }

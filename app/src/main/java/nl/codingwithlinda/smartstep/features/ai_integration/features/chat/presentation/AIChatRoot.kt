@@ -18,6 +18,7 @@ import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.quick_
 @Composable
 fun AIChatRoot(
     aiStateController: AIStateController,
+
     userSettingsRepo: UserSettingsRepo,
     aiSessionRepo: AISessionRepo,
     onNavBack: () -> Unit
@@ -26,24 +27,23 @@ fun AIChatRoot(
     val context = LocalContext.current
     val connectivityMonitor: ConnectivityMonitor = ConnectivityCheck(context)
 
-    val chatViewModel = viewModel<AIChatViewModel>(
-        factory = viewModelFactoryHelper {
-            AIChatViewModel(
-                aiStateController = aiStateController,
-                aiSessionRepo = aiSessionRepo,
-                connectivityMonitor = connectivityMonitor
-            )
-        }
-    )
-
-
-    val quickSuggestions = QuickSuggestionsController(
+    val quickSuggestions = QuickSuggestionsController.getInstance(
         userSettingsRepo = userSettingsRepo,
         statisticsManager = SmartStepApplication.statisticsManager,
         aiStateController = aiStateController,
         dispatcherProvider = AndroidDispatcherProvider()
     )
 
+    val chatViewModel = viewModel<AIChatViewModel>(
+        factory = viewModelFactoryHelper {
+            AIChatViewModel(
+                aiStateController = aiStateController,
+                quickSuggestionsController = quickSuggestions,
+                dispatcherProvider = AndroidDispatcherProvider(),
+                connectivityMonitor = connectivityMonitor
+            )
+        }
+    )
 
     AIChatScreen(
         quickSuggestions = quickSuggestions.quickSuggestions,
