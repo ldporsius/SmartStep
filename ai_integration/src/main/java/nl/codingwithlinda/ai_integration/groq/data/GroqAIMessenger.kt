@@ -14,7 +14,8 @@ import nl.codingwithlinda.core.domain.util.SSResult
 class GroqAIMessenger(
     private val aiService: AIService,
     val systemPrompt: Message = activityCoachSystemPromptShort,
-    val maxTokens: Int = 200
+    val maxTokens: Int = 200,
+    val temperature: Double = 1.0
 ): AIMessenger {
     override suspend fun send(message: AIMessage): SSResult<AIMessage, AIError> {
         val request = AIRequest(
@@ -26,6 +27,7 @@ class GroqAIMessenger(
 
                 )
             ),
+            temperature = temperature,
             max_tokens = maxTokens
         )
         val response = aiService.sendMessage(request)

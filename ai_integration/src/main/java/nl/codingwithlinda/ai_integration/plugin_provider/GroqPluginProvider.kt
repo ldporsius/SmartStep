@@ -27,7 +27,8 @@ class GroqPluginProvider() {
         GroqAIMessenger(
             aiService = aiService,
             systemPrompt = activityCoachSystemPromptShort,
-            maxTokens = 200
+            maxTokens = 200,
+            temperature = 0.5
         )
 
 
@@ -35,7 +36,8 @@ class GroqPluginProvider() {
         GroqAIMessenger(
             aiService = aiService,
             systemPrompt = activityCoachSystemPromptAverage,
-            maxTokens = 500
+            maxTokens = 500,
+            temperature = 1.5
         )
 
 
