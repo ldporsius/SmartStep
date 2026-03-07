@@ -162,8 +162,7 @@ fun MainNavGraph(
                 @Composable
                 fun aiMessageComponent() =
                     AIMessageComponent(
-                        aiApi = AIapi.GROQ,
-                        aiSessionRepo = appContainer.aiSessionRepo,
+                       aiStateController = appContainer.AIContainer.aiStateControllerGroq,
                         onMore = {
                             NavigationController.navigateTo(AIChatRoute)
                         }
@@ -188,8 +187,7 @@ fun MainNavGraph(
 
             entry<AIChatRoute>{
                 AIChatRoot(
-                    mode = AImode.PASSIVE,
-                    api = AIapi.GEMINI,
+                    aiStateController = appContainer.AIContainer.aiStateControllerGroq,
                     userSettingsRepo = appContainer.userSettingsRepo,
                     aiSessionRepo = appContainer.aiSessionRepo,
                     onNavBack = {

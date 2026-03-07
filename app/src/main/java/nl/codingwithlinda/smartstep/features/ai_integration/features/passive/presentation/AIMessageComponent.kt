@@ -40,23 +40,16 @@ import nl.codingwithlinda.smartstep.core.data.connectivity.ConnectivityCheck
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.ai.domain.plugin_provider.AIapi
 import nl.codingwithlinda.ai.domain.plugin_provider.AImode
+import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 
 @Composable
 fun AIMessageComponent(
-    aiApi: AIapi,
-    aiMode: AImode = AImode.PASSIVE,
-    aiSessionRepo: AISessionRepo,
+    aiStateController: AIStateController,
     onMore: () -> Unit,
     modifier: Modifier = Modifier) {
 
     val context = LocalContext.current
 
-    val aiStateController = remember {
-        AIPluginProvider(aiSessionRepo).getAIStateController(
-            mode = aiMode,
-            api = aiApi
-        )
-    }
 
     val aiMessageViewModel = viewModel<AIMessageViewModel>(
         factory = viewModelFactoryHelper {

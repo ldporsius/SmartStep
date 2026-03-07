@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -23,15 +24,15 @@ class AIChatViewModel(
     connectivityMonitor: ConnectivityMonitor
 ): ViewModel() {
 
-    val _chats = MutableStateFlow<List<AIMessage>>(emptyList())
+    private val _chats = MutableStateFlow<List<AIMessage>>(emptyList())
     val chats = _chats .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private var message = ""
-    private val _uiState = connectivityMonitor.isConnected.map { connected ->
+    private var message = MutableStateFlow("")
+    private val _uiState = connectivityMonitor.isConnected.combine(message) { connected , msg ->
         when(connected){
             true -> {
                 AIChatState.Online(
-                    message = message,
+                    message = msg,
                     onAction = ::onAction
                 )
             }
@@ -45,7 +46,9 @@ class AIChatViewModel(
     fun onAction(action: AIChatAction){
         when(action){
             is AIChatAction.ChatInput -> {
-                message = action.message
+                message.update {
+                    action.message
+                }
             }
             is AIChatAction.SendMessage -> {
                 if(validateChatInput(action.message)){
@@ -56,13 +59,22 @@ class AIChatViewModel(
     }
 
     private fun validateChatInput(input: String): Boolean{
-        return input.length > 100
+        return input.length > 10
     }
 
     private fun sendMessage(msg: String){
         println("Sending message to chat: $msg")
         viewModelScope.launch {
+            _chats.update {
+                it.plus(
+                    AIMessage(
+                        message = msg,
+                        origin = AIMessageOrigin.USER
+                    )
+                )
+            }
             aiStateController.sendMessage(msg).let {res ->
+                println("--- AI CHAT VIEWMODEL --- Message sent: $res")
                 when(res){
                     is Result.Failure -> {
                         _chats.update {

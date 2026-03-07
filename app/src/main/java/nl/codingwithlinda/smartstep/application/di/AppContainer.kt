@@ -8,6 +8,7 @@ import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
+import nl.codingwithlinda.smartstep.features.ai_integration.di.AIContainer
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 
 abstract class AppContainer{
@@ -22,4 +23,5 @@ abstract class AppContainer{
 
     abstract val applicationWideScope: CoroutineScope
 
+    abstract val AIContainer: AIContainer
 }

@@ -20,6 +20,7 @@ import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
+import nl.codingwithlinda.smartstep.features.ai_integration.di.AIContainer
 import nl.codingwithlinda.smartstep.features.statistics.data.StatisticsManagerImpl
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 
@@ -52,8 +53,7 @@ class AppContainerImpl(
         AISessionRepoImpl(context.dataStoreAI)
     }
 
-    private
-    val activityRecognitionRepo = ActivityRecognitionRepoImpl(
+    private val activityRecognitionRepo = ActivityRecognitionRepoImpl(
         dailyStepCountDao = SmartStepRoomDatabaseCreator.getInstance(context).dailyStepCountDao,
         userId = "todo"
     )
@@ -80,6 +80,10 @@ class AppContainerImpl(
             applicationScope = applicationWideScope
         )
     }
+
+    override val AIContainer: AIContainer = AIContainer(context)
+
+
 
 
 }
