@@ -12,6 +12,7 @@ import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.core.di.DispatcherProvider
 import nl.codingwithlinda.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.statisticsManager
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
@@ -49,6 +50,8 @@ class QuickSuggestionsController private constructor(
     private val _responses = MutableStateFlow<List<AIMessage>>(emptyList())
     val responses = _responses.asStateFlow()
 
+
+    private suspend fun goal() = statisticsManager.todaysGoal.firstOrNull() ?: stepGoalRange.first()
 
     suspend fun activityProgress() = statisticsManager.progressTowardsGoal.firstOrNull()
     private fun today(): LocalDateTime = LocalDateTime.now()
@@ -140,6 +143,7 @@ class QuickSuggestionsController private constructor(
         onAction = {
             CoroutineScope(dispatcherProvider.io).launch {
                 val msg =   """
+                    I am trying to make ${goal()} steps today.
             It is now ${today().hour} o'clock.
             I have reached ${activityProgress()} percent of my goal.
             What can I still do today to reach my goal?
