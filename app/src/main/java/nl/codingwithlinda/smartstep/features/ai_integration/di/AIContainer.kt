@@ -27,6 +27,11 @@ class AIContainer(
         api = AIapi.GEMINI
     )
 
+    val aiStateControllerGroqPassive = aiPluginProvider.getAIStateController(
+        mode = AImode.PASSIVE,
+        api = AIapi.GROQ
+    )
+
     val aiStateControllerGroq = aiPluginProvider.getAIStateController(
         mode = AImode.ACTIVE,
         api = AIapi.GROQ

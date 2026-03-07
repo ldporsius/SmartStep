@@ -53,7 +53,10 @@ class QuickSuggestionsController private constructor(
 
     private suspend fun goal() = statisticsManager.todaysGoal.firstOrNull() ?: stepGoalRange.first()
 
-    suspend fun activityProgress() = statisticsManager.progressTowardsGoal.firstOrNull()
+    suspend fun activityProgress() = statisticsManager.progressTowardsGoal.firstOrNull().let {
+        it?.times(100) ?: 0
+    }
+
     private fun today(): LocalDateTime = LocalDateTime.now()
 
     private suspend fun getAge(): Int{
@@ -144,9 +147,10 @@ class QuickSuggestionsController private constructor(
             CoroutineScope(dispatcherProvider.io).launch {
                 val msg =   """
                     I am trying to make ${goal()} steps today.
+                    Until now I have made ${statisticsManager.stepsToday.firstOrNull() ?: 0} steps.
             It is now ${today().hour} o'clock.
-            I have reached ${activityProgress()} percent of my goal.
-            What can I still do today to reach my goal?
+            How can I reach ${goal()} steps today?
+            Please suggest some activity that fits my age ${getAge()} and gender ${getGender()}.
         """.trimIndent()
                 aiStateController.sendMessage(msg).also {
                     handleResponse(it)

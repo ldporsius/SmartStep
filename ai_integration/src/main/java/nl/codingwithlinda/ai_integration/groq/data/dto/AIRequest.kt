@@ -8,5 +8,7 @@ import nl.codingwithlinda.ai_integration.groq.domain.remote.models.llamaScout
 data class AIRequest(
     val model: String = llamaScout,
     val messages: List<Message>,
+    val temperature: Double = 1.0,
+    val max_tokens: Int = 200
 )
 

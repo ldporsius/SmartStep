@@ -162,7 +162,7 @@ fun MainNavGraph(
                 @Composable
                 fun aiMessageComponent() =
                     AIMessageComponent(
-                       aiStateController = appContainer.AIContainer.aiStateControllerGroq,
+                       aiStateController = appContainer.AIContainer.aiStateControllerGroqPassive,
                         onMore = {
                             NavigationController.navigateTo(AIChatRoute)
                         }
