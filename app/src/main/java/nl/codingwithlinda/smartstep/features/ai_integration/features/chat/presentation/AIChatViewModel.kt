@@ -48,7 +48,6 @@ class AIChatViewModel(
     val uiState = _uiState.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AIChatState.Offline)
 
     init {
-
             quickSuggestionsController.responses.onEach {responses ->
                 println("--- AI CHAT VIEW MODEL --- RESPONSE FROM GROQ: ${responses}")
                 _chats.update {
@@ -67,6 +66,9 @@ class AIChatViewModel(
             is AIChatAction.SendMessage -> {
                 if(validateChatInput(action.message)){
                     sendMessage(action.message)
+                }
+                message.update {
+                    ""
                 }
             }
         }
