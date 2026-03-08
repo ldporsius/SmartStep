@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -20,18 +22,20 @@ class ShouldShowSettingsViewModel(
     val isChecking = _isChecking.receiveAsFlow()
 
 
-    init {
+    val shouldShowSettings = userSettingsRepo.isOnboardingObservable
+        .stateIn(
+        viewModelScope,
+        SharingStarted.Eagerly,
+        null
+    )
+
+    fun check() {
         viewModelScope.launch {
+            _isChecking.send(true)
             userSettingsRepo.loadIsOnboarding()
             _isChecking.send(false)
         }
     }
-    val shouldShowSettings = userSettingsRepo.isOnboardingObservable
-        .stateIn(
-        viewModelScope,
-        SharingStarted.Companion.WhileSubscribed(5000),
-        null
-    )
 
     fun skip(){
         viewModelScope.launch {

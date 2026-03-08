@@ -39,10 +39,9 @@ class MainActivity : ComponentActivity(), StepTrackerFiniteState {
 
 
         setContent {
-            val viewModel = SmartStepApplication.viewModelServiceLocator.createShouldShowSettingsViewModel(this)
-            ObserveAsEvents(viewModel.isChecking) {
-                isChecking = it
-            }
+            val viewModel = SmartStepApplication
+                .viewModelServiceLocator.createShouldShowSettingsViewModel(this)
+
 
             SmartStepTheme {
                 MainNavGraph(
@@ -50,6 +49,12 @@ class MainActivity : ComponentActivity(), StepTrackerFiniteState {
                     smartStepStateController = smartStepStateController,
                 )
             }
+
+            ObserveAsEvents(viewModel.isChecking) {
+                println(" --- MAIN ACTIVITY --- is checking $it")
+                isChecking = it
+            }
+
         }
     }
 

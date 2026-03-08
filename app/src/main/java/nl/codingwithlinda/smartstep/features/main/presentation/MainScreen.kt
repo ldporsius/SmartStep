@@ -76,7 +76,7 @@ fun MainScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect (lifecycleOwner){
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-            withContext(Dispatchers.Main.immediate) {
+            withContext(Dispatchers.Main) {
                 smartStepStateController.onResult()
             }
         }

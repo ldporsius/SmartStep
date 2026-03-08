@@ -1,6 +1,9 @@
 package nl.codingwithlinda.smartstep.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
@@ -8,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -47,6 +51,9 @@ fun MainNavGraph(
 
     val backStack = rememberNavBackStack(StartRoute)
 
+
+
+
     val shouldShowSettingsViewModel = viewModel<ShouldShowSettingsViewModel>(
         factory = viewModelFactoryHelper {
             ShouldShowSettingsViewModel(
@@ -54,31 +61,7 @@ fun MainNavGraph(
             )
         }
     )
-    val shouldShowSettings = shouldShowSettingsViewModel.shouldShowSettings.collectAsStateWithLifecycle().value
 
-    when(shouldShowSettings) {
-        null -> Unit
-        false -> {
-            backStack.add(MainRoute)
-            backStack.retainAll(listOf(MainRoute))
-        }
-        true -> {
-            backStack.add(UserSettingsOnboardingRoute)
-            backStack.remove(StartRoute)
-        }
-    }
-
-
-
-    val statisticsViewModel = viewModel<StatisticsViewModel>(
-        factory = viewModelFactory {
-            initializer {
-                StatisticsViewModel(
-                    statisticsManager = SmartStepApplication.statisticsManager
-                )
-            }
-        }
-    )
 
     NavDisplay(
         backStack = backStack,
@@ -90,7 +73,31 @@ fun MainNavGraph(
         entryProvider = entryProvider{
 
             entry<StartRoute>{
-                Text("...")
+
+                shouldShowSettingsViewModel.check()
+                val shouldShowSettings = shouldShowSettingsViewModel.shouldShowSettings.collectAsStateWithLifecycle().value
+
+                when(shouldShowSettings) {
+                    null -> Unit
+                    false -> {
+                        backStack.add(MainRoute)
+                        backStack.retainAll(listOf(MainRoute))
+                    }
+                    true -> {
+                        backStack.add(UserSettingsOnboardingRoute)
+                        backStack.remove(StartRoute)
+                    }
+                }
+
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = Color.Red)
+                ){
+                    Text("start route...")
+                }
+
             }
             entry<UserSettingsOnboardingRoute> {
                 val userSettingsRepo = appContainer.userSettingsRepo
@@ -141,6 +148,7 @@ fun MainNavGraph(
             }
 
             entry<MainRoute> {
+                shouldShowSettingsViewModel.check()
                 val dailyStepGoalViewModel = SmartStepApplication
                     .viewModelServiceLocator.createDailyStepGoalViewModel()
 
@@ -159,6 +167,16 @@ fun MainNavGraph(
 
                 val weeklyAverageViewModel = SmartStepApplication.viewModelServiceLocator.createWeeklyAverageViewModel()
 
+
+                val statisticsViewModel = viewModel<StatisticsViewModel>(
+                    factory = viewModelFactory {
+                        initializer {
+                            StatisticsViewModel(
+                                statisticsManager = SmartStepApplication.statisticsManager
+                            )
+                        }
+                    }
+                )
 
                 @Composable
                 fun aiMessageComponent() =
@@ -203,6 +221,7 @@ fun MainNavGraph(
     )
 
     ObserveAsEvents(NavigationController.navEvents) {
+        backStack.remove(StartRoute)
         backStack.add(it)
     }
 

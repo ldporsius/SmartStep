@@ -69,6 +69,6 @@ fun MainScreenContent(
             modifier = Modifier.fillMaxWidth()
         )
 
-        aiMessageComponent()
+        //aiMessageComponent()
     }
 }
