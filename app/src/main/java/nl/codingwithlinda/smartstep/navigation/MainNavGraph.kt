@@ -31,6 +31,7 @@ import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFa
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.design_system.ui.theme.bg
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.AIChatRoot
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.data.AIUserMessages
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageComponent
@@ -93,9 +94,9 @@ fun MainNavGraph(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(color = Color.Red)
+                        .background(color = bg)
                 ){
-                    Text("start route...")
+                    Text("...")
                 }
 
             }
