@@ -78,27 +78,11 @@ class DailyStepRepoRoomImpl(
         entities.map {
             it.toDomain()
         }
-    }.onStart {
-        emit(emptyList())
     }
+
     private val userOverride = userStepOverrideDao.getDailyStepCountUserOverride().map {
         it.map { entity ->
             entity.toDomain()
-        }
-    }.onStart {
-        emit(emptyList())
-    }
-
-    private val stepsTotal = merge(stepCount, userOverride).map { stepCounts ->
-        stepCounts.groupBy { dailyStepCount ->
-            dailyStepCount.dayEpochDay
-        }.map { (dayEpochDay, dailyStepCounts) ->
-//            val actualSteps = dailyStepCountDao.getDailyStepCountForDate(dayEpochDay)?.stepCount ?:0
-//            val overrideSteps = userStepOverrideDao.getDailyStepUserOverrideForDay(dayEpochDay)?.stepCount ?:0
-            DailyStepCountCreator.create(
-                count = dailyStepCounts.sumOf { it.stepCount },
-                date = dayEpochDay
-            )
         }
     }
 

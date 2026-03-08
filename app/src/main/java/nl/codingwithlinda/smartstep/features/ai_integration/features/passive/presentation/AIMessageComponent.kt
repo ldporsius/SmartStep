@@ -41,10 +41,12 @@ import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.ai.domain.plugin_provider.AIapi
 import nl.codingwithlinda.ai.domain.plugin_provider.AImode
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
+import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.data.AIUserMessages
 
 @Composable
 fun AIMessageComponent(
     aiStateController: AIStateController,
+    aiUserMessages: AIUserMessages,
     onMore: () -> Unit,
     modifier: Modifier = Modifier) {
 
@@ -55,6 +57,7 @@ fun AIMessageComponent(
         factory = viewModelFactoryHelper {
             AIMessageViewModel(
                 aiStateController = aiStateController,
+                aiUserMessages = aiUserMessages,
                 connectivityMonitor = ConnectivityCheck(context),
                 statisticsManager = SmartStepApplication.statisticsManager
             )

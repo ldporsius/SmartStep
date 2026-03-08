@@ -21,6 +21,7 @@ import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AI
 import nl.codingwithlinda.ai.AIMessage
 import nl.codingwithlinda.ai.AIMessageOrigin
 import nl.codingwithlinda.ai.domain.error.AIError
+import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.data.AIUserMessages
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import java.time.ZonedDateTime
 import kotlin.time.Duration.Companion.minutes
@@ -29,26 +30,15 @@ import kotlin.time.Duration.Companion.minutes
 class AIMessageViewModel(
     private val aiStateController: AIStateController,
     connectivityMonitor: ConnectivityMonitor,
-    statisticsManager: StatisticsManager
+    statisticsManager: StatisticsManager,
+    aiUserMessages: AIUserMessages
 ): ViewModel() {
 
 
     private val goal = statisticsManager.todaysGoal
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), -1)
-    private val steps = statisticsManager.stepsToday
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), 0)
-    private val statisticsMessage = steps.combine(goal) {steps, goal ->
 
-        if(goal == -1 || steps == -1){
-            return@combine null
-        }
-        val zonedDateTime = ZonedDateTime.now()
-        val timeOfDay = zonedDateTime.hour
-        AIMessage(
-            message = "I am tracking my steps. My progress is ${steps.toFloat()/goal}. It is ${timeOfDay} o'clock.",
-            origin = AIMessageOrigin.USER
-        )
-    }
+    private val statisticsMessage = aiUserMessages.statisticsMessage
 
     private val _response = MutableStateFlow<AIMessage?>(null)
 

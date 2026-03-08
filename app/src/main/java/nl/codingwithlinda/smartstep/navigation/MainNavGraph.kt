@@ -28,6 +28,7 @@ import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartS
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.AIChatRoot
+import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.data.AIUserMessages
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageComponent
 import nl.codingwithlinda.smartstep.features.main.presentation.MainScreen
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
@@ -163,6 +164,9 @@ fun MainNavGraph(
                 fun aiMessageComponent() =
                     AIMessageComponent(
                        aiStateController = appContainer.AIContainer.aiStateControllerGroqPassive,
+                        aiUserMessages = AIUserMessages(
+                            dailyStepRepo = appContainer.dailyStepRepo
+                        ),
                         onMore = {
                             NavigationController.navigateTo(AIChatRoute)
                         }
