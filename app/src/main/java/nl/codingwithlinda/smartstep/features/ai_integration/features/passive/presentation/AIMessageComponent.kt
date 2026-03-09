@@ -66,12 +66,6 @@ fun AIMessageComponent(
 
     val uiState: AIConnectivityUiState =  aiMessageViewModel.uiState.collectAsStateWithLifecycle().value
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-            aiMessageViewModel.makeRequest()
-        }
-    }
     @Composable
     fun AIIcon(){
         Box(

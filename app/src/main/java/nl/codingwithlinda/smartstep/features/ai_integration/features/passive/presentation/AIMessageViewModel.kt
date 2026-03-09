@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.features.ai_integration.features.passive.pr
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
@@ -65,14 +66,10 @@ class AIMessageViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AIConnectivityUiState.OnLine(message = null))
 
     init {
-        goal.onEach {
-                if (it < 0) return@onEach
-                makeRequest()
-            }.launchIn(viewModelScope)
-
         viewModelScope.launch {
         statisticsManager.progressTowardsGoal.collectLatest {
             if(it < 0) return@collectLatest
+            delay(500)
             makeRequest()
         }
         }
