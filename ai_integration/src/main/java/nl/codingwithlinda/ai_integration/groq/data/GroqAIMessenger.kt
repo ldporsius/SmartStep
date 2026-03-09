@@ -31,8 +31,8 @@ class GroqAIMessenger(
                     content = message.message
                 ),
                 Message(
-                    role = "user",
-                    content = "Please reply in $language."
+                    role = "system",
+                    content = "You reply in $language."
                 )
             ),
             temperature = temperature,

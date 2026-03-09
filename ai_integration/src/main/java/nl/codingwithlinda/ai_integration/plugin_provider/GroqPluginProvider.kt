@@ -30,7 +30,7 @@ class GroqPluginProvider() {
             systemPrompt = activityCoachSystemPromptShort,
             maxTokens = 200,
             temperature = 1.9,
-            language = Locale.ENGLISH.language
+            language = Locale.FRANCE.language
         )
 
 
