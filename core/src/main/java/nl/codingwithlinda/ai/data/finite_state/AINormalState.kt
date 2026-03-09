@@ -13,6 +13,7 @@ import nl.codingwithlinda.ai.domain.finite_state.AIState
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZoneOffset.UTC
+import kotlin.time.Duration.Companion.milliseconds
 
 class AINormalState(
     private val aiMessenger: AIMessenger,
@@ -27,8 +28,8 @@ class AINormalState(
         mutex.withLock {
             val now = LocalDateTime.now(ZoneOffset.UTC)
             val requestMinuteCount = aiSessionRepo.requestsMadeMinute()
-            val inWholeMinutes = requestMinuteCount.map {
-                LocalDateTime.ofEpochSecond(it, 0, ZoneOffset.UTC)
+            val inWholeMinutes = requestMinuteCount.mapNotNull { timestamp ->
+                LocalDateTime.ofEpochSecond(timestamp, 0, ZoneOffset.UTC).takeIf { it.isBefore(now) }
             }
             val toText = inWholeMinutes.map {
                 "${it.dayOfWeek} ${it.hour}:${it.minute}"
@@ -49,7 +50,7 @@ class AINormalState(
             aiSessionRepo.saveRequestsMadeMinute(now.toEpochSecond(UTC))
 
             if (!canMakeRequest) {
-                val fakeIt =  aiSessionRepo.history.firstOrNull()?.lastOrNull()?.message
+                val fakeIt =  aiSessionRepo.history.firstOrNull()?.lastOrNull()?.message ?: ""
                 val fakeAppend = fakeIt.run{
                     this.plus("\n\nPlease wait a while before making another request")
                 }
