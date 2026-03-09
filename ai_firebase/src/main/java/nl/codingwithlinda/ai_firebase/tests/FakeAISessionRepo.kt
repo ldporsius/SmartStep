@@ -4,6 +4,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import nl.codingwithlinda.ai.AIMessage
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 class FakeAISessionRepo: AISessionRepo {
 
@@ -22,7 +24,7 @@ class FakeAISessionRepo: AISessionRepo {
 
     override suspend fun requestsMadeMinute(): List<Long> {
         return (10 downTo 0).map{
-            System.currentTimeMillis() - it * 1000 * 10L
+            LocalDateTime.now(ZoneOffset.UTC).minusSeconds(it.toLong() * 10).toEpochSecond(ZoneOffset.UTC)
         }
     }
 

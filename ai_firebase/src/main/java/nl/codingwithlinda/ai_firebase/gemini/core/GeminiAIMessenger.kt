@@ -19,6 +19,8 @@ open class GeminiAIMessenger(
     private val dispatcherProvider: DispatcherProvider
 ): AIMessenger {
 
+    override val maxRequestsPerMinute: Int
+        get() = 5
     override suspend fun send(message: AIMessage): SSResult<AIMessage, AIError> {
         return withContext(dispatcherProvider.io) {
             val result = sendM(message)
@@ -49,7 +51,10 @@ open class GeminiAIMessenger(
                 e.printStackTrace()
 
                 e.message?.run {
-                    Result.Failure(FireBaseAIError.ResourceExhausted(extractRetryTime(this)))
+                    Result.Failure(
+                        FireBaseAIError.ResourceExhausted(extractRetryTime(this)),
+                        null
+                    )
                 }
 
                 Result.Failure(FireBaseAIError.OtherError)

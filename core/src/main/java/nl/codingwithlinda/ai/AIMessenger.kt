@@ -5,5 +5,7 @@ import nl.codingwithlinda.core.domain.util.SSResult
 
 interface AIMessenger {
     suspend fun send(message: AIMessage): SSResult<AIMessage, AIError>
+
+    val maxRequestsPerMinute: Int
 }
 

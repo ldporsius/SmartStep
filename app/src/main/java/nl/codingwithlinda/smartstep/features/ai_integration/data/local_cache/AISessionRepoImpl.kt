@@ -61,7 +61,7 @@ class AISessionRepoImpl(
       = dataStore.data.firstOrNull()?.get(KEY_REQUESTS_MADE_MINUTE)?.split(",")?.map { it.toLong() } ?: emptyList()
 
     override suspend fun saveRequestsMadeMinute(requestTimestampMillis: Long) {
-        val timestamps = requestsMadeMinute().plus(requestTimestampMillis)
+        val timestamps = requestsMadeMinute().takeLast(60).plus(requestTimestampMillis)
 
         dataStore.edit {
             it[KEY_REQUESTS_MADE_MINUTE] = timestamps.fastJoinToString(",")

@@ -24,6 +24,7 @@ import nl.codingwithlinda.ai.AIMessage
 import nl.codingwithlinda.ai.AIMessageOrigin
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.data.AIUserMessages
+import nl.codingwithlinda.smartstep.features.ai_integration.presentation.error.toUIString
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import java.time.ZonedDateTime
 import kotlin.time.Duration.Companion.minutes
@@ -85,17 +86,16 @@ class AIMessageViewModel(
                 is Result.Failure -> {
                     when(result.error){
                         is AIError.ResourceExhausted -> {
-                            _response.update {
-                                AIMessage(
-                                    message = "AI has reached the maximum request allowed",
-                                    origin = AIMessageOrigin.ASSISTANT
-                                )
+                            result.data?.let { msg ->
+                                _response.update {
+                                    msg
+                                }
                             }
                         }
                         AIError.OtherError -> {
                             _response.update {
                                 AIMessage(
-                                    message = "Something went wrong",
+                                    message = result.error.toUIString(),
                                     origin = AIMessageOrigin.ASSISTANT
                                 )
                             }

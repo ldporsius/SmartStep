@@ -18,6 +18,10 @@ class GroqAIMessenger(
     val temperature: Double = 1.0,
     val language: String = "en_gb"
 ): AIMessenger {
+
+    override val maxRequestsPerMinute: Int
+        get() = 30
+
     override suspend fun send(message: AIMessage): SSResult<AIMessage, AIError> {
         val request = AIRequest(
             messages = listOf(

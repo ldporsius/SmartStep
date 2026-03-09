@@ -1,54 +1,67 @@
 package nl.codingwithlinda.ai.data.finite_state
 
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.core.domain.util.Result
 import nl.codingwithlinda.ai.AIMessage
+import nl.codingwithlinda.ai.AIMessageOrigin
 import nl.codingwithlinda.ai.AIMessenger
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.ai.domain.finite_state.AIState
-import kotlin.time.Duration.Companion.seconds
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.ZoneOffset.UTC
 
 class AINormalState(
     private val aiMessenger: AIMessenger,
-    private val aiSessionRepo: AISessionRepo
+    private val aiSessionRepo: AISessionRepo,
+    private val max_requests_per_minute: Int = 5
 ): AIState {
 
-    private val max_requests_per_minute = 5
     private val mutex = Mutex()
-
 
     override suspend fun sendMessage(msg: AIMessage): Result<AIMessage, AIError> {
 
         mutex.withLock {
-            val now = System.currentTimeMillis()
+            val now = LocalDateTime.now(ZoneOffset.UTC)
             val requestMinuteCount = aiSessionRepo.requestsMadeMinute()
-            println("--- AI NORMAL STATE --- requestMinuteCount: $requestMinuteCount")
-
-            val minutesLeft = requestMinuteCount.count {
-                (now - it) < 60.seconds.inWholeMilliseconds
+            val inWholeMinutes = requestMinuteCount.map {
+                LocalDateTime.ofEpochSecond(it, 0, ZoneOffset.UTC)
             }
-            println("--- AI NORMAL STATE --- Duration: $minutesLeft")
+            val toText = inWholeMinutes.map {
+                "${it.dayOfWeek} ${it.hour}:${it.minute}"
 
-            val canMakeRequest = minutesLeft > 0
+            }
 
-            aiSessionRepo.saveRequestsMadeMinute(now)
+            println("--- AI NORMAL STATE --- now: ${now}")
+            println("--- AI NORMAL STATE --- requestMinuteCount: $toText")
 
-          /*  if (!canMakeRequest) {
-                val fakeIt =  aiSessionRepo.history.firstOrNull()?.lastOrNull() ?: ""
+            val numRequestsThisMinute = inWholeMinutes.count {
+                it.isAfter(now.minusMinutes(1))
+            }
+            println("--- AI NORMAL STATE --- numRequestsThisMinute: $numRequestsThisMinute")
+
+            val canMakeRequest = numRequestsThisMinute < max_requests_per_minute
+            println("--- AI NORMAL STATE --- can make request: $canMakeRequest")
+
+            aiSessionRepo.saveRequestsMadeMinute(now.toEpochSecond(UTC))
+
+            if (!canMakeRequest) {
+                val fakeIt =  aiSessionRepo.history.firstOrNull()?.lastOrNull()?.message
                 val fakeAppend = fakeIt.run{
-                    this.plus("\n\nPlease wait before making another request")
+                    this.plus("\n\nPlease wait a while before making another request")
                 }
 
-                return Result.Success(
+                return Result.Failure(
+                    AIError.ResourceExhausted(0L),
                     AIMessage(
-                      fakeAppend , AIMessageOrigin.ASSISTANT
+                        fakeAppend , AIMessageOrigin.ASSISTANT
+                    ),
                 )
-                )
-            }*/
+            }
 
-            println("--- AI NORMAL STATE --- hasMaxRequestsInMinute: $canMakeRequest")
 
             val result = aiMessenger.send(
                 msg
@@ -59,10 +72,7 @@ class AINormalState(
                         is AIError.ResourceExhausted -> {
                             aiSessionRepo.saveSessionTimedOut(result.error.retryIn)
                         }
-
-                        is AIError.OtherError -> {
-                            //todo
-                        }
+                        is AIError.OtherError -> Unit
                     }
                 }
 

@@ -20,7 +20,8 @@ class AIStateController(
 
     private val aiNormalState = AINormalState(
         aiMessenger = aiMessenger,
-        aiSessionRepo = aiSessionRepo
+        aiSessionRepo = aiSessionRepo,
+        max_requests_per_minute = aiMessenger.maxRequestsPerMinute
     )
     private val aiResourceExhaustedState = AIResourceExhaustedState(
         aiMessenger = aiMessenger,
@@ -40,8 +41,12 @@ class AIStateController(
         val result = aiState.value.sendMessage(msg)
         when(result){
             is Result.Failure -> {
-                aiState.update {
-                    aiResourceExhaustedState
+                when(result.error){
+                    is AIError.ResourceExhausted -> {
+                        aiState.update {
+                            aiResourceExhaustedState
+                        }
+                    }
                 }
             }
             is Result.Success -> {
