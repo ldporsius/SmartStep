@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,21 +60,28 @@ fun AIChatScreen(
                 onClick = onNavBack
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.chevron),
+                    painter = painterResource(R.drawable.arrow),
                     contentDescription = "back",
                     modifier = Modifier
                         .size(24.dp)
-                        .rotate(90f)
+
                 )
             }
-            Text("AI Coach")
-            Spacer(modifier = Modifier.size(1.dp))
+            Text("AI Coach",
+                style = MaterialTheme.typography.titleLarge,
+                modifier= Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
+            Spacer(modifier = Modifier.size(48.dp))
         }
+        HorizontalDivider()
         Box(modifier = Modifier.weight(1f)){
-        AIChatHistory(
-            messages = history
-        )
-    }
+            AIChatHistory(
+                messages = history
+            )
+        }
 
         HorizontalDivider()
 

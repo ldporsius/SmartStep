@@ -29,7 +29,7 @@ fun AIChatHistory(
     }
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(end = 16.dp)
+        contentPadding = PaddingValues(16.dp)
     ) {
         items(messages){aiMsg ->
 
