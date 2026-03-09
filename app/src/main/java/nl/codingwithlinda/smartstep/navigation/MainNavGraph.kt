@@ -184,7 +184,8 @@ fun MainNavGraph(
                     AIMessageComponent(
                        aiStateController = appContainer.AIContainer.aiStateControllerGroqPassive,
                         aiUserMessages = AIUserMessages(
-                            dailyStepRepo = appContainer.dailyStepRepo
+                            dailyStepRepo = appContainer.dailyStepRepo,
+                            userSettingsRepo = appContainer.userSettingsRepo
                         ),
                         onMore = {
                             NavigationController.navigateTo(AIChatRoute)

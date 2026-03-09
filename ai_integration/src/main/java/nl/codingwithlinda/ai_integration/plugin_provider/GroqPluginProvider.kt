@@ -29,7 +29,8 @@ class GroqPluginProvider() {
             aiService = aiService,
             systemPrompt = activityCoachSystemPromptShort,
             maxTokens = 200,
-            temperature = 1.9
+            temperature = 1.9,
+            language = Locale.ENGLISH.language
         )
 
 
