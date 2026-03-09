@@ -1,7 +1,6 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.features.passive.data
 
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import nl.codingwithlinda.ai.AIMessage
 import nl.codingwithlinda.ai.AIMessageOrigin
@@ -11,7 +10,7 @@ import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import java.time.ZonedDateTime
 
 class AIUserMessages (
-    private val dailyStepRepo: DailyStepRepo,
+    dailyStepRepo: DailyStepRepo,
     private val userSettingsRepo: UserSettingsRepo
 ){
 
