@@ -7,18 +7,21 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.ai.AIMessage
 import nl.codingwithlinda.ai.AIMessageOrigin
-import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
-import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 import nl.codingwithlinda.core.di.DispatcherProvider
 import nl.codingwithlinda.core.domain.util.Result
+import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
+import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.intro_message.introMessage
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.quick_suggestion.QuickSuggestionsController
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.AIChatAction
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.AIChatState
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.quick_suggestion.QuickSuggestionsController
+import nl.codingwithlinda.smartstep.features.ai_integration.presentation.error.toUIString
 
 class AIChatViewModel(
     private val aiStateController: AIStateController,
@@ -29,7 +32,13 @@ class AIChatViewModel(
 
 
     private val _chats = MutableStateFlow<List<AIMessage>>(emptyList())
-    val chats = _chats .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val chats = _chats
+        .onStart {
+            if(_chats.value.isEmpty()){
+               sendIntro()
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private var message = MutableStateFlow("")
     private val _uiState = connectivityMonitor.isConnected.combine(message) { connected , msg ->
@@ -58,6 +67,9 @@ class AIChatViewModel(
     }
     fun onAction(action: AIChatAction){
         when(action){
+            AIChatAction.Intro ->{
+
+            }
             is AIChatAction.ChatInput -> {
                 message.update {
                     action.message
@@ -107,6 +119,12 @@ class AIChatViewModel(
                     }
                 }
             }
+        }
+    }
+
+    private fun sendIntro(){
+        viewModelScope.launch {
+            quickSuggestionsController.sendInitialMessage()
         }
     }
 

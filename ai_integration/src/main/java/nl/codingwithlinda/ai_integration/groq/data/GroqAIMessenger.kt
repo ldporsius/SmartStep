@@ -15,7 +15,8 @@ class GroqAIMessenger(
     private val aiService: AIService,
     val systemPrompt: Message = activityCoachSystemPromptShort,
     val maxTokens: Int = 200,
-    val temperature: Double = 1.0
+    val temperature: Double = 1.0,
+    val language: String = "en_gb"
 ): AIMessenger {
     override suspend fun send(message: AIMessage): SSResult<AIMessage, AIError> {
         val request = AIRequest(
@@ -24,7 +25,10 @@ class GroqAIMessenger(
                 Message(
                     role = "user",
                     content = message.message
-
+                ),
+                Message(
+                    role = "user",
+                    content = "Please reply in $language."
                 )
             ),
             temperature = temperature,

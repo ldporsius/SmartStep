@@ -1,6 +1,7 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -18,7 +19,6 @@ import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.q
 @Composable
 fun AIChatRoot(
     aiStateController: AIStateController,
-
     userSettingsRepo: UserSettingsRepo,
     aiSessionRepo: AISessionRepo,
     onNavBack: () -> Unit
@@ -51,6 +51,5 @@ fun AIChatRoot(
         uiState = chatViewModel.uiState.collectAsStateWithLifecycle().value,
         onNavBack = onNavBack
     )
-
 
 }

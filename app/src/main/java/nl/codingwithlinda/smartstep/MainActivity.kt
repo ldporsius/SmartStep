@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity(), StepTrackerFiniteState {
         installSplashScreen()
             .apply {
                 setKeepOnScreenCondition {
-                    isChecking
+                   false
                 }
             }
 

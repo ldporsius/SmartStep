@@ -6,6 +6,7 @@ import nl.codingwithlinda.ai_integration.groq.data.GroqAIMessenger
 import nl.codingwithlinda.ai_integration.groq.data.remote.AIServiceImpl
 import nl.codingwithlinda.ai_integration.groq.data.remote.system_prompts.activityCoachSystemPromptAverage
 import nl.codingwithlinda.ai_integration.groq.data.remote.system_prompts.activityCoachSystemPromptShort
+import java.util.Locale
 
 
 class GroqPluginProvider() {
@@ -37,7 +38,8 @@ class GroqPluginProvider() {
             aiService = aiService,
             systemPrompt = activityCoachSystemPromptAverage,
             maxTokens = 500,
-            temperature = 1.5
+            temperature = 1.5,
+            language = Locale.getDefault().language
         )
 
 

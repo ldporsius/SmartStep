@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.firstOrNull
@@ -64,11 +65,17 @@ class AIMessageViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AIConnectivityUiState.OnLine(message = null))
 
     init {
-        goal
-            .debounce(5.minutes)
-            .onEach {
+        goal.onEach {
+                if (it < 0) return@onEach
                 makeRequest()
             }.launchIn(viewModelScope)
+
+        viewModelScope.launch {
+        statisticsManager.progressTowardsGoal.collectLatest {
+            if(it < 0) return@collectLatest
+            makeRequest()
+        }
+        }
     }
 
 

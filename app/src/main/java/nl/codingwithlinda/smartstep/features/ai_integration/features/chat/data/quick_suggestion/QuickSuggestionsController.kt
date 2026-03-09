@@ -16,10 +16,12 @@ import nl.codingwithlinda.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.intro_message.introMessage
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import java.time.LocalDateTime
 import java.time.format.TextStyle
 import java.util.Locale
+import kotlin.math.roundToInt
 
 class QuickSuggestionsController private constructor(
     private val userSettingsRepo: UserSettingsRepo,
@@ -55,8 +57,8 @@ class QuickSuggestionsController private constructor(
 
     private suspend fun goal() = statisticsManager.todaysGoal.firstOrNull() ?: stepGoalRange.first()
 
-    suspend fun activityProgress() = statisticsManager.progressTowardsGoal.firstOrNull().let {
-        it?.times(100) ?: 0
+    suspend fun activityProgress(): Int = statisticsManager.progressTowardsGoal.firstOrNull().let {
+        it?.times(100)?.roundToInt() ?: 0
     }
 
     private fun today(): LocalDateTime = LocalDateTime.now()
@@ -106,6 +108,12 @@ class QuickSuggestionsController private constructor(
                     it.plus(result.data)
                 }
             }
+        }
+    }
+
+    suspend fun sendInitialMessage(){
+        aiStateController.sendMessage(introMessage(activityProgress())).also {
+            handleResponse(it)
         }
     }
 
