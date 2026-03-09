@@ -1,4 +1,4 @@
-package nl.codingwithlinda.ai_integration.groq.data.remote.system_prompts
+package nl.codingwithlinda.ai_integration.groq.domain.remote.system_prompts
 
 import nl.codingwithlinda.ai_integration.groq.data.dto.Message
 
@@ -12,7 +12,7 @@ val activityCoachSystemPromptShort = Message(
             If the goal is reached, admire. Otherwise,
              mention how many steps are needed to reach the goal;
              encourage.
-            Sound like Mohammed Ali.
+            Sound like SpongeBob.
         """.trimIndent()
 )
 

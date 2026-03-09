@@ -6,7 +6,7 @@ import nl.codingwithlinda.ai.AIMessenger
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.ai_integration.groq.data.dto.AIRequest
 import nl.codingwithlinda.ai_integration.groq.data.dto.Message
-import nl.codingwithlinda.ai_integration.groq.data.remote.system_prompts.activityCoachSystemPromptShort
+import nl.codingwithlinda.ai_integration.groq.domain.remote.system_prompts.activityCoachSystemPromptShort
 import nl.codingwithlinda.ai_integration.groq.domain.remote.AIService
 import nl.codingwithlinda.core.domain.util.Result
 import nl.codingwithlinda.core.domain.util.SSResult
