@@ -49,7 +49,7 @@ fun AIChatMenu(
                 .padding(16.dp)
         ) {
             Text("Quick suggestions",
-                style = MaterialTheme.typography.labelLarge)
+                style = MaterialTheme.typography.titleMedium)
             Icon(painter = painterResource(R.drawable.chevron),
                 contentDescription = null)
         }
