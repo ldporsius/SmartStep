@@ -39,11 +39,11 @@ class StepTrackerDetectorImpl private constructor(
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
-    val motionSensor: Sensor = sensorManager.getSensorList(Sensor.TYPE_STEP_DETECTOR)
+    private val motionSensor: Sensor? = sensorManager.getSensorList(Sensor.TYPE_STEP_DETECTOR)
         .also {
             println("StepTracker motionSensors detected: $it")
         }
-        .firstOrNull() ?: throw Exception("Device has no step detector sensor")
+        .firstOrNull()
 
 
     companion object{
@@ -79,17 +79,24 @@ class StepTrackerDetectorImpl private constructor(
         }
     }
     override fun start() {
-        state = StepTrackerState.STARTED
-        _stateObservable.update {
-            StepTrackerState.STARTED
+
+        try {
+            motionSensor.let {sensor ->
+                sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL).also {registered ->
+                    println("StepTracker registered listener: $registered")
+                }
+            }
+
+            state = StepTrackerState.STARTED
+            _stateObservable.update {
+                StepTrackerState.STARTED
+            }
+
+            println("StepTracker started")
+        }catch (e: Exception){
+            e.printStackTrace()
         }
 
-        motionSensor.let {sensor ->
-            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL).also {registered ->
-                println("StepTracker registered listener: $registered")
-            }
-        }
-        println("StepTracker started")
     }
 
     override fun stop() {

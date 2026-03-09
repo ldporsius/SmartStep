@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.R
@@ -20,6 +21,9 @@ fun AIChatInputOnline(
     onAction: (AIChatAction) -> Unit,
     message: String
 ) {
+
+    val softKeyboardController = LocalSoftwareKeyboardController.current
+
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -30,13 +34,13 @@ fun AIChatInputOnline(
                 onAction(AIChatAction.ChatInput(it))
             },
             modifier = Modifier
-                .fillMaxWidth()
                 .weight(1f)
         )
 
         Box(modifier = Modifier
             .clickable {
                 onAction(AIChatAction.SendMessage(message))
+                softKeyboardController?.hide()
             }
         ){
             Image(

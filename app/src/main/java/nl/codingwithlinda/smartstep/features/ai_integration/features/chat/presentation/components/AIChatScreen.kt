@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
@@ -33,6 +36,7 @@ import nl.codingwithlinda.ai.AIMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.AIChatState
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.quick_suggestion.QuickSuggestion
 import nl.codingwithlinda.ai_firebase.tests.fakeChatHistory
+import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.form_factor.FormFactorWrapper
 
 @Composable
 fun AIChatScreen(
@@ -43,12 +47,12 @@ fun AIChatScreen(
     modifier: Modifier = Modifier
 ) {
 
-
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(color = bg)
-            .safeContentPadding()
+            .systemBarsPadding(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Row(
@@ -67,9 +71,10 @@ fun AIChatScreen(
 
                 )
             }
-            Text("AI Coach",
+            Text(
+                "AI Coach",
                 style = MaterialTheme.typography.titleLarge,
-                modifier= Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -77,36 +82,47 @@ fun AIChatScreen(
             Spacer(modifier = Modifier.size(48.dp))
         }
         HorizontalDivider()
-        Box(modifier = Modifier.weight(1f)){
-            AIChatHistory(
-                messages = history
-            )
-        }
 
+        Box(modifier = Modifier.weight(1f)) {
+
+            FormFactorWrapper {
+                AIChatHistory(
+                    messages = history
+                )
+            }
+        }
         HorizontalDivider()
 
         Surface(
-            modifier = Modifier,
+            modifier = Modifier.fillMaxWidth()
+            ,
             color = white
         ) {
-            AIChatMenu(
-                aiChatState = uiState,
-                quickSuggestions = quickSuggestions,
-                modifier = Modifier.padding(16.dp),
-            )
-        }
+            FormFactorWrapper {
+                AIChatMenu(
+                    aiChatState = uiState,
+                    quickSuggestions = quickSuggestions,
+                    modifier = Modifier
+                        .width(400.dp)
+                        .padding(bottom = 16.dp),
+                )
+            }
 
+        }
     }
 }
 
-@Preview
+@PreviewScreenSizes
 @Composable
 private fun PreviewAIChatScreen() {
     SmartStepTheme() {
         AIChatScreen(
             quickSuggestions = emptyList(),
             history = fakeChatHistory(),
-            uiState = AIChatState.Offline,
+            uiState = AIChatState.Online(
+                message = "",
+                onAction = {}
+            ),
             onNavBack = {}
         )
 

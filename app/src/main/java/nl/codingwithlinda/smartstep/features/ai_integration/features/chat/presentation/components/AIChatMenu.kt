@@ -61,7 +61,9 @@ fun AIChatMenu(
         }
         HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
 
-        aiChatState.ToUi()
+        aiChatState.ToUi(
+            modifier = modifier
+        )
 
     }
 }
