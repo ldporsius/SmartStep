@@ -2,7 +2,7 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.height_setti
 
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 import nl.codingwithlinda.core.domain.util.UiText
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.Length
+import nl.codingwithlinda.unit_conversion.data.height.Length
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeightFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeightInches
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.minHeightFeet

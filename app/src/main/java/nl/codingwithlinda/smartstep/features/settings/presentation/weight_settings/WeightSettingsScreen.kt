@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weights
+import nl.codingwithlinda.unit_conversion.data.weight.Weights
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design_system.components.CommonNumberPicker
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow

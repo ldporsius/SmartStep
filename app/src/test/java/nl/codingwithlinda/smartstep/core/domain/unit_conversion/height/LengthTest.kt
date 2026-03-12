@@ -2,6 +2,8 @@ package nl.codingwithlinda.smartstep.core.domain.unit_conversion.height
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import nl.codingwithlinda.unit_conversion.data.height.Length
+import nl.codingwithlinda.unit_conversion.data.height.LengthUnits
 import org.junit.Test
 
 class LengthTest {

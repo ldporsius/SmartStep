@@ -1,12 +1,12 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion
 
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.LengthUnits
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GRAM
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KG
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBS
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.TestConverter
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weight
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.Weights
+import nl.codingwithlinda.unit_conversion.data.height.LengthUnits
+import nl.codingwithlinda.unit_conversion.data.weight.GRAM
+import nl.codingwithlinda.unit_conversion.data.weight.KG
+import nl.codingwithlinda.unit_conversion.data.weight.LBS
+import nl.codingwithlinda.unit_conversion.data.weight.TestConverter
+import nl.codingwithlinda.unit_conversion.data.weight.Weight
+import nl.codingwithlinda.unit_conversion.data.weight.Weights
 import nl.codingwithlinda.core.domain.util.UiText
 import nl.codingwithlinda.core.domain.util.UiText.DynamicText
 

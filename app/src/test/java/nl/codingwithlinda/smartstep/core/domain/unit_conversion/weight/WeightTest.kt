@@ -5,9 +5,16 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isPositive
 import assertk.assertions.isZero
+import nl.codingwithlinda.unit_conversion.data.weight.GRAM
+import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
+import nl.codingwithlinda.unit_conversion.data.weight.KG
+import nl.codingwithlinda.unit_conversion.data.weight.KGWeight
+import nl.codingwithlinda.unit_conversion.data.weight.LBS
+import nl.codingwithlinda.unit_conversion.data.weight.LBSWeight
+import nl.codingwithlinda.unit_conversion.data.weight.TestConverter
+import nl.codingwithlinda.unit_conversion.data.weight.TestWeight
+import nl.codingwithlinda.unit_conversion.data.weight.convertWeight
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 class WeightTest {

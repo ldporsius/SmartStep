@@ -15,10 +15,9 @@ import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GRAM
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.convertWeight
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.kgToPoundsFactor
+import nl.codingwithlinda.unit_conversion.data.weight.GRAM
+import nl.codingwithlinda.unit_conversion.data.weight.LBSWeight
+import nl.codingwithlinda.unit_conversion.data.weight.convertWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
@@ -29,7 +28,6 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalTestApi::class)
 class UserSettingsScreenTest {

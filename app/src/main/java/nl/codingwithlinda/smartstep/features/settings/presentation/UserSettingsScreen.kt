@@ -30,7 +30,7 @@ import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KGWeight
+import nl.codingwithlinda.unit_conversion.data.weight.KGWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.core.presentation.util.asString

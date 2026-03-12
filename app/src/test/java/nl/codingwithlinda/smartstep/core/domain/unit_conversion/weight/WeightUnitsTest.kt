@@ -1,5 +1,12 @@
 package nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight
 
+import nl.codingwithlinda.unit_conversion.data.weight.GRAM
+import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
+import nl.codingwithlinda.unit_conversion.data.weight.KG
+import nl.codingwithlinda.unit_conversion.data.weight.KGWeight
+import nl.codingwithlinda.unit_conversion.data.weight.LBS
+import nl.codingwithlinda.unit_conversion.data.weight.LBSWeight
+import nl.codingwithlinda.unit_conversion.data.weight.convertWeight
 import org.junit.Assert
 import org.junit.Test
 import kotlin.math.roundToInt

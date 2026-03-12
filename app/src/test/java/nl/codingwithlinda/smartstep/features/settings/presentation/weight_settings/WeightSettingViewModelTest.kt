@@ -9,8 +9,8 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KGWeight
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
+import nl.codingwithlinda.unit_conversion.data.weight.KGWeight
+import nl.codingwithlinda.unit_conversion.data.weight.LBSWeight
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState

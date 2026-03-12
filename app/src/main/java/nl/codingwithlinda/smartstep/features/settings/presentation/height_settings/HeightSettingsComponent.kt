@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.Length
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.LengthUnits
+import nl.codingwithlinda.unit_conversion.data.height.Length
+import nl.codingwithlinda.unit_conversion.data.height.LengthUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches

@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.Length
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.LengthUnits
+import nl.codingwithlinda.unit_conversion.data.height.Length
+import nl.codingwithlinda.unit_conversion.data.height.LengthUnits
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState

@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight
+package nl.codingwithlinda.unit_conversion.data.weight
 
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 

@@ -16,8 +16,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.Length
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.LengthUnits
+import nl.codingwithlinda.unit_conversion.data.height.Length
+import nl.codingwithlinda.unit_conversion.data.height.LengthUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches

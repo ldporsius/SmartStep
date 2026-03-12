@@ -16,9 +16,9 @@ import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GramsWeight
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KG
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.convertWeight
+import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
+import nl.codingwithlinda.unit_conversion.data.weight.KG
+import nl.codingwithlinda.unit_conversion.data.weight.convertWeight
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.calculateDistanceCm

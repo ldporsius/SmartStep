@@ -1,8 +1,8 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state
 
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KGWeight
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.LBSWeight
+import nl.codingwithlinda.unit_conversion.data.weight.KGWeight
+import nl.codingwithlinda.unit_conversion.data.weight.LBSWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.maxWeightPounds
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.minWeightPounds
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg

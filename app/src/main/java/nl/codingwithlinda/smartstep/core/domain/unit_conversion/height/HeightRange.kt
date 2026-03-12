@@ -1,5 +1,8 @@
 package nl.codingwithlinda.smartstep.core.domain.unit_conversion.height
 
+import nl.codingwithlinda.unit_conversion.data.height.Length
+import nl.codingwithlinda.unit_conversion.data.height.LengthUnits
+
 
 val heightsFeet = IntRange(0, 7).toList()
 val heightsInches = IntRange(0,11).toList()
