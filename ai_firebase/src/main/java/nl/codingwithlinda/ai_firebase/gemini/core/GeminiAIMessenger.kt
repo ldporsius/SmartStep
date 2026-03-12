@@ -3,9 +3,9 @@ package nl.codingwithlinda.ai_firebase.gemini.core
 import com.google.firebase.ai.type.FirebaseAIException
 import com.google.firebase.ai.type.QuotaExceededException
 import kotlinx.coroutines.withContext
-import nl.codingwithlinda.ai.AIMessage
-import nl.codingwithlinda.ai.AIMessageOrigin
-import nl.codingwithlinda.ai.AIMessenger
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessenger
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.ai_firebase.gemini.error.FireBaseAIError
 import nl.codingwithlinda.ai_firebase.gemini.error.toDomain

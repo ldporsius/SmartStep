@@ -1,6 +1,6 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state
 
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
+import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 
 sealed interface ActionHeightInput {
     data class CmInput(val cm: Int): ActionHeightInput

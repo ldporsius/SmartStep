@@ -9,7 +9,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull
-import nl.codingwithlinda.ai.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessage
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import kotlin.collections.take
 

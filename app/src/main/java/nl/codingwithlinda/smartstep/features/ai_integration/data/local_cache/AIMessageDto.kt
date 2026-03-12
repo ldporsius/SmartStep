@@ -1,8 +1,8 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.data.local_cache
 
 import kotlinx.serialization.Serializable
-import nl.codingwithlinda.ai.AIMessage
-import nl.codingwithlinda.ai.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 
 
 @Serializable

@@ -1,8 +1,8 @@
 package nl.codingwithlinda.ai_integration.groq.data
 
-import nl.codingwithlinda.ai.AIMessage
-import nl.codingwithlinda.ai.AIMessageOrigin
-import nl.codingwithlinda.ai.AIMessenger
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessenger
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.ai_integration.groq.data.dto.AIRequest
 import nl.codingwithlinda.ai_integration.groq.data.dto.Message

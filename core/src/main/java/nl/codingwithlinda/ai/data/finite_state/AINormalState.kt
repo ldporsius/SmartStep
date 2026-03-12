@@ -5,15 +5,14 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.core.domain.util.Result
-import nl.codingwithlinda.ai.AIMessage
-import nl.codingwithlinda.ai.AIMessageOrigin
-import nl.codingwithlinda.ai.AIMessenger
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessenger
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.ai.domain.finite_state.AIState
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZoneOffset.UTC
-import kotlin.time.Duration.Companion.milliseconds
 
 class AINormalState(
     private val aiMessenger: AIMessenger,

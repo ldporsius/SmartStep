@@ -1,6 +1,5 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings
 
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,7 +12,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
+import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GRAM
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.GramsWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.KG
@@ -25,7 +24,6 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.fromPrevi
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
-import kotlin.math.nextDown
 import kotlin.math.roundToInt
 
 class WeightSettingViewModel(

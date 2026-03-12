@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.core.di.DispatcherProvider
-import nl.codingwithlinda.ai.AIMessage
-import nl.codingwithlinda.ai.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 import nl.codingwithlinda.ai_firebase.gemini.chat.GeminiAIChatMessenger
 import nl.codingwithlinda.ai_firebase.gemini.passive.Gemini_2_5_Config
 import kotlin.time.Duration.Companion.seconds

@@ -11,17 +11,15 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.ai.AIMessage
-import nl.codingwithlinda.ai.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 import nl.codingwithlinda.core.di.DispatcherProvider
 import nl.codingwithlinda.core.domain.util.Result
 import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
-import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.intro_message.introMessage
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.quick_suggestion.QuickSuggestionsController
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.AIChatAction
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.state.finite_state.AIChatState
-import nl.codingwithlinda.smartstep.features.ai_integration.presentation.error.toUIString
 
 class AIChatViewModel(
     private val aiStateController: AIStateController,

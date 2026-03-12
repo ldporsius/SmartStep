@@ -1,6 +1,6 @@
 package nl.codingwithlinda.smartstep.core.domain.unit_conversion.height
 
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
+import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 
 enum class LengthUnits{
     CM {

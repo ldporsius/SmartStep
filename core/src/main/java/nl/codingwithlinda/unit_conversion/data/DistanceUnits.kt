@@ -1,6 +1,7 @@
-package nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion
+package nl.codingwithlinda.unit_conversion.data
 
-typealias SmartDistance = Distance
+import nl.codingwithlinda.unit_conversion.data.convertDistance
+
 sealed interface Distance {
     val factorToBase: Double
 }
@@ -19,7 +20,7 @@ object MILE: Distance {
     override val factorToBase: Double = 1609.34
 }
 
-fun convertDistance(value: Double, from: Distance, to: Distance): Double{
+private fun convertDistance(value: Double, from: Distance, to: Distance): Double{
     return value * from.factorToBase / to.factorToBase
 }
 
@@ -58,7 +59,6 @@ data class cm(override val value: Double): ConcreteDistance {
     override val distance: Distance = CM
 }
 data class mile(override val value: Double): ConcreteDistance {
-    override val distance: Distance
-        get() = MILE
+    override val distance: Distance = MILE
 
 }

@@ -1,4 +1,4 @@
-package nl.codingwithlinda.ai
+package nl.codingwithlinda.ai.domain.model
 
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.core.domain.util.SSResult

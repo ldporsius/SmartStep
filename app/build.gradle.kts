@@ -25,10 +25,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
 
-        val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
 
-        buildConfigField("String", "GEMINI_AI_KEY", properties.getProperty("GEMINI_AI_KEY"))
 
     }
 

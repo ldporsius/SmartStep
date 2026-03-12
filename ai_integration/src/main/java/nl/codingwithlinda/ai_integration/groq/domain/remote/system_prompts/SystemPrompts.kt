@@ -13,7 +13,7 @@ val activityCoachSystemPromptShort = Message(
             If the goal is reached, admire. Otherwise,
              mention how many steps are needed to reach the goal;
              evaluate the changes of reaching the goal.
-            Sound like Sophie Hunger.
+            Sound like Morgan Freeman.
         """.trimIndent()
 )
 

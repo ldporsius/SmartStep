@@ -1,4 +1,4 @@
-package nl.codingwithlinda.ai
+package nl.codingwithlinda.ai.domain.model
 
 data class AIMessage(
     val message: String,

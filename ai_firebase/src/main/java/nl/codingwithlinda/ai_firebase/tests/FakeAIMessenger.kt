@@ -2,8 +2,8 @@ package nl.codingwithlinda.ai_firebase.tests
 
 import nl.codingwithlinda.core.di.DispatcherProvider
 import nl.codingwithlinda.core.domain.util.Result
-import nl.codingwithlinda.ai.AIMessage
-import nl.codingwithlinda.ai.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.ai_firebase.gemini.core.GeminiAIMessenger
 import nl.codingwithlinda.ai_firebase.gemini.passive.Gemini_2_5_Config

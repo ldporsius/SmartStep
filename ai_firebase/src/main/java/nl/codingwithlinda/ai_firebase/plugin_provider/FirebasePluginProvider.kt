@@ -1,6 +1,6 @@
 package nl.codingwithlinda.ai_firebase.plugin_provider
 
-import nl.codingwithlinda.ai.AIMessenger
+import nl.codingwithlinda.ai.domain.model.AIMessenger
 import nl.codingwithlinda.ai.domain.plugin_provider.AImode
 import nl.codingwithlinda.ai_firebase.gemini.chat.GeminiChatMessengerImpl
 import nl.codingwithlinda.ai_firebase.gemini.core.GeminiAIMessenger

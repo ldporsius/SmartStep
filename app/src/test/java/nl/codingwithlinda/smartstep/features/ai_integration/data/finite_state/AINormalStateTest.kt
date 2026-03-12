@@ -4,8 +4,8 @@ import assertk.assertThat
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import kotlinx.coroutines.test.runTest
-import nl.codingwithlinda.ai.AIMessage
-import nl.codingwithlinda.ai.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 import nl.codingwithlinda.ai.data.finite_state.AINormalState
 import nl.codingwithlinda.ai_firebase.tests.FakeAIMessenger
 import nl.codingwithlinda.ai_firebase.tests.FakeAISessionRepo

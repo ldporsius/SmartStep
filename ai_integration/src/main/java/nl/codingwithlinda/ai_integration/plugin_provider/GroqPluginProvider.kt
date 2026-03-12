@@ -1,6 +1,6 @@
 package nl.codingwithlinda.ai_integration.plugin_provider
 
-import nl.codingwithlinda.ai.AIMessenger
+import nl.codingwithlinda.ai.domain.model.AIMessenger
 import nl.codingwithlinda.ai.domain.plugin_provider.AImode
 import nl.codingwithlinda.ai_integration.groq.data.GroqAIMessenger
 import nl.codingwithlinda.ai_integration.groq.data.remote.AIServiceImpl
@@ -30,7 +30,7 @@ class GroqPluginProvider() {
             systemPrompt = activityCoachSystemPromptShort,
             maxTokens = 200,
             temperature = 1.9,
-            language = Locale.FRANCE.language
+            language = Locale.US.language
         )
 
 

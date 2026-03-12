@@ -2,7 +2,7 @@ package nl.codingwithlinda.ai_firebase.gemini.chat
 
 import kotlinx.coroutines.flow.Flow
 import nl.codingwithlinda.core.di.DispatcherProvider
-import nl.codingwithlinda.ai.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessage
 import nl.codingwithlinda.ai_firebase.gemini.core.GeminiAIMessenger
 import nl.codingwithlinda.ai_firebase.gemini.core.GeminiFlashConfig
 abstract class GeminiAIChatMessenger(

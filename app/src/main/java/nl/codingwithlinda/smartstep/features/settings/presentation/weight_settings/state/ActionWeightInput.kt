@@ -1,6 +1,6 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state
 
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
+import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 
 interface ActionWeightInput {
     data class PoundsInput(val pounds: Int): ActionWeightInput

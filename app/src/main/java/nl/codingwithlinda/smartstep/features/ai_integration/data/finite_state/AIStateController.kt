@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.core.domain.util.Result
 import nl.codingwithlinda.core.domain.util.SSResult
-import nl.codingwithlinda.ai.AIMessage
-import nl.codingwithlinda.ai.AIMessageOrigin
-import nl.codingwithlinda.ai.AIMessenger
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessenger
 import nl.codingwithlinda.ai.data.finite_state.AINormalState
 import nl.codingwithlinda.ai.data.finite_state.AIResourceExhaustedState
 import nl.codingwithlinda.ai.domain.error.AIError

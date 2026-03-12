@@ -2,8 +2,8 @@ package nl.codingwithlinda.smartstep.features.ai_integration.features.passive.da
 
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import nl.codingwithlinda.ai.AIMessage
-import nl.codingwithlinda.ai.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper

@@ -1,6 +1,6 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state
 
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
+import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 import nl.codingwithlinda.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.Length
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeightFeet

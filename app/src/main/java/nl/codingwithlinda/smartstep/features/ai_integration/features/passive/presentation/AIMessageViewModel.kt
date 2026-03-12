@@ -8,11 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.lastOrNull
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -20,14 +17,12 @@ import kotlinx.coroutines.yield
 import nl.codingwithlinda.smartstep.core.domain.connectivity.ConnectivityMonitor
 import nl.codingwithlinda.core.domain.util.Result
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
-import nl.codingwithlinda.ai.AIMessage
-import nl.codingwithlinda.ai.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.data.AIUserMessages
 import nl.codingwithlinda.smartstep.features.ai_integration.presentation.error.toUIString
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
-import java.time.ZonedDateTime
-import kotlin.time.Duration.Companion.minutes
 
 @OptIn(FlowPreview::class)
 class AIMessageViewModel(

@@ -15,7 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
+import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.Length
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.LengthUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
@@ -29,7 +29,6 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.height_settin
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.math.roundToInt
 
 
 @OptIn(ExperimentalTestApi::class)

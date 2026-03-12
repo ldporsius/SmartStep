@@ -2,7 +2,7 @@ package nl.codingwithlinda.smartstep.core.domain.repo
 
 import kotlinx.coroutines.flow.Flow
 import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.UnitSystems
+import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 
 interface UserSettingsRepo {
     suspend fun loadSettings(): UserSettings

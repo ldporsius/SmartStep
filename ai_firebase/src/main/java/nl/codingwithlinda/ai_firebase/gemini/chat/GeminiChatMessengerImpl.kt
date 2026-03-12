@@ -3,8 +3,8 @@ package nl.codingwithlinda.ai_firebase.gemini.chat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import nl.codingwithlinda.ai.AIMessage
-import nl.codingwithlinda.ai.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.ai_firebase.gemini.core.GeminiFlashConfig
 import nl.codingwithlinda.core.di.DispatcherProvider

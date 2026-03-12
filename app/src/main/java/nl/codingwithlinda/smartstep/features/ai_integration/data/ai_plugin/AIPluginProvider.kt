@@ -1,6 +1,6 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.data.ai_plugin
 
-import nl.codingwithlinda.ai.AIMessenger
+import nl.codingwithlinda.ai.domain.model.AIMessenger
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.ai.domain.plugin_provider.AIapi
 import nl.codingwithlinda.ai.domain.plugin_provider.AImode

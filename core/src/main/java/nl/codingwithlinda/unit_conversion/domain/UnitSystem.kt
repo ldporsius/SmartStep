@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.core.domain.unit_conversion
+package nl.codingwithlinda.unit_conversion.domain
 
 
 sealed interface UnitSystems {
