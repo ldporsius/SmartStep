@@ -15,9 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
-import nl.codingwithlinda.unit_conversion.domain.UnitSystems
-import nl.codingwithlinda.unit_conversion.data.height.Length
-import nl.codingwithlinda.unit_conversion.data.height.LengthUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
@@ -26,6 +23,9 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeightInches
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
+import nl.codingwithlinda.unit_conversion.data.lenght.Cm
+import nl.codingwithlinda.unit_conversion.data.lenght.FeetInches
+import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,8 +36,8 @@ class HeightSettingsComponentTest {
 
     @get:Rule
     val composeRule = createComposeRule()
-
-    val uiState: MutableStateFlow<HeightSettingUiState> = MutableStateFlow(HeightSettingUiState.SI(maxHeightCm))
+    val currentCm = Cm(maxHeightCm.toDouble())
+    val uiState: MutableStateFlow<HeightSettingUiState> = MutableStateFlow(HeightSettingUiState.SI(currentCm))
 
     @Before
     fun setUp() {
@@ -52,14 +52,14 @@ class HeightSettingsComponentTest {
                         is ActionHeightInput.ChangeUnitSystem -> {
                             when(action.system){
                                 UnitSystems.IMPERIAL -> {
-                                    val currentCm = Length.Cm(maxHeightCm)
+
                                     uiState.update {
-                                        HeightSettingUiState.Imperial(currentCm.convert(LengthUnits.FEET_INCHES))
+                                        HeightSettingUiState.Imperial(currentCm.convert())
                                     }
                                 }
                                 UnitSystems.SI -> {
                                     uiState.update {
-                                        HeightSettingUiState.SI(maxHeightCm)
+                                        HeightSettingUiState.SI(currentCm)
                                     }
                                 }
                             }
@@ -67,17 +67,15 @@ class HeightSettingsComponentTest {
 
                         ActionHeightInput.ActionSave -> Unit
                         is ActionHeightInput.CmInput -> {
-                            val cm = action.cm
-                            uiState.update {
-                                HeightSettingUiState.SI(cm)
-                            }
+                            val cm = Cm(action.cm.toDouble())
+                            uiState . update {
+                                    HeightSettingUiState.SI(cm)
+                                }
                         }
                         is ActionHeightInput.ImperialInput -> {
-                            val feet = action.feet
-                            val inches = action.inches
                             uiState.update {
                                 HeightSettingUiState.Imperial(
-                                   Length.FeetInches(action.feet, action.inches)
+                                    FeetInches(action.feet, action.inches)
                                 )
                             }
                         }

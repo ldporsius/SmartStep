@@ -3,12 +3,11 @@ package nl.codingwithlinda.smartstep.features.statistics.domain.unit_conversion
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
-import nl.codingwithlinda.unit_conversion.data.KM
-import nl.codingwithlinda.unit_conversion.data.METER
-import nl.codingwithlinda.unit_conversion.data.MILE
-import nl.codingwithlinda.unit_conversion.data.convertDistance
-import nl.codingwithlinda.unit_conversion.data.km
-import nl.codingwithlinda.unit_conversion.data.mile
+import nl.codingwithlinda.unit_conversion.data.distance.KM
+import nl.codingwithlinda.unit_conversion.data.distance.MILE
+import nl.codingwithlinda.unit_conversion.data.distance.convertDistance
+import nl.codingwithlinda.unit_conversion.data.distance.km
+import nl.codingwithlinda.unit_conversion.data.distance.mile
 import org.junit.Test
 
 class ConvertDistanceTest {

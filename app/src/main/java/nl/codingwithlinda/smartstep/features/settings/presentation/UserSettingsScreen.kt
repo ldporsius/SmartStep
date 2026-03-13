@@ -50,6 +50,7 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settin
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.WeightSettingsScreen
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
+import nl.codingwithlinda.unit_conversion.data.lenght.Cm
 
 
 @Composable
@@ -237,7 +238,7 @@ fun UserSettingsScreen(
 private fun PreviewUserSettingsScreen() {
     SmartStepTheme {
         UserSettingsScreen(
-            heightUiState = HeightSettingUiState.SI(175),
+            heightUiState = HeightSettingUiState.SI(Cm(175.0)),
             weightUiState = WeightSettingUiState.SI(KGWeight(100.0)),
             gender = Gender.FEMALE,
             actionGenderInput = {},

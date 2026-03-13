@@ -1,7 +1,6 @@
 package nl.codingwithlinda.smartstep.core.domain.unit_conversion.height
 
-import nl.codingwithlinda.unit_conversion.data.height.Length
-import nl.codingwithlinda.unit_conversion.data.height.LengthUnits
+import nl.codingwithlinda.unit_conversion.data.lenght.FeetInches
 
 
 val heightsFeet = IntRange(0, 7).toList()
@@ -14,7 +13,7 @@ val minHeightInches = heightsInches.first()
 val maxHeightInches = heightsInches.last()
 
 
-val maxHeightCm = Length.FeetInches(maxHeightFeet, maxHeightInches).convert<Length.Cm>(LengthUnits.CM).cm
+val maxHeightCm = FeetInches(maxHeightFeet, maxHeightInches).valueCm.toInt()
 
 
 val heightsCm = IntRange(100, maxHeightCm).toList()

@@ -42,7 +42,6 @@ data class KGWeight(
 
 data class LBSWeight(
     override val weight: Double,
-
 ): ConcreteWeight{
     override val unit: Weight = LBS
 }

@@ -2,14 +2,15 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.height_setti
 
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 import nl.codingwithlinda.core.domain.util.UiText
-import nl.codingwithlinda.unit_conversion.data.height.Length
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeightFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeightInches
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.minHeightFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.minHeightInches
+import nl.codingwithlinda.unit_conversion.data.lenght.Cm
+import nl.codingwithlinda.unit_conversion.data.lenght.FeetInches
 
 interface HeightSettingUiState {
-    data class Imperial(var feetInches: Length.FeetInches): HeightSettingUiState {
+    data class Imperial(var feetInches: FeetInches): HeightSettingUiState {
 
         val feet = feetInches.feet.coerceIn(minHeightFeet, maxHeightFeet)
         val inches = feetInches.inches.coerceIn(minHeightInches, maxHeightInches)
@@ -22,12 +23,12 @@ interface HeightSettingUiState {
             get() = UnitSystems.IMPERIAL
     }
 
-    data class SI(var valueCm: Int): HeightSettingUiState {
-        override fun toUi(): UiText = UiText.DynamicText("$valueCm cm")
+    data class SI(private var cm: Cm): HeightSettingUiState {
+        val valueCm : Int = cm.valueCm.toInt()
+        override fun toUi(): UiText = UiText.DynamicText("${valueCm} cm")
         override val system: UnitSystems
             get() = UnitSystems.SI
     }
-
 
     fun toUi(): UiText
 

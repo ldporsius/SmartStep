@@ -1,6 +1,6 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion
 
-import nl.codingwithlinda.unit_conversion.data.height.LengthUnits
+import nl.codingwithlinda.unit_conversion.data.lenght.LengthUnits
 import nl.codingwithlinda.unit_conversion.data.weight.GRAM
 import nl.codingwithlinda.unit_conversion.data.weight.KG
 import nl.codingwithlinda.unit_conversion.data.weight.LBS

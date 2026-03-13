@@ -97,3 +97,10 @@ ktor = [
     "ktor-client-websockets",
 ]
 
+junit-test = [
+    "junit",
+    "turbine",
+    "coroutines-test",
+    "assertk"
+]
+

@@ -23,10 +23,10 @@ import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.calculateDistanceCm
 import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.caloriesBurned
-import nl.codingwithlinda.unit_conversion.data.KM
-import nl.codingwithlinda.unit_conversion.data.MILE
-import nl.codingwithlinda.unit_conversion.data.cm
-import nl.codingwithlinda.unit_conversion.data.convertDistance
+import nl.codingwithlinda.unit_conversion.data.distance.KM
+import nl.codingwithlinda.unit_conversion.data.distance.MILE
+import nl.codingwithlinda.unit_conversion.data.distance.cm
+import nl.codingwithlinda.unit_conversion.data.distance.convertDistance
 import nl.codingwithlinda.smartstep.features.statistics.presentation.util.MinuteCounter
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds

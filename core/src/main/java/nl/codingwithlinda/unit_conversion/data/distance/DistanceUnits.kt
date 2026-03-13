@@ -1,6 +1,4 @@
-package nl.codingwithlinda.unit_conversion.data
-
-import nl.codingwithlinda.unit_conversion.data.convertDistance
+package nl.codingwithlinda.unit_conversion.data.distance
 
 sealed interface Distance {
     val factorToBase: Double
