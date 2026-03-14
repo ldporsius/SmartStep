@@ -34,14 +34,12 @@ class MainActivity : ComponentActivity(){
 
 
         setContent {
-
             SmartStepTheme {
                 MainNavGraph(
                     appContainer = appContainer,
                     smartStepStateController = smartStepStateController,
                 )
             }
-
         }
     }
 }
