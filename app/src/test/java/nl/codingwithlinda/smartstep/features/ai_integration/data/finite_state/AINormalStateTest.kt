@@ -11,10 +11,10 @@ import nl.codingwithlinda.ai_firebase.tests.FakeAIMessenger
 import nl.codingwithlinda.ai_firebase.tests.FakeAISessionRepo
 import nl.codingwithlinda.core.domain.util.Result
 import nl.codingwithlinda.smartstep.tests.di.TestDispatcherProvider
-import nl.codingwithlinda.smartstep.util.BaseJunitTest
+import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.Test
 
-class AINormalStateTest : BaseJunitTest(){
+class AINormalStateTest : BaseStepRepoTest(){
 
     private val aiMessenger = FakeAIMessenger(
         dispatcherProvider = TestDispatcherProvider(testDispatcher)

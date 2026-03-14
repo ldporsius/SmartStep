@@ -7,14 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.di.AppContainerImpl
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.StepTrackerFiniteState
+import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.navigation.MainNavGraph
 
 
-class MainActivity : ComponentActivity(), StepTrackerFiniteState {
+class MainActivity : ComponentActivity(){
 
     lateinit var smartStepStateController: SmartStepStateControllerImpl
 
@@ -57,9 +56,4 @@ class MainActivity : ComponentActivity(), StepTrackerFiniteState {
 
         }
     }
-
-    override fun setState() {
-        smartStepStateController.onResult()
-    }
-
 }

@@ -1,31 +1,27 @@
 package nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation
 
+import androidx.compose.ui.input.key.Key.Companion.Ro
+import androidx.room.Room
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isZero
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
+import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
-import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
-import nl.codingwithlinda.smartstep.util.BaseJunitTest
+import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ResetStepsViewModelTest: BaseJunitTest() {
+class ResetStepsViewModelTest: BaseStepRepoTest() {
 
     private lateinit var viewModel: ResetStepsViewModel
 
@@ -33,38 +29,38 @@ class ResetStepsViewModelTest: BaseJunitTest() {
 
     private val step = DailyStepCountCreator.create(100)
     @Before
-    fun setup1(){
+    override fun setup(){
+        super.setup()
+        runBlocking(testDispatcher) {
+            activityRecognitionRepo.saveStepCount(step)
+            val userOverride = DailyStepCountCreator.create(200)
+            fakeDailyStepRepo.saveDailyStepCountUserOverride(userOverride.dateYYYYMMDD, userOverride.stepCount)
+        }
+
         viewModel = ResetStepsViewModel(
             fakeDailyStepRepo,
             step,
             scope
         )
     }
-    @After
-    fun teardown1(){
-        fakeDailyStepRepo.reset()
-    }
-
 
     @Test
     fun `reset   success   today s step count exists`() : Unit = runTest (testDispatcher){
         // Verify that when a step count for today exists, it is fetched and its value is used to reset the user override.
-        val step = DailyStepCountCreator.create(100)
-        activityRecognitionRepo.saveStepCount(step)
-        val userOverride = DailyStepCountCreator.create(200)
-        fakeDailyStepRepo.saveDailyStepCountUserOverride(userOverride.dateYYYYMMDD, userOverride.stepCount)
-        println(" counts : ${fakeDailyStepRepo.stepCountPlusUserOverride.firstOrNull()} ")
 
         fakeDailyStepRepo.stepCountPlusUserOverride.test {
-            val em0 = awaitItem().find {
+
+            val em0 = awaitItem()
+            println(" em0: $em0")
+
+            val todaySteps = em0.find {
                 it.dayEpochDay == step.dayEpochDay
             }
 
-            assertThat(em0!!.stepCount).isEqualTo(200)
+            println("todaySteps: $todaySteps")
+            assertThat(todaySteps!!.stepCount).isEqualTo(200)
 
             viewModel.reset()
-
-            runCurrent()
 
             val em1 = awaitItem()
             println(" counts : $em1 ")
@@ -72,7 +68,7 @@ class ResetStepsViewModelTest: BaseJunitTest() {
                 it.dayEpochDay == step.dayEpochDay
             }
             assertThat(today!!.stepCount).isEqualTo(0)
-            cancelAndConsumeRemainingEvents()
+
         }
 
     }

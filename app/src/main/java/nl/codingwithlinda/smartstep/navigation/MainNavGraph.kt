@@ -28,7 +28,7 @@ import nl.codingwithlinda.ai.domain.plugin_provider.AImode
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.di.AppContainer
 import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFactoryHelper
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
+import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.design_system.ui.theme.bg

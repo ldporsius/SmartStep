@@ -4,10 +4,10 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
 import kotlinx.coroutines.test.runTest
-import nl.codingwithlinda.smartstep.util.BaseJunitTest
+import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.Test
 
-class WeeklyAverageViewModelTest : BaseJunitTest(){
+class WeeklyAverageViewModelTest : BaseStepRepoTest(){
 
 
     val vm = WeeklyAverageViewModel(fakeDailyStepRepo)

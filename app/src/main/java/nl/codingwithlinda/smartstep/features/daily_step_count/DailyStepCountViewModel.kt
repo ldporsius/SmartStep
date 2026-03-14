@@ -20,18 +20,16 @@ class DailyStepCountViewModel(
         get() = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())
 
     val todaysStep = stepCount.mapNotNull { dailyStepCounts ->
+        println("dailyStepCounts: $dailyStepCounts")
         dailyStepCounts.firstOrNull {
             it.dayEpochDay == today.dateEpochDay
         }
-    }.stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), null)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
 
-    val stepsToday = dailyStepRepo.stepCountPlusUserOverride.map { dailyStepCounts ->
-        dailyStepCounts.firstOrNull {
-            it.dayEpochDay == today.dateEpochDay
-        }?.stepCount ?:0
-    }.stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), 0)
-
+    val stepsToday = todaysStep.map {
+        it?.stepCount ?: 0
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
 
 }

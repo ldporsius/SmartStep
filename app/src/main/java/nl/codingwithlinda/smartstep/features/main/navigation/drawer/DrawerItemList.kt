@@ -2,7 +2,7 @@ package nl.codingwithlinda.smartstep.features.main.navigation.drawer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
+import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
 import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
 

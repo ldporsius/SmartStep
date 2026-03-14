@@ -13,8 +13,8 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateControllerImpl
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.concrete_states.PermissionNeeded
+import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
+import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.concrete_states.PermissionNeeded
 import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.presentation.util.openAppSettings
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction

@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.concrete_states
+package nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.concrete_states
 
 import android.app.Activity
 import android.content.Intent

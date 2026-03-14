@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state
+package nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state
 
 import android.content.Context
 import android.content.Intent
@@ -12,17 +12,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.smartstep.application.di.AppContainer
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.StartTrackingState
+import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.concrete_states.BackgroundRunningAllowed
+import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.concrete_states.BackgroundRunningDenied
+import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.concrete_states.PermissionNeeded
 import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.concrete_states.BackgroundRunningAllowed
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.concrete_states.BackgroundRunningDenied
-import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.concrete_states.PermissionNeeded
 
 class SmartStepStateControllerImpl(
     private val context: ComponentActivity,
     private val appContainer: AppContainer
-) : SmartStepStateController{
+) : SmartStepStateController {
     private val _state = MutableStateFlow<StartTrackingState>(
-        PermissionNeeded(context,
+        PermissionNeeded(
+            context,
             emptyMap(),
             stop = {
                 appContainer.stepTracker.stop()
@@ -56,7 +59,7 @@ class SmartStepStateControllerImpl(
 
     override fun exit() {
         val trackerIntent = Intent(context, StepTrackerService::class.java).apply {
-            action = StepTrackerService.ACTION_STOP
+            action = StepTrackerService.Companion.ACTION_STOP
         }
         context.startService(trackerIntent)
         context.finish()
@@ -80,7 +83,7 @@ class SmartStepStateControllerImpl(
             }
 
             false -> {
-                val state = BackgroundRunningDenied(context){
+                val state = BackgroundRunningDenied(context) {
                     appContainer.stepTracker.start()
                 }
                 _state.update { state }

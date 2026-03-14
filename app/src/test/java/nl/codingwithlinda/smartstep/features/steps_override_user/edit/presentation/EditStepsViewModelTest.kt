@@ -2,32 +2,18 @@ package nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentat
 
 import app.cash.turbine.test
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
-import nl.codingwithlinda.smartstep.tests.FakeActivityRecognitionRepo
-import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
-import nl.codingwithlinda.smartstep.tests.di.TestDispatcherProvider
-import nl.codingwithlinda.smartstep.util.BaseJunitTest
-import org.junit.After
+import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class EditStepsViewModelTest: BaseJunitTest() {
+class EditStepsViewModelTest: BaseStepRepoTest() {
 
     private lateinit var viewModel: EditStepsViewModel
 
@@ -41,33 +27,23 @@ class EditStepsViewModelTest: BaseJunitTest() {
             fakeDailyStepRepo,
             appScope = CoroutineScope(testDispatcher),
         )
-
-        runBlocking {
-            activityRecognitionRepo.saveStepCount(todaysStep)
-        }
     }
-
-    @After
-    override fun tearDown() {
-        super.tearDown()
-        fakeDailyStepRepo.reset()
-    }
-
 
     @Test
     fun `test editsteps viewmodel - steps are replaced on save`() = runTest(testDispatcher) {
+
+        activityRecognitionRepo.saveStepCount(todaysStep)
+
         viewModel.steps.test {
 
             val item0 = awaitItem()
+            println("item0")
             assertEquals(100, item0)
-
-            println("first emission received")
 
             viewModel.onAction(EditStepAction.SetSteps("1000"))
 
             val item2 = awaitItem()
             assertEquals(1000, item2)
-
 
             cancelAndConsumeRemainingEvents()
 

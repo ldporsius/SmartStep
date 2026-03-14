@@ -6,20 +6,20 @@ import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
+import org.junit.rules.TestWatcher
+import org.junit.runner.Description
 
 @OptIn(ExperimentalCoroutinesApi::class)
-abstract class BaseJunitTest(
-    val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
-) {
+class BaseTestWatcher(
+    val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
+): TestWatcher() {
 
-    @Before
-    fun setup(){
-        Dispatchers.setMain(testDispatcher)
+    override fun starting(description: Description?) {
+        super.starting(description)
+        Dispatchers.setMain(dispatcher)
     }
-    @After
-    fun tearDown(){
+    override fun finished(description: Description?) {
+        super.finished(description)
         Dispatchers.resetMain()
     }
 }

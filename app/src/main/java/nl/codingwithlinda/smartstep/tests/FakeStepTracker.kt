@@ -1,49 +1,67 @@
 package nl.codingwithlinda.smartstep.tests
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 
 class FakeStepTracker(
-    private val scope: CoroutineScope
+    private val dispatcher: CoroutineDispatcher
 ): StepTracker {
 
     private val _stepsTaken = MutableStateFlow(0)
     private val state = MutableStateFlow(StepTrackerState.STOPPED)
 
-    var isCounting = false
-
     override fun pause() {
-        isCounting = false
+        state.update {
+            StepTrackerState.PAUSED
+        }
     }
 
-    private suspend fun bump(i:Int): Int{
-        delay(1000)
 
-        return i + 1
+    private fun counter() = flow{
+        var i = 0
+        while (true) {
+            delay(1000)
+            i ++
+            emit(i)
+        }
+    }.onEach {step ->
+        println("--- FAKE STEP TRACKER IS COUNTING $step")
+        _stepsTaken.update {
+            step
+        }
     }
     override fun start() {
-        isCounting = true
-        scope.launch {
-            var count = 0
-            while (count < 10) {
-                count = bump(count)
-            }
+        println("--- FAKE STEP TRACKER STARTED")
+        state.update {
+            StepTrackerState.STARTED
+        }
+
+        CoroutineScope(dispatcher).launch {
+            counter().take(10).toList()
         }
     }
 
     override fun stop() {
-        isCounting = false
+        state.update {
+            StepTrackerState.STOPPED
+        }
+
     }
 
     override val stepsTaken: Flow<DailyStepCount> = _stepsTaken
@@ -53,8 +71,7 @@ class FakeStepTracker(
             )
         }
 
-    override val stateObservable: Flow<StepTrackerState>
-        get() = state
+    override val stateObservable: Flow<StepTrackerState> = state
 
 
 }

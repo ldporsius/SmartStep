@@ -28,7 +28,8 @@ class EditStepsViewModel(
     private val appScope: CoroutineScope,
 ): ViewModel() {
 
-    private suspend fun currentOverride() : Int = dailyStepRepo.stepCountPlusUserOverride.firstOrNull()?.firstOrNull{
+    private suspend fun currentOverride() : Int = dailyStepRepo
+        .stepCountPlusUserOverride.firstOrNull()?.firstOrNull{
         it.dayEpochDay == DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis()).dateEpochDay
     }?.stepCount ?: 0
 

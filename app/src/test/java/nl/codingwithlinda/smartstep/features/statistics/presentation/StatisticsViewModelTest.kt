@@ -1,65 +1,46 @@
 package nl.codingwithlinda.smartstep.features.statistics.presentation
 
-import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationStart
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.features.statistics.data.StatisticsManagerImpl
-import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
 import nl.codingwithlinda.smartstep.tests.FakeUserSettingsRepo
 import nl.codingwithlinda.smartstep.tests.di.TestDispatcherProvider
-import org.junit.After
+import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.Before
 import org.junit.Test
-import kotlin.system.measureTimeMillis
-import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class StatisticsViewModelTest {
+class StatisticsViewModelTest: BaseStepRepoTest() {
 
     private lateinit var statisticsViewModel: StatisticsViewModel
     private val userSettingsRepo = FakeUserSettingsRepo()
-    val dailyStepRepo = FakeDailyStepRepo(){
-        DailyStepCountCreator.create(1)
-    }
+
     val walkDurationRepo = WalkDurationRepoImpl()
 
-    val testDispatcher = UnconfinedTestDispatcher()
     val testDispatcherProvider = TestDispatcherProvider(testDispatcher)
 
     val statisticsManager = StatisticsManagerImpl(
         userSettingsRepo = userSettingsRepo,
-        dailyStepRepo = dailyStepRepo,
+        dailyStepRepo = fakeDailyStepRepo,
         walkDurationRepo = walkDurationRepo,
         dispatcherProvider = testDispatcherProvider,
         applicationScope = CoroutineScope(testDispatcher)
     )
 
     @Before
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher)
-
+    override fun setup() {
+       super.setup()
         statisticsViewModel = StatisticsViewModel(
             statisticsManager = statisticsManager
         )
     }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
-
 
     @Test
     fun `test time update in StatisticsViewModel`() = runTest(testDispatcherProvider.testDispatcher) {
@@ -73,14 +54,6 @@ class StatisticsViewModelTest {
         assertThat(sessions.size).isEqualTo(1)
 
         println("We have a session: ${sessions}, with start: ${sessions.first().start.dateString}")
-
-        statisticsViewModel.statistics
-        .test {
-
-            //todo
-            cancelAndConsumeRemainingEvents()
-
-        }
     }
 
 }
