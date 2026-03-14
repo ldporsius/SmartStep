@@ -17,18 +17,19 @@ import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.StartT
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.concrete_states.BackgroundRunningAllowed
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.concrete_states.BackgroundRunningDenied
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.concrete_states.PermissionNeeded
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
 
 class SmartStepStateControllerImpl(
     private val context: ComponentActivity,
-    private val appContainer: AppContainer
+    private val stepTracker: StepTracker
 ) : SmartStepStateController {
     private val _state = MutableStateFlow<StartTrackingState>(
         PermissionNeeded(
             context,
             emptyMap(),
             stop = {
-                appContainer.stepTracker.stop()
+                stepTracker.stop()
             }
         )
     )
@@ -50,7 +51,7 @@ class SmartStepStateControllerImpl(
                     context = context,
                     neededPermissions = notGranted,
                     stop = {
-                        appContainer.stepTracker.stop()
+                        stepTracker.stop()
                     }
                 )
             }
@@ -76,7 +77,7 @@ class SmartStepStateControllerImpl(
                 val state = BackgroundRunningAllowed(
                     context,
                     start = {
-                        appContainer.stepTracker.start()
+                        stepTracker.start()
                     }
                 )
                 _state.update { state }
@@ -84,7 +85,7 @@ class SmartStepStateControllerImpl(
 
             false -> {
                 val state = BackgroundRunningDenied(context) {
-                    appContainer.stepTracker.start()
+                    stepTracker.start()
                 }
                 _state.update { state }
             }

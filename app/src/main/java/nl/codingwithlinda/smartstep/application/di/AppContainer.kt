@@ -11,17 +11,18 @@ import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.features.ai_integration.di.AIContainer
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 
-abstract class AppContainer{
+interface AppContainer{
 
-    abstract val dataStoreSettings: DataStore<Preferences>
-    abstract val userSettingsRepo: UserSettingsRepo
-    abstract val dailyStepRepo: DailyStepRepo
-    abstract val walkDurationRepo: WalkDurationRepo
-    abstract val aiSessionRepo: AISessionRepo
-    abstract val stepTracker: StepTracker
-    abstract val statisticsManager: StatisticsManager
+    val dataStoreSettings: DataStore<Preferences>
+    val userSettingsRepo: UserSettingsRepo
+    val dailyStepRepo: DailyStepRepo
+    val walkDurationRepo: WalkDurationRepo
+    val aiSessionRepo: AISessionRepo
+    val stepTracker: StepTracker
+    val statisticsManager: StatisticsManager
 
-    abstract val applicationWideScope: CoroutineScope
 
-    abstract val AIContainer: AIContainer
+    val applicationWideScope: CoroutineScope
+
+    val AIContainer: AIContainer
 }

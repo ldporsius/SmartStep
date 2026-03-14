@@ -26,7 +26,7 @@ import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 
 class AppContainerImpl(
     private val context: Application
-): AppContainer() {
+): AppContainer {
 
     override val applicationWideScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 

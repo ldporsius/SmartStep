@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.smartstep.application.di.AppContainer
 import nl.codingwithlinda.smartstep.application.di.AppContainerImpl
 import nl.codingwithlinda.smartstep.application.di.viewmodel_service.ViewModelServiceLocator
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService.Companion.CHANNEL_ID
@@ -29,13 +30,14 @@ class SmartStepApplication: Application() {
         }
         lateinit var viewModelServiceLocator: ViewModelServiceLocator
         lateinit var statisticsManager: StatisticsManager
+        lateinit var appContainer: AppContainer
 
     }
 
     override fun onCreate() {
         super.onCreate()
         val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-        val appContainer = AppContainerImpl(this)
+        appContainer = AppContainerImpl(this)
 
         viewModelServiceLocator = ViewModelServiceLocator(appContainer)
         statisticsManager = appContainer.statisticsManager

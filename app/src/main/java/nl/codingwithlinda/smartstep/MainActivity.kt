@@ -15,8 +15,6 @@ import nl.codingwithlinda.smartstep.navigation.MainNavGraph
 
 class MainActivity : ComponentActivity(){
 
-    lateinit var smartStepStateController: SmartStepStateControllerImpl
-
     var isChecking = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +29,9 @@ class MainActivity : ComponentActivity(){
 
         enableEdgeToEdge()
 
-        val appContainer = AppContainerImpl(this.application)
-        smartStepStateController = SmartStepStateControllerImpl(
-            this, appContainer
+        val appContainer = SmartStepApplication.appContainer
+        val smartStepStateController = SmartStepStateControllerImpl(
+            this, appContainer.stepTracker
         )
 
 
