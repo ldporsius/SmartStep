@@ -14,7 +14,7 @@ import nl.codingwithlinda.unit_conversion.data.weight.LBSWeight
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
-import nl.codingwithlinda.smartstep.tests.FakeUserSettingsRepo
+import nl.codingwithlinda.smartstep.FakeUserSettingsRepo
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before

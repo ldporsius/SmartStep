@@ -5,7 +5,7 @@ import assertk.assertions.isBetween
 import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isNegative
-import nl.codingwithlinda.smartstep.tests.util.testDate
+import nl.codingwithlinda.smartstep.util.testDate
 import org.junit.Test
 import java.time.ZoneOffset
 import kotlin.time.Duration.Companion.seconds

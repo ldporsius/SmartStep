@@ -10,14 +10,17 @@ import nl.codingwithlinda.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import nl.codingwithlinda.smartstep.features.statistics.presentation.model.StatisticsUi
 import nl.codingwithlinda.smartstep.features.statistics.presentation.util.toUi
-import nl.codingwithlinda.smartstep.tests.util.fakeStatistics
 
 class StatisticsViewModel(
     statisticsManager: StatisticsManager,
 ): ViewModel() {
 
     private val _statistics = MutableStateFlow<StatisticsUi>(
-        fakeStatistics
+        StatisticsUi(
+            distance = UiText.DynamicText("0"),
+            energy = UiText.DynamicText("0"),
+            time = UiText.DynamicText("0")
+        )
     )
 
     val statistics = _statistics.asStateFlow()

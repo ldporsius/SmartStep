@@ -10,7 +10,7 @@ import nl.codingwithlinda.ai.data.finite_state.AINormalState
 import nl.codingwithlinda.ai_firebase.tests.FakeAIMessenger
 import nl.codingwithlinda.ai_firebase.tests.FakeAISessionRepo
 import nl.codingwithlinda.core.domain.util.Result
-import nl.codingwithlinda.smartstep.tests.di.TestDispatcherProvider
+import nl.codingwithlinda.smartstep.di.TestDispatcherProvider
 import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.Test
 

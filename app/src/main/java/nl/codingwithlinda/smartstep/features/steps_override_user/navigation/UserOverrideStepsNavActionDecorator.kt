@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
+import nl.codingwithlinda.smartstep.core.presentation.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
 import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.components.DatePickerComponent

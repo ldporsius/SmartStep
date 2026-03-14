@@ -14,7 +14,7 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.height_settin
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
-import nl.codingwithlinda.smartstep.tests.FakeUserSettingsRepo
+import nl.codingwithlinda.smartstep.FakeUserSettingsRepo
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before

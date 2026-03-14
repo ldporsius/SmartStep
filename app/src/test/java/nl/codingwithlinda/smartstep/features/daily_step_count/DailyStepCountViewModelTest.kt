@@ -4,13 +4,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import nl.codingwithlinda.smartstep.tests.FakeStepTracker
+import nl.codingwithlinda.smartstep.FakeStepTracker
 import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.Before
 import org.junit.Test

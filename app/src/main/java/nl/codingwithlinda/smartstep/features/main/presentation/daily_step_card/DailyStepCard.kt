@@ -27,6 +27,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
@@ -36,7 +37,6 @@ import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.c
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.components.StatisticsRow
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.components.StepsProgressText
 import nl.codingwithlinda.smartstep.features.statistics.presentation.model.StatisticsUi
-import nl.codingwithlinda.smartstep.tests.util.fakeStatistics
 
 @Composable
 fun DailyStepCard(
@@ -135,12 +135,17 @@ fun DailyStepCard(
 @Preview
 @Composable
 private fun PreviewDailyStepCard() {
+    val dummyStatistics = StatisticsUi(
+        distance = UiText.DynamicText("0"),
+        energy = UiText.DynamicText("0"),
+        time = UiText.DynamicText("0")
+    )
     SmartStepTheme {
         DailyStepCard(
             stepsTaken = 1000,
             dailyGoal = 2000,
             stepTrackerState = StepTrackerState.STOPPED,
-            statisticsUi = fakeStatistics,
+            statisticsUi =dummyStatistics,
             actionEdit = {},
             actionPause = {},
             actionPlay = {},

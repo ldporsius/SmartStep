@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.tests
+package nl.codingwithlinda.smartstep
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

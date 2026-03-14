@@ -1,8 +1,7 @@
 package nl.codingwithlinda.smartstep.core.domain.model.step_tracker
 
 import kotlinx.coroutines.test.runTest
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
-import nl.codingwithlinda.smartstep.tests.FakeWalkDurationRepo
+import nl.codingwithlinda.smartstep.FakeWalkDurationRepo
 import org.junit.Test
 import java.time.LocalDateTime
 import java.time.ZoneOffset

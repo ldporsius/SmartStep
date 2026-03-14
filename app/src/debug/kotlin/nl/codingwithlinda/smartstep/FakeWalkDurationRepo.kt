@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.tests
+package nl.codingwithlinda.smartstep
 
 import androidx.compose.ui.util.fastMaxOfOrNull
 import kotlinx.coroutines.flow.Flow

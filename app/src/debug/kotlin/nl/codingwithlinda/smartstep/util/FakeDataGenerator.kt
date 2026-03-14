@@ -1,8 +1,7 @@
-package nl.codingwithlinda.smartstep.tests.util
+package nl.codingwithlinda.smartstep.util
 
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepGoal
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 

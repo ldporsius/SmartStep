@@ -22,7 +22,7 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRan
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
-import nl.codingwithlinda.smartstep.tests.FakeUserSettingsRepo
+import nl.codingwithlinda.smartstep.FakeUserSettingsRepo
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before

@@ -20,7 +20,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
 class SmartStepE2ETest {
 
     @get:Rule
@@ -51,14 +50,5 @@ class SmartStepE2ETest {
         }
     }
 
-    @Ignore
-    @Test
-    fun smartStepE2E_permissionsGranted() {
-        val mainActivity = composeTestRule.activity
-        mainActivity.isChecking = false
-
-        composeTestRule.onNode(hasText("Start")).assertIsDisplayed().performClick()
-
-    }
 
 }

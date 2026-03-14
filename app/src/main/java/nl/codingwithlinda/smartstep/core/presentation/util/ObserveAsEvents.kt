@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.core.domain.util
+package nl.codingwithlinda.smartstep.core.presentation.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

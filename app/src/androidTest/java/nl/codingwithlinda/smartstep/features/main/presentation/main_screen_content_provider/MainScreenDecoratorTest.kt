@@ -15,9 +15,9 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavActionController
-import nl.codingwithlinda.smartstep.tests.FakeActivityRecognitionRepo
-import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
-import nl.codingwithlinda.smartstep.tests.FakeSmartStepStateController
+import nl.codingwithlinda.smartstep.FakeActivityRecognitionRepo
+import nl.codingwithlinda.smartstep.FakeDailyStepRepo
+import nl.codingwithlinda.smartstep.FakeSmartStepStateController
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,14 +31,14 @@ class MainScreenDecoratorTest {
 
     val activityRecognitionRepo = FakeActivityRecognitionRepo()
 
-
     val smartStepStateController = FakeSmartStepStateController()
 
     val dailyStepGoalViewModel = DailyStepGoalViewModel(
         appScope = CoroutineScope(StandardTestDispatcher()),
-        dailyStepRepo = FakeDailyStepRepo(){
-            activityRecognitionRepo.getStepCountForDate(it)
-        }
+        dailyStepRepo = FakeDailyStepRepo(
+            stepsTaken = activityRecognitionRepo.stepCount,
+            getStepCountForDate = activityRecognitionRepo::getStepCountForDate
+        )
     )
 
     val fakeNavActionController = object : MainNavActionController {
@@ -56,8 +56,6 @@ class MainScreenDecoratorTest {
                     mainNavAction = MainNavAction.DAILY_STEP_GOAL,
                     navItemHandler = fakeNavActionController,
                     smartStepStateController = smartStepStateController,
-
-
                 )
             }
         }
@@ -72,11 +70,6 @@ class MainScreenDecoratorTest {
         delay(5000)
 
         composeTestRule.waitForIdle()
-
-
         composeTestRule.onNodeWithText("goal", substring = true, ignoreCase = true).assertIsDisplayed()
-
-
     }
-
 }

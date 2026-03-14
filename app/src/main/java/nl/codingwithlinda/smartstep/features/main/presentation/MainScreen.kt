@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
-import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
+import nl.codingwithlinda.smartstep.core.presentation.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.daily_step_count.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction

@@ -11,7 +11,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,13 +22,11 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.launch
-import nl.codingwithlinda.ai.domain.plugin_provider.AIapi
-import nl.codingwithlinda.ai.domain.plugin_provider.AImode
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.di.AppContainer
 import nl.codingwithlinda.smartstep.application.di.viewmodel_service.viewModelFactoryHelper
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
-import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
+import nl.codingwithlinda.smartstep.core.presentation.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.design_system.ui.theme.bg
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.AIChatRoot

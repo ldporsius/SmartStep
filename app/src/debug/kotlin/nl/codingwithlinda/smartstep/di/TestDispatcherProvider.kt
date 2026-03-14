@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.tests.di
+package nl.codingwithlinda.smartstep.di
 
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.codingwithlinda.core.di.DispatcherProvider

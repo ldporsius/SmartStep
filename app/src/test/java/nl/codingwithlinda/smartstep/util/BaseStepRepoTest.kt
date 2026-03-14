@@ -6,8 +6,8 @@ import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import nl.codingwithlinda.smartstep.tests.FakeActivityRecognitionRepo
-import nl.codingwithlinda.smartstep.tests.FakeDailyStepRepo
+import nl.codingwithlinda.smartstep.FakeActivityRecognitionRepo
+import nl.codingwithlinda.smartstep.FakeDailyStepRepo
 import org.junit.After
 import org.junit.Before
 

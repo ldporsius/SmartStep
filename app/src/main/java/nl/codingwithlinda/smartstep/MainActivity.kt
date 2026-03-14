@@ -6,16 +6,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.application.di.AppContainerImpl
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
-import nl.codingwithlinda.smartstep.core.domain.util.ObserveAsEvents
+import nl.codingwithlinda.smartstep.core.presentation.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.navigation.MainNavGraph
 
 
 class MainActivity : ComponentActivity(){
 
-    var isChecking = true
+    val appContainer = SmartStepApplication.appContainer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,27 +28,18 @@ class MainActivity : ComponentActivity(){
 
         enableEdgeToEdge()
 
-        val appContainer = SmartStepApplication.appContainer
         val smartStepStateController = SmartStepStateControllerImpl(
             this, appContainer.stepTracker
         )
 
 
         setContent {
-            val viewModel = SmartStepApplication
-                .viewModelServiceLocator.createShouldShowSettingsViewModel(this)
-
 
             SmartStepTheme {
                 MainNavGraph(
                     appContainer = appContainer,
                     smartStepStateController = smartStepStateController,
                 )
-            }
-
-            ObserveAsEvents(viewModel.isChecking) {
-                println(" --- MAIN ACTIVITY --- is checking $it")
-                isChecking = it
             }
 
         }

@@ -36,17 +36,6 @@ class MainScreenTest {
     //val context: SmartStepApplication = ApplicationProvider.getApplicationContext<SmartStepApplication>()
     val packageName = InstrumentationRegistry.getInstrumentation().targetContext.packageName
 
-
-    @Before
-    fun setUp() {
-    }
-
-    @After
-    fun tearDown() {
-
-    }
-
-
     @Test
     fun testActivityRecognitionPermissionDeclined() = runBlocking{
 
@@ -61,8 +50,6 @@ class MainScreenTest {
             )
         }
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        val mainActivity = composeTestRule.activity
-        mainActivity.isChecking = false
 
         val robot = TestPermissionsRobot(
             testRule = composeTestRule,

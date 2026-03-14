@@ -1,7 +1,6 @@
-package nl.codingwithlinda.smartstep.tests
+package nl.codingwithlinda.smartstep
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount

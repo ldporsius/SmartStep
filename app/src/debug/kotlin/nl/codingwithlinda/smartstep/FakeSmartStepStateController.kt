@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.tests
+package nl.codingwithlinda.smartstep
 
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
 
