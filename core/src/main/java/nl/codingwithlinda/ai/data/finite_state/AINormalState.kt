@@ -10,6 +10,7 @@ import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 import nl.codingwithlinda.ai.domain.model.AIMessenger
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.ai.domain.finite_state.AIState
+import nl.codingwithlinda.ai.domain.local_cache.AIChatRepo
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZoneOffset.UTC
@@ -17,6 +18,7 @@ import java.time.ZoneOffset.UTC
 class AINormalState(
     private val aiMessenger: AIMessenger,
     private val aiSessionRepo: AISessionRepo,
+    private val aiChatRepo: AIChatRepo,
     private val max_requests_per_minute: Int = 5
 ): AIState {
 
@@ -49,7 +51,7 @@ class AINormalState(
             aiSessionRepo.saveRequestsMadeMinute(now.toEpochSecond(UTC))
 
             if (!canMakeRequest) {
-                val fakeIt =  aiSessionRepo.history.firstOrNull()?.lastOrNull()?.message ?: ""
+                val fakeIt =  aiChatRepo.history.firstOrNull()?.lastOrNull()?.message ?: ""
                 val fakeAppend = fakeIt.run{
                     this.plus("\n\nPlease wait a while before making another request")
                 }
@@ -77,7 +79,7 @@ class AINormalState(
                 }
 
                 is Result.Success -> {
-                    aiSessionRepo.saveInHistory(result.data)
+                    aiChatRepo.saveInHistory(result.data)
                 }
             }
             return result

@@ -9,19 +9,6 @@ import java.time.ZoneOffset
 
 class FakeAISessionRepo: AISessionRepo {
 
-    private val _history = flow {
-        emit(fakeChatHistory().map {
-            it
-        })
-    }
-    override val history: Flow<List<AIMessage>> = _history
-
-
-    override suspend fun saveInHistory(message: AIMessage) {
-
-    }
-
-
     override suspend fun requestsMadeMinute(): List<Long> {
         return (10 downTo 0).map{
             LocalDateTime.now(ZoneOffset.UTC).minusSeconds(it.toLong() * 10).toEpochSecond(ZoneOffset.UTC)

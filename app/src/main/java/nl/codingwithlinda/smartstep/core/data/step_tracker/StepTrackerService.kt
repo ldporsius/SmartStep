@@ -12,18 +12,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.MainActivity
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.statisticsManager
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import kotlin.math.roundToInt
 
@@ -31,7 +28,7 @@ class StepTrackerService: Service() {
 
     private lateinit var notificationManager: NotificationManager
 
-    private val statisticsManager: StatisticsManager = SmartStepApplication.statisticsManager
+    private val statisticsManager: StatisticsManager = SmartStepApplication.appContainer.statisticsManager
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onBind(intent: Intent): IBinder? {
@@ -98,7 +95,6 @@ class StepTrackerService: Service() {
         return notification.build()
     }
 
-    //private val notificationUpdater = Channel<SmartStepNotification>()
     private val _notificationInfo = MutableStateFlow<SmartStepNotification>(SmartStepNotification(0,0,0f))
     private fun notificationInfo() =  _notificationInfo.map {
       info, ->

@@ -29,6 +29,7 @@ import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartSte
 import nl.codingwithlinda.smartstep.core.presentation.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.design_system.ui.theme.bg
+import nl.codingwithlinda.smartstep.features.ai_integration.data.local_cache.AIChatRepoImpl
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.AIChatRoot
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.data.AIUserMessages
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageComponent
@@ -170,7 +171,7 @@ fun MainNavGraph(
                     factory = viewModelFactory {
                         initializer {
                             StatisticsViewModel(
-                                statisticsManager = SmartStepApplication.statisticsManager
+                                statisticsManager = SmartStepApplication.appContainer.statisticsManager
                             )
                         }
                     }
@@ -185,7 +186,10 @@ fun MainNavGraph(
                             userSettingsRepo = appContainer.userSettingsRepo
                         ),
                         onMore = {
-                            NavigationController.navigateTo(AIChatRoute)
+                            appContainer.AIContainer.aiStateControllerGroqActive.aiChatRepo.clearHistory()
+                            backStack.remove(AIChatRoute)
+                            backStack.add(AIChatRoute)
+
                         }
                     )
 
@@ -208,9 +212,8 @@ fun MainNavGraph(
 
             entry<AIChatRoute>{
                 AIChatRoot(
-                    aiStateController = appContainer.AIContainer.aiStateControllerGroq,
+                    aiStateController = appContainer.AIContainer.aiStateControllerGroqActive,
                     userSettingsRepo = appContainer.userSettingsRepo,
-                    aiSessionRepo = appContainer.aiSessionRepo,
                     onNavBack = {
                         backStack.remove(AIChatRoute)
                     }

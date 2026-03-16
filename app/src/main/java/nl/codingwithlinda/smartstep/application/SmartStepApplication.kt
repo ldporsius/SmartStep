@@ -29,7 +29,7 @@ class SmartStepApplication: Application() {
             Process.killProcess(Process.myPid());
         }
         lateinit var viewModelServiceLocator: ViewModelServiceLocator
-        lateinit var statisticsManager: StatisticsManager
+
         lateinit var appContainer: AppContainer
 
     }
@@ -40,12 +40,11 @@ class SmartStepApplication: Application() {
         appContainer = AppContainerImpl(this)
 
         viewModelServiceLocator = ViewModelServiceLocator(appContainer)
-        statisticsManager = appContainer.statisticsManager
 
         val notificationChannel = NotificationChannel(
             CHANNEL_ID,
             CHANNEL_ID,
-            NotificationManager.IMPORTANCE_HIGH
+            NotificationManager.IMPORTANCE_LOW
             )
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChannel)

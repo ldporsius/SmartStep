@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import nl.codingwithlinda.ai.domain.local_cache.AIChatRepo
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
@@ -20,7 +21,6 @@ import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.q
 fun AIChatRoot(
     aiStateController: AIStateController,
     userSettingsRepo: UserSettingsRepo,
-    aiSessionRepo: AISessionRepo,
     onNavBack: () -> Unit
 ) {
 
@@ -29,7 +29,7 @@ fun AIChatRoot(
 
     val quickSuggestions = QuickSuggestionsController.getInstance(
         userSettingsRepo = userSettingsRepo,
-        statisticsManager = SmartStepApplication.statisticsManager,
+        statisticsManager = SmartStepApplication.appContainer.statisticsManager,
         aiStateController = aiStateController,
         dispatcherProvider = AndroidDispatcherProvider()
     )
@@ -39,7 +39,7 @@ fun AIChatRoot(
             AIChatViewModel(
                 aiStateController = aiStateController,
                 quickSuggestionsController = quickSuggestions,
-                dispatcherProvider = AndroidDispatcherProvider(),
+                aiChatRepo = aiStateController.aiChatRepo,
                 connectivityMonitor = connectivityMonitor
             )
         }

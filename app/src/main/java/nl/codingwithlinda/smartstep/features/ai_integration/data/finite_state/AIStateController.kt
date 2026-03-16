@@ -12,20 +12,24 @@ import nl.codingwithlinda.ai.data.finite_state.AINormalState
 import nl.codingwithlinda.ai.data.finite_state.AIResourceExhaustedState
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.ai.domain.finite_state.AIState
+import nl.codingwithlinda.ai.domain.local_cache.AIChatRepo
 
 class AIStateController(
     val aiMessenger: AIMessenger,
-    private val aiSessionRepo: AISessionRepo
+    private val aiSessionRepo: AISessionRepo,
+    val aiChatRepo: AIChatRepo
 ) {
 
     private val aiNormalState = AINormalState(
         aiMessenger = aiMessenger,
         aiSessionRepo = aiSessionRepo,
+        aiChatRepo = aiChatRepo,
         max_requests_per_minute = aiMessenger.maxRequestsPerMinute
     )
     private val aiResourceExhaustedState = AIResourceExhaustedState(
         aiMessenger = aiMessenger,
-        aiSessionRepo = aiSessionRepo
+        aiSessionRepo = aiSessionRepo,
+        aiChatRepo = aiChatRepo
     )
 
     private val aiState = MutableStateFlow<AIState>(aiNormalState)

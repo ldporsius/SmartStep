@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nl.codingwithlinda.ai.domain.local_cache.AIChatRepo
+import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.ai.domain.model.AIMessage
 import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 import nl.codingwithlinda.core.di.DispatcherProvider
@@ -24,14 +26,15 @@ import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presen
 class AIChatViewModel(
     private val aiStateController: AIStateController,
     private val quickSuggestionsController: QuickSuggestionsController,
+    private val aiChatRepo: AIChatRepo,
     connectivityMonitor: ConnectivityMonitor,
-    private val dispatcherProvider: DispatcherProvider
 ): ViewModel() {
 
 
     private val _chats = MutableStateFlow<List<AIMessage>>(emptyList())
-    val chats = _chats
+    val chats = aiChatRepo.history
         .onStart {
+            _chats.update { emptyList() }
             if(_chats.value.isEmpty()){
                sendIntro()
             }
@@ -61,6 +64,7 @@ class AIChatViewModel(
                     responses
                 }
             }.launchIn(viewModelScope)
+
 
     }
     fun onAction(action: AIChatAction){
@@ -114,6 +118,7 @@ class AIChatViewModel(
                         _chats.update {
                             it.plus(res.data)
                         }
+                        aiChatRepo.saveInHistory(res.data)
                     }
                 }
             }

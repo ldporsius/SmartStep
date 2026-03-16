@@ -8,13 +8,15 @@ import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 import nl.codingwithlinda.ai.domain.model.AIMessenger
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.ai.domain.finite_state.AIState
+import nl.codingwithlinda.ai.domain.local_cache.AIChatRepo
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import kotlin.time.Duration.Companion.minutes
 
 class AIResourceExhaustedState(
     private val aiMessenger: AIMessenger,
-    private val aiSessionRepo: AISessionRepo
+    private val aiSessionRepo: AISessionRepo,
+    private val aiChatRepo: AIChatRepo
 ): AIState {
 
     override suspend fun sendMessage(msg: AIMessage): Result<AIMessage, AIError> {
@@ -30,7 +32,7 @@ class AIResourceExhaustedState(
             return aiMessenger.send(msg)
         }
         println("--- AI RESOURCE EXHAUSTED STATE --- returning fake")
-        val fakeIt = aiSessionRepo.history.firstOrNull()?.random() ?:
+        val fakeIt = aiChatRepo.history.firstOrNull()?.random() ?:
         AIMessage(
             "no message",
             AIMessageOrigin.ASSISTANT

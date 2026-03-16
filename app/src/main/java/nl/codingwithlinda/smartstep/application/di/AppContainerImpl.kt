@@ -17,9 +17,12 @@ import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerDetectorIm
 import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.ai.domain.plugin_provider.AIapi
+import nl.codingwithlinda.ai.domain.plugin_provider.AImode
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
+import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 import nl.codingwithlinda.smartstep.features.ai_integration.di.AIContainer
 import nl.codingwithlinda.smartstep.features.statistics.data.StatisticsManagerImpl
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
@@ -29,7 +32,6 @@ class AppContainerImpl(
 ): AppContainer {
 
     override val applicationWideScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
 
     override val dataStoreSettings: DataStore<Preferences> = context.dataStore
     override val userSettingsRepo: UserSettingsRepo by lazy {
@@ -52,6 +54,8 @@ class AppContainerImpl(
     override val aiSessionRepo: AISessionRepo by lazy {
         AISessionRepoImpl(context.dataStoreAI)
     }
+
+
 
     private val activityRecognitionRepo = ActivityRecognitionRepoImpl(
         dailyStepCountDao = SmartStepRoomDatabaseCreator.getInstance(context).dailyStepCountDao,
