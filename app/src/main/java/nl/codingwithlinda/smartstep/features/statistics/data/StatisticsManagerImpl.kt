@@ -15,18 +15,16 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
-import nl.codingwithlinda.unit_conversion.domain.UnitSystems
-import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.calculateDistanceCm
 import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.caloriesBurned
-import nl.codingwithlinda.unit_conversion.data.distance.KM
-import nl.codingwithlinda.unit_conversion.data.distance.MILE
-import nl.codingwithlinda.unit_conversion.data.distance.cm
-import nl.codingwithlinda.unit_conversion.data.distance.convertDistance
 import nl.codingwithlinda.smartstep.features.statistics.presentation.util.MinuteCounter
+import nl.codingwithlinda.unit_conversion.data.distance.ConcreteDistance
+import nl.codingwithlinda.unit_conversion.data.distance.DistanceConverter
+import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
 import nl.codingwithlinda.unit_conversion.data.weight.WeightUnitConverter
+import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -86,14 +84,14 @@ class StatisticsManagerImpl(
 
     override val distanceWalked = combine(userHeightCm, stepsToday){height, steps ->
         val distance = calculateDistanceCm(height, steps)
-        cm(distance)
+        ConcreteDistance.cm(distance)
     }.combine(currentSystem){ distance, system ->
         when(system){
             UnitSystems.IMPERIAL ->{
-                convertDistance(distance, MILE)
+                DistanceConverter.toMile(distance)
             }
             UnitSystems.SI -> {
-                convertDistance(distance, KM)
+                DistanceConverter.toKm(distance)
             }
         }
     }.flowOn(dispatcherProvider.default)
