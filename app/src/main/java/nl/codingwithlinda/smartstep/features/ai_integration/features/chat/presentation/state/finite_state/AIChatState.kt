@@ -9,6 +9,7 @@ import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presen
 sealed interface AIChatState {
     data class Online(val message: String, val onAction: (AIChatAction) -> Unit): AIChatState
     data object Offline: AIChatState
+
 }
 
 

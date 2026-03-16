@@ -30,12 +30,14 @@ import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.q
 fun AIChatMenu(
     aiChatState: AIChatState,
     quickSuggestions: List<QuickSuggestion> = emptyList(),
+    shouldShowQuickSuggestions: Boolean = false,
+    toggleQuickSuggestions: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
-    var shouldShowQuickSuggestions by rememberSaveable() {
+    /*var shouldShowQuickSuggestions by rememberSaveable() {
         mutableStateOf(false)
-    }
+    }*/
     Column(
         modifier = modifier
     ) {
@@ -44,7 +46,7 @@ fun AIChatMenu(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.clickable(){
-                shouldShowQuickSuggestions = !shouldShowQuickSuggestions
+                toggleQuickSuggestions()
             }
                 .padding(16.dp)
         ) {
@@ -77,6 +79,8 @@ private fun PreviewAIChatMenu() {
                 message = "",
                 onAction = {}
             ),
+            shouldShowQuickSuggestions = true,
+            toggleQuickSuggestions = {},
         )
 
     }

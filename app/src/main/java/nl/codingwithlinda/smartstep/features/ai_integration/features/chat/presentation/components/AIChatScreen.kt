@@ -37,6 +37,8 @@ import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presen
 @Composable
 fun AIChatScreen(
     quickSuggestions: List<QuickSuggestion>,
+    isQuickSuggestionsVisible: Boolean,
+    toggleQuickSuggestions: () -> Unit,
     history: List<AIMessage>,
     uiState: AIChatState,
     onNavBack: () -> Unit,
@@ -98,6 +100,8 @@ fun AIChatScreen(
                 AIChatMenu(
                     aiChatState = uiState,
                     quickSuggestions = quickSuggestions,
+                    shouldShowQuickSuggestions = isQuickSuggestionsVisible,
+                    toggleQuickSuggestions = toggleQuickSuggestions,
                     modifier = Modifier
                         .width(400.dp)
                         .padding(bottom = 16.dp),
@@ -119,6 +123,8 @@ private fun PreviewAIChatScreen() {
                 message = "",
                 onAction = {}
             ),
+            isQuickSuggestionsVisible = false,
+            toggleQuickSuggestions = {},
             onNavBack = {}
         )
 

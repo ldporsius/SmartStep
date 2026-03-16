@@ -3,14 +3,14 @@ package nl.codingwithlinda.ai.data.finite_state
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
-import nl.codingwithlinda.core.domain.util.Result
-import nl.codingwithlinda.ai.domain.model.AIMessage
-import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
-import nl.codingwithlinda.ai.domain.model.AIMessenger
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.ai.domain.finite_state.AIState
 import nl.codingwithlinda.ai.domain.local_cache.AIChatRepo
+import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.ai.domain.model.AIMessage
+import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
+import nl.codingwithlinda.ai.domain.model.AIMessenger
+import nl.codingwithlinda.core.domain.util.Result
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZoneOffset.UTC
@@ -18,7 +18,6 @@ import java.time.ZoneOffset.UTC
 class AINormalState(
     private val aiMessenger: AIMessenger,
     private val aiSessionRepo: AISessionRepo,
-    private val aiChatRepo: AIChatRepo,
     private val max_requests_per_minute: Int = 5
 ): AIState {
 
@@ -34,7 +33,6 @@ class AINormalState(
             }
             val toText = inWholeMinutes.map {
                 "${it.dayOfWeek} ${it.hour}:${it.minute}"
-
             }
 
             println("--- AI NORMAL STATE --- now: ${now}")
@@ -51,19 +49,10 @@ class AINormalState(
             aiSessionRepo.saveRequestsMadeMinute(now.toEpochSecond(UTC))
 
             if (!canMakeRequest) {
-                val fakeIt =  aiChatRepo.history.firstOrNull()?.lastOrNull()?.message ?: ""
-                val fakeAppend = fakeIt.run{
-                    this.plus("\n\nPlease wait a while before making another request")
-                }
-
                 return Result.Failure(
                     AIError.ResourceExhausted(0L),
-                    AIMessage(
-                        fakeAppend , AIMessageOrigin.ASSISTANT
-                    ),
                 )
             }
-
 
             val result = aiMessenger.send(
                 msg
@@ -79,7 +68,7 @@ class AINormalState(
                 }
 
                 is Result.Success -> {
-                    aiChatRepo.saveInHistory(result.data)
+
                 }
             }
             return result

@@ -23,7 +23,6 @@ class AIStateController(
     private val aiNormalState = AINormalState(
         aiMessenger = aiMessenger,
         aiSessionRepo = aiSessionRepo,
-        aiChatRepo = aiChatRepo,
         max_requests_per_minute = aiMessenger.maxRequestsPerMinute
     )
     private val aiResourceExhaustedState = AIResourceExhaustedState(
@@ -57,6 +56,7 @@ class AIStateController(
                 aiState.update {
                     aiNormalState
                 }
+                aiChatRepo.saveInHistory(result.data)
             }
         }
         return result

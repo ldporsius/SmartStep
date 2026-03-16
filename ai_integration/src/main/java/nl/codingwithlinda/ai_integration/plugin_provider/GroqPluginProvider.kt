@@ -38,7 +38,7 @@ class GroqPluginProvider() {
         GroqAIMessenger(
             aiService = aiService,
             systemPrompt = activityCoachSystemPromptAverage,
-            maxTokens = 500,
+            maxTokens = 300,
             temperature = 1.5,
             language = Locale.getDefault().language
         )

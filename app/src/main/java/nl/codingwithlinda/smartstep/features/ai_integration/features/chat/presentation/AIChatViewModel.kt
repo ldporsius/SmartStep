@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -26,13 +27,12 @@ import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presen
 class AIChatViewModel(
     private val aiStateController: AIStateController,
     private val quickSuggestionsController: QuickSuggestionsController,
-    private val aiChatRepo: AIChatRepo,
     connectivityMonitor: ConnectivityMonitor,
 ): ViewModel() {
 
 
     private val _chats = MutableStateFlow<List<AIMessage>>(emptyList())
-    val chats = aiChatRepo.history
+    val chats = aiStateController.aiChatRepo.history
         .onStart {
             _chats.update { emptyList() }
             if(_chats.value.isEmpty()){
@@ -57,21 +57,28 @@ class AIChatViewModel(
     }
     val uiState = _uiState.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AIChatState.Offline)
 
+    private val quickSuggestionVisibilityState = MutableStateFlow<Boolean>(false)
+    val isQuickSuggestionsVisible = quickSuggestionVisibilityState.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    fun toggleQuickSuggestionsVisibility(){
+        quickSuggestionVisibilityState.update {
+            !it
+        }
+    }
+
     init {
             quickSuggestionsController.responses.onEach {responses ->
                 println("--- AI CHAT VIEW MODEL --- RESPONSE FROM GROQ: ${responses}")
                 _chats.update {
                     responses
                 }
+                quickSuggestionVisibilityState.value = false
             }.launchIn(viewModelScope)
 
 
     }
     fun onAction(action: AIChatAction){
         when(action){
-            AIChatAction.Intro ->{
-
-            }
             is AIChatAction.ChatInput -> {
                 message.update {
                     action.message
@@ -80,10 +87,13 @@ class AIChatViewModel(
             is AIChatAction.SendMessage -> {
                 if(validateChatInput(action.message)){
                     sendMessage(action.message)
+                    message.update {
+                        ""
+                    }
+                }else{
+                    //todo
                 }
-                message.update {
-                    ""
-                }
+
             }
         }
     }
@@ -95,14 +105,12 @@ class AIChatViewModel(
     private fun sendMessage(msg: String){
         println("Sending message to chat: $msg")
         viewModelScope.launch {
-            _chats.update {
-                it.plus(
-                    AIMessage(
-                        message = msg,
-                        origin = AIMessageOrigin.USER
-                    )
+            aiStateController.aiChatRepo.saveInHistory(
+                AIMessage(
+                    message = msg,
+                    origin = AIMessageOrigin.USER
                 )
-            }
+            )
             aiStateController.sendMessage(msg).let {res ->
                 println("--- AI CHAT VIEWMODEL --- Message sent: $res")
                 when(res){
@@ -115,10 +123,7 @@ class AIChatViewModel(
                         }
                     }
                     is Result.Success -> {
-                        _chats.update {
-                            it.plus(res.data)
-                        }
-                        aiChatRepo.saveInHistory(res.data)
+                      //redundant
                     }
                 }
             }

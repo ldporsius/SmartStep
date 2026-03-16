@@ -39,7 +39,6 @@ fun AIChatRoot(
             AIChatViewModel(
                 aiStateController = aiStateController,
                 quickSuggestionsController = quickSuggestions,
-                aiChatRepo = aiStateController.aiChatRepo,
                 connectivityMonitor = connectivityMonitor
             )
         }
@@ -47,6 +46,8 @@ fun AIChatRoot(
 
     AIChatScreen(
         quickSuggestions = quickSuggestions.quickSuggestions,
+        isQuickSuggestionsVisible = chatViewModel.isQuickSuggestionsVisible.collectAsStateWithLifecycle().value,
+        toggleQuickSuggestions = { chatViewModel.toggleQuickSuggestionsVisibility() },
         history = chatViewModel.chats.collectAsStateWithLifecycle().value,
         uiState = chatViewModel.uiState.collectAsStateWithLifecycle().value,
         onNavBack = onNavBack

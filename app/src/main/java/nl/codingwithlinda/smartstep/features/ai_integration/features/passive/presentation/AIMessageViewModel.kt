@@ -32,10 +32,6 @@ class AIMessageViewModel(
     aiUserMessages: AIUserMessages
 ): ViewModel() {
 
-
-    private val goal = statisticsManager.todaysGoal
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), -1)
-
     private val statisticsMessage = aiUserMessages.statisticsMessage
 
     private val _response = MutableStateFlow<AIMessage?>(null)
@@ -63,45 +59,43 @@ class AIMessageViewModel(
 
     init {
         viewModelScope.launch {
-        statisticsManager.progressTowardsGoal.collectLatest {
-            if(it < 0) return@collectLatest
-            delay(500)
-            makeRequest()
-        }
+            statisticsManager.todaysGoal.collectLatest {
+                if(it < 0) return@collectLatest
+                delay(500)
+                makeRequest()
+            }
         }
     }
 
 
     fun makeRequest() = viewModelScope.launch {
-            val msg = statisticsMessage.firstOrNull()?: return@launch
-            yield()
-
-            val result = aiStateController.sendMessage(msg)
-            when(result){
-                is Result.Failure -> {
-                    when(result.error){
-                        is AIError.ResourceExhausted -> {
-                            result.data?.let { msg ->
-                                _response.update {
-                                    msg
-                                }
-                            }
-                        }
-                        AIError.OtherError -> {
+        val msg = statisticsMessage.firstOrNull()?: return@launch
+        val result = aiStateController.sendMessage(msg)
+        when(result){
+            is Result.Failure -> {
+                when(result.error){
+                    is AIError.ResourceExhausted -> {
+                        result.data?.let { msg ->
                             _response.update {
-                                AIMessage(
-                                    message = result.error.toUIString(),
-                                    origin = AIMessageOrigin.ASSISTANT
-                                )
+                                msg
                             }
                         }
                     }
-                }
-                is Result.Success -> {
-                    _response.update {
-                        result.data
+                    AIError.OtherError -> {
+                        _response.update {
+                            AIMessage(
+                                message = result.error.toUIString(),
+                                origin = AIMessageOrigin.ASSISTANT
+                            )
+                        }
                     }
                 }
             }
+            is Result.Success -> {
+                _response.update {
+                    result.data
+                }
+            }
         }
+    }
 }
