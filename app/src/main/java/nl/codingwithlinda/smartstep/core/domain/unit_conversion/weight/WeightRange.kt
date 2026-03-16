@@ -1,12 +1,8 @@
 package nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight
 
-import nl.codingwithlinda.unit_conversion.data.weight.KG
 import nl.codingwithlinda.unit_conversion.data.weight.KGWeight
-import nl.codingwithlinda.unit_conversion.data.weight.LBS
 import nl.codingwithlinda.unit_conversion.data.weight.LBSWeight
-import nl.codingwithlinda.unit_conversion.data.weight.convertWeight
-import kotlin.collections.component1
-import kotlin.collections.get
+import nl.codingwithlinda.unit_conversion.data.weight.WeightUnitConverter
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.roundToInt
@@ -21,18 +17,20 @@ val minWeightPounds = ceil(weightRangeKg.first() * kgToPoundsFactor).toInt()
 val maxWeightPounds = floor(weightRangeKg.last() * kgToPoundsFactor).toInt()
 val weightRangePounds = IntRange(minWeightPounds, maxWeightPounds).toList()
 
-val kgToPounds = weightRangePounds.map {
-    val pound = LBSWeight(it.toDouble())
-    val kg = convertWeight(pound, KG)
-
-    it to kg
-}.groupBy { (pounds, kg) ->
-    kg.weight.roundToInt()
-}.mapValues{ (i, pairs) ->
-    pairs.map { it.first }
-}
 
 fun fromPreviousPounds(kg: KGWeight, pounds: Int): LBSWeight{
+
+    val converter = WeightUnitConverter
+    val kgToPounds = weightRangePounds.map {
+        val pound = LBSWeight(it.toDouble())
+        val kg = converter.toKg(pound)
+
+        it to kg
+    }.groupBy { (pounds, kg) ->
+        kg.weight.roundToInt()
+    }.mapValues{ (i, pairs) ->
+        pairs.map { it.first }
+    }
 
     val correspondingPounds: List<Int> = kgToPounds[kg.weight.roundToInt()] ?:emptyList()
 
@@ -42,7 +40,7 @@ fun fromPreviousPounds(kg: KGWeight, pounds: Int): LBSWeight{
         println("--- KG --- returning previous pounds: $pounds")
         return LBSWeight(pounds.toDouble())
     }
-    val converted = convertWeight(kg, LBS)
+    val convertedPound = converter.toLbs(kg)
 
-    return converted as LBSWeight
+    return convertedPound
 }

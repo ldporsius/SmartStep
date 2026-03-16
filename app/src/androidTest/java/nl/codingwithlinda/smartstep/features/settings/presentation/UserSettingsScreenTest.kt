@@ -15,14 +15,13 @@ import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
-import nl.codingwithlinda.unit_conversion.data.weight.GRAM
-import nl.codingwithlinda.unit_conversion.data.weight.LBSWeight
-import nl.codingwithlinda.unit_conversion.data.weight.convertWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangePounds
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSettingsOnboardingWrapper
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.FakeUserSettingsRepo
+import nl.codingwithlinda.unit_conversion.data.weight.LBSWeight
+import nl.codingwithlinda.unit_conversion.data.weight.WeightUnitConverter
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -154,7 +153,7 @@ class UserSettingsScreenTest {
             .pressStart()
 
         val actual = usersettingsRepo.loadSettings().weightGrams
-        val expected = convertWeight( LBSWeight(200.0), GRAM).weight
+        val expected = WeightUnitConverter.toGram(LBSWeight(200.0)).weight
         println("actual: $actual")
         println("expected: $expected")
         assertThat(

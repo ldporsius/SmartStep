@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import assertk.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -32,6 +33,7 @@ class WeightSettingViewModelTest {
         viewModel = WeightSettingViewModel(
             userSettingsRepo = FakeUserSettingsRepo(),
             memento = UserSettingsMemento,
+            nonCancellableScope = GlobalScope
         )
     }
 

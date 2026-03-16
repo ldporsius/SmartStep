@@ -2,7 +2,6 @@ package nl.codingwithlinda.smartstep.tests
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.kgToPounds
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Ignore
 import org.junit.Rule

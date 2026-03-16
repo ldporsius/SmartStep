@@ -17,8 +17,6 @@ import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
-import nl.codingwithlinda.unit_conversion.data.weight.KG
-import nl.codingwithlinda.unit_conversion.data.weight.convertWeight
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
 import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.calculateDistanceCm
@@ -28,6 +26,7 @@ import nl.codingwithlinda.unit_conversion.data.distance.MILE
 import nl.codingwithlinda.unit_conversion.data.distance.cm
 import nl.codingwithlinda.unit_conversion.data.distance.convertDistance
 import nl.codingwithlinda.smartstep.features.statistics.presentation.util.MinuteCounter
+import nl.codingwithlinda.unit_conversion.data.weight.WeightUnitConverter
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -46,7 +45,7 @@ class StatisticsManagerImpl(
         it.weightGrams
     }.map {
         val grams = GramsWeight(it)
-        convertWeight(grams, KG)
+        WeightUnitConverter.toKg(grams)
     }
 
     val gender = userSettingsRepo.userSettingsObservable.map {

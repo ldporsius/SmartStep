@@ -1,7 +1,6 @@
 package nl.codingwithlinda.unit_conversion.data.lenght
 
 import nl.codingwithlinda.unit_conversion.data.lenght.lenght_defs.FeetInches
-import nl.codingwithlinda.unit_conversion.domain.UnitValue
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
@@ -9,9 +8,9 @@ import kotlin.math.roundToInt
 class FeetInchesUnitConverter  {
 
     val factorFeetToInches = 12
-    val lengthConverter = LengthUnitConverter()
+    val lengthConverter = LengthUnitConverter
 
-    fun convertToFeetInches(from: UnitValue): FeetInches {
+    fun convertToFeetInches(from: LengthValue): FeetInches {
 
         val feet = lengthConverter.toFeet(from).value
 
@@ -40,7 +39,7 @@ class FeetInchesUnitConverter  {
         return lengthConverter.toCm(unitValueInches)
     }
 
-    private inline fun <reified U: UnitValue>convertToUnitValue(from: FeetInches, to: Length): U{
+    private inline fun <reified U: LengthValue>convertToUnitValue(from: FeetInches, to: Length): U{
         val totalInches = from.feet * factorFeetToInches + from.inches
         val unitValueInches = LengthUnitConverter.Inch(totalInches.toDouble())
         return when(to){

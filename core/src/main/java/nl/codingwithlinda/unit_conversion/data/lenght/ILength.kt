@@ -1,8 +1,6 @@
 package nl.codingwithlinda.unit_conversion.data.lenght
 
-import nl.codingwithlinda.unit_conversion.domain.LengthUnitType
-
-sealed interface Length: LengthUnitType{
+sealed interface Length{
     object CM: Length {
         override val baseFactor: Double
             get() = 1.0
@@ -16,4 +14,12 @@ sealed interface Length: LengthUnitType{
         override val baseFactor: Double
             get() = 30.48
     }
+
+    val baseFactor: Double
+
+}
+
+interface LengthValue{
+    val value: Double
+    val type: Length
 }

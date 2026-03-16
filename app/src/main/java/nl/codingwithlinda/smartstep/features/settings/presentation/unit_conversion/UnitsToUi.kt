@@ -1,21 +1,18 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion
 
 import nl.codingwithlinda.unit_conversion.data.lenght.LengthUnits
-import nl.codingwithlinda.unit_conversion.data.weight.GRAM
-import nl.codingwithlinda.unit_conversion.data.weight.KG
-import nl.codingwithlinda.unit_conversion.data.weight.LBS
-import nl.codingwithlinda.unit_conversion.data.weight.TestConverter
 import nl.codingwithlinda.unit_conversion.data.weight.Weight
 import nl.codingwithlinda.unit_conversion.data.weight.Weights
 import nl.codingwithlinda.core.domain.util.UiText
 import nl.codingwithlinda.core.domain.util.UiText.DynamicText
 
+
+//TODO replace with string resources or hardcoded values
 fun Weight.toUi(): UiText{
     return when(this) {
-        GRAM -> DynamicText("g")
-        KG -> DynamicText("kg")
-        LBS -> DynamicText("lbs")
-        is TestConverter -> DynamicText("test")
+        Weight.GRAM -> DynamicText("g")
+        Weight.KG -> DynamicText("kg")
+        Weight.LBS -> DynamicText("lbs")
     }
 }
 

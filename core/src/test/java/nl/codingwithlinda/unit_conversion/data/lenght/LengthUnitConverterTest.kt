@@ -7,7 +7,7 @@ import kotlin.math.roundToInt
 
 class LengthUnitConverterTest {
 
-    val lengthConverter = LengthUnitConverter()
+    val lengthConverter = LengthUnitConverter
 
     @Test
     fun testLengthConverter_CmInch(){

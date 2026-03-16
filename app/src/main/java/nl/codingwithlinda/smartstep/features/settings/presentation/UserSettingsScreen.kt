@@ -87,6 +87,7 @@ fun UserSettingsRoot(
                 WeightSettingViewModel(
                     userSettingsRepo = userSettingsRepo,
                     memento = UserSettingsMemento,
+                    nonCancellableScope = SmartStepApplication.appContainer.applicationWideScope
                 )
             }
         }

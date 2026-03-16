@@ -1,19 +1,16 @@
 package nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight
 
-import nl.codingwithlinda.unit_conversion.data.weight.KG
 import nl.codingwithlinda.unit_conversion.data.weight.LBSWeight
-import nl.codingwithlinda.unit_conversion.data.weight.convertWeight
+import nl.codingwithlinda.unit_conversion.data.weight.WeightUnitConverter
 import org.junit.Test
 
 class PrintKgToPoundsMap {
-
-
 
     @Test
     fun `print list of pounds and kg`() {
         val poundsKg = weightRangePounds.map {
             val pound = LBSWeight(it.toDouble())
-            val kg = convertWeight(pound, KG)
+            val kg = WeightUnitConverter.toKg(pound)
 
             it to kg.weight
         }
@@ -27,17 +24,4 @@ class PrintKgToPoundsMap {
             }
         }
     }
-
-    @Test
-    fun `print list of kg and pounds`() {
-        kgToPounds.forEach { (kg, pounds) ->
-            println("$kg kg == ")
-            pounds.onEach {p->
-                println("--- $p pounds")
-            }
-        }
-    }
-
-
-
 }
