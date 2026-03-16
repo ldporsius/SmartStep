@@ -23,8 +23,9 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeightInches
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
-import nl.codingwithlinda.unit_conversion.data.lenght.Cm
-import nl.codingwithlinda.unit_conversion.data.lenght.FeetInches
+import nl.codingwithlinda.unit_conversion.data.lenght.FeetInchesUnitConverter
+import nl.codingwithlinda.unit_conversion.data.lenght.LengthUnitConverter
+import nl.codingwithlinda.unit_conversion.data.lenght.lenght_defs.FeetInches
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 import org.junit.Before
 import org.junit.Rule
@@ -36,7 +37,8 @@ class HeightSettingsComponentTest {
 
     @get:Rule
     val composeRule = createComposeRule()
-    val currentCm = Cm(maxHeightCm.toDouble())
+    val currentCm = LengthUnitConverter.Cm(maxHeightCm().toDouble())
+    val feetInchesConverter = FeetInchesUnitConverter()
     val uiState: MutableStateFlow<HeightSettingUiState> = MutableStateFlow(HeightSettingUiState.SI(currentCm))
 
     @Before
@@ -54,7 +56,7 @@ class HeightSettingsComponentTest {
                                 UnitSystems.IMPERIAL -> {
 
                                     uiState.update {
-                                        HeightSettingUiState.Imperial(currentCm.convert())
+                                        HeightSettingUiState.Imperial(feetInchesConverter.convertToFeetInches(currentCm))
                                     }
                                 }
                                 UnitSystems.SI -> {
@@ -67,7 +69,7 @@ class HeightSettingsComponentTest {
 
                         ActionHeightInput.ActionSave -> Unit
                         is ActionHeightInput.CmInput -> {
-                            val cm = Cm(action.cm.toDouble())
+                            val cm = LengthUnitConverter.Cm(action.cm.toDouble())
                             uiState . update {
                                     HeightSettingUiState.SI(cm)
                                 }
@@ -95,7 +97,7 @@ class HeightSettingsComponentTest {
         val robot = HeightSettingsRobot(composeRule)
         composeRule.awaitIdle()
         composeRule.onNode(
-            hasText(maxHeightCm.toString())
+            hasText(maxHeightCm().toString())
         ).assertIsDisplayed()
         composeRule.waitUntilAtLeastOneExists(
             hasText("ft/in") and hasClickAction()
@@ -123,13 +125,13 @@ class HeightSettingsComponentTest {
     @Test
     fun testSwitchingHeightFromSIToImperial(): Unit = runBlocking{
         val robot = HeightSettingsRobot(composeRule)
-        val maxIndexCm = heightsCm.indexOf(maxHeightCm)
+        val maxIndexCm = heightsCm.indexOf(maxHeightCm())
         val maxIndexFeet = heightsFeet.indexOf(maxHeightFeet)
         val maxIndexInches = heightsInches.indexOf(maxHeightInches)
 
         assertThat(uiState.value).isInstanceOf(HeightSettingUiState.SI::class)
 
-        println("----------maxCm---------------: $maxHeightCm")
+        println("----------maxCm---------------: ${maxHeightCm()}")
         println("----------maxIndexCm---------------: $maxIndexCm")
 
         composeRule.awaitIdle()
@@ -139,7 +141,7 @@ class HeightSettingsComponentTest {
             .scrollToIndex(maxIndexCm, "cm")
             .waitForIdle()
             .keepOnScreen(5000)
-            .assertContentDescriptionIsDisplayed("Label $maxHeightCm")
+            .assertContentDescriptionIsDisplayed("Label ${maxHeightCm()}")
             .changeToImperial()
             .waitForIdle()
             .assertContentDescriptionIsDisplayed("Label $maxHeightFeet")
@@ -150,7 +152,7 @@ class HeightSettingsComponentTest {
 
             .changeToSI()
             .waitForIdle()
-            .assertContentDescriptionIsDisplayed("Label $maxHeightCm")
+            .assertContentDescriptionIsDisplayed("Label ${maxHeightCm()}")
             .keepOnScreen(3000)
 
 

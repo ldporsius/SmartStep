@@ -1,6 +1,5 @@
 package nl.codingwithlinda.smartstep.features.settings.presentation.height_settings
 
-import android.health.connect.datatypes.units.Length
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -17,19 +16,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import nl.codingwithlinda.unit_conversion.data.lenght.LengthUnits
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsInches
 import nl.codingwithlinda.smartstep.core.presentation.util.asString
-import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.design_system.components.CommonNumberPicker
+import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogButtonRow
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.DialogHeader
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
 import nl.codingwithlinda.smartstep.features.settings.presentation.unit_conversion.toUi
-import nl.codingwithlinda.unit_conversion.data.lenght.FeetInches
+import nl.codingwithlinda.unit_conversion.data.lenght.LengthUnits
+import nl.codingwithlinda.unit_conversion.data.lenght.lenght_defs.FeetInches
 
 @Composable
 fun HeightSettingsComponent(

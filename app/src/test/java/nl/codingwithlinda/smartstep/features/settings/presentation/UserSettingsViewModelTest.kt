@@ -5,6 +5,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -33,6 +34,7 @@ class UserSettingsViewModelTest {
         viewModel = HeightSettingsViewModel(
             userSettingsRepo = repo,
             memento = UserSettingsMemento,
+            nonCancellableScope = GlobalScope
         )
     }
 

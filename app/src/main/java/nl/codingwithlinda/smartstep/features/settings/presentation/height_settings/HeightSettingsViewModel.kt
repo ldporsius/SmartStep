@@ -2,7 +2,7 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.height_setti
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -13,16 +13,19 @@ import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.ActionHeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.height_settings.state.HeightSettingUiState
-import nl.codingwithlinda.unit_conversion.data.lenght.Cm
-import nl.codingwithlinda.unit_conversion.data.lenght.FeetInches
+import nl.codingwithlinda.unit_conversion.data.lenght.FeetInchesUnitConverter
+import nl.codingwithlinda.unit_conversion.data.lenght.LengthUnitConverter.Cm
+import nl.codingwithlinda.unit_conversion.data.lenght.lenght_defs.FeetInches
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 import kotlin.math.roundToInt
 
 class HeightSettingsViewModel(
     private val userSettingsRepo: UserSettingsRepo,
     private val memento: UserSettingsMemento,
+    private val nonCancellableScope: CoroutineScope
 ): ViewModel() {
 
+    private val feetInchesConverter = FeetInchesUnitConverter()
     private val _heightInput = MutableStateFlow(Cm(0.0))
 
     private val unitSystemPrefs = userSettingsRepo.unitSystemObservable
@@ -41,11 +44,9 @@ class HeightSettingsViewModel(
         when(system){
             is UnitSystems.SI -> HeightSettingUiState.SI(cm = input)
             is UnitSystems.IMPERIAL -> {
-                val feetInches = input.convert()
+                val feetInches = feetInchesConverter.convertToFeetInches(input)
                 HeightSettingUiState.Imperial(feetInches)
             }
-        }.also {
-            //println("--- USERSETTINGSVIEWMODEL --- heightUiState changes in combine flow: $it")
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000),
         HeightSettingUiState.SI(Cm(0.0)))
@@ -67,22 +68,22 @@ class HeightSettingsViewModel(
                 println("--- USERSETTINGSVIEWMODEL --- imperial input: feet: ${actionUnitInput.feet} , inches:${actionUnitInput.inches}")
 
                 val feetInches = FeetInches(actionUnitInput.feet, actionUnitInput.inches)
-                val update = feetInches.valueCm
+                val update = feetInchesConverter.toCm(feetInches)
                 _heightInput.update {
-                    Cm(update)
+                    update
                 }
             }
 
             is ActionHeightInput.ActionSave -> {
-                viewModelScope.launch(NonCancellable) {
-                    val currentHeight = _heightInput.value.valueCm.roundToInt()
+                nonCancellableScope.launch{
+                    val currentHeight = _heightInput.value.value.roundToInt()
                     val userSettings = memento.restoreLast().copy(heightCm = currentHeight)
                     memento.save(userSettings)
                 }
             }
 
             is ActionHeightInput.ChangeUnitSystem -> {
-                viewModelScope.launch(NonCancellable) {
+                nonCancellableScope.launch{
                     userSettingsRepo.saveUnitSystem(actionUnitInput.system)
                 }
             }

@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.heightsCm
@@ -50,7 +51,7 @@ import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settin
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.WeightSettingsScreen
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.ActionWeightInput
 import nl.codingwithlinda.smartstep.features.settings.presentation.weight_settings.state.WeightSettingUiState
-import nl.codingwithlinda.unit_conversion.data.lenght.Cm
+import nl.codingwithlinda.unit_conversion.data.lenght.LengthUnitConverter
 
 
 @Composable
@@ -75,6 +76,7 @@ fun UserSettingsRoot(
                 HeightSettingsViewModel(
                     userSettingsRepo = userSettingsRepo,
                     memento = UserSettingsMemento,
+                    nonCancellableScope = SmartStepApplication.appContainer.applicationWideScope
                 )
             }
         }
@@ -238,7 +240,7 @@ fun UserSettingsScreen(
 private fun PreviewUserSettingsScreen() {
     SmartStepTheme {
         UserSettingsScreen(
-            heightUiState = HeightSettingUiState.SI(Cm(175.0)),
+            heightUiState = HeightSettingUiState.SI(LengthUnitConverter.Cm(175.0)),
             weightUiState = WeightSettingUiState.SI(KGWeight(100.0)),
             gender = Gender.FEMALE,
             actionGenderInput = {},

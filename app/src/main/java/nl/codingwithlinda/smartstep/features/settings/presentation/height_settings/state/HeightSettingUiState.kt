@@ -6,8 +6,8 @@ import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.maxHeightInches
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.minHeightFeet
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.height.minHeightInches
-import nl.codingwithlinda.unit_conversion.data.lenght.Cm
-import nl.codingwithlinda.unit_conversion.data.lenght.FeetInches
+import nl.codingwithlinda.unit_conversion.data.lenght.LengthUnitConverter
+import nl.codingwithlinda.unit_conversion.data.lenght.lenght_defs.FeetInches
 
 interface HeightSettingUiState {
     data class Imperial(var feetInches: FeetInches): HeightSettingUiState {
@@ -23,8 +23,8 @@ interface HeightSettingUiState {
             get() = UnitSystems.IMPERIAL
     }
 
-    data class SI(private var cm: Cm): HeightSettingUiState {
-        val valueCm : Int = cm.valueCm.toInt()
+    data class SI(private var cm: LengthUnitConverter.Cm): HeightSettingUiState {
+        val valueCm : Int = cm.value.toInt()
         override fun toUi(): UiText = UiText.DynamicText("${valueCm} cm")
         override val system: UnitSystems
             get() = UnitSystems.SI
