@@ -93,10 +93,7 @@ dependencies {
     implementation("com.google.firebase:firebase-ai")
     implementation("com.google.firebase:firebase-config")
     //jvm tests
-    testImplementation(libs.junit)
-    testImplementation(libs.turbine)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.assertk)
+    testImplementation(libs.bundles.junit.test)
 
     //instrumented/ui tests
     androidTestImplementation(platform(libs.androidx.compose.bom))

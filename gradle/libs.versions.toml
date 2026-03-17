@@ -23,6 +23,8 @@ rules = "1.7.0"
 uiautomator = "2.3.0"
 appcompat = "1.6.1"
 material = "1.10.0"
+mockk = "1.14.9"
+
 
 
 [libraries]
@@ -51,6 +53,8 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+
 
 #instrumented/ui tests
 androidx-rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
@@ -101,6 +105,7 @@ junit-test = [
     "junit",
     "turbine",
     "coroutines-test",
-    "assertk"
+    "assertk",
+    "mockk"
 ]
 

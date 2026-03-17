@@ -75,7 +75,6 @@ fun WeeklyActivityReportRoot(
     ) {paddingValues ->
         Column(
             modifier = Modifier.padding(paddingValues)
-
         ) {
 
 
