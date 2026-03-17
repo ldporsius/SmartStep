@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import nl.codingwithlinda.core.domain.util.UiText
+import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.data.WeeklyStatisticsManager
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.domain.ReportTarget
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.ReportTargetAction
@@ -40,7 +42,7 @@ class ReportViewModel(
             TopSummaryUi(
                 title = "Steps",
                 value = total,
-                subtitle = "Daily average: $average"
+                subtitle = UiText.StringResourceText(R.string.daily_average,average)
             )
 
         }

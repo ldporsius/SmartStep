@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.TopSummaryUi
 
@@ -57,7 +58,7 @@ fun TopSummaryCard(
 
                 )
                 Text(
-                    text = topSummaryUi.subtitle,
+                    text = topSummaryUi.subtitle.asString(),
                     modifier = Modifier.constrainAs(subtitle) {
                         top.linkTo(value.bottom, margin = 16.dp)
                         start.linkTo(parent.start)

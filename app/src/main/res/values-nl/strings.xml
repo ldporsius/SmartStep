@@ -2,4 +2,5 @@
 <resources>
     <string name="male">Man</string>
     <string name="female">Vrouw</string>
+    <string name="daily_average">"Daily average: %1$.2f"</string>
 </resources>
