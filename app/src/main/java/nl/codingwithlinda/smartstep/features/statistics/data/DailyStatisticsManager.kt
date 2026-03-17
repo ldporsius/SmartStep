@@ -28,7 +28,7 @@ import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
-class StatisticsManagerImpl(
+class DailyStatisticsManager(
     userSettingsRepo: UserSettingsRepo,
     dailyStepRepo: DailyStepRepo,
     walkDurationRepo: WalkDurationRepo,
