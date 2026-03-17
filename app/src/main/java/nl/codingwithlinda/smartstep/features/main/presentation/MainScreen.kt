@@ -41,10 +41,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_conte
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenContent
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
-import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.edit.presentation.EditStepsViewModel
-import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.navigation.UserOverrideStepsNavActionDecorator
-import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.reset.presentation.ResetStepsViewModel
+import nl.codingwithlinda.smartstep.features.main.statistics.presentation.StatisticsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.weekly_average.presentation.WeeklyAverageViewModel
 

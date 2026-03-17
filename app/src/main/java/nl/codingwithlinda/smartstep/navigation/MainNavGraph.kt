@@ -29,7 +29,6 @@ import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartSte
 import nl.codingwithlinda.smartstep.core.presentation.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.design_system.ui.theme.bg
-import nl.codingwithlinda.smartstep.features.ai_integration.data.local_cache.AIChatRepoImpl
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.presentation.AIChatRoot
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.data.AIUserMessages
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.presentation.AIMessageComponent
@@ -39,7 +38,7 @@ import nl.codingwithlinda.smartstep.features.onboarding.presentation.UserSetting
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.UserSettingsWrapper
-import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
+import nl.codingwithlinda.smartstep.features.main.statistics.presentation.StatisticsViewModel
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.WeeklyActivityReportRoot
 
 @OptIn(ExperimentalMaterial3Api::class)

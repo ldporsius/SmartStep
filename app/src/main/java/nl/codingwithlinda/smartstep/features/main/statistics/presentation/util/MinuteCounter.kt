@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.statistics.presentation.util
+package nl.codingwithlinda.smartstep.features.main.statistics.presentation.util
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow

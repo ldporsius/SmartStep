@@ -9,9 +9,10 @@ import kotlinx.coroutines.test.runTest
 import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationStart
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
-import nl.codingwithlinda.smartstep.features.statistics.data.DailyStatisticsManager
+import nl.codingwithlinda.smartstep.features.main.statistics.data.DailyStatisticsManager
 import nl.codingwithlinda.smartstep.FakeUserSettingsRepo
 import nl.codingwithlinda.smartstep.di.TestDispatcherProvider
+import nl.codingwithlinda.smartstep.features.main.statistics.presentation.StatisticsViewModel
 import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.Before
 import org.junit.Test

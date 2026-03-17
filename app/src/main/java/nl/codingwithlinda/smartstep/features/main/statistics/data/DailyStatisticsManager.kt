@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.statistics.data
+package nl.codingwithlinda.smartstep.features.main.statistics.data
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +19,7 @@ import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.core.domain.statistics.StatisticsManager
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.calculateDistanceCm
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.caloriesBurned
-import nl.codingwithlinda.smartstep.features.statistics.presentation.util.MinuteCounter
+import nl.codingwithlinda.smartstep.features.main.statistics.presentation.util.MinuteCounter
 import nl.codingwithlinda.unit_conversion.data.distance.ConcreteDistance
 import nl.codingwithlinda.unit_conversion.data.distance.DistanceConverter
 import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight

@@ -10,8 +10,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.R
-import nl.codingwithlinda.smartstep.features.statistics.presentation.components.StatisticsItem
-import nl.codingwithlinda.smartstep.features.statistics.presentation.model.StatisticsUi
+import nl.codingwithlinda.smartstep.features.main.statistics.presentation.components.StatisticsItem
+import nl.codingwithlinda.smartstep.features.main.statistics.presentation.model.StatisticsUi
 
 @Composable
 fun StatisticsRow(

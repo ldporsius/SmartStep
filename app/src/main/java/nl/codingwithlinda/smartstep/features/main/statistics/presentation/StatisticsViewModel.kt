@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.statistics.presentation
+package nl.codingwithlinda.smartstep.features.main.statistics.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,8 +8,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.core.domain.util.UiText
 import nl.codingwithlinda.smartstep.core.domain.statistics.StatisticsManager
-import nl.codingwithlinda.smartstep.features.statistics.presentation.model.StatisticsUi
-import nl.codingwithlinda.smartstep.features.statistics.presentation.util.toUi
+import nl.codingwithlinda.smartstep.features.main.statistics.presentation.model.StatisticsUi
+import nl.codingwithlinda.smartstep.features.main.statistics.presentation.util.toUi
+import java.util.Locale
 
 class StatisticsViewModel(
     statisticsManager: StatisticsManager,
@@ -29,7 +30,7 @@ class StatisticsViewModel(
     init {
         viewModelScope.launch {
             statisticsManager.distanceWalked.collect {concreteDistance ->
-                val formatted = String.format(java.util.Locale.getDefault(),"%.1f", concreteDistance.value)
+                val formatted = String.format(Locale.getDefault(),"%.1f", concreteDistance.value)
 
                 _statistics.update {
                     it.copy(
@@ -43,7 +44,7 @@ class StatisticsViewModel(
 
         viewModelScope.launch {
             statisticsManager.caloriesBurned.collect {
-                val formatted = String.format(java.util.Locale.getDefault(),"%d", it)
+                val formatted = String.format(Locale.getDefault(),"%d", it)
 
                 _statistics.update {
                     it.copy(

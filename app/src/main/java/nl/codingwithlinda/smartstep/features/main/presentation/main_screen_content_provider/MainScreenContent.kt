@@ -19,7 +19,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.D
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCard
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.interaction.DailyStepAction
-import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
+import nl.codingwithlinda.smartstep.features.main.statistics.presentation.StatisticsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.navigation.StepNavActionHandler
 import nl.codingwithlinda.smartstep.features.main.presentation.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.weekly_average.presentation.WeeklyAverageScreen

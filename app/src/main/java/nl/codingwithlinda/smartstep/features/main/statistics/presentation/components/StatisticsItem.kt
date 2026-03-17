@@ -1,10 +1,12 @@
-package nl.codingwithlinda.smartstep.features.statistics.presentation.components
+package nl.codingwithlinda.smartstep.features.main.statistics.presentation.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -17,8 +19,8 @@ fun StatisticsItem(
     value: UiText,
     modifier: Modifier = Modifier) {
     Column(
-        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-        verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(4.dp)
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Icon(
             painter = painterResource(icon),

@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.statistics.presentation.util
+package nl.codingwithlinda.smartstep.features.main.statistics.presentation.util
 
 import nl.codingwithlinda.unit_conversion.data.distance.CM
 import nl.codingwithlinda.unit_conversion.data.distance.Distance

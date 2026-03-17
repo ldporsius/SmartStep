@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.statistics.presentation.model
+package nl.codingwithlinda.smartstep.features.main.statistics.presentation.model
 
 import nl.codingwithlinda.core.domain.util.UiText
 
