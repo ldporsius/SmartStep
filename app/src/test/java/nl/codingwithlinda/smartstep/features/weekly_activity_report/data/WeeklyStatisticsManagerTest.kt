@@ -40,8 +40,6 @@ class WeeklyStatisticsManagerTest : BaseStepRepoTest() {
         }
     }
 
-
-
     @Test
     fun `test weekly calendar - one week past`() = runTest{
 
@@ -113,28 +111,15 @@ class WeeklyStatisticsManagerTest : BaseStepRepoTest() {
         manager.stepsInWeek.test {
             val item = awaitItem()
 
-            println("-----------------------------------------------------------")
-            println("-----------------------------------------------------------")
-
-            println("$item")
-
-            println("-----------------------------------------------------------")
-            println("-----------------------------------------------------------")
-
             item.onEach {list ->
                 list.onEach {
                     println("${it}")
                 }
             }
 
-            println("-----------------------------------------------------------")
-            println("-----------------------------------------------------------")
-
-
-            assertThat(item.flatten().size).isEqualTo( 3 * 7)
+            assertThat(item.flatten().size).isEqualTo(3 * 7)
 
             cancelAndConsumeRemainingEvents()
-
         }
     }
 
@@ -167,12 +152,6 @@ class WeeklyStatisticsManagerTest : BaseStepRepoTest() {
             val item = awaitItem()
 
             assertThat(item.size).isEqualTo(2)
-            println("-----------------------------------------------------------")
-            println("---------------------average--------------------------------------")
-            println("$item")
-            println("-----------------------------------------------------------")
-            println("-----------------------------------------------------------")
-
 
             assertThat(item.first()).isEqualTo(10.0)
 
