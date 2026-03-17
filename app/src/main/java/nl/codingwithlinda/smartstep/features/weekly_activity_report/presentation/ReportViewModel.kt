@@ -22,6 +22,7 @@ import nl.codingwithlinda.smartstep.features.weekly_activity_report.domain.Repor
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.ReportTargetAction
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.ReportTargetUiState
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.TopSummaryUi
+import kotlin.math.roundToInt
 
 class ReportViewModel(
     private val weeklyStatisticsManager: WeeklyStatisticsManager
@@ -57,17 +58,29 @@ class ReportViewModel(
         stepsInWeek
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val topSummaryCalories = selectedWeek.flatMapLatest { selectedWeek ->
+        val caloriesBurned = weeklyStatisticsManager.caloriesBurned.map {
+            it[selectedWeek]
+        }.map {
+            TopSummaryUi(
+                title = "Calories",
+                value = it.roundToInt()
+            )
+        }
+        caloriesBurned
+    }
+
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val topSummaryUi = uiState.flatMapLatest{ uiState,  ->
 
         when(uiState.selectedTarget){
-
             ReportTarget.STEPS -> {
                topSummarySteps
             }
             ReportTarget.CALORIES -> {
-                topSummarySteps
+                topSummaryCalories
             }
             ReportTarget.TIME ->{
                 topSummarySteps
