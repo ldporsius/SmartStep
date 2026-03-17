@@ -1,6 +1,7 @@
 package nl.codingwithlinda.smartstep.features.weekly_activity_report.data
 
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
@@ -35,7 +36,12 @@ class WeeklyStatisticsManager(
             .windowed(7, 7, false)
     }
 
-    fun today() = LocalDate.now()
+    private fun today(): LocalDate = LocalDate.now()
+
+    suspend fun currentWeekIndex(): Int =
+        weeklyCalendar.first().indexOfFirst {
+            it.contains(today())
+    }
 
     val stepsInWeek= dailyStepRepo.stepCountPlusUserOverride.combine(weeklyCalendar){steps, weeks ->
         weeks.map { weekdays ->

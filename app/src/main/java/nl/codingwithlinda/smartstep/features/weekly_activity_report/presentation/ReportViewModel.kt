@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.core.domain.util.UiText
@@ -32,8 +33,15 @@ class ReportViewModel(
 
     private val _selectedWeek = MutableStateFlow(0)
 
+    private val selectedWeek = _selectedWeek.asStateFlow()
+        .onStart {
+            val index = weeklyStatisticsManager.currentWeekIndex()
+            _selectedWeek.value = index
+        }
+
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val topSummarySteps = _selectedWeek.flatMapLatest{ selectedWeek ->
+    private val topSummarySteps = selectedWeek.flatMapLatest{ selectedWeek ->
         val stepsInWeek = weeklyStatisticsManager.stepsInWeek.map {
             it[selectedWeek]
         }.map {
@@ -48,6 +56,8 @@ class ReportViewModel(
         }
         stepsInWeek
     }
+
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val topSummaryUi = uiState.flatMapLatest{ uiState,  ->
 

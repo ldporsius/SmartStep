@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.features.weekly_activity_report.presentatio
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -94,7 +95,9 @@ fun WeeklyActivityReportRoot(
             modifier = Modifier.padding(paddingValues)
         ) {
             TopSummaryCard(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.
+                    width(480.dp)
+                    .padding(16.dp),
                 topSummaryUi = reportViewModel.topSummaryUi.collectAsStateWithLifecycle().value
             )
 
