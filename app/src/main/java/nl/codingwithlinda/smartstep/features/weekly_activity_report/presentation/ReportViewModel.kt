@@ -63,9 +63,12 @@ class ReportViewModel(
         val caloriesBurned = weeklyStatisticsManager.caloriesBurned.map {
             it[selectedWeek]
         }.map {
+            val total = weeklyStatisticsManager.caloriesBurnedTotal(it)
+            val average = weeklyStatisticsManager.caloriesBurnedAverage(it)
             TopSummaryUi(
                 title = "Calories",
-                value = it.roundToInt()
+                value = total.roundToInt(),
+                subtitle = UiText.StringResourceText(R.string.daily_average,average)
             )
         }
         caloriesBurned

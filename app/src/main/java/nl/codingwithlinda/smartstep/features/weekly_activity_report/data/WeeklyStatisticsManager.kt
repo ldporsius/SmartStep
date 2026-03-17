@@ -41,19 +41,19 @@ class WeeklyStatisticsManager(
     suspend fun currentWeekIndex(): Int =
         weeklyCalendar.first().indexOfFirst {
             it.contains(today())
-    }
+        }
 
     val stepsInWeek= dailyStepRepo.stepCountPlusUserOverride.combine(weeklyCalendar){steps, weeks ->
         weeks.map { weekdays ->
-           weekdays.map {date ->
-               steps.find {
-                   it.dayEpochDay == date.toEpochDay() } ?: DailyStepCountCreator.create(
-                   date = date.toEpochDay(),
-                   count = 0
-               )
-               }
-           }
+            weekdays.map {date ->
+                steps.find {
+                    it.dayEpochDay == date.toEpochDay() } ?: DailyStepCountCreator.create(
+                    date = date.toEpochDay(),
+                    count = 0
+                )
+            }
         }
+    }
 
     fun totalStepsInWeek(stepsInWeek: List<DailyStepCount>)=
         stepsInWeek.sumOf { it.stepCount }
@@ -61,13 +61,13 @@ class WeeklyStatisticsManager(
     fun averageStepsInWeek(stepsInWeek: List<DailyStepCount>)=
         stepsInWeek.map { it.stepCount }.average()
 
-    val totalStepsInWeek = stepsInWeek.map{ stepsPerWeek ->
+    private val totalStepsInWeek = stepsInWeek.map{ stepsPerWeek ->
         stepsPerWeek.map{
             it.sumOf { it.stepCount }
         }
     }
 
-    val averageStepsInWeek = stepsInWeek.map { steps ->
+    private val averageStepsInWeek = stepsInWeek.map { steps ->
         steps.map { step ->
             step.map { it.stepCount }
         }.also{
@@ -76,8 +76,8 @@ class WeeklyStatisticsManager(
             it.average()
         }
     }
-
-   private val userHeightCm = userSettingsRepo.userSettingsObservable.map {
+    //////////////////////////////////////////////////////////////
+    private val userHeightCm = userSettingsRepo.userSettingsObservable.map {
         it.heightCm
     }
     private val userWeightKG = userSettingsRepo.userSettingsObservable.map {
@@ -90,11 +90,17 @@ class WeeklyStatisticsManager(
         it.gender
     }
 
-    val caloriesBurned = combine(totalStepsInWeek, userWeightKG, gender) { steps, weight, gender ->
+    val caloriesBurned = combine(stepsInWeek, userWeightKG, gender) { steps, weight, gender ->
         steps.map {
-            caloriesBurned(it, weight.weight, gender)
+            it.map {
+                caloriesBurned(it.stepCount, weight.weight, gender)
+            }
         }
     }
+
+    fun caloriesBurnedTotal(calories: List<Double>) = calories.sum()
+
+    fun caloriesBurnedAverage(calories: List<Double>) = calories.average()
 
 
 }
