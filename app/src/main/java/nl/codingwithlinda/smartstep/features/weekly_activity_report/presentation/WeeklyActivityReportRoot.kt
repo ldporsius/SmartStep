@@ -15,10 +15,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import nl.codingwithlinda.smartstep.R
+import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.appContainer
+import nl.codingwithlinda.smartstep.features.weekly_activity_report.data.WeeklyStatisticsManager
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.domain.ReportTarget
+import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.components.TopSummaryCard
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.ReportTargetAction
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.util.toUi
 
@@ -27,7 +33,18 @@ import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation
 fun WeeklyActivityReportRoot(
     onNavBack:() -> Unit
 ) {
-    val reportViewModel = viewModel<ReportViewModel>()
+    val reportViewModel = viewModel<ReportViewModel>(
+        factory = viewModelFactory {
+            initializer {
+                ReportViewModel(
+                    weeklyStatisticsManager = WeeklyStatisticsManager(
+                        userSettingsRepo = appContainer.userSettingsRepo,
+                        dailyStepRepo = appContainer.dailyStepRepo
+                    )
+                )
+            }
+        }
+    )
 
     val uiState = reportViewModel.uiState.collectAsStateWithLifecycle().value
 
@@ -76,7 +93,10 @@ fun WeeklyActivityReportRoot(
         Column(
             modifier = Modifier.padding(paddingValues)
         ) {
-
+            TopSummaryCard(
+                modifier = Modifier.padding(16.dp),
+                topSummaryUi = reportViewModel.topSummaryUi.collectAsStateWithLifecycle().value
+            )
 
 
         }

@@ -2,10 +2,13 @@ package nl.codingwithlinda.smartstep.features.weekly_activity_report.data
 
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.take
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.caloriesBurned
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
+import nl.codingwithlinda.unit_conversion.data.weight.WeightUnitConverter
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -46,6 +49,12 @@ class WeeklyStatisticsManager(
            }
         }
 
+    fun totalStepsInWeek(stepsInWeek: List<DailyStepCount>)=
+        stepsInWeek.sumOf { it.stepCount }
+
+    fun averageStepsInWeek(stepsInWeek: List<DailyStepCount>)=
+        stepsInWeek.map { it.stepCount }.average()
+
     val totalStepsInWeek = stepsInWeek.map{ stepsPerWeek ->
         stepsPerWeek.map{
             it.sumOf { it.stepCount }
@@ -62,8 +71,23 @@ class WeeklyStatisticsManager(
         }
     }
 
-    val caloriesInWeek = userSettingsRepo.userSettingsObservable.map {
+   private val userHeightCm = userSettingsRepo.userSettingsObservable.map {
+        it.heightCm
+    }
+    private val userWeightKG = userSettingsRepo.userSettingsObservable.map {
+        it.weightGrams
+    }.map {
+        val grams = GramsWeight(it)
+        WeightUnitConverter.toKg(grams)
+    }
+    private val gender = userSettingsRepo.userSettingsObservable.map {
         it.gender
+    }
+
+    val caloriesBurned = combine(totalStepsInWeek, userWeightKG, gender) { steps, weight, gender ->
+        steps.map {
+            caloriesBurned(it, weight.weight, gender)
+        }
     }
 
 
