@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.statistics.domain
+package nl.codingwithlinda.smartstep.core.domain.statistics
 
 import kotlinx.coroutines.flow.Flow
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD

@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.MainActivity
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
-import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
+import nl.codingwithlinda.smartstep.core.domain.statistics.StatisticsManager
 import kotlin.math.roundToInt
 
 class StepTrackerService: Service() {

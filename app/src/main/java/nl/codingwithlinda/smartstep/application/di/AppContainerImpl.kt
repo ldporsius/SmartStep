@@ -25,7 +25,7 @@ import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 import nl.codingwithlinda.smartstep.features.ai_integration.di.AIContainer
 import nl.codingwithlinda.smartstep.features.statistics.data.StatisticsManagerImpl
-import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
+import nl.codingwithlinda.smartstep.core.domain.statistics.StatisticsManager
 
 class AppContainerImpl(
     private val context: Application

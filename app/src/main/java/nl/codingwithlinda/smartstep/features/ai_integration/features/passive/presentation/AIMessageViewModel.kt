@@ -22,7 +22,7 @@ import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.smartstep.features.ai_integration.features.passive.data.AIUserMessages
 import nl.codingwithlinda.smartstep.features.ai_integration.presentation.error.toUIString
-import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
+import nl.codingwithlinda.smartstep.core.domain.statistics.StatisticsManager
 
 @OptIn(FlowPreview::class)
 class AIMessageViewModel(

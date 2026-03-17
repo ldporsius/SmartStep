@@ -16,9 +16,9 @@ import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
-import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
-import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.calculateDistanceCm
-import nl.codingwithlinda.smartstep.features.statistics.domain.calculations.caloriesBurned
+import nl.codingwithlinda.smartstep.core.domain.statistics.StatisticsManager
+import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.calculateDistanceCm
+import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.caloriesBurned
 import nl.codingwithlinda.smartstep.features.statistics.presentation.util.MinuteCounter
 import nl.codingwithlinda.unit_conversion.data.distance.ConcreteDistance
 import nl.codingwithlinda.unit_conversion.data.distance.DistanceConverter

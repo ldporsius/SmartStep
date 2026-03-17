@@ -57,10 +57,14 @@ class WeeklyStatisticsManager(
             step.map { it.stepCount }
         }.also{
             println("averages: $it")
-        }
-            .map {
+        }.map {
             it.average()
         }
     }
+
+    val caloriesInWeek = userSettingsRepo.userSettingsObservable.map {
+        it.gender
+    }
+
 
 }

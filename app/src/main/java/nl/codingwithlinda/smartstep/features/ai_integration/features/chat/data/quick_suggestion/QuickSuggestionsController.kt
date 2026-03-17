@@ -17,7 +17,7 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController
 import nl.codingwithlinda.smartstep.features.ai_integration.features.chat.data.intro_message.introMessage
-import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
+import nl.codingwithlinda.smartstep.core.domain.statistics.StatisticsManager
 import java.time.LocalDateTime
 import java.time.format.TextStyle
 import java.util.Locale

@@ -17,7 +17,7 @@ import nl.codingwithlinda.smartstep.application.di.AppContainerImpl
 import nl.codingwithlinda.smartstep.application.di.viewmodel_service.ViewModelServiceLocator
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService.Companion.CHANNEL_ID
 import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
-import nl.codingwithlinda.smartstep.features.statistics.domain.StatisticsManager
+import nl.codingwithlinda.smartstep.core.domain.statistics.StatisticsManager
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 val Context.dataStoreAI: DataStore<Preferences> by preferencesDataStore(name = "ai_session")

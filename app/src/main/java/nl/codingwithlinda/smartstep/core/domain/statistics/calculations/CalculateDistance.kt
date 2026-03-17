@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.features.statistics.domain.calculations
+package nl.codingwithlinda.smartstep.core.domain.statistics.calculations
 
 fun calculateStepLength(
     personsHeightCm: Int
