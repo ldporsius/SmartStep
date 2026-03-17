@@ -31,8 +31,8 @@ import kotlinx.coroutines.withContext
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.presentation.util.ObserveAsEvents
-import nl.codingwithlinda.smartstep.features.daily_step_count.DailyStepCountViewModel
-import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_count.DailyStepCountViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.navDrawerItems
@@ -42,11 +42,11 @@ import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_conte
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
-import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.UserOverrideStepsNavActionDecorator
-import nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation.ResetStepsViewModel
-import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
-import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.edit.presentation.EditStepsViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.navigation.UserOverrideStepsNavActionDecorator
+import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.reset.presentation.ResetStepsViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.walk_duration.presentation.WalkDurationViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.weekly_average.presentation.WeeklyAverageViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,8 +56,8 @@ fun MainScreen(
     statisticsViewModel: StatisticsViewModel,
     stepTrackerViewModel: WalkDurationViewModel,
     weeklyAverageViewModel: WeeklyAverageViewModel,
-    editStepsViewModel: EditStepsViewModel,
-    resetStepsViewModel: ResetStepsViewModel,
+    editStepsViewModel: nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.edit.presentation.EditStepsViewModel,
+    resetStepsViewModel: nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.reset.presentation.ResetStepsViewModel,
     smartStepStateController: SmartStepStateControllerImpl,
     aiMessageComponent: @Composable () -> Unit
 ) {
@@ -153,7 +153,7 @@ fun MainScreen(
             smartStepStateController = smartStepStateController,
         )
 
-        UserOverrideStepsNavActionDecorator(
+        _root_ide_package_.nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.navigation.UserOverrideStepsNavActionDecorator(
             editStepsViewModel = editStepsViewModel,
             resetStepsViewModel = resetStepsViewModel
 

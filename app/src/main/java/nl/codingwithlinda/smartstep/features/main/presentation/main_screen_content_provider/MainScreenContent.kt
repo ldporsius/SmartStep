@@ -14,15 +14,18 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import nl.codingwithlinda.smartstep.features.daily_step_count.DailyStepCountViewModel
-import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_count.DailyStepCountViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.StepNavAction
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.DailyStepCard
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_card.interaction.DailyStepAction
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
-import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
-import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
-import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageScreen
-import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.navigation.StepNavActionHandler
+import nl.codingwithlinda.smartstep.features.main.presentation.walk_duration.presentation.WalkDurationViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.weekly_average.presentation.WeeklyAverageScreen
+import nl.codingwithlinda.smartstep.features.main.presentation.weekly_average.presentation.WeeklyAverageViewModel
+import nl.codingwithlinda.smartstep.navigation.NavigationController
+import nl.codingwithlinda.smartstep.navigation.WeeklyActivityReportRoute
 
 @Composable
 fun MainScreenContent(
@@ -48,20 +51,26 @@ fun MainScreenContent(
             dailyGoal = dailyStepGoalViewModel.goal.collectAsStateWithLifecycle().value,
             statisticsUi = statisticsViewModel.statistics.collectAsStateWithLifecycle().value,
             stepTrackerState = walkDurationViewModel.state.collectAsStateWithLifecycle().value,
-            actionEdit = {
-                StepNavActionHandler.handleAction(StepNavAction.EDIT_STEPS)
-            },
-            actionPause = {
-                walkDurationViewModel.pause()
-            },
-            actionPlay = {
-                walkDurationViewModel.start()
+            onAction = {
+                when (it) {
+                    DailyStepAction.ActionEdit -> {
+                        StepNavActionHandler.handleAction(StepNavAction.EDIT_STEPS)
+                    }
+                    DailyStepAction.ActionPause -> {
+                        walkDurationViewModel.pause()
+                    }
+                    DailyStepAction.ActionPlay -> {
+                        walkDurationViewModel.start()
+                    }
+                    DailyStepAction.ActionReport -> {
+                        NavigationController.navigateTo(WeeklyActivityReportRoute)
+                    }
+                }
             },
             modifier = Modifier
                 .semantics {
                     contentDescription = "Daily Step Card"
                 }
-
         )
 
         WeeklyAverageScreen(

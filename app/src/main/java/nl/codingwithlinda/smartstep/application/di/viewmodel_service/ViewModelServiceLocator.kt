@@ -7,13 +7,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.codingwithlinda.smartstep.application.di.AndroidDispatcherProvider
 import nl.codingwithlinda.smartstep.application.di.AppContainer
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
-import nl.codingwithlinda.smartstep.features.daily_step_goal.DailyStepGoalViewModel
-import nl.codingwithlinda.smartstep.features.daily_step_count.DailyStepCountViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_count.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.onboarding.presentation.ShouldShowSettingsViewModel
-import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.EditStepsViewModel
-import nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation.ResetStepsViewModel
-import nl.codingwithlinda.smartstep.features.walk_duration.presentation.WalkDurationViewModel
-import nl.codingwithlinda.smartstep.features.weekly_average.presentation.WeeklyAverageViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.edit.presentation.EditStepsViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.reset.presentation.ResetStepsViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.walk_duration.presentation.WalkDurationViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.weekly_average.presentation.WeeklyAverageViewModel
 
 class ViewModelServiceLocator(
     val appContainer: AppContainer
@@ -64,14 +64,14 @@ class ViewModelServiceLocator(
     }
 
     @Composable
-    fun createEditStepsViewModel(): EditStepsViewModel{
+    fun createEditStepsViewModel(): nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.edit.presentation.EditStepsViewModel {
         val f =  viewModelFactoryHelper {
-            EditStepsViewModel(
+            _root_ide_package_.nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.edit.presentation.EditStepsViewModel(
                 dailyStepRepo = appContainer.dailyStepRepo,
                 appScope = appContainer.applicationWideScope
             )
         }
-        val vm = viewModel<EditStepsViewModel>(
+        val vm = viewModel<nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.edit.presentation.EditStepsViewModel>(
             factory = f,
             )
         return vm
@@ -80,15 +80,15 @@ class ViewModelServiceLocator(
     @Composable
     fun createResetStepsViewModel(
         currentStep: DailyStepCount
-    ): ResetStepsViewModel{
+    ): nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.reset.presentation.ResetStepsViewModel {
         val f =  viewModelFactoryHelper {
-            ResetStepsViewModel(
+            _root_ide_package_.nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.reset.presentation.ResetStepsViewModel(
                 dailyStepRepo = appContainer.dailyStepRepo,
                 currentStep = currentStep,
                 scope = appContainer.applicationWideScope
             )
         }
-        val vm = viewModel<ResetStepsViewModel>(
+        val vm = viewModel<nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.reset.presentation.ResetStepsViewModel>(
             factory = f,
             )
         return vm

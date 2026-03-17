@@ -10,6 +10,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import nl.codingwithlinda.smartstep.FakeStepTracker
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_count.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.Before
 import org.junit.Test

@@ -1,19 +1,15 @@
 package nl.codingwithlinda.smartstep.features.steps_override_user.reset.presentation
 
-import androidx.compose.ui.input.key.Key.Companion.Ro
-import androidx.room.Room
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.reset.presentation.ResetStepsViewModel
 import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.After
 import org.junit.Before

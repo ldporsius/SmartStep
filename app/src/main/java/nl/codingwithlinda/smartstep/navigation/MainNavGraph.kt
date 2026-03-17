@@ -40,6 +40,7 @@ import nl.codingwithlinda.smartstep.features.settings.data.UserSettingsMemento
 import nl.codingwithlinda.smartstep.features.settings.presentation.UserSettingsRoot
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.UserSettingsWrapper
 import nl.codingwithlinda.smartstep.features.statistics.presentation.StatisticsViewModel
+import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.WeeklyActivityReportRoot
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -216,6 +217,13 @@ fun MainNavGraph(
                     userSettingsRepo = appContainer.userSettingsRepo,
                     onNavBack = {
                         backStack.remove(AIChatRoute)
+                    }
+                )
+            }
+            entry<WeeklyActivityReportRoute> {
+                WeeklyActivityReportRoot(
+                    onNavBack = {
+                        backStack.remove(WeeklyActivityReportRoute)
                     }
                 )
             }

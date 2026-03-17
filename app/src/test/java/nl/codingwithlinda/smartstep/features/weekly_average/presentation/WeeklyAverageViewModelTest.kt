@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
 import kotlinx.coroutines.test.runTest
+import nl.codingwithlinda.smartstep.features.main.presentation.weekly_average.presentation.WeeklyAverageViewModel
 import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.Test
 

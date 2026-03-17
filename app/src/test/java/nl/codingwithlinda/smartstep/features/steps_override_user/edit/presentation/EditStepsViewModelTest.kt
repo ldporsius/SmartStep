@@ -5,7 +5,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
-import nl.codingwithlinda.smartstep.features.steps_override_user.edit.presentation.state.EditStepAction
+import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.edit.presentation.EditStepsViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.edit.presentation.state.EditStepAction
 import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.Assert.*
 import org.junit.Before

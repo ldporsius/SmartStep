@@ -5,4 +5,8 @@
 
     <string name="energy" translatable="false">%1$s %2$s</string>
 
+    <string name="arrow_right" translatable="false">→</string>
+    <string name="arrow_left" translatable="false">←</string>
+
+
 </resources>

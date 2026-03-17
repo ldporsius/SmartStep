@@ -4,14 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
-import nl.codingwithlinda.smartstep.features.steps_override_user.navigation.StepNavActionHandler
+import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.navigation.StepNavActionHandler
 
 
 @Composable
 fun navDrawerItems(): List<NavDrawerItem> {
 
     val navItemHandler = MainNavActionControllerImpl
-    val stepsNavActionHandler = StepNavActionHandler
+    val stepsNavActionHandler =
+        _root_ide_package_.nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.navigation.StepNavActionHandler
 
     val context = LocalContext.current
 

@@ -5,19 +5,20 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-object StartRoute: NavKey
+data object StartRoute: NavKey
 
 @Serializable
-object UserSettingsOnboardingRoute: NavKey
+data object UserSettingsOnboardingRoute: NavKey
 
 @Serializable
-object UserSettingsRoute: NavKey
+data object UserSettingsRoute: NavKey
 
 @Serializable
-object MainRoute: NavKey
+data object MainRoute: NavKey
 
 
 @Serializable
 data object AIChatRoute: NavKey
 
-
+@Serializable
+data object WeeklyActivityReportRoute: NavKey
