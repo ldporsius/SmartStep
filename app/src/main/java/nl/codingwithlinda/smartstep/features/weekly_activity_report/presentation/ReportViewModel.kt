@@ -35,10 +35,13 @@ class ReportViewModel(
     private val _selectedWeek = MutableStateFlow(0)
 
     private val selectedWeek = _selectedWeek.asStateFlow()
-        .onStart {
+
+    init {
+        viewModelScope.launch {
             val index = weeklyStatisticsManager.currentWeekIndex()
             _selectedWeek.value = index
         }
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val weekPickerUiState = selectedWeek.flatMapLatest{ index ->
