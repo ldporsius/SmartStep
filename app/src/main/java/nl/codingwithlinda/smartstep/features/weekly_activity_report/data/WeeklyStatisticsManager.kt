@@ -12,6 +12,8 @@ import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
 import nl.codingwithlinda.unit_conversion.data.weight.WeightUnitConverter
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
 class WeeklyStatisticsManager(
     private val userSettingsRepo: UserSettingsRepo,
@@ -36,8 +38,14 @@ class WeeklyStatisticsManager(
             .windowed(7, 7, false)
     }
 
-    suspend fun numberOfWeeksInCalendar(): Int{
-        return weeklyCalendar.first().size
+    fun weekRangeAsString(range: List<LocalDate>): String {
+        val m1 = range.first().month.getDisplayName(TextStyle.SHORT_STANDALONE, Locale.getDefault())
+        val d1 = range.first().dayOfMonth
+
+        val m2 = range.last().month.getDisplayName(TextStyle.SHORT_STANDALONE, Locale.getDefault())
+        val d2 = range.last().dayOfMonth
+
+        return "$m1 $d1 - $m2 $d2"
     }
 
     private fun today(): LocalDate = LocalDate.now()

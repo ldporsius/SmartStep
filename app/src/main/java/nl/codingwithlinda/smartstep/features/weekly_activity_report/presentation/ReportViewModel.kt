@@ -40,11 +40,18 @@ class ReportViewModel(
             _selectedWeek.value = index
         }
 
-    val weekPickerUiState = selectedWeek.map { index ->
-        WeekPickerUiState(
-            isPreviousEnabled = index > 0,
-            isNextEnabled = index < weeklyStatisticsManager.currentWeekIndex(),
-        )
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val weekPickerUiState = selectedWeek.flatMapLatest{ index ->
+        val weekRange = weeklyStatisticsManager.weeklyCalendar.map {
+            weeklyStatisticsManager.weekRangeAsString(it[index])
+        }.map {weekRange ->
+            WeekPickerUiState(
+                isPreviousEnabled = index > 0,
+                weekRange = weekRange,
+                isNextEnabled = index < weeklyStatisticsManager.currentWeekIndex(),
+            )
+        }
+        weekRange
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WeekPickerUiState())
 
     @OptIn(ExperimentalCoroutinesApi::class)
