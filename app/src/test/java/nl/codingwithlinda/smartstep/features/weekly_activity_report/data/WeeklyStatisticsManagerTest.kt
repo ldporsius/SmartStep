@@ -129,12 +129,14 @@ class WeeklyStatisticsManagerTest : BaseStepRepoTest() {
             DateTimeHelper.toDateYYYYMMDD(LocalDate.now().minusWeeks(10).toEpochDay()),
             stepCount = 100
         )
-        manager.totalStepsInWeek.test {
+        manager.stepsInWeek.test {
             val item = awaitItem()
 
-            assertThat(item.first()).isEqualTo(100)
+            val total1 = manager.totalStepsInWeek(item.first())
+            assertThat(total1).isEqualTo(100)
+            val total2 = manager.totalStepsInWeek(item.last())
+            assertThat(total2).isEqualTo(0)
 
-            assertThat(item.last()).isEqualTo(0)
         }
     }
 
@@ -148,14 +150,16 @@ class WeeklyStatisticsManagerTest : BaseStepRepoTest() {
             DateTimeHelper.toDateYYYYMMDD(LocalDate.now().minusWeeks(0).toEpochDay()),
             stepCount = 1
         )
-        manager.averageStepsInWeek.test {
+        manager.stepsInWeek.test {
             val item = awaitItem()
 
             assertThat(item.size).isEqualTo(2)
 
-            assertThat(item.first()).isEqualTo(10.0)
+            val average1 = manager.averageStepsInWeek(item.first())
+            assertThat(average1).isEqualTo(10.0)
+            val average2 = manager.averageStepsInWeek(item.last())
+            assertThat(average2).isEqualTo(1.0/7)
 
-            assertThat(item.last()).isEqualTo(1.0/7)
         }
     }
 }

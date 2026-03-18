@@ -49,7 +49,7 @@ class ReportViewModel(
             val total = weeklyStatisticsManager.totalStepsInWeek(it)
             val average = weeklyStatisticsManager.averageStepsInWeek(it)
             TopSummaryUi(
-                title = "Steps",
+                title = UiText.StringResourceText(R.string.steps),
                 value = total,
                 subtitle = UiText.StringResourceText(R.string.daily_average,average)
             )
@@ -66,7 +66,7 @@ class ReportViewModel(
             val total = weeklyStatisticsManager.caloriesBurnedTotal(it)
             val average = weeklyStatisticsManager.caloriesBurnedAverage(it)
             TopSummaryUi(
-                title = "Calories",
+                title = UiText.StringResourceText(R.string.calories),
                 value = total.roundToInt(),
                 subtitle = UiText.StringResourceText(R.string.daily_average,average)
             )

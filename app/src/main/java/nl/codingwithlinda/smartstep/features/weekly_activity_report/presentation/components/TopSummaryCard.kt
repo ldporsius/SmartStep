@@ -39,7 +39,7 @@ fun TopSummaryCard(
 
 
                 Text(
-                    text = topSummaryUi.title,
+                    text = topSummaryUi.title.asString(),
                     modifier = Modifier.constrainAs(title) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
@@ -64,7 +64,7 @@ fun TopSummaryCard(
                     style = MaterialTheme.typography.labelSmall
                 )
                 Text(
-                    text = topSummaryUi.timeSpan,
+                    text = topSummaryUi.timeSpan.asString(),
                     modifier = Modifier.constrainAs(timeSpan) {
                         end.linkTo(parent.end)
                         top.linkTo(parent.top)

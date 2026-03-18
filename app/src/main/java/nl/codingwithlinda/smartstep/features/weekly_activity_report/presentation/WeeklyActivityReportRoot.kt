@@ -64,7 +64,7 @@ fun WeeklyActivityReportRoot(
                     IconButton(onClick = {
                         onNavBack()
                     }) {
-                        Icon(painter = painterResource(R.drawable.arrow), contentDescription = "back")
+                        Icon(painter = painterResource(R.drawable.arrow_left), contentDescription = "back")
                     }
                 }
             )

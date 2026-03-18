@@ -9,5 +9,7 @@
     <string name="arrow_left" translatable="false">←</string>
     <string name="daily_average">"Daily average: %1$.2f"</string>
 
-
+    <string name="steps">Steps</string>
+    <string name="calories">Calories</string>
+    <string name="this_week">this week</string>
 </resources>

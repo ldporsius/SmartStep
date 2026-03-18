@@ -62,7 +62,7 @@ fun AIChatScreen(
                 onClick = onNavBack
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.arrow),
+                    painter = painterResource(R.drawable.arrow_left),
                     contentDescription = "back",
                     modifier = Modifier
                         .size(24.dp)
