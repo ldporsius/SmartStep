@@ -6,4 +6,5 @@
     <string name="steps">Stappen</string>
     <string name="calories">Calorieën</string>
     <string name="this_week">Deze week</string>
+    <string name="walk_duration">Minuten</string>
 </resources>

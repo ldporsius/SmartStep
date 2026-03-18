@@ -13,5 +13,6 @@
 
     <string name="steps">Steps</string>
     <string name="calories">Calories</string>
-    <string name="this_week">this week</string>
+    <string name="this_week">This week</string>
+    <string name="walk_duration">Minutes</string>
 </resources>

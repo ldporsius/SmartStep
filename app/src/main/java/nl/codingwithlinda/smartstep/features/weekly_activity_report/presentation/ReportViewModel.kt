@@ -28,7 +28,6 @@ class ReportViewModel(
     private val weeklyStatisticsManager: WeeklyStatisticsManager
 ): ViewModel() {
 
-
     private val _uiState = MutableStateFlow(ReportTargetUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -83,7 +82,7 @@ class ReportViewModel(
                 weeklyStatisticsManager.caloriesBurnedTotal(it).roundToInt()
             }catch (e: Exception) {
                 e.printStackTrace()
-            0
+                0
             }
 
             val average = weeklyStatisticsManager.caloriesBurnedAverage(it)
@@ -96,19 +95,36 @@ class ReportViewModel(
         caloriesBurned
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val topSummaryWalkDuration = selectedWeek.flatMapLatest { selectedWeek ->
+        val walkDuration = weeklyStatisticsManager.walkDuration.map {
+            it[selectedWeek]
+        }.map {
+            val total = weeklyStatisticsManager.totalWalkDuration(it).toInt()
+            val average = weeklyStatisticsManager.averageWalkDuration(it)
+            TopSummaryUi(
+                title = UiText.StringResourceText(R.string.walk_duration),
+                value = total,
+                subtitle = UiText.StringResourceText(R.string.daily_average, average)
+            )
+        }
+
+        walkDuration
+    }
+
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val topSummaryUi = uiState.flatMapLatest{ uiState,  ->
 
         when(uiState.selectedTarget){
             ReportTarget.STEPS -> {
-               topSummarySteps
+                topSummarySteps
             }
             ReportTarget.CALORIES -> {
                 topSummaryCalories
             }
             ReportTarget.TIME ->{
-                topSummarySteps
+                topSummaryWalkDuration
             }
             ReportTarget.DISTANCE -> {
                 topSummarySteps

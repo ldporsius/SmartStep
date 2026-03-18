@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.map
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.caloriesBurned
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
@@ -14,10 +15,12 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
+import kotlin.time.Duration.Companion.milliseconds
 
 class WeeklyStatisticsManager(
     private val userSettingsRepo: UserSettingsRepo,
-    private val dailyStepRepo: DailyStepRepo
+    private val dailyStepRepo: DailyStepRepo,
+    private val walkDurationRepo: WalkDurationRepo
 ) {
     val oldestDate = dailyStepRepo.stepCountPlusUserOverride.map {
         it.minByOrNull { it.dayEpochDay }?.dayEpochDay ?: LocalDate.now().toEpochDay()
@@ -55,6 +58,7 @@ class WeeklyStatisticsManager(
             it.contains(today())
         }
 
+    ////////////////////////////////////////////////////////////////////
     val stepsInWeek= dailyStepRepo.stepCountPlusUserOverride.combine(weeklyCalendar){steps, weeks ->
         weeks.map { weekdays ->
             weekdays.map {date ->
@@ -77,21 +81,6 @@ class WeeklyStatisticsManager(
         return result
     }
 
-    private val totalStepsInWeek = stepsInWeek.map{ stepsPerWeek ->
-        stepsPerWeek.map{
-            it.sumOf { it.stepCount }
-        }
-    }
-
-    private val averageStepsInWeek = stepsInWeek.map { steps ->
-        steps.map { step ->
-            step.map { it.stepCount }
-        }.also{
-            println("averages: $it")
-        }.map {
-            it.average()
-        }
-    }
     //////////////////////////////////////////////////////////////
     private val userHeightCm = userSettingsRepo.userSettingsObservable.map {
         it.heightCm
@@ -123,5 +112,31 @@ class WeeklyStatisticsManager(
         return result
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    val walkDuration = weeklyCalendar.combine(walkDurationRepo.sessions) { weeks, sessions ->
+
+        weeks.map { weekdays ->
+            weekdays.mapNotNull { date ->
+                sessions.find {
+                    (LocalDate.of(it.start.YYYY, it.start.MM, it.start.DD)) == date
+                }
+            }
+        }.map {
+            it.map {
+                val timeDiff =(it.end?.timestamp ?: System.currentTimeMillis()) - (it.start.timestamp)
+                val duration = timeDiff.milliseconds.inWholeMinutes
+                duration
+            }
+        }
+    }
+
+    fun totalWalkDuration(durations: List<Long>) = durations.sum()
+
+    fun averageWalkDuration(durations: List<Long>): Double {
+        if (durations.isEmpty()) return 0.0
+        val result = durations.average()
+        if (result.isNaN()) return 0.0
+        return result
+    }
 
 }
