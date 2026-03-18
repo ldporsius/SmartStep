@@ -23,9 +23,6 @@ class WalkDurationViewModel(
     val state = stepTracker.stateObservable
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), StepTrackerState.STOPPED)
 
-    private val today : DateYYYYMMDD
-        get() = DateTimeHelper.toDateYYYYMMDD(System.currentTimeMillis())
-
 
     init {
         viewModelScope.launch(dispatcherProvider.io) {
@@ -34,9 +31,6 @@ class WalkDurationViewModel(
                     StepTrackerState.STARTED -> {
                         walkDurationRepo.saveWalkDurationStart(
                             WalkDurationStart(
-                                today.YYYY,
-                                today.MM,
-                                today.DD,
                                 System.currentTimeMillis()
                             )
                         )
@@ -44,9 +38,6 @@ class WalkDurationViewModel(
                     StepTrackerState.PAUSED -> {
                         walkDurationRepo.saveWalkDurationEnd(
                             WalkDurationEnd(
-                                today.YYYY,
-                                today.MM,
-                                today.DD,
                                 System.currentTimeMillis()
                             )
                         )
@@ -54,9 +45,6 @@ class WalkDurationViewModel(
                     StepTrackerState.STOPPED -> {
                         walkDurationRepo.saveWalkDurationEnd(
                             WalkDurationEnd(
-                                today.YYYY,
-                                today.MM,
-                                today.DD,
                                 System.currentTimeMillis()
                             )
                         )

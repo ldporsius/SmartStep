@@ -45,7 +45,8 @@ class AppContainerImpl(
         )
     }
     override val walkDurationRepo: WalkDurationRepo by lazy {
-        WalkDurationRepoImpl()
+        val db = SmartStepRoomDatabaseCreator.getInstance(context)
+        WalkDurationRepoImpl(db.walkSessionDao)
     }
 
     override val aiSessionRepo: AISessionRepo by lazy {

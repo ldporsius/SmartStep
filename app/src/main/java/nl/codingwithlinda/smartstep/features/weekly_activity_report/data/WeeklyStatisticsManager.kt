@@ -118,7 +118,9 @@ class WeeklyStatisticsManager(
         weeks.map { weekdays ->
             weekdays.mapNotNull { date ->
                 sessions.find {
-                    (LocalDate.of(it.start.YYYY, it.start.MM, it.start.DD)) == date
+                    it.start.dateYYYYMMDD.let {
+                        (LocalDate.of(it.YYYY, it.MM, it.DD)) == date
+                    }
                 }
             }
         }.map {

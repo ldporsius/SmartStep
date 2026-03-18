@@ -11,6 +11,7 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationS
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.features.main.statistics.data.DailyStatisticsManager
 import nl.codingwithlinda.smartstep.FakeUserSettingsRepo
+import nl.codingwithlinda.smartstep.FakeWalkDurationRepo
 import nl.codingwithlinda.smartstep.di.TestDispatcherProvider
 import nl.codingwithlinda.smartstep.features.main.statistics.presentation.StatisticsViewModel
 import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
@@ -23,7 +24,7 @@ class StatisticsViewModelTest: BaseStepRepoTest() {
     private lateinit var statisticsViewModel: StatisticsViewModel
     private val userSettingsRepo = FakeUserSettingsRepo()
 
-    val walkDurationRepo = WalkDurationRepoImpl()
+    val walkDurationRepo = FakeWalkDurationRepo()
 
     val testDispatcherProvider = TestDispatcherProvider(testDispatcher)
 
@@ -46,10 +47,9 @@ class StatisticsViewModelTest: BaseStepRepoTest() {
     @Test
     fun `test time update in StatisticsViewModel`() = runTest(testDispatcherProvider.testDispatcher) {
         val now = System.currentTimeMillis()
-        val today = DailyStepCountCreator.create(1, now)
 
         walkDurationRepo.saveWalkDurationStart(
-            WalkDurationStart(today.YYYY, today.MM, today.DD, now)
+            WalkDurationStart(now)
         )
         val sessions = walkDurationRepo.sessions.first()
         assertThat(sessions.size).isEqualTo(1)

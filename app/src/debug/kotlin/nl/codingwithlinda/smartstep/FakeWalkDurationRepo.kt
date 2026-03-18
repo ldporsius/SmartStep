@@ -52,12 +52,12 @@ class FakeWalkDurationRepo: WalkDurationRepo {
 
 
     suspend fun saveStart(dateYYYYMMDD: DateYYYYMMDD, timestamp: Long){
-        val start = WalkDurationStart(dateYYYYMMDD.YYYY, dateYYYYMMDD.MM, dateYYYYMMDD.DD, timestamp)
+        val start = WalkDurationStart( timestamp)
         saveWalkDurationStart(start)
 
     }
     suspend fun saveEnd(dateYYYYMMDD: DateYYYYMMDD, timestamp: Long){
-        val end = WalkDurationEnd(dateYYYYMMDD.YYYY, dateYYYYMMDD.MM, dateYYYYMMDD.DD, timestamp)
+        val end = WalkDurationEnd( timestamp)
         saveWalkDurationEnd(end)
 
     }
