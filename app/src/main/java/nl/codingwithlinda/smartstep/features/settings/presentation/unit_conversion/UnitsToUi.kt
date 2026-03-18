@@ -3,8 +3,8 @@ package nl.codingwithlinda.smartstep.features.settings.presentation.unit_convers
 import nl.codingwithlinda.unit_conversion.data.lenght.LengthUnits
 import nl.codingwithlinda.unit_conversion.data.weight.Weight
 import nl.codingwithlinda.unit_conversion.data.weight.Weights
-import nl.codingwithlinda.core.domain.util.UiText
-import nl.codingwithlinda.core.domain.util.UiText.DynamicText
+import nl.codingwithlinda.smartstep.core.presentation.util.UiText
+import nl.codingwithlinda.smartstep.core.presentation.util.UiText.DynamicText
 
 
 //TODO replace with string resources or hardcoded values

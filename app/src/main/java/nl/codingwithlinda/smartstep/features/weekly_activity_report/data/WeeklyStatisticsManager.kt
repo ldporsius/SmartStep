@@ -36,6 +36,10 @@ class WeeklyStatisticsManager(
             .windowed(7, 7, false)
     }
 
+    suspend fun numberOfWeeksInCalendar(): Int{
+        return weeklyCalendar.first().size
+    }
+
     private fun today(): LocalDate = LocalDate.now()
 
     suspend fun currentWeekIndex(): Int =
@@ -58,8 +62,12 @@ class WeeklyStatisticsManager(
     fun totalStepsInWeek(stepsInWeek: List<DailyStepCount>)=
         stepsInWeek.sumOf { it.stepCount }
 
-    fun averageStepsInWeek(stepsInWeek: List<DailyStepCount>)=
-        stepsInWeek.map { it.stepCount }.average()
+    fun averageStepsInWeek(stepsInWeek: List<DailyStepCount>): Double {
+        if (stepsInWeek.isEmpty()) return 0.0
+        val result = stepsInWeek.map { it.stepCount }.average()
+        if (result.isNaN()) return 0.0
+        return result
+    }
 
     private val totalStepsInWeek = stepsInWeek.map{ stepsPerWeek ->
         stepsPerWeek.map{
@@ -100,7 +108,12 @@ class WeeklyStatisticsManager(
 
     fun caloriesBurnedTotal(calories: List<Double>) = calories.sum()
 
-    fun caloriesBurnedAverage(calories: List<Double>) = calories.average()
+    fun caloriesBurnedAverage(calories: List<Double>): Double {
+        if (calories.isEmpty()) return 0.0
+        val result = calories.average()
+        if (result.isNaN()) return 0.0
+        return result
+    }
 
 
 }

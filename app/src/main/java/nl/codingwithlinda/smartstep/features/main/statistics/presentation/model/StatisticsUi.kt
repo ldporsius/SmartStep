@@ -1,6 +1,6 @@
 package nl.codingwithlinda.smartstep.features.main.statistics.presentation.model
 
-import nl.codingwithlinda.core.domain.util.UiText
+import nl.codingwithlinda.smartstep.core.presentation.util.UiText
 
 data class StatisticsUi(
     val distance: UiText,

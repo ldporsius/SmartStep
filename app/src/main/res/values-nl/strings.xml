@@ -5,5 +5,5 @@
     <string name="daily_average">"Dagelijks gemiddelde: %1$.2f"</string>
     <string name="steps">Stappen</string>
     <string name="calories">Calorieën</string>
-    <string name="this_week">deze week</string>
+    <string name="this_week">Deze week</string>
 </resources>

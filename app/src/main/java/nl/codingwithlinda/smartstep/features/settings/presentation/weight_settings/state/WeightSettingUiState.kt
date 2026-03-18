@@ -6,7 +6,7 @@ import nl.codingwithlinda.unit_conversion.data.weight.LBSWeight
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.maxWeightPounds
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.minWeightPounds
 import nl.codingwithlinda.smartstep.core.domain.unit_conversion.weight.weightRangeKg
-import nl.codingwithlinda.core.domain.util.UiText
+import nl.codingwithlinda.smartstep.core.presentation.util.UiText
 import kotlin.math.roundToInt
 
 interface WeightSettingUiState {

@@ -28,7 +28,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import nl.codingwithlinda.core.domain.util.UiText
+import nl.codingwithlinda.smartstep.core.presentation.util.UiText
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme

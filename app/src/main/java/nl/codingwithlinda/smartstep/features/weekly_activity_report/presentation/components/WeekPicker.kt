@@ -18,12 +18,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
+import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.WeekPickerAction
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.WeekPickerUiState
 
 @Composable
 fun WeekPicker(
     modifier: Modifier = Modifier,
-    uiState: WeekPickerUiState
+    uiState: WeekPickerUiState,
+    onAction: (WeekPickerAction) -> Unit = {}
 ) {
 
     @Composable
@@ -40,22 +42,27 @@ fun WeekPicker(
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = {onAction(WeekPickerAction.PreviousWeek)},
             modifier = iconModifier(enabled = uiState.isPreviousEnabled),
             enabled = uiState.isPreviousEnabled,
 
         ) {
-            Icon(painter = painterResource(R.drawable.arrow_left), contentDescription = null)
+            Icon(painter = painterResource(R.drawable.arrow_left),
+                tint = MaterialTheme.colorScheme.onPrimary,
+                contentDescription = null)
         }
 
         Text(uiState.weekRange)
 
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = {onAction(WeekPickerAction.NextWeek) },
             modifier = iconModifier(enabled = uiState.isNextEnabled),
             enabled = uiState.isNextEnabled
         ) {
-            Icon(painter = painterResource(R.drawable.arrow_right), contentDescription = null)
+            Icon(painter = painterResource(R.drawable.arrow_right),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
         }
     }
 }

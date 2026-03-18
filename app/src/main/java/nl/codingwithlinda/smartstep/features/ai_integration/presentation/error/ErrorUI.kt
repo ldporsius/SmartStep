@@ -1,7 +1,7 @@
 package nl.codingwithlinda.smartstep.features.ai_integration.presentation.error
 
 import nl.codingwithlinda.ai.domain.error.AIError
-import nl.codingwithlinda.core.domain.util.UiText
+import nl.codingwithlinda.smartstep.core.presentation.util.UiText
 
 fun AIError.toUIString(): String{
     return when(this){

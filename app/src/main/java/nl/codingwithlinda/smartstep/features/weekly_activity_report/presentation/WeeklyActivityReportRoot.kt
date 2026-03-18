@@ -26,6 +26,7 @@ import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.a
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.data.WeeklyStatisticsManager
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.domain.ReportTarget
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.components.TopSummaryCard
+import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.components.WeekPicker
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.ReportTargetAction
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.util.toUi
 
@@ -78,7 +79,7 @@ fun WeeklyActivityReportRoot(
                         Tab(
                             selected = target == uiState.selectedTarget,
                             onClick = {
-                                reportViewModel.onAction(ReportTargetAction.SetTargetAction(target))
+                                reportViewModel.onTargetAction(ReportTargetAction.SetTargetAction(target))
                             },
                             text = { Text(text) },
                             icon = {
@@ -99,6 +100,11 @@ fun WeeklyActivityReportRoot(
                     width(480.dp)
                     .padding(16.dp),
                 topSummaryUi = reportViewModel.topSummaryUi.collectAsStateWithLifecycle().value
+            )
+            WeekPicker(
+                modifier = Modifier.width(480.dp),
+                uiState = reportViewModel.weekPickerUiState.collectAsStateWithLifecycle().value,
+                onAction = reportViewModel::onWeekAction
             )
 
 

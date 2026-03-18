@@ -17,7 +17,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
-import nl.codingwithlinda.smartstep.core.presentation.util.asString
 import nl.codingwithlinda.smartstep.features.settings.presentation.common.SettingBoxComponent
 
 @OptIn(ExperimentalMaterial3Api::class)

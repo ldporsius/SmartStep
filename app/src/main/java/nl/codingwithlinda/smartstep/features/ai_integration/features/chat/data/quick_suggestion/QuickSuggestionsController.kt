@@ -12,7 +12,7 @@ import nl.codingwithlinda.ai.domain.model.AIMessageOrigin
 import nl.codingwithlinda.ai.domain.error.AIError
 import nl.codingwithlinda.core.di.DispatcherProvider
 import nl.codingwithlinda.core.domain.util.Result
-import nl.codingwithlinda.core.domain.util.UiText
+import nl.codingwithlinda.smartstep.core.presentation.util.UiText
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.features.ai_integration.data.finite_state.AIStateController

@@ -4,8 +4,10 @@ import androidx.annotation.DrawableRes
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.domain.ReportTarget
 
+
 data class ReportTargetUi(
-    @DrawableRes val icon:  Int,
+    @param:DrawableRes
+    val icon:  Int,
     val text: String
 )
 
