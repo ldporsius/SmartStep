@@ -6,7 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import nl.codingwithlinda.smartstep.core.data.walk_duration.WalkDurationRepoImpl
+import nl.codingwithlinda.smartstep.core.data.repo.walk_duration.WalkDurationRepoImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationStart
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.features.main.statistics.data.DailyStatisticsManager

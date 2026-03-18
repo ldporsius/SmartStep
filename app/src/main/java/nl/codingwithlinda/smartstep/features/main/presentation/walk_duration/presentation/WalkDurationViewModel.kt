@@ -30,7 +30,6 @@ class WalkDurationViewModel(
     init {
         viewModelScope.launch(dispatcherProvider.io) {
             state.collect {state ->
-                println("state changed: $state")
                 when(state){
                     StepTrackerState.STARTED -> {
                         walkDurationRepo.saveWalkDurationStart(

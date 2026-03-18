@@ -1,4 +1,4 @@
-package nl.codingwithlinda.smartstep.core.data.walk_duration
+package nl.codingwithlinda.smartstep.core.data.repo.walk_duration
 
 import androidx.compose.ui.util.fastMaxOfOrNull
 import kotlinx.coroutines.flow.Flow
