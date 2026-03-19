@@ -17,8 +17,10 @@ import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerDetectorIm
 import nl.codingwithlinda.smartstep.core.data.repo.walk_duration.WalkDurationRepoImpl
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
+import nl.codingwithlinda.smartstep.core.data.repo.RoomUserStatisticsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+import nl.codingwithlinda.smartstep.core.domain.repo.UserStatisticsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.features.ai_integration.di.AIContainer
 import nl.codingwithlinda.smartstep.features.main.statistics.data.DailyStatisticsManager
@@ -32,7 +34,12 @@ class AppContainerImpl(
 
     override val dataStoreSettings: DataStore<Preferences> = context.dataStore
     override val userSettingsRepo: UserSettingsRepo by lazy {
-        PreferencesUserSettingsRepo(dataStoreSettings)
+        val db = SmartStepRoomDatabaseCreator.getInstance(context)
+
+        PreferencesUserSettingsRepo(
+            dataStoreSettings,
+            db.statisticsDao
+        )
     }
     override val dailyStepRepo: DailyStepRepo by lazy {
         val db = SmartStepRoomDatabaseCreator.getInstance(context)
@@ -50,10 +57,14 @@ class AppContainerImpl(
     }
 
     override val aiSessionRepo: AISessionRepo by lazy {
+
         AISessionRepoImpl(context.dataStoreAI)
     }
 
-
+    override val userStatisticsRepo: UserStatisticsRepo by lazy {
+        val db = SmartStepRoomDatabaseCreator.getInstance(context)
+        RoomUserStatisticsRepo(db.statisticsDao)
+    }
 
     private val activityRecognitionRepo = ActivityRecognitionRepoImpl(
         dailyStepCountDao = SmartStepRoomDatabaseCreator.getInstance(context).dailyStepCountDao,
@@ -85,8 +96,5 @@ class AppContainerImpl(
     }
 
     override val AIContainer: AIContainer = AIContainer(context)
-
-
-
 
 }

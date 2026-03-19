@@ -40,7 +40,7 @@ fun WeeklyActivityReportRoot(
             initializer {
                 ReportViewModel(
                     weeklyStatisticsManager = WeeklyStatisticsManager(
-                        userSettingsRepo = appContainer.userSettingsRepo,
+                        userStatisticsRepo = appContainer.userStatisticsRepo,
                         dailyStepRepo = appContainer.dailyStepRepo,
                         walkDurationRepo = appContainer.walkDurationRepo
                     )

@@ -1,10 +1,12 @@
 package nl.codingwithlinda.smartstep.core.data.repo
 
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.DailyStepCountDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toBaselineEntity
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toDomain
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.mapping.toEntity
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.model.StatisticsEntity
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.repo.ActivityRecognitionRepo
@@ -14,10 +16,11 @@ class ActivityRecognitionRepoImpl(
     private val userId: String
 ): ActivityRecognitionRepo {
 
+
     override suspend fun saveStepCount(stepCount: DailyStepCount) {
-        stepCount.toEntity(userId).let {
-            dailyStepCountDao.saveDailyStepCount(it)
-        }
+        val update = stepCount.toEntity(userId)
+
+        dailyStepCountDao.saveDailyStepCount(update)
     }
 
     override suspend fun getStepCountForDate(date: Long): DailyStepCount? {

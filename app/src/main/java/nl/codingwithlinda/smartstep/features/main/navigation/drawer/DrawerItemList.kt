@@ -12,7 +12,7 @@ fun navDrawerItems(): List<NavDrawerItem> {
 
     val navItemHandler = MainNavActionControllerImpl
     val stepsNavActionHandler =
-        _root_ide_package_.nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.navigation.StepNavActionHandler
+        StepNavActionHandler
 
     val context = LocalContext.current
 

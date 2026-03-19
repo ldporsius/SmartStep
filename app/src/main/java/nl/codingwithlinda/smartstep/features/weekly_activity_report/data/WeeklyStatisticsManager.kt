@@ -1,12 +1,15 @@
 package nl.codingwithlinda.smartstep.features.weekly_activity_report.data
 
+import androidx.compose.ui.text.font.FontVariation.weight
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+import nl.codingwithlinda.smartstep.core.domain.repo.UserStatisticsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
+import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.calculateDistanceCm
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.caloriesBurned
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
@@ -18,7 +21,7 @@ import java.util.Locale
 import kotlin.time.Duration.Companion.milliseconds
 
 class WeeklyStatisticsManager(
-    private val userSettingsRepo: UserSettingsRepo,
+    private val userStatisticsRepo: UserStatisticsRepo,
     private val dailyStepRepo: DailyStepRepo,
     private val walkDurationRepo: WalkDurationRepo
 ) {
@@ -82,23 +85,12 @@ class WeeklyStatisticsManager(
     }
 
     //////////////////////////////////////////////////////////////
-    private val userHeightCm = userSettingsRepo.userSettingsObservable.map {
-        it.heightCm
-    }
-    private val userWeightKG = userSettingsRepo.userSettingsObservable.map {
-        it.weightGrams
-    }.map {
-        val grams = GramsWeight(it)
-        WeightUnitConverter.toKg(grams)
-    }
-    private val gender = userSettingsRepo.userSettingsObservable.map {
-        it.gender
-    }
 
-    val caloriesBurned = combine(stepsInWeek, userWeightKG, gender) { steps, weight, gender ->
+    val caloriesBurned = stepsInWeek.map { steps,  ->
         steps.map {
             it.map {
-                caloriesBurned(it.stepCount, weight.weight, gender)
+                val settings = userStatisticsRepo.userSettingsForDay(it.dayEpochDay)
+                caloriesBurned(it.stepCount, settings.weightGrams, settings.gender)
             }
         }
     }
@@ -114,12 +106,6 @@ class WeeklyStatisticsManager(
 
     /////////////////////////////////////////////////////////////////////////
     val walkDuration = weeklyCalendar.combine(walkDurationRepo.sessions) { weeks, sessions ->
-
-        sessions.onEach {
-            val timeDiffMinutes = (it.end?.timestamp ?: System.currentTimeMillis() ) - it.start.timestamp
-            val duration = timeDiffMinutes.milliseconds.inWholeMinutes
-            println("--- WEEKLY STATISTICS MANAGER --- walkSession start day: ${it.start.dateYYYYMMDD} . timeDiffMinutes: $duration")
-        }
         weeks.map { weekdays ->
             weekdays.map{ date ->
                 sessions.filter{
@@ -129,8 +115,6 @@ class WeeklyStatisticsManager(
                     val duration = timeDiff.milliseconds.inWholeMinutes
                     duration
                 }
-            }.also {
-                println("--- WEEKLY STATISTICS MANAGER --- walkDuration: $it")
             }
         }
     }
@@ -143,5 +127,7 @@ class WeeklyStatisticsManager(
         if (result.isNaN()) return 0.0
         return result
     }
+
+    ////////////////////////////////////////////////////////////////////////////
 
 }

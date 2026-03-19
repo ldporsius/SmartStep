@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.DailyStepCountDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.DailyStepGoalDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.SensorStepCounterDao
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.StatisticsDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.UserStepOverrideDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.WalkSessionDao
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.model.DailyStepCountBaseline
@@ -12,6 +13,7 @@ import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.model.Da
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.model.DailyStepCountUserOverride
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.model.DailyStepGoalEntity
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.model.SensorStepCounterData
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.model.StatisticsEntity
 import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.model.WalkSessionEntity
 
 @Database(
@@ -21,9 +23,10 @@ import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.model.Wa
         DailyStepCountBaseline::class,
         DailyStepCountUserOverride::class,
         SensorStepCounterData::class,
-        WalkSessionEntity::class
+        WalkSessionEntity::class,
+        StatisticsEntity::class
     ],
-    version = 7
+    version = 8
 )
 abstract class SmartStepDatabase: RoomDatabase() {
 
@@ -34,6 +37,8 @@ abstract class SmartStepDatabase: RoomDatabase() {
     abstract val stepSensorCounterDao: SensorStepCounterDao
 
     abstract val walkSessionDao: WalkSessionDao
+
+    abstract val statisticsDao: StatisticsDao
 
 
     companion object{

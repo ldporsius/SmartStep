@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
 import nl.codingwithlinda.smartstep.core.presentation.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_count.DailyStepCountViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
@@ -58,7 +59,7 @@ fun MainScreen(
     weeklyAverageViewModel: WeeklyAverageViewModel,
     editStepsViewModel: nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.edit.presentation.EditStepsViewModel,
     resetStepsViewModel: nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.reset.presentation.ResetStepsViewModel,
-    smartStepStateController: SmartStepStateControllerImpl,
+    smartStepStateController: SmartStepStateController,
     aiMessageComponent: @Composable () -> Unit
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -73,7 +74,7 @@ fun MainScreen(
         Toast.makeText(context, "${it.name}", Toast.LENGTH_SHORT).show()
     }
 
-    ObserveAsEvents(smartStepStateController.startTrackingState) {
+    ObserveAsEvents(smartStepStateController.state) {
         it.startTracking()
     }
 

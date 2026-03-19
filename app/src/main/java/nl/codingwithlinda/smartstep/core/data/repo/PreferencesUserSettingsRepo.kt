@@ -11,13 +11,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.dao.StatisticsDao
+import nl.codingwithlinda.smartstep.core.data.local_cache.room_database.model.StatisticsEntity
 import nl.codingwithlinda.smartstep.core.domain.model.settings.Gender
 import nl.codingwithlinda.smartstep.core.domain.model.settings.UserSettings
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
+import java.time.LocalDate
 
 class PreferencesUserSettingsRepo(
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val statisticsDao: StatisticsDao
 ): UserSettingsRepo {
 
     val USER_SETTINGS_GENDER = stringPreferencesKey("user_gender")
@@ -48,6 +52,14 @@ class PreferencesUserSettingsRepo(
             it[USER_SETTINGS_WEIGHT] = settings.weightGrams
             it[USER_SETTINGS_HEIGHT] = settings.heightCm
         }
+        statisticsDao.saveStatistics(
+            StatisticsEntity(
+                dayEpoch = LocalDate.now().toEpochDay(),
+                userGender = settings.gender.name,
+                userHeightCm = settings.heightCm,
+                userWeightGrams = settings.weightGrams
+            )
+        )
     }
 
     override suspend fun setIsOnboardingFalse() {

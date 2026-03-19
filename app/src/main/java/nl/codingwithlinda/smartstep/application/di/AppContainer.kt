@@ -7,6 +7,7 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
+import nl.codingwithlinda.smartstep.core.domain.repo.UserStatisticsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.features.ai_integration.di.AIContainer
 import nl.codingwithlinda.smartstep.core.domain.statistics.StatisticsManager
@@ -17,6 +18,7 @@ interface AppContainer{
     val userSettingsRepo: UserSettingsRepo
     val dailyStepRepo: DailyStepRepo
     val walkDurationRepo: WalkDurationRepo
+    val userStatisticsRepo: UserStatisticsRepo
     val aiSessionRepo: AISessionRepo
     val stepTracker: StepTracker
     val statisticsManager: StatisticsManager

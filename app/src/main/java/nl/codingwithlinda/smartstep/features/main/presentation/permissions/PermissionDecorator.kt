@@ -15,6 +15,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.concrete_states.PermissionNeeded
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
 import nl.codingwithlinda.smartstep.core.presentation.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.core.presentation.util.openAppSettings
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
@@ -23,7 +24,7 @@ import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.c
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PermissionDecorator(
-    smartStepStateController: SmartStepStateControllerImpl,
+    smartStepStateController: SmartStepStateController,
     permissionsViewModel: PermissionsViewModel,
     navItemHandler: MainNavActionControllerImpl = MainNavActionControllerImpl,
     requestPermission: () -> Unit
@@ -32,7 +33,7 @@ fun PermissionDecorator(
     val density = LocalDensity.current.density
     val isLargeScreen = LocalWindowInfo.current.containerSize.width > 840 * density
 
-    ObserveAsEvents(smartStepStateController.startTrackingState) {state ->
+    ObserveAsEvents(smartStepStateController.state) {state ->
         if (state is PermissionNeeded){
             permissionsViewModel.setPermissionState(state.getPermissionUiState())
         }

@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import nl.codingwithlinda.smartstep.application.SmartStepApplication
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
+import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
 import nl.codingwithlinda.smartstep.core.presentation.util.ObserveAsEvents
 import nl.codingwithlinda.smartstep.design_system.ui.theme.SmartStepTheme
 import nl.codingwithlinda.smartstep.navigation.MainNavGraph
@@ -28,7 +29,7 @@ class MainActivity : ComponentActivity(){
 
         enableEdgeToEdge()
 
-        val smartStepStateController = SmartStepStateControllerImpl(
+        val smartStepStateController: SmartStepStateController = SmartStepStateControllerImpl.getInstance(
             this, appContainer.stepTracker
         )
 

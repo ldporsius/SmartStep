@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.appContainer
 import nl.codingwithlinda.smartstep.application.di.AppContainer
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerService
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
@@ -21,10 +22,33 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
 
-class SmartStepStateControllerImpl(
+class SmartStepStateControllerImpl private constructor(
     private val context: ComponentActivity,
     private val stepTracker: StepTracker,
 ) : SmartStepStateController {
+
+    companion object{
+        fun isIgnoringBattery(context: Context): Boolean{
+            val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            return powerManager.isIgnoringBatteryOptimizations(context.packageName)
+        }
+
+        private var instance: SmartStepStateControllerImpl? = null
+
+        fun getInstance(
+            context: ComponentActivity,
+            stepTracker: StepTracker
+        ): SmartStepStateController {
+            if(instance == null){
+                instance = SmartStepStateControllerImpl(
+                    context,
+                    stepTracker
+                )
+            }
+            return instance!!
+        }
+
+    }
     private val _state = MutableStateFlow<StartTrackingState>(
         PermissionNeeded(
             context,
@@ -34,7 +58,10 @@ class SmartStepStateControllerImpl(
             }
         )
     )
-    val startTrackingState = _state.asStateFlow()
+    //val startTrackingState = _state.asStateFlow()
+
+    override val state = _state.asStateFlow()
+
 
 
     private val permissionLauncher = context.registerForActivityResult(
@@ -112,10 +139,5 @@ class SmartStepStateControllerImpl(
         permissionLauncher.launch(permissionsPerBuild(Build.VERSION.SDK_INT).toTypedArray())
     }
 
-    companion object{
-        fun isIgnoringBattery(context: Context): Boolean{
-            val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-            return powerManager.isIgnoringBatteryOptimizations(context.packageName)
-        }
-    }
+
 }
