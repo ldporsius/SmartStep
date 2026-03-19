@@ -11,7 +11,6 @@ class MinuteCounter {
     val minuteCounter = flow {
         while (shouldCount){
             emit(System.currentTimeMillis())
-            yield()
             delay(60.seconds)
         }
     }

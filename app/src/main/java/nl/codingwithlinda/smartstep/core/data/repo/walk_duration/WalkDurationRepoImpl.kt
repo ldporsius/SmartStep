@@ -14,7 +14,7 @@ class WalkDurationRepoImpl(
 
     private val _sessions = dao.getAllWalkSessionsAsFlow().map {list ->
         list.sortedByDescending { it.startTimestampMillis }
-            .onEachIndexed { index, entity ->
+            .mapIndexed { index, entity ->
             WalkSessionEntity(
                 startTimestampMillis = entity.startTimestampMillis,
                 endTimestampMillis = list.getOrNull(index+1)?.startTimestampMillis
@@ -50,8 +50,8 @@ class WalkDurationRepoImpl(
     }
 
     override val sessions: Flow<List<WalkSession>>
-         = _sessions.map {
-             it.map {
+         = _sessions.map { entities ->
+        entities.map {
                  it.toDomain()
              }
     }
