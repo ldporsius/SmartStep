@@ -6,18 +6,18 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.presentation.util.UiText
 import nl.codingwithlinda.smartstep.R
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
-import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.caloriesBurned
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.data.WeeklyStatisticsManager
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.domain.ReportTarget
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.ReportTargetAction
@@ -25,8 +25,13 @@ import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.WeekPickerAction
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.WeekPickerUiState
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.TopSummaryUi
+import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.WeeklyBreakdownUi
 import nl.codingwithlinda.unit_conversion.data.distance.DistanceConverter
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
+import kotlin.collections.emptyList
 import kotlin.math.roundToInt
 
 class ReportViewModel(
@@ -34,8 +39,8 @@ class ReportViewModel(
     private val userSettingsRepo: UserSettingsRepo
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(ReportTargetUiState())
-    val uiState = _uiState.asStateFlow()
+    private val _targetUiState = MutableStateFlow(ReportTargetUiState())
+    val targetUiState = _targetUiState.asStateFlow()
 
     private val _selectedWeek = MutableStateFlow(0)
 
@@ -62,6 +67,7 @@ class ReportViewModel(
         weekRange
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WeekPickerUiState())
 
+    ///////////////////////////////////////////////////////////////////////////////////////
     @OptIn(ExperimentalCoroutinesApi::class)
     private val topSummarySteps = selectedWeek.flatMapLatest{ selectedWeek ->
         val stepsInWeek = weeklyStatisticsManager.stepsInWeek.map {
@@ -83,15 +89,18 @@ class ReportViewModel(
     private val topSummaryCalories = selectedWeek.flatMapLatest { selectedWeek ->
         val caloriesBurned = weeklyStatisticsManager.caloriesBurned.map {
             it[selectedWeek]
-        }.map {
+        }.map { calories ->
+            val calList = calories.map { (dayEpoch, calories) ->
+                calories
+            }
             val total =try {
-                weeklyStatisticsManager.caloriesBurnedTotal(it).roundToInt()
+                weeklyStatisticsManager.caloriesBurnedTotal(calList).roundToInt()
             }catch (e: Exception) {
                 e.printStackTrace()
                 0
             }
 
-            val average = weeklyStatisticsManager.caloriesBurnedAverage(it)
+            val average = weeklyStatisticsManager.caloriesBurnedAverage(calList)
             TopSummaryUi(
                 title = UiText.StringResourceText(R.string.calories),
                 value = UiText.DynamicText(total.toString()),
@@ -106,8 +115,11 @@ class ReportViewModel(
         val walkDuration = weeklyStatisticsManager.walkDuration.map {
             it[selectedWeek]
         }.map {
-            val total = weeklyStatisticsManager.totalWalkDuration(it).toInt()
-            val average = weeklyStatisticsManager.averageWalkDuration(it)
+            val durations = it.map { (_, duration) ->
+                duration
+            }
+            val total = weeklyStatisticsManager.totalWalkDuration(durations).toInt()
+            val average = weeklyStatisticsManager.averageWalkDuration(durations)
             TopSummaryUi(
                 title = UiText.StringResourceText(R.string.walk_duration),
                 value = UiText.DynamicText(total.toString()),
@@ -120,49 +132,39 @@ class ReportViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val topSummaryDistance = selectedWeek.flatMapLatest { selectedWeek ->
-        val distance = weeklyStatisticsManager.distance.map {
-            it[selectedWeek]
-        }.map {distancesKm ->
-            val system = userSettingsRepo.unitSystemObservable.first()
-            val distance = system
-                .let{system ->
-                when(system){
-                    UnitSystems.IMPERIAL -> {
-                        distancesKm.map {
-                            DistanceConverter.toMile(it)
-                        }
-                    }
-                    UnitSystems.SI -> {
-                        distancesKm
-                    }
+        val system = userSettingsRepo.unitSystemObservable.first()
+        val title = system.let {
+            when (it) {
+                UnitSystems.IMPERIAL -> {
+                    UiText.StringResourceText(R.string.miles)
                 }
-            }.map { it.value }
-
-            val total = weeklyStatisticsManager.totalDistance(distance)
-            val average = weeklyStatisticsManager.averageDistance(distance)
-
-            val title = system.let {
-                when(it){
-                    UnitSystems.IMPERIAL -> {
-                        UiText.StringResourceText(R.string.miles)
-                    }
-                    UnitSystems.SI -> {
-                        UiText.StringResourceText(R.string.kilometers)
-                    }
+                UnitSystems.SI -> {
+                    UiText.StringResourceText(R.string.kilometers)
                 }
             }
+        }
+
+        val distance = weeklyDistance(selectedWeek).map { distances ->
+            val values = distances.map {(dayEpoch, distance) ->
+              distance.value
+            }
+
+            val total = weeklyStatisticsManager.totalDistance(values)
+            val average = weeklyStatisticsManager.averageDistance(values)
+
             TopSummaryUi(
                 title = title,
                 value = UiText.StringResourceText(R.string.distance, total),
                 subtitle = UiText.StringResourceText(R.string.daily_average, average)
             )
+
         }
         distance
     }
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val topSummaryUi = uiState.flatMapLatest{ uiState,  ->
+    val topSummaryUi = targetUiState.flatMapLatest{ uiState,  ->
 
         when(uiState.selectedTarget){
             ReportTarget.STEPS -> {
@@ -180,11 +182,117 @@ class ReportViewModel(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TopSummaryUi())
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val weekItems = selectedWeek.combine(targetUiState){ selectedWeek , target ->
+       when(target.selectedTarget){
+           ReportTarget.STEPS -> {
+               weeklyStepsBreakdown(selectedWeek)
+           }
+           ReportTarget.CALORIES -> {
+               weeklyCaloriesBreakdown(selectedWeek)
+           }
+           ReportTarget.TIME -> {
+              weeklyWalkDurationBreakdown(selectedWeek)
+           }
+           ReportTarget.DISTANCE -> {
+               weeklyDistanceBreakdown(selectedWeek)
+           }
+       }
+    }.flatMapLatest {
+        it
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+
+    private fun weeklyStepsBreakdown(weekIndex: Int) =  weeklyStatisticsManager.stepsInWeek.map {
+        it[weekIndex]
+    }.map {
+        it.map {
+            WeeklyBreakdownUi(
+                dayName = displayWeekName(it.dayEpochDay),
+                value = UiText.DynamicText(it.stepCount.toString()),
+                unit = UiText.StringResourceText(R.string.steps),
+                status = weeklyStatisticsManager.getStatus(it.dayEpochDay)
+            )
+        }
+    }
+
+    private fun weeklyDistanceBreakdown(weekIndex: Int) = weeklyDistance(weekIndex).map {
+        it.map {(dayEpoch, distance) ->
+
+            val system = userSettingsRepo.unitSystemObservable.first()
+            val unitText = when(system){
+                UnitSystems.IMPERIAL -> {
+                    UiText.StringResourceText(R.string.miles)
+                }
+                UnitSystems.SI -> {
+                    UiText.StringResourceText(R.string.kilometers)
+                }
+            }
+            WeeklyBreakdownUi(
+                dayName = displayWeekName(dayEpoch),
+                value = UiText.StringResourceText(R.string.distance, distance.value),
+                unit = unitText,
+                status = weeklyStatisticsManager.getStatus(dayEpoch)
+            )
+        }
+    }
+    private fun weeklyCaloriesBreakdown(weekIndex: Int) = weeklyStatisticsManager.caloriesBurned.map {
+        it[weekIndex]
+    }.map {
+        it.map {(dayEpoch, calories) ->
+            WeeklyBreakdownUi(
+                dayName = displayWeekName(dayEpoch),
+                value = UiText.DynamicText(calories.roundToInt().toString()),
+                unit = UiText.StringResourceText(R.string.calories),
+                status = weeklyStatisticsManager.getStatus(dayEpoch)
+            )
+        }
+    }
+
+    private fun weeklyWalkDurationBreakdown(weekIndex: Int) = weeklyStatisticsManager.walkDuration.map {
+        it[weekIndex]
+    }.map {
+        it.map { (localDate, duration) ->
+            WeeklyBreakdownUi(
+                dayName = displayWeekName(localDate.toEpochDay()),
+                value = UiText.DynamicText(duration.toString()),
+                unit = UiText.StringResourceText(R.string.walk_duration),
+                status = weeklyStatisticsManager.getStatus(localDate.toEpochDay())
+                )
+
+        }
+    }
+////////////////////////////////////////////////////////////////////////////////////////////////
+    private fun weeklyDistance(weekIndex: Int) = weeklyStatisticsManager.distance.map {
+        it[weekIndex]
+    }.map {distancesKm ->
+        val system = userSettingsRepo.unitSystemObservable.first()
+        val distance = system
+            .let{system ->
+                when(system){
+                    UnitSystems.IMPERIAL -> {
+                        distancesKm.map {
+                            it.first to DistanceConverter.toMile(it.second)
+                        }
+                    }
+                    UnitSystems.SI -> {
+                        distancesKm
+                    }
+                }
+            }
+        distance
+    }
+
+    ///////////////////////////////////////////////////////////////////
+    private fun displayWeekName(dayEpoch: Long) = LocalDate.ofEpochDay(dayEpoch).dayOfWeek.getDisplayName(
+        TextStyle.FULL_STANDALONE, Locale.getDefault()
+    )
+    ///////////////////////////////////////////////////////////////////
     fun onTargetAction(action: ReportTargetAction) {
         when(action){
             is ReportTargetAction.SetTargetAction -> {
-                _uiState.update {
+                _targetUiState.update {
                     it.copy(selectedTarget = action.target)
                 }
             }

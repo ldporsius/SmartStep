@@ -27,6 +27,7 @@ import nl.codingwithlinda.smartstep.features.weekly_activity_report.data.WeeklyS
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.domain.ReportTarget
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.components.TopSummaryCard
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.components.WeekPicker
+import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.components.WeeklyBreakdownList
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.ReportTargetAction
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.util.toUi
 
@@ -61,7 +62,7 @@ fun WeeklyActivityReportScreen(
     reportViewModel: ReportViewModel,
     onNavBack:() -> Unit
 ) {
-    val uiState = reportViewModel.uiState.collectAsStateWithLifecycle().value
+    val uiState = reportViewModel.targetUiState.collectAsStateWithLifecycle().value
 
     val selectedTabIndex = remember(uiState.selectedTarget) {
         ReportTarget.entries.indexOf(uiState.selectedTarget)
@@ -124,6 +125,10 @@ fun WeeklyActivityReportScreen(
                 modifier = Modifier.width(480.dp),
                 uiState = reportViewModel.weekPickerUiState.collectAsStateWithLifecycle().value,
                 onAction = reportViewModel::onWeekAction
+            )
+            WeeklyBreakdownList(
+                modifier = Modifier.width(480.dp),
+                weekItems = reportViewModel.weekItems.collectAsStateWithLifecycle().value
             )
 
 

@@ -12,6 +12,7 @@ import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.calculateDistanceCm
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.caloriesBurned
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.WeeklyBreakdownStatus
 import nl.codingwithlinda.unit_conversion.data.distance.CM
 import nl.codingwithlinda.unit_conversion.data.distance.ConcreteDistance
 import nl.codingwithlinda.unit_conversion.data.distance.DistanceConverter
@@ -94,7 +95,7 @@ class WeeklyStatisticsManager(
             dailyStepCounts.map {
                 val settings = userStatisticsRepo.userSettingsForDay(it.dayEpochDay)
                 val weightKg = WeightUnitConverter.toKg(GramsWeight(settings.weightGrams))
-                caloriesBurned(it.stepCount, weightKg.weight, settings.gender)
+                it.dayEpochDay to caloriesBurned(it.stepCount, weightKg.weight, settings.gender)
             }
         }
     }
@@ -112,13 +113,14 @@ class WeeklyStatisticsManager(
     val walkDuration = weeklyCalendar.combine(walkDurationRepo.sessions) { weeks, sessions ->
         weeks.map { weekdays ->
             weekdays.map{ date ->
-                sessions.filter{
+                val duration = sessions.filter{
                     it.start.dateYYYYMMDD.dateEpochDay == date.toEpochDay()
                 }.sumOf{
                     val timeDiff =(it.end?.timestamp ?: System.currentTimeMillis()) - (it.start.timestamp)
                     val duration = timeDiff.milliseconds.inWholeMinutes
                     duration
                 }
+                date to duration
             }
         }
     }
@@ -136,10 +138,10 @@ class WeeklyStatisticsManager(
 
     val distance = stepsInWeek.map { lists ->
         lists.map {
-            it.map {
-                val settings = userStatisticsRepo.userSettingsForDay(it.dayEpochDay)
-                val cm = calculateDistanceCm(personsHeightCm = settings.heightCm, stepsTaken = it.stepCount)
-                DistanceConverter.toKm(ConcreteDistance.cm(cm))
+            it.map {step ->
+                val settings = userStatisticsRepo.userSettingsForDay(step.dayEpochDay)
+                val cm = calculateDistanceCm(personsHeightCm = settings.heightCm, stepsTaken = step.stepCount)
+                step.dayEpochDay to DistanceConverter.toKm(ConcreteDistance.cm(cm))
             }
         }
     }
@@ -153,4 +155,20 @@ class WeeklyStatisticsManager(
         return result
     }
 
+
+    ///////////////////////////////////////////////////////////////
+    fun getStatus(dayEpoch: Long): WeeklyBreakdownStatus{
+        val today = today().toEpochDay()
+        return when{
+            dayEpoch > today -> {
+                WeeklyBreakdownStatus.NOT_STARTED
+            }
+            dayEpoch == today -> {
+                WeeklyBreakdownStatus.IN_PROGRESS
+            }
+            else -> {
+                WeeklyBreakdownStatus.FINISHED
+            }
+        }
+    }
 }

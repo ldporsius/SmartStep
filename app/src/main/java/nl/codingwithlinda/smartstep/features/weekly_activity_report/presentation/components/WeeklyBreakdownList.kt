@@ -1,0 +1,29 @@
+package nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.components
+
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.WeeklyBreakdownUi
+
+@Composable
+fun WeeklyBreakdownList(
+    modifier: Modifier = Modifier,
+    weekItems: List<WeeklyBreakdownUi>
+) {
+
+    LazyVerticalGrid(
+        modifier = modifier,
+        columns = GridCells.Adaptive(minSize = 240.dp),
+        ) {
+        items(weekItems){item ->
+            WeeklyBreakdownItem(
+                modifier = Modifier.width(240.dp),
+                item
+            )
+        }
+    }
+}
