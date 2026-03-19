@@ -37,9 +37,15 @@ fun WeeklyBreakdownStatus.WeeklyBreakdownIcon(
 ){
     val bgColor = when(this){
         WeeklyBreakdownStatus.FINISHED -> MaterialTheme.colorScheme.secondary
-        WeeklyBreakdownStatus.IN_PROGRESS -> MaterialTheme.colorScheme.primary.copy(.5f)
-        WeeklyBreakdownStatus.NOT_STARTED -> MaterialTheme.colorScheme.surfaceDim
+        WeeklyBreakdownStatus.IN_PROGRESS -> MaterialTheme.colorScheme.secondary
+        WeeklyBreakdownStatus.NOT_STARTED -> MaterialTheme.colorScheme.surfaceDim.copy(.5f)
     }
+    val fgColor = when(this){
+        WeeklyBreakdownStatus.FINISHED -> MaterialTheme.colorScheme.primary
+        WeeklyBreakdownStatus.IN_PROGRESS -> MaterialTheme.colorScheme.primary
+        WeeklyBreakdownStatus.NOT_STARTED -> MaterialTheme.colorScheme.onSurface
+    }
+
     @Composable
     fun container(icon: Int) = Box(
         contentAlignment = Alignment.Center,
@@ -50,10 +56,10 @@ fun WeeklyBreakdownStatus.WeeklyBreakdownIcon(
     ){
         Image(painter = painterResource(icon),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize().padding(4.dp),
+            modifier = Modifier.size(24.dp),
             contentScale = ContentScale.Fit,
             colorFilter = ColorFilter.tint(
-                color = MaterialTheme.colorScheme.primary,
+                color = fgColor,
                 blendMode = BlendMode.SrcIn
             )
         )
@@ -63,7 +69,7 @@ fun WeeklyBreakdownStatus.WeeklyBreakdownIcon(
             container(R.drawable.selected_icon)
         }
         WeeklyBreakdownStatus.IN_PROGRESS -> {
-            container(R.drawable.circular_arrow)
+            container(R.drawable.time_clock)
         }
         WeeklyBreakdownStatus.NOT_STARTED -> {
             container(R.drawable.minus)
