@@ -8,6 +8,7 @@ import android.hardware.SensorEventCallback
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log.d
+import android.util.Log.e
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -28,16 +29,18 @@ import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
 import nl.codingwithlinda.smartstep.core.domain.repo.ActivityRecognitionRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
+import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepGoalCreator
 import kotlin.concurrent.Volatile
 
 class StepTrackerDetectorImpl private constructor(
     context: Context,
     private val scope: CoroutineScope,
-    private val repo: ActivityRecognitionRepo
+    private val repo: ActivityRecognitionRepo,
+    private val walkDurationRepo: WalkDurationRepo
 ): StepTracker, SensorEventListener{
 
-    private val localScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     private var state: StepTrackerState = StepTrackerState.STOPPED
 
     private val _stateObservable = MutableStateFlow<StepTrackerState>(state)
@@ -61,7 +64,8 @@ class StepTrackerDetectorImpl private constructor(
         fun getInstance(
             context: Context,
             scope: CoroutineScope,
-            repo: ActivityRecognitionRepo
+            repo: ActivityRecognitionRepo,
+            walkDurationRepo: WalkDurationRepo,
         ): StepTrackerDetectorImpl {
             synchronized(this) {
                 val i = stepTrackerInstance
@@ -69,7 +73,7 @@ class StepTrackerDetectorImpl private constructor(
                     return i
                 }
 
-                stepTrackerInstance = StepTrackerDetectorImpl(context, scope, repo)
+                stepTrackerInstance = StepTrackerDetectorImpl(context, scope, repo, walkDurationRepo = walkDurationRepo)
 
                 return stepTrackerInstance!!
 
@@ -83,11 +87,14 @@ class StepTrackerDetectorImpl private constructor(
         _stateObservable.update {
             StepTrackerState.PAUSED
         }
+        scope.launch {
+            walkDurationRepo.saveWalkDurationEnd(System.currentTimeMillis())
+        }
     }
     override fun start() {
 
         try {
-            motionSensor.let {sensor ->
+            motionSensor?.let {sensor ->
                 sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL).also {registered ->
                     println("StepTracker registered listener: $registered")
                 }
@@ -96,6 +103,10 @@ class StepTrackerDetectorImpl private constructor(
             state = StepTrackerState.STARTED
             _stateObservable.update {
                 StepTrackerState.STARTED
+            }
+
+            scope.launch {
+                walkDurationRepo.saveWalkDurationStart(System.currentTimeMillis())
             }
 
             println("StepTracker started")
@@ -116,17 +127,16 @@ class StepTrackerDetectorImpl private constructor(
         _stateObservable.update {
             StepTrackerState.STOPPED
         }
+        scope.launch {
+            walkDurationRepo.saveWalkDurationEnd(System.currentTimeMillis())
+        }
         println("StepTracker stopped")
     }
-
-    override val stepsTaken: Flow<DailyStepCount> = emptyFlow()
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
         println("--- onAccuracyChanged: sensor: $p0, accuracy: $p1")
     }
 
-    val lock = Any()
-    val mutex = Mutex()
     override fun onSensorChanged(p0: SensorEvent?){
 
         if (state == StepTrackerState.PAUSED) return
@@ -134,24 +144,22 @@ class StepTrackerDetectorImpl private constructor(
         p0?.let {event ->
             if (event.sensor.type == TYPE_STEP_DETECTOR) {
 
-                    localScope.launch {
-                        val timestamp = event.timestamp
-                        val localDate = SensorTimeStampHelper.timeStampToLocalDate(timestamp)
-                        val dateYYYYMMDD = SensorTimeStampHelper.localDateToDomain(localDate)
-                        launch {
-                            mutex.withLock(lock) {
-                                val stepsToday =
-                                    repo.getStepCountForDate(dateYYYYMMDD.dateEpochDay)?.stepCount
-                                        ?: 0
+                scope.launch {
+                    val timestamp = event.timestamp
+                    val localDate = SensorTimeStampHelper.timeStampToLocalDate(timestamp)
+                    val dateYYYYMMDD = SensorTimeStampHelper.localDateToDomain(localDate)
 
-                                val update =
-                                    DailyStepCountCreator.create(stepsToday + 1, dateYYYYMMDD)
+                    val stepsToday =
+                        repo.getStepCountForDate(dateYYYYMMDD.dateEpochDay)?.stepCount
+                            ?: 0
 
-                                repo.saveStepCount(update)
-                            }
-                        }
-                    }
+                    val update =
+                        DailyStepCountCreator.create(stepsToday + 1, dateYYYYMMDD)
+
+                    repo.saveStepCount(update)
                 }
+
+            }
 
         }
     }

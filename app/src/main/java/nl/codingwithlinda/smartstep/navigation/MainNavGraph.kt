@@ -198,7 +198,7 @@ fun MainNavGraph(
                     dailyStepGoalViewModel = dailyStepGoalViewModel,
                     dailyStepCountViewModel = dailyStepCountViewModel,
                     statisticsViewModel = statisticsViewModel,
-                    stepTrackerViewModel = walkDurationViewModel,
+                    walkDurationViewModel = walkDurationViewModel,
                     weeklyAverageViewModel = weeklyAverageViewModel,
                     editStepsViewModel = editStepsViewModel,
                     resetStepsViewModel = resetStepsViewModel,

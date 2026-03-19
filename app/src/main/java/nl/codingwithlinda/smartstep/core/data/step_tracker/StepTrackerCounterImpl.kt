@@ -26,7 +26,8 @@ import kotlin.time.Duration.Companion.nanoseconds
 
 class StepTrackerCounterImpl private constructor(
     context: Context,
-    private val repo: ActivityRecognitionRepo
+    private val repo: ActivityRecognitionRepo,
+    private val scope: CoroutineScope
 ): StepTracker , SensorEventListener {
 
     private val _stateObservable = MutableStateFlow<StepTrackerState>(StepTrackerState.STOPPED)
@@ -43,14 +44,15 @@ class StepTrackerCounterImpl private constructor(
         @Synchronized
         fun getInstance(
             context: Context,
-            dailyStepRepo: ActivityRecognitionRepo
+            dailyStepRepo: ActivityRecognitionRepo,
+            scope: CoroutineScope
         ): StepTracker{
             synchronized(this) {
                 val i = instance
                 i?.run {
                     return i
                 }
-                instance = StepTrackerCounterImpl(context,dailyStepRepo)
+                instance = StepTrackerCounterImpl(context,dailyStepRepo, scope)
                 return instance!!
             }
         }
@@ -80,8 +82,6 @@ class StepTrackerCounterImpl private constructor(
         }
     }
 
-    override val stepsTaken: Flow<DailyStepCount> = emptyFlow()
-
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
        //ignore
     }
@@ -103,7 +103,7 @@ class StepTrackerCounterImpl private constructor(
 
             println("--- STEP TRACKER COUNTER IMPL --- stepsReceivedFromEvent: $stepsReceivedFromEvent")
 
-            CoroutineScope(Dispatchers.IO).launch {
+            scope.launch {
                  //check if we have a baseline
                 val baseline = repo.getDailyStepCountBaselineForDate(eventDateYYYYMMDD)
 

@@ -1,5 +1,6 @@
 package nl.codingwithlinda.smartstep.features.main.presentation
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -41,6 +43,7 @@ import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_conte
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenContent
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.navigation.UserOverrideStepsNavActionDecorator
 import nl.codingwithlinda.smartstep.features.main.statistics.presentation.StatisticsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.weekly_average.presentation.WeeklyAverageViewModel
@@ -51,7 +54,7 @@ fun MainScreen(
     dailyStepGoalViewModel: DailyStepGoalViewModel,
     dailyStepCountViewModel: DailyStepCountViewModel,
     statisticsViewModel: StatisticsViewModel,
-    stepTrackerViewModel: WalkDurationViewModel,
+    walkDurationViewModel: WalkDurationViewModel,
     weeklyAverageViewModel: WeeklyAverageViewModel,
     editStepsViewModel: nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.edit.presentation.EditStepsViewModel,
     resetStepsViewModel: nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.reset.presentation.ResetStepsViewModel,
@@ -60,11 +63,15 @@ fun MainScreen(
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     val permissionsViewModel = viewModel<PermissionsViewModel>()
     val navItemHandler = MainNavActionControllerImpl
     val actions = navItemHandler.actions.collectAsStateWithLifecycle(MainNavAction.NA).value
 
+    ObserveAsEvents(walkDurationViewModel.state) {
+        Toast.makeText(context, "${it.name}", Toast.LENGTH_SHORT).show()
+    }
 
     ObserveAsEvents(smartStepStateController.startTrackingState) {
         it.startTracking()
@@ -122,7 +129,7 @@ fun MainScreen(
                     dailyStepGoalViewModel = dailyStepGoalViewModel,
                     dailyStepCountViewModel = dailyStepCountViewModel,
                     statisticsViewModel = statisticsViewModel,
-                    walkDurationViewModel = stepTrackerViewModel,
+                    walkDurationViewModel = walkDurationViewModel,
                     weeklyAverageViewModel = weeklyAverageViewModel,
                     aiMessageComponent = aiMessageComponent
                 )
@@ -149,8 +156,7 @@ fun MainScreen(
             navItemHandler = navItemHandler,
             smartStepStateController = smartStepStateController,
         )
-
-        _root_ide_package_.nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.navigation.UserOverrideStepsNavActionDecorator(
+        UserOverrideStepsNavActionDecorator(
             editStepsViewModel = editStepsViewModel,
             resetStepsViewModel = resetStepsViewModel
 

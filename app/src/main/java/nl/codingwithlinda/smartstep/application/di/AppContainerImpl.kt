@@ -70,7 +70,8 @@ class AppContainerImpl(
         StepTrackerDetectorImpl.getInstance(
             context = context,
             scope = applicationWideScope,
-            repo = activityRecognitionRepo
+            repo = activityRecognitionRepo,
+            walkDurationRepo = walkDurationRepo
         )
     }
     override val statisticsManager: StatisticsManager by lazy {

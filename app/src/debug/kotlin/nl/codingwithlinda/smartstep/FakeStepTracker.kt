@@ -62,7 +62,7 @@ class FakeStepTracker(
 
     }
 
-    override val stepsTaken: Flow<DailyStepCount> = _stepsTaken
+    val stepsTaken: Flow<DailyStepCount> = _stepsTaken
         .map {
             DailyStepCountCreator.create(
                 count = it

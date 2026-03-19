@@ -100,8 +100,6 @@ class ViewModelServiceLocator(
         val f =  viewModelFactoryHelper {
             WalkDurationViewModel(
                 stepTracker = appContainer.stepTracker,
-                walkDurationRepo = appContainer.walkDurationRepo,
-                dispatcherProvider = AndroidDispatcherProvider()
             )
         }
         val vm = viewModel<WalkDurationViewModel>(

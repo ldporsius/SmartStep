@@ -5,10 +5,9 @@ import kotlinx.coroutines.flow.Flow
 interface StepTracker {
 
     fun start()
-
     fun pause()
     fun stop()
-    val stepsTaken: Flow<DailyStepCount>
+    //val stepsTaken: Flow<DailyStepCount>
 
     val stateObservable: Flow<StepTrackerState>
 }
