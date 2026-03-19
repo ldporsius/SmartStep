@@ -1,5 +1,7 @@
 package nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.components
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -18,6 +20,9 @@ fun WeeklyBreakdownList(
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Adaptive(minSize = 240.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 16.dp)
         ) {
         items(weekItems){item ->
             WeeklyBreakdownItem(
