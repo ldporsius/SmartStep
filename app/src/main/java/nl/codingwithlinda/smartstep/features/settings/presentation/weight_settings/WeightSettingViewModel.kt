@@ -47,8 +47,8 @@ class WeightSettingViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val weightUiState = system.flatMapLatest{ system,  ->
         when (system) {
-            is UnitSystems.SI -> weightKg
-            is UnitSystems.IMPERIAL -> weightPounds
+            UnitSystems.SI -> weightKg
+            UnitSystems.IMPERIAL -> weightPounds
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WeightSettingUiState.SI(
         KGWeight(

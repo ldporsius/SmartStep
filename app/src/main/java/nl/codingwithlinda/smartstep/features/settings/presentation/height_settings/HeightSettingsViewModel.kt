@@ -42,8 +42,8 @@ class HeightSettingsViewModel(
     }
     val heightUiState = unitSystemPrefs.combine(_heightInput){ system, input ->
         when(system){
-            is UnitSystems.SI -> HeightSettingUiState.SI(cm = input)
-            is UnitSystems.IMPERIAL -> {
+            UnitSystems.SI -> HeightSettingUiState.SI(cm = input)
+            UnitSystems.IMPERIAL -> {
                 val feetInches = feetInchesConverter.convertToFeetInches(input)
                 HeightSettingUiState.Imperial(feetInches)
             }
@@ -54,19 +54,12 @@ class HeightSettingsViewModel(
     fun handleHeightInput(actionUnitInput: ActionHeightInput){
         when(actionUnitInput) {
             is ActionHeightInput.CmInput -> {
-                println("--- USERSETTINGSVIEWMODEL --- cm input: ${actionUnitInput.cm}")
-
                 _heightInput.update {
                     Cm(actionUnitInput.cm.toDouble())
-                }.also {
-                    println("--- USERSETTINGSVIEWMODEL --- value userSettings height after update: ${_heightInput.value}")
                 }
-
             }
 
             is ActionHeightInput.ImperialInput -> {
-                println("--- USERSETTINGSVIEWMODEL --- imperial input: feet: ${actionUnitInput.feet} , inches:${actionUnitInput.inches}")
-
                 val feetInches = FeetInches(actionUnitInput.feet, actionUnitInput.inches)
                 val update = feetInchesConverter.toCm(feetInches)
                 _heightInput.update {
@@ -75,11 +68,9 @@ class HeightSettingsViewModel(
             }
 
             is ActionHeightInput.ActionSave -> {
-                nonCancellableScope.launch{
-                    val currentHeight = _heightInput.value.value.roundToInt()
-                    val userSettings = memento.restoreLast().copy(heightCm = currentHeight)
-                    memento.save(userSettings)
-                }
+                val currentHeight = _heightInput.value.value.roundToInt()
+                val userSettings = memento.restoreLast().copy(heightCm = currentHeight)
+                memento.save(userSettings)
             }
 
             is ActionHeightInput.ChangeUnitSystem -> {

@@ -78,9 +78,7 @@ class DailyStatisticsManager(
         steps.toFloat() / goal
     }
 
-    val currentSystem = userSettingsRepo.unitSystemObservable.map{
-        it
-    }
+    val currentSystem = userSettingsRepo.unitSystemObservable
 
     override val distanceWalked = combine(userHeightCm, stepsToday){height, steps ->
         val distance = calculateDistanceCm(height, steps)

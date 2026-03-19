@@ -95,19 +95,27 @@ class PreferencesUserSettingsRepo(
         }
 
     override suspend fun saveUnitSystem(systemUnits: UnitSystems) {
+        println("--- saveUnitSystem --- $systemUnits")
         dataStore.edit {
-            it[USER_SETTINGS_UNIT_SYSTEM] = systemUnits.toString()
+            it[USER_SETTINGS_UNIT_SYSTEM] = systemUnits.name
         }
     }
 
     override val unitSystemObservable: Flow<UnitSystems>
        = dataStore.data.map {
-           it[USER_SETTINGS_UNIT_SYSTEM] ?: UnitSystems.SI.toString()
+           it[USER_SETTINGS_UNIT_SYSTEM] ?: UnitSystems.SI.name
        }.map {
+           println("--- unitSystemObservable --- $it")
           when(it){
-              UnitSystems.SI.toString() -> UnitSystems.SI
-              UnitSystems.IMPERIAL.toString() -> UnitSystems.IMPERIAL
-              else -> UnitSystems.SI
+              UnitSystems.SI.name -> UnitSystems.SI
+              UnitSystems.IMPERIAL.name -> UnitSystems.IMPERIAL
+              else -> {
+                  println("--- unitSystemObservable --- else")
+                  dataStore.edit {
+                      it[USER_SETTINGS_UNIT_SYSTEM] = UnitSystems.SI.name
+                  }
+                  UnitSystems.SI
+              }
           }
     }
 }
