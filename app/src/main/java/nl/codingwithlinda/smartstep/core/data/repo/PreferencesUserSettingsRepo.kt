@@ -105,12 +105,10 @@ class PreferencesUserSettingsRepo(
        = dataStore.data.map {
            it[USER_SETTINGS_UNIT_SYSTEM] ?: UnitSystems.SI.name
        }.map {
-           println("--- unitSystemObservable --- $it")
           when(it){
               UnitSystems.SI.name -> UnitSystems.SI
               UnitSystems.IMPERIAL.name -> UnitSystems.IMPERIAL
               else -> {
-                  println("--- unitSystemObservable --- else")
                   dataStore.edit {
                       it[USER_SETTINGS_UNIT_SYSTEM] = UnitSystems.SI.name
                   }
