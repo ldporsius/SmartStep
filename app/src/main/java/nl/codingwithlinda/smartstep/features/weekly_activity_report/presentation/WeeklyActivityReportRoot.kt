@@ -50,6 +50,17 @@ fun WeeklyActivityReportRoot(
         }
     )
 
+    WeeklyActivityReportScreen(
+        reportViewModel = reportViewModel,
+        onNavBack = onNavBack
+    )
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun WeeklyActivityReportScreen(
+    reportViewModel: ReportViewModel,
+    onNavBack:() -> Unit
+) {
     val uiState = reportViewModel.uiState.collectAsStateWithLifecycle().value
 
     val selectedTabIndex = remember(uiState.selectedTarget) {
@@ -67,7 +78,10 @@ fun WeeklyActivityReportRoot(
                     IconButton(onClick = {
                         onNavBack()
                     }) {
-                        Icon(painter = painterResource(R.drawable.arrow_left), contentDescription = "back")
+                        Icon(
+                            painter = painterResource(R.drawable.arrow_left),
+                            contentDescription = "back"
+                        )
                     }
                 }
             )
@@ -76,12 +90,16 @@ fun WeeklyActivityReportRoot(
             PrimaryTabRow(
                 selectedTabIndex = selectedTabIndex
             ) {
-                ReportTarget.entries.forEach {target ->
+                ReportTarget.entries.forEach { target ->
                     with(target.toUi()) {
                         Tab(
                             selected = target == uiState.selectedTarget,
                             onClick = {
-                                reportViewModel.onTargetAction(ReportTargetAction.SetTargetAction(target))
+                                reportViewModel.onTargetAction(
+                                    ReportTargetAction.SetTargetAction(
+                                        target
+                                    )
+                                )
                             },
                             text = { Text(text) },
                             icon = {
@@ -93,13 +111,12 @@ fun WeeklyActivityReportRoot(
 
             }
         }
-    ) {paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier.padding(paddingValues)
         ) {
             TopSummaryCard(
-                modifier = Modifier.
-                    width(480.dp)
+                modifier = Modifier.width(480.dp)
                     .padding(16.dp),
                 topSummaryUi = reportViewModel.topSummaryUi.collectAsStateWithLifecycle().value
             )

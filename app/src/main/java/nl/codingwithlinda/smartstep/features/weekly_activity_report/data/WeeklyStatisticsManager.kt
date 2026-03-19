@@ -90,10 +90,11 @@ class WeeklyStatisticsManager(
     //////////////////////////////////////////////////////////////
 
     val caloriesBurned = stepsInWeek.map { steps,  ->
-        steps.map {
-            it.map {
+        steps.map { dailyStepCounts ->
+            dailyStepCounts.map {
                 val settings = userStatisticsRepo.userSettingsForDay(it.dayEpochDay)
-                caloriesBurned(it.stepCount, settings.weightGrams, settings.gender)
+                val weightKg = WeightUnitConverter.toKg(GramsWeight(settings.weightGrams))
+                caloriesBurned(it.stepCount, weightKg.weight, settings.gender)
             }
         }
     }

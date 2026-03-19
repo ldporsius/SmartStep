@@ -6,12 +6,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import nl.codingwithlinda.smartstep.core.data.repo.walk_duration.WalkDurationRepoImpl
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDurationStart
-import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.features.main.statistics.data.DailyStatisticsManager
 import nl.codingwithlinda.smartstep.FakeUserSettingsRepo
 import nl.codingwithlinda.smartstep.FakeWalkDurationRepo
+import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDuration
 import nl.codingwithlinda.smartstep.di.TestDispatcherProvider
 import nl.codingwithlinda.smartstep.features.main.statistics.presentation.StatisticsViewModel
 import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
@@ -49,7 +47,7 @@ class StatisticsViewModelTest: BaseStepRepoTest() {
         val now = System.currentTimeMillis()
 
         walkDurationRepo.saveWalkDurationStart(
-            WalkDurationStart(now)
+            now
         )
         val sessions = walkDurationRepo.sessions.first()
         assertThat(sessions.size).isEqualTo(1)

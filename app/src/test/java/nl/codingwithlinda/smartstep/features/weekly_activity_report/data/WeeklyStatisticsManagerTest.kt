@@ -5,6 +5,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import nl.codingwithlinda.smartstep.FakeUserStatisticsRepo
 import nl.codingwithlinda.smartstep.FakeWalkDurationRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
@@ -20,7 +21,7 @@ class WeeklyStatisticsManagerTest : BaseStepRepoTest() {
     val dailyStepRepo = fakeDailyStepRepo
 
     val manager = WeeklyStatisticsManager(
-        userSettingsRepo = userSettingsRepo,
+        userStatisticsRepo = FakeUserStatisticsRepo(),
         dailyStepRepo = dailyStepRepo,
         walkDurationRepo = FakeWalkDurationRepo()
     )

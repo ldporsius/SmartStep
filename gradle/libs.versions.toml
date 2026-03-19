@@ -54,6 +54,8 @@ turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+compose-junit4-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+
 
 
 #instrumented/ui tests
@@ -106,6 +108,7 @@ junit-test = [
     "turbine",
     "coroutines-test",
     "assertk",
-    "mockk"
+    "mockk",
+    "compose-junit4-test"
 ]
 
