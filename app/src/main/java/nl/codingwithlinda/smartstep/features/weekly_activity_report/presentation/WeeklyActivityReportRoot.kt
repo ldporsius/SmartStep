@@ -43,7 +43,8 @@ fun WeeklyActivityReportRoot(
                         userStatisticsRepo = appContainer.userStatisticsRepo,
                         dailyStepRepo = appContainer.dailyStepRepo,
                         walkDurationRepo = appContainer.walkDurationRepo
-                    )
+                    ),
+                    userSettingsRepo = appContainer.userSettingsRepo
                 )
             }
         }

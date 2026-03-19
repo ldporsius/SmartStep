@@ -15,4 +15,7 @@
     <string name="calories">Calories</string>
     <string name="this_week">This week</string>
     <string name="walk_duration">Minutes</string>
+    <string name="distance" translatable="false">%1$.2f</string>
+    <string name="kilometers">Kilometers</string>
+    <string name="miles">Miles</string>
 </resources>

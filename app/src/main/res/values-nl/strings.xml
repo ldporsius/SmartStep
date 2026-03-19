@@ -7,4 +7,6 @@
     <string name="calories">Calorieën</string>
     <string name="this_week">Deze week</string>
     <string name="walk_duration">Minuten</string>
+    <string name="kilometers">Kilometers</string>
+    <string name="miles">Mijlen</string>
 </resources>

@@ -48,7 +48,7 @@ fun TopSummaryCard(
                     style = MaterialTheme.typography.labelMedium
                 )
                 Text(
-                    text = topSummaryUi.value.toString(),
+                    text = topSummaryUi.value.asString(),
                     modifier = Modifier.constrainAs(value) {
                         top.linkTo(title.bottom, margin = 4.dp)
                         start.linkTo(parent.start, margin = 4.dp)

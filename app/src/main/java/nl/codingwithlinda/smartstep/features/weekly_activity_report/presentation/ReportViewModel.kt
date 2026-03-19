@@ -6,6 +6,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.presentation.util.UiText
 import nl.codingwithlinda.smartstep.R
+import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.caloriesBurned
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.data.WeeklyStatisticsManager
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.domain.ReportTarget
@@ -22,10 +25,13 @@ import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.WeekPickerAction
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.WeekPickerUiState
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.TopSummaryUi
+import nl.codingwithlinda.unit_conversion.data.distance.DistanceConverter
+import nl.codingwithlinda.unit_conversion.domain.UnitSystems
 import kotlin.math.roundToInt
 
 class ReportViewModel(
-    private val weeklyStatisticsManager: WeeklyStatisticsManager
+    private val weeklyStatisticsManager: WeeklyStatisticsManager,
+    private val userSettingsRepo: UserSettingsRepo
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(ReportTargetUiState())
@@ -65,7 +71,7 @@ class ReportViewModel(
             val average = weeklyStatisticsManager.averageStepsInWeek(it)
             TopSummaryUi(
                 title = UiText.StringResourceText(R.string.steps),
-                value = total,
+                value = UiText.DynamicText(total.toString()),
                 subtitle = UiText.StringResourceText(R.string.daily_average,average)
             )
 
@@ -88,7 +94,7 @@ class ReportViewModel(
             val average = weeklyStatisticsManager.caloriesBurnedAverage(it)
             TopSummaryUi(
                 title = UiText.StringResourceText(R.string.calories),
-                value = total,
+                value = UiText.DynamicText(total.toString()),
                 subtitle = UiText.StringResourceText(R.string.daily_average,average)
             )
         }
@@ -104,12 +110,54 @@ class ReportViewModel(
             val average = weeklyStatisticsManager.averageWalkDuration(it)
             TopSummaryUi(
                 title = UiText.StringResourceText(R.string.walk_duration),
-                value = total,
+                value = UiText.DynamicText(total.toString()),
                 subtitle = UiText.StringResourceText(R.string.daily_average, average)
             )
         }
 
         walkDuration
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val topSummaryDistance = selectedWeek.flatMapLatest { selectedWeek ->
+        val distance = weeklyStatisticsManager.distance.map {
+            it[selectedWeek]
+        }.map {distancesKm ->
+            val system = userSettingsRepo.unitSystemObservable.first()
+            val distance = system
+                .let{system ->
+                when(system){
+                    UnitSystems.IMPERIAL -> {
+                        distancesKm.map {
+                            DistanceConverter.toMile(it)
+                        }
+                    }
+                    UnitSystems.SI -> {
+                        distancesKm
+                    }
+                }
+            }.map { it.value }
+
+            val total = weeklyStatisticsManager.totalDistance(distance)
+            val average = weeklyStatisticsManager.averageDistance(distance)
+
+            val title = system.let {
+                when(it){
+                    UnitSystems.IMPERIAL -> {
+                        UiText.StringResourceText(R.string.miles)
+                    }
+                    UnitSystems.SI -> {
+                        UiText.StringResourceText(R.string.kilometers)
+                    }
+                }
+            }
+            TopSummaryUi(
+                title = title,
+                value = UiText.StringResourceText(R.string.distance, total),
+                subtitle = UiText.StringResourceText(R.string.daily_average, average)
+            )
+        }
+        distance
     }
 
 
@@ -127,7 +175,7 @@ class ReportViewModel(
                 topSummaryWalkDuration
             }
             ReportTarget.DISTANCE -> {
-                topSummarySteps
+                topSummaryDistance
             }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TopSummaryUi())

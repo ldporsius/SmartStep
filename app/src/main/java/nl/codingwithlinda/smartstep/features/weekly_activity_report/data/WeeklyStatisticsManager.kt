@@ -12,6 +12,9 @@ import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.calculateDistanceCm
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.caloriesBurned
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.unit_conversion.data.distance.CM
+import nl.codingwithlinda.unit_conversion.data.distance.ConcreteDistance
+import nl.codingwithlinda.unit_conversion.data.distance.DistanceConverter
 import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
 import nl.codingwithlinda.unit_conversion.data.weight.WeightUnitConverter
 import java.time.DayOfWeek
@@ -129,5 +132,24 @@ class WeeklyStatisticsManager(
     }
 
     ////////////////////////////////////////////////////////////////////////////
+
+    val distance = stepsInWeek.map { lists ->
+        lists.map {
+            it.map {
+                val settings = userStatisticsRepo.userSettingsForDay(it.dayEpochDay)
+                val cm = calculateDistanceCm(personsHeightCm = settings.heightCm, stepsTaken = it.stepCount)
+                DistanceConverter.toKm(ConcreteDistance.cm(cm))
+            }
+        }
+    }
+
+    fun totalDistance(distances: List<Double>) = distances.sum()
+
+    fun averageDistance(distances: List<Double>): Double {
+        if (distances.isEmpty()) return 0.0
+        val result = distances.average()
+        if (result.isNaN()) return 0.0
+        return result
+    }
 
 }
