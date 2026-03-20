@@ -205,6 +205,22 @@ class ReportViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
 
+    private suspend fun labelText(strRes: Int, dayEpoch: Long, callback: () -> Int): UiText {
+        val status = weeklyStatisticsManager.getStatus(dayEpoch)
+        return when(status){
+            WeeklyBreakdownStatus.FINISHED -> UiText.StringResourceText(strRes, callback())
+            WeeklyBreakdownStatus.IN_PROGRESS -> UiText.StringResourceText(strRes, callback())
+            WeeklyBreakdownStatus.NOT_STARTED -> UiText.DynamicText("No data")
+        }
+    }
+    private suspend fun labelText(dayEpoch: Long): UiText{
+        val status = weeklyStatisticsManager.getStatus(dayEpoch)
+        return when(status){
+            WeeklyBreakdownStatus.FINISHED -> UiText.DynamicText("")
+            WeeklyBreakdownStatus.IN_PROGRESS -> UiText.DynamicText("")
+            WeeklyBreakdownStatus.NOT_STARTED -> UiText.DynamicText("No data")
+        }
+    }
     private fun weeklyStepsBreakdown(weekIndex: Int) =  weeklyStatisticsManager.stepsInWeek.map {
         it[weekIndex]
     }.map {
@@ -212,10 +228,8 @@ class ReportViewModel(
 
             val goal = weeklyStatisticsManager.goalSteps(it.dayEpochDay)
             val status = weeklyStatisticsManager.getStatus(it.dayEpochDay)
-            val labelText = when(status){
-                WeeklyBreakdownStatus.FINISHED -> UiText.StringResourceText(R.string.goal, goal)
-                WeeklyBreakdownStatus.IN_PROGRESS -> UiText.StringResourceText(R.string.goal, goal)
-                WeeklyBreakdownStatus.NOT_STARTED -> UiText.DynamicText("No data")
+            val labelText = labelText(R.string.goal, it.dayEpochDay){
+                goal
             }
             WeeklyBreakdownUi(
                 dayName = displayWeekName(it.dayEpochDay),
@@ -243,7 +257,8 @@ class ReportViewModel(
                 dayName = displayWeekName(dayEpoch),
                 value = UiText.StringResourceText(R.string.distance, distance.value),
                 unit = unitText,
-                status = weeklyStatisticsManager.getStatus(dayEpoch)
+                status = weeklyStatisticsManager.getStatus(dayEpoch),
+                label = labelText(dayEpoch)
             )
         }
     }
@@ -255,7 +270,8 @@ class ReportViewModel(
                 dayName = displayWeekName(dayEpoch),
                 value = UiText.DynamicText(calories.roundToInt().toString()),
                 unit = UiText.StringResourceText(R.string.calories),
-                status = weeklyStatisticsManager.getStatus(dayEpoch)
+                status = weeklyStatisticsManager.getStatus(dayEpoch),
+                label = labelText(dayEpoch)
             )
         }
     }
@@ -268,9 +284,9 @@ class ReportViewModel(
                 dayName = displayWeekName(localDate.toEpochDay()),
                 value = UiText.DynamicText(duration.toString()),
                 unit = UiText.StringResourceText(R.string.walk_duration),
-                status = weeklyStatisticsManager.getStatus(localDate.toEpochDay())
+                status = weeklyStatisticsManager.getStatus(localDate.toEpochDay()),
+                label = labelText(localDate.toEpochDay())
                 )
-
         }
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////
