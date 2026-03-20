@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.takeWhile
 import nl.codingwithlinda.core.di.DispatcherProvider
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.stepGoalRange
@@ -98,27 +99,19 @@ class DailyStatisticsManager(
         caloriesBurned(steps, weight.weight, gender).roundToInt()
     }
 
-    private val minuteCounter = MinuteCounter()
 
-    override fun startMinuteCounter() {
-        minuteCounter.start()
-    }
-
-    override fun stopMinuteCounter() {
-        minuteCounter.stop()
-    }
     override val timeWalked = walkDurationRepo.sessions.filter { sessions ->
         sessions.any{
-            it.start.dateYYYYMMDD.dateEpochDay == today.dateEpochDay && it.end != null
+            it.start.dateYYYYMMDD.dateEpochDay == today.dateEpochDay
         }
-    }
-        .combine(minuteCounter.minuteCounter){session, minute ->
+    }.map {
+        it.filter { it.end != null  } .plus(it.maxBy { it.start.timestamp })
+    }.map { session ->
         val duration = session.sumOf {
-            ( it.end?.timestamp ?: minute ) - it.start.timestamp
+            ( it.end?.timestamp ?: System.currentTimeMillis()) - it.start.timestamp
         }
         duration.milliseconds.inWholeMinutes.toInt()
     }.flowOn(dispatcherProvider.default)
-
 
 
     override val trend = dailyStepRepo.stepCountPlusUserOverride

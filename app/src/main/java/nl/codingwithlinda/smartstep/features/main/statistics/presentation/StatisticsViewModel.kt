@@ -67,7 +67,5 @@ class StatisticsViewModel(
             }
         }
 
-        statisticsManager.startMinuteCounter()
-
     }
 }

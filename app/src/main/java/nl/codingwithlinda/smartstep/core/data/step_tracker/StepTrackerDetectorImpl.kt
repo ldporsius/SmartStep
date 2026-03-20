@@ -10,6 +10,7 @@ import android.hardware.SensorManager
 import android.util.Log.d
 import android.util.Log.e
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
@@ -31,6 +32,7 @@ import nl.codingwithlinda.smartstep.core.domain.repo.ActivityRecognitionRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepGoalCreator
+import nl.codingwithlinda.smartstep.features.main.statistics.presentation.util.MinuteCounter
 import kotlin.concurrent.Volatile
 
 class StepTrackerDetectorImpl private constructor(
@@ -56,6 +58,8 @@ class StepTrackerDetectorImpl private constructor(
         .firstOrNull()
 
 
+    private val minuteCounter = MinuteCounter()
+
     companion object{
         @Volatile
         private var stepTrackerInstance: StepTrackerDetectorImpl? = null
@@ -80,6 +84,23 @@ class StepTrackerDetectorImpl private constructor(
             }
         }
     }
+    init {
+        /*
+        when is started state, create a new session every minute
+         */
+        scope.launch {
+            launch(
+                start = CoroutineStart.ATOMIC
+            ) {
+                minuteCounter.minuteCounter.collect {
+                    if (state == StepTrackerState.STARTED) {
+                        walkDurationRepo.saveWalkDurationEnd(System.currentTimeMillis())
+                        walkDurationRepo.saveWalkDurationStart(System.currentTimeMillis())
+                    }
+                }
+            }
+        }
+    }
 
     override fun pause() {
         sensorManager.unregisterListener(this)
@@ -90,6 +111,7 @@ class StepTrackerDetectorImpl private constructor(
         scope.launch {
             walkDurationRepo.saveWalkDurationEnd(System.currentTimeMillis())
         }
+
     }
     override fun start() {
 
@@ -113,7 +135,6 @@ class StepTrackerDetectorImpl private constructor(
         }catch (e: Exception){
             e.printStackTrace()
         }
-
     }
 
     override fun stop() {
@@ -130,12 +151,14 @@ class StepTrackerDetectorImpl private constructor(
         scope.launch {
             walkDurationRepo.saveWalkDurationEnd(System.currentTimeMillis())
         }
+
         println("StepTracker stopped")
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
         println("--- onAccuracyChanged: sensor: $p0, accuracy: $p1")
     }
+
 
     override fun onSensorChanged(p0: SensorEvent?){
 
@@ -158,7 +181,6 @@ class StepTrackerDetectorImpl private constructor(
 
                     repo.saveStepCount(update)
                 }
-
             }
 
         }

@@ -7,18 +7,11 @@ import kotlin.time.Duration.Companion.seconds
 
 class MinuteCounter {
 
-    private var shouldCount = false
     val minuteCounter = flow {
-        while (shouldCount){
+        while (true){
             emit(System.currentTimeMillis())
             delay(60.seconds)
         }
     }
 
-    fun start(){
-        shouldCount = true
-    }
-    fun stop(){
-        shouldCount = false
-    }
 }

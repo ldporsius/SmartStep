@@ -16,7 +16,4 @@ interface StatisticsManager {
 
     val trend: Flow<Map<DateYYYYMMDD, Float>>
 
-
-    fun startMinuteCounter()
-    fun stopMinuteCounter()
 }
