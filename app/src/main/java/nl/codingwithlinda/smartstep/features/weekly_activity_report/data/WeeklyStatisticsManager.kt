@@ -10,6 +10,7 @@ import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.calculateDistanceCm
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.caloriesBurned
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
+import nl.codingwithlinda.smartstep.core.domain.util.factories.DateTimeHelper
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.WeeklyBreakdownStatus
 import nl.codingwithlinda.unit_conversion.data.distance.ConcreteDistance
 import nl.codingwithlinda.unit_conversion.data.distance.DistanceConverter
@@ -85,6 +86,9 @@ class WeeklyStatisticsManager(
         return result
     }
 
+    suspend fun goalSteps(dayEpoch: Long): Int {
+        return dailyStepRepo.getGoalForDay(DateTimeHelper.toDateYYYYMMDD(dayEpoch))?.goal ?: 0
+    }
     //////////////////////////////////////////////////////////////
 
     val caloriesBurned = stepsInWeek.map { steps,  ->

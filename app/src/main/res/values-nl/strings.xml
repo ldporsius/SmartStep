@@ -9,4 +9,5 @@
     <string name="walk_duration">Minuten</string>
     <string name="kilometers">Kilometers</string>
     <string name="miles">Mijlen</string>
+    <string name="goal">Goal: %1$d steps</string>
 </resources>

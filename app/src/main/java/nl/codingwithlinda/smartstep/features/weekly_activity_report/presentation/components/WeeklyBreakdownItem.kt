@@ -38,6 +38,7 @@ fun WeeklyBreakdownItem(
                 value,
                 unit,
                 state,
+                label
             ) = createRefs()
 
             Text(uiState.dayName,
@@ -68,6 +69,13 @@ fun WeeklyBreakdownItem(
             uiState.status.WeeklyBreakdownIcon(
                 modifier = Modifier.constrainAs(state){
                     top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                }
+            )
+            Text(uiState.label.asString(),
+                style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.constrainAs(label) {
+                    top.linkTo(state.bottom, margin = 4.dp)
                     end.linkTo(parent.end)
                 }
             )

@@ -25,6 +25,7 @@ import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.WeekPickerAction
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.interaction.WeekPickerUiState
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.TopSummaryUi
+import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.WeeklyBreakdownStatus
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.WeeklyBreakdownUi
 import nl.codingwithlinda.unit_conversion.data.distance.DistanceConverter
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
@@ -208,11 +209,20 @@ class ReportViewModel(
         it[weekIndex]
     }.map {
         it.map {
+
+            val goal = weeklyStatisticsManager.goalSteps(it.dayEpochDay)
+            val status = weeklyStatisticsManager.getStatus(it.dayEpochDay)
+            val labelText = when(status){
+                WeeklyBreakdownStatus.FINISHED -> UiText.StringResourceText(R.string.goal, goal)
+                WeeklyBreakdownStatus.IN_PROGRESS -> UiText.StringResourceText(R.string.goal, goal)
+                WeeklyBreakdownStatus.NOT_STARTED -> UiText.DynamicText("No data")
+            }
             WeeklyBreakdownUi(
                 dayName = displayWeekName(it.dayEpochDay),
                 value = UiText.DynamicText(it.stepCount.toString()),
                 unit = UiText.StringResourceText(R.string.steps),
-                status = weeklyStatisticsManager.getStatus(it.dayEpochDay)
+                status = status,
+                label = labelText
             )
         }
     }

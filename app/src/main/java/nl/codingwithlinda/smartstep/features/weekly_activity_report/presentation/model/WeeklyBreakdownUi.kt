@@ -24,6 +24,7 @@ data class WeeklyBreakdownUi(
     val dayName: String = "Monday",
     val value: UiText = UiText.DynamicText("100"),
     val unit: UiText = UiText.DynamicText("steps"),
+    val label: UiText = UiText.DynamicText("goal"),
     val status: WeeklyBreakdownStatus = WeeklyBreakdownStatus.NOT_STARTED
 )
 
