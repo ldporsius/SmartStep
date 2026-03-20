@@ -1,19 +1,16 @@
 package nl.codingwithlinda.smartstep.features.weekly_activity_report.data
 
-import androidx.compose.ui.text.font.FontVariation.weight
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
-import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserStatisticsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.calculateDistanceCm
 import nl.codingwithlinda.smartstep.core.domain.statistics.calculations.caloriesBurned
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.WeeklyBreakdownStatus
-import nl.codingwithlinda.unit_conversion.data.distance.CM
 import nl.codingwithlinda.unit_conversion.data.distance.ConcreteDistance
 import nl.codingwithlinda.unit_conversion.data.distance.DistanceConverter
 import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
@@ -157,8 +154,10 @@ class WeeklyStatisticsManager(
 
 
     ///////////////////////////////////////////////////////////////
-    fun getStatus(dayEpoch: Long): WeeklyBreakdownStatus{
+    suspend fun getStatus(dayEpoch: Long): WeeklyBreakdownStatus{
         val today = today().toEpochDay()
+        val isBeforeAppInstall = dayEpoch < oldestDate.first()
+        if (isBeforeAppInstall) return WeeklyBreakdownStatus.NOT_STARTED
         return when{
             dayEpoch > today -> {
                 WeeklyBreakdownStatus.NOT_STARTED
