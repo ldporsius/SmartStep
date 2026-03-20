@@ -32,7 +32,7 @@ fun MainNavItemHandler(
         MainNavAction.BACKGROUND_ACCESS_RECOMMENDED -> {
 
             fun handleResult() {
-                smartStepStateController.onResult()
+                smartStepStateController.checkState()
             }
             FormFactorWrapper(
                 onDismiss = {

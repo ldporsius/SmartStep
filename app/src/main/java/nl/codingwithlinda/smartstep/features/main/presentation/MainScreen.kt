@@ -27,27 +27,28 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.codingwithlinda.smartstep.R
-import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.SmartStepStateControllerImpl
 import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.SmartStepStateController
 import nl.codingwithlinda.smartstep.core.presentation.util.ObserveAsEvents
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_count.DailyStepCountViewModel
-import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.navigation.controller.MainNavAction
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.MainNavDrawer
 import nl.codingwithlinda.smartstep.features.main.navigation.drawer.navDrawerItems
 import nl.codingwithlinda.smartstep.features.main.navigation.nav_drawer_events.controllers.MainNavActionControllerImpl
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_count.DailyStepCountViewModel
+import nl.codingwithlinda.smartstep.features.main.presentation.daily_step_goal.DailyStepGoalViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainNavItemHandler
 import nl.codingwithlinda.smartstep.features.main.presentation.main_screen_content_provider.MainScreenContent
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionDecorator
 import nl.codingwithlinda.smartstep.features.main.presentation.permissions.PermissionsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.steps_override_user.navigation.UserOverrideStepsNavActionDecorator
-import nl.codingwithlinda.smartstep.features.main.statistics.presentation.StatisticsViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.walk_duration.presentation.WalkDurationViewModel
 import nl.codingwithlinda.smartstep.features.main.presentation.weekly_average.presentation.WeeklyAverageViewModel
+import nl.codingwithlinda.smartstep.features.main.statistics.presentation.StatisticsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,22 +68,22 @@ fun MainScreen(
     val context = LocalContext.current
 
     val permissionsViewModel = viewModel<PermissionsViewModel>()
+
+
     val navItemHandler = MainNavActionControllerImpl
     val actions = navItemHandler.actions.collectAsStateWithLifecycle(MainNavAction.NA).value
 
-    ObserveAsEvents(walkDurationViewModel.state) {
-        Toast.makeText(context, "${it.name}", Toast.LENGTH_SHORT).show()
-    }
-
-    ObserveAsEvents(smartStepStateController.state) {
-        it.startTracking()
-    }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect (lifecycleOwner){
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
             withContext(Dispatchers.Main) {
-                smartStepStateController.onResult()
+                smartStepStateController.checkState()
+            }
+
+            smartStepStateController.state.collect {
+                Toast.makeText(context, "${it.javaClass.simpleName}", Toast.LENGTH_SHORT).show()
+                it.startTracking()
             }
         }
     }
@@ -141,7 +142,7 @@ fun MainScreen(
                 permissionsViewModel = permissionsViewModel,
                 navItemHandler = navItemHandler,
                 requestPermission = {
-                    smartStepStateController.onResult()
+                    smartStepStateController.checkState()
                 }
             )
         }

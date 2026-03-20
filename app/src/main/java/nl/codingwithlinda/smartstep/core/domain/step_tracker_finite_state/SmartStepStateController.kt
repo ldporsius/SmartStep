@@ -1,9 +1,9 @@
 package nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface SmartStepStateController {
-    val state: Flow<StartTrackingState>
-    fun onResult()
+    val state: StateFlow<StartTrackingState>
+    fun checkState()
     fun exit()
 }

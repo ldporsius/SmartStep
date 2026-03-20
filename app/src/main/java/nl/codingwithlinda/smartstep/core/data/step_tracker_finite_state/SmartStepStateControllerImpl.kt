@@ -7,8 +7,12 @@ import android.os.Build
 import android.os.PowerManager
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import nl.codingwithlinda.smartstep.application.SmartStepApplication.Companion.appContainer
 import nl.codingwithlinda.smartstep.application.di.AppContainer
@@ -39,28 +43,42 @@ class SmartStepStateControllerImpl private constructor(
         @Synchronized
         fun getInstance(
             context: ComponentActivity,
-            stepTracker: StepTracker
+            stepTracker: StepTracker,
         ): SmartStepStateController {
             synchronized(this) {
                 if (instance == null) {
+                    println("SmartStepStateControllerImpl created")
                     instance = SmartStepStateControllerImpl(
                         context,
-                        stepTracker
+                        stepTracker,
                     )
                 }
                 return instance!!
             }
         }
-
     }
+
+    private val permNeededState =  PermissionNeeded(
+        context,
+        emptyMap(),
+        stop = {
+            stepTracker.stop()
+        }
+    )
+    private val backgroundRunningAllowedState = BackgroundRunningAllowed(
+        context,
+        start = {
+            stepTracker.start()
+        }
+    )
+    private val backgroundRunningDeniedState = BackgroundRunningDenied(
+        context,
+        start = {
+            stepTracker.start()
+        }
+    )
     private val _state = MutableStateFlow<StartTrackingState>(
-        PermissionNeeded(
-            context,
-            emptyMap(),
-            stop = {
-                stepTracker.stop()
-            }
-        )
+       permNeededState
     )
 
     override val state = _state.asStateFlow()
@@ -94,7 +112,10 @@ class SmartStepStateControllerImpl private constructor(
         context.startService(trackerIntent)
         context.finish()
     }
-    override fun onResult(){
+
+
+
+    override fun checkState(){
 
         if(!hasPermissions()){
             checkPermissions()
@@ -102,20 +123,11 @@ class SmartStepStateControllerImpl private constructor(
         }
         when(isIgnoringBatteryOptimizations()){
             true -> {
-                val state = BackgroundRunningAllowed(
-                    context,
-                    start = {
-                        stepTracker.start()
-                    }
-                )
-                _state.update { state }
+                _state.update { backgroundRunningAllowedState }
             }
 
             false -> {
-                val state = BackgroundRunningDenied(context) {
-                    stepTracker.start()
-                }
-                _state.update { state }
+                _state.update { backgroundRunningDeniedState }
             }
         }
     }
