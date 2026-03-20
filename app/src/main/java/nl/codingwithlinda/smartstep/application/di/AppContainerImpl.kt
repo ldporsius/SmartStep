@@ -15,7 +15,7 @@ import nl.codingwithlinda.smartstep.core.data.repo.DailyStepRepoRoomImpl
 import nl.codingwithlinda.smartstep.core.data.repo.PreferencesUserSettingsRepo
 import nl.codingwithlinda.smartstep.core.data.step_tracker.StepTrackerDetectorImpl
 import nl.codingwithlinda.smartstep.core.data.repo.walk_duration.WalkDurationRepoImpl
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
+import nl.codingwithlinda.smartstep.core.domain.step_tracker.StepTracker
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.smartstep.core.data.repo.RoomUserStatisticsRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo

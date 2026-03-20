@@ -3,7 +3,7 @@ package nl.codingwithlinda.smartstep.application.di
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.CoroutineScope
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
+import nl.codingwithlinda.smartstep.core.domain.step_tracker.StepTracker
 import nl.codingwithlinda.ai.domain.local_cache.AISessionRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.UserSettingsRepo

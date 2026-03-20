@@ -25,8 +25,8 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
+import nl.codingwithlinda.smartstep.core.domain.step_tracker.StepTracker
+import nl.codingwithlinda.smartstep.core.domain.step_tracker.StepTrackerState
 import nl.codingwithlinda.smartstep.core.domain.repo.ActivityRecognitionRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.DailyStepRepo
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo

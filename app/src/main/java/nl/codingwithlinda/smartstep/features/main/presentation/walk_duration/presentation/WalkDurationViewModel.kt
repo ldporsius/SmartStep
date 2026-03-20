@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
+import nl.codingwithlinda.smartstep.core.domain.step_tracker.StepTracker
+import nl.codingwithlinda.smartstep.core.domain.step_tracker.StepTrackerState
 
 class WalkDurationViewModel(
     private val stepTracker: StepTracker,

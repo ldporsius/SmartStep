@@ -16,8 +16,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DailyStepCount
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTrackerState
+import nl.codingwithlinda.smartstep.core.domain.step_tracker.StepTracker
+import nl.codingwithlinda.smartstep.core.domain.step_tracker.StepTrackerState
 import nl.codingwithlinda.smartstep.core.domain.repo.ActivityRecognitionRepo
 import nl.codingwithlinda.smartstep.core.domain.util.factories.DailyStepCountCreator
 import java.time.LocalDate

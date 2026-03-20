@@ -29,7 +29,7 @@ class StepTrackerService: Service() {
     private lateinit var notificationManager: NotificationManager
 
     private val statisticsManager: StatisticsManager = SmartStepApplication.appContainer.statisticsManager
-    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val serviceScope = SmartStepApplication.appContainer.applicationWideScope
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -47,8 +47,6 @@ class StepTrackerService: Service() {
         }
         return super.onStartCommand(intent, flags, startId)
     }
-
-
 
     private fun createNotification(
         steps: Int,
@@ -122,36 +120,31 @@ class StepTrackerService: Service() {
 
         serviceScope.launch {
             statisticsManager.stepsToday.collect {newSteps ->
-                println("--- STEP TRACKER SERVICE --- steps: $newSteps")
-               val update = _notificationInfo.updateAndGet {
-                   it.copy(
-                       steps = newSteps
-                   )
-               }
-                _notificationInfo.update { update }
-
+                _notificationInfo.update {
+                    it.copy(
+                        steps = newSteps
+                    )
+                }
             }
         }
 
         serviceScope.launch {
             statisticsManager.caloriesBurned.collect {newCalories ->
-                val update = _notificationInfo.updateAndGet {
+                _notificationInfo.update {
                     it.copy(
                         calories = newCalories
                     )
                 }
-                _notificationInfo.update { update }
             }
         }
 
         serviceScope.launch {
             statisticsManager.progressTowardsGoal.collectLatest {progress ->
-                val update = _notificationInfo.updateAndGet {
+                _notificationInfo.update {
                     it.copy(
                         progress = progress
                     )
                 }
-                _notificationInfo.update { update }
             }
         }
 
@@ -188,6 +181,7 @@ class StepTrackerService: Service() {
     }
 
     override fun onDestroy() {
+        SmartStepApplication.appContainer.stepTracker.stop()
         serviceScope.cancel()
         super.onDestroy()
     }

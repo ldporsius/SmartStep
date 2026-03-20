@@ -18,7 +18,7 @@ import nl.codingwithlinda.smartstep.core.domain.step_tracker_finite_state.StartT
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.concrete_states.BackgroundRunningAllowed
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.concrete_states.BackgroundRunningDenied
 import nl.codingwithlinda.smartstep.core.data.step_tracker_finite_state.concrete_states.PermissionNeeded
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.StepTracker
+import nl.codingwithlinda.smartstep.core.domain.step_tracker.StepTracker
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
 import nl.codingwithlinda.smartstep.core.presentation.util.permissionsPerBuild
 
@@ -33,19 +33,23 @@ class SmartStepStateControllerImpl private constructor(
             return powerManager.isIgnoringBatteryOptimizations(context.packageName)
         }
 
+        @Volatile
         private var instance: SmartStepStateControllerImpl? = null
 
+        @Synchronized
         fun getInstance(
             context: ComponentActivity,
             stepTracker: StepTracker
         ): SmartStepStateController {
-            if(instance == null){
-                instance = SmartStepStateControllerImpl(
-                    context,
-                    stepTracker
-                )
+            synchronized(this) {
+                if (instance == null) {
+                    instance = SmartStepStateControllerImpl(
+                        context,
+                        stepTracker
+                    )
+                }
+                return instance!!
             }
-            return instance!!
         }
 
     }
@@ -58,11 +62,8 @@ class SmartStepStateControllerImpl private constructor(
             }
         )
     )
-    //val startTrackingState = _state.asStateFlow()
 
     override val state = _state.asStateFlow()
-
-
 
     private val permissionLauncher = context.registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -94,10 +95,9 @@ class SmartStepStateControllerImpl private constructor(
         context.finish()
     }
     override fun onResult(){
-        println("--- SMART STEP STATE CONTROLLER --- on result")
+
         if(!hasPermissions()){
             checkPermissions()
-            println("--- SMART STEP STATE CONTROLLER --- has no permissions")
             return
         }
         when(isIgnoringBatteryOptimizations()){
