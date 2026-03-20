@@ -14,12 +14,6 @@ class WalkDurationRepoImpl(
 
     private val _sessions = dao.getAllWalkSessionsAsFlow().map {list ->
         list.sortedByDescending { it.startTimestampMillis }
-            .mapIndexed { index, entity ->
-            WalkSessionEntity(
-                startTimestampMillis = entity.startTimestampMillis,
-                endTimestampMillis = list.getOrNull(index+1)?.startTimestampMillis
-            )
-        }
     }
 
     override suspend fun saveWalkDurationStart(timestampMillis: Long) {

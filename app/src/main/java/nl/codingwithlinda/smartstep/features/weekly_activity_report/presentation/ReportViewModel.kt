@@ -204,7 +204,7 @@ class ReportViewModel(
         it
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
     private suspend fun labelText(strRes: Int, dayEpoch: Long, callback: () -> Int): UiText {
         val status = weeklyStatisticsManager.getStatus(dayEpoch)
         return when(status){
@@ -221,6 +221,8 @@ class ReportViewModel(
             WeeklyBreakdownStatus.NOT_STARTED -> UiText.DynamicText("No data")
         }
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
     private fun weeklyStepsBreakdown(weekIndex: Int) =  weeklyStatisticsManager.stepsInWeek.map {
         it[weekIndex]
     }.map {

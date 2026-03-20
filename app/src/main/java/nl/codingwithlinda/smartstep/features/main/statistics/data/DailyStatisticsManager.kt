@@ -109,9 +109,10 @@ class DailyStatisticsManager(
     }
     override val timeWalked = walkDurationRepo.sessions.filter { sessions ->
         sessions.any{
-            it.start.dateYYYYMMDD.dateEpochDay == today.dateEpochDay
+            it.start.dateYYYYMMDD.dateEpochDay == today.dateEpochDay && it.end != null
         }
-    }.combine(minuteCounter.minuteCounter){session, minute ->
+    }
+        .combine(minuteCounter.minuteCounter){session, minute ->
         val duration = session.sumOf {
             ( it.end?.timestamp ?: minute ) - it.start.timestamp
         }

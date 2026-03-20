@@ -113,11 +113,15 @@ class WeeklyStatisticsManager(
     /////////////////////////////////////////////////////////////////////////
     val walkDuration = weeklyCalendar.combine(walkDurationRepo.sessions) { weeks, sessions ->
         weeks.map { weekdays ->
-            weekdays.map{ date ->
-                val duration = sessions.filter{
-                    it.start.dateYYYYMMDD.dateEpochDay == date.toEpochDay()
-                }.sumOf{
-                    val timeDiff =(it.end?.timestamp ?: System.currentTimeMillis()) - (it.start.timestamp)
+            weekdays.map { date ->
+                val duration = sessions.filter {
+                    it.start.dateYYYYMMDD.dateEpochDay == date.toEpochDay() &&
+                            it.end != null
+                }.plus(
+                    sessions.maxBy { it.start.dateYYYYMMDD.dateEpochDay == date.toEpochDay() && it.end == null }
+                ).sumOf {
+                    val timeDiff =
+                        (it.end?.timestamp ?: System.currentTimeMillis()) - (it.start.timestamp)
                     val duration = timeDiff.milliseconds.inWholeMinutes
                     duration
                 }
