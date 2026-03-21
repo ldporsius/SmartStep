@@ -54,9 +54,6 @@ turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-compose-junit4-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-
-
 
 #instrumented/ui tests
 androidx-rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
@@ -67,6 +64,8 @@ androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", versi
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-orchestrator = { module = "androidx.test:orchestrator", version.ref = "orchestrator" }
+compose-junit4-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+room-test = { module = "androidx.room:room-testing", version.ref = "room" }
 
 #other
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -109,6 +108,18 @@ junit-test = [
     "coroutines-test",
     "assertk",
     "mockk",
-    "compose-junit4-test"
+    "room-test"
+]
+
+android-test = [
+
+    "androidx-junit",
+    "androidx-rules",
+    "androidx-ui-test-junit4",
+    "compose-junit4-test",
+    "androidx-ui-test-manifest",
+    "androidx-runner",
+    "assertk",
+    "androidx-uiautomator"
 ]
 

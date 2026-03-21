@@ -3,32 +3,44 @@ package nl.codingwithlinda.smartstep.features.weekly_activity_report.presentatio
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import kotlinx.coroutines.flow.firstOrNull
+import nl.codingwithlinda.smartstep.FakeActivityRecognitionRepo
+import nl.codingwithlinda.smartstep.FakeDailyStepRepo
 import nl.codingwithlinda.smartstep.FakeUserSettingsRepo
 import nl.codingwithlinda.smartstep.FakeUserStatisticsRepo
 import nl.codingwithlinda.smartstep.FakeWalkDurationRepo
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.data.WeeklyStatisticsManager
-import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.time.LocalDate
 
-class WeeklyActivityReportScreenTest: BaseStepRepoTest() {
+class WeeklyActivityReportScreenTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
 
+    val repo = FakeActivityRecognitionRepo()
+    val stepsTaken = repo.stepCount
+    val dailyStepRepo = FakeDailyStepRepo(
+        dateToday = LocalDate.now(),
+        stepsTaken = stepsTaken,
+        getStepCountForDate = {
+           repo.getStepCountForDate(LocalDate.now().toEpochDay())
+        }
+    )
     val viewModel = ReportViewModel(
         weeklyStatisticsManager = WeeklyStatisticsManager(
             userStatisticsRepo = FakeUserStatisticsRepo(),
-            dailyStepRepo = fakeDailyStepRepo,
+            dailyStepRepo = dailyStepRepo,
             walkDurationRepo = FakeWalkDurationRepo()
         ),
         userSettingsRepo = FakeUserSettingsRepo()
         )
 
     @Before
-    override fun setup() {
-        super.setup()
+    fun setup() {
+
         composeTestRule.setContent {
             WeeklyActivityReportScreen(
                 reportViewModel = viewModel,

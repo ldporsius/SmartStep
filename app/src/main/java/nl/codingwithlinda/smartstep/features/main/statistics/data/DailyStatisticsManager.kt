@@ -105,7 +105,9 @@ class DailyStatisticsManager(
             it.start.dateYYYYMMDD.dateEpochDay == today.dateEpochDay
         }
     }.map {
-        it.filter { it.end != null  } .plus(it.maxBy { it.start.timestamp })
+        it.filter { it.end != null  }
+            .dropLast(1)
+            .plus(it.maxBy { it.start.timestamp })
     }.map { session ->
         val duration = session.sumOf {
             ( it.end?.timestamp ?: System.currentTimeMillis()) - it.start.timestamp

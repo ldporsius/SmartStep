@@ -25,8 +25,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
 
-
-
     }
 
     buildTypes {
@@ -97,14 +95,15 @@ dependencies {
 
     //instrumented/ui tests
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.runner)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.bundles.android.test)
+//    androidTestImplementation(libs.androidx.junit)
+//    androidTestImplementation(libs.androidx.runner)
+//    androidTestImplementation(libs.androidx.espresso.core)
     // Test rules and transitive dependencies:
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.androidx.uiautomator)
-    androidTestImplementation(libs.androidx.rules)
-    androidTestImplementation(libs.assertk)
+//    androidTestImplementation(libs.androidx.ui.test.junit4)
+//    androidTestImplementation(libs.androidx.uiautomator)
+//    androidTestImplementation(libs.androidx.rules)
+//    androidTestImplementation(libs.assertk)
     androidTestUtil(libs.androidx.orchestrator)
 
     // Needed for createComposeRule(), but not for createAndroidComposeRule<YourActivity>():

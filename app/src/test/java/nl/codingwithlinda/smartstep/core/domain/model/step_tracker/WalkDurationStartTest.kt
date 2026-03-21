@@ -23,8 +23,7 @@ class WalkDurationStartTest {
     fun `test walk duration flow`() = runTest{
 
         startTimes.forEach {
-            repo.saveStart(
-                DateYYYYMMDD(2023, 1, 1),
+            repo.saveWalkDurationStart(
                 it
             )
         }
@@ -32,8 +31,8 @@ class WalkDurationStartTest {
         println("start times saved")
 
         endTimes.forEach {
-            repo.saveEnd(
-                DateYYYYMMDD(2023, 1, 1), it
+            repo.saveWalkDurationEnd(
+                it
             )
         }
 

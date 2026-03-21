@@ -1,5 +1,7 @@
 package nl.codingwithlinda.smartstep
 
+import android.R.attr.end
+import android.provider.SyncStateContract.Helpers.update
 import androidx.compose.ui.util.fastMaxOfOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -7,60 +9,50 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkSession
 import nl.codingwithlinda.smartstep.core.domain.repo.WalkDurationRepo
-import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.DateYYYYMMDD
 import nl.codingwithlinda.smartstep.core.domain.model.step_tracker.WalkDuration
 
 class FakeWalkDurationRepo: WalkDurationRepo {
 
-   val mutex = Mutex()
-    private val _sessions = mutableListOf<WalkSession>()
+    val mutex = Mutex()
+    private val _sessions = mutableMapOf<Long, WalkSession>()
 
 
     override suspend fun saveWalkDurationStart(timestampMillis: Long) {
 
-        mutex.withLock {
-            val id = _sessions.fastMaxOfOrNull { it.id }?.plus(1) ?: 0
-            _sessions.add(
+        mutex.withLock(this) {
+            _sessions[timestampMillis] =
                 WalkSession(
-                    id = id,
+                    id = timestampMillis,
                     start = WalkDuration(timestampMillis),
                     end = null
                 )
-            )
         }
     }
 
     override suspend fun saveWalkDurationEnd(timestampMillis: Long) {
-        mutex.withLock {
-            val sessionToday = _sessions.filter {
-                it.start.dateString == WalkDuration(timestampMillis).dateString
+        mutex.withLock(this) {
+            val latestUnfinishedSession = _sessions.filter {
+                it.value.start.dateYYYYMMDD.dateEpochDay == WalkDuration(timestampMillis).dateYYYYMMDD.dateEpochDay
             }.filter {
-                it.end == null
-            }.minBy {
-                it.start.timestamp
-            }
+                it.value.end == null
+            }.minByOrNull {
+                it.key
+            }?.value
 
-            sessionToday.copy(
+            val update = latestUnfinishedSession?.copy(
                 end = WalkDuration(timestampMillis)
-            ).also {
-                _sessions.remove(sessionToday)
-                _sessions.add(it)
-            }
+            )?: return
+
+            _sessions.put(update.id, update)
+
         }
     }
 
 
-    suspend fun saveStart(dateYYYYMMDD: DateYYYYMMDD, timestamp: Long){
-        saveWalkDurationStart(timestamp)
-
-    }
-    suspend fun saveEnd(dateYYYYMMDD: DateYYYYMMDD, timestamp: Long){
-        saveWalkDurationEnd(timestamp)
-
-    }
-
     override val sessions: Flow<List<WalkSession>>
         get() = flow {
-           emit(_sessions)
+            emit(_sessions.map {
+                it.value
+            })
         }
 }
