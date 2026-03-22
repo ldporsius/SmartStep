@@ -3,6 +3,7 @@ package nl.codingwithlinda.smartstep.features.main.statistics.data
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -17,6 +18,8 @@ import nl.codingwithlinda.smartstep.di.TestDispatcherProvider
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.data.WeeklyStatisticsManager
 import nl.codingwithlinda.smartstep.util.BaseStepRepoTest
 import org.junit.Test
+import java.time.LocalDate
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -41,13 +44,20 @@ class DailyStatisticsManagerTest: BaseStepRepoTest() {
 
     @Test
     fun testWalkDuration_sumMinutesCorrect()= runTest(testDispatcher){
+        val timestamp = System.currentTimeMillis()
+        val yesterday = timestamp.minus(1.days.inWholeMilliseconds)
 
         runBlocking {
+
             (1..10).onEach {
-                val timestamp = System.currentTimeMillis()
-                walkDurationRepo.saveWalkDurationStart(timestamp + 1.minutes.inWholeMilliseconds)
-                walkDurationRepo.saveWalkDurationEnd(timestamp + 2.minutes.inWholeMilliseconds)
-                delay(1.seconds)
+
+                //yesterday
+                walkDurationRepo.saveWalkDurationStart(yesterday + it.minutes.inWholeMilliseconds)
+                walkDurationRepo.saveWalkDurationEnd(yesterday + it.minutes.inWholeMilliseconds + 1.minutes.inWholeMilliseconds)
+
+                walkDurationRepo.saveWalkDurationStart(timestamp + it.minutes.inWholeMilliseconds)
+                walkDurationRepo.saveWalkDurationEnd(timestamp + it.minutes.inWholeMilliseconds + 1.minutes.inWholeMilliseconds)
+
             }
         }
 
@@ -73,25 +83,36 @@ class DailyStatisticsManagerTest: BaseStepRepoTest() {
         total.onEach {
             println("total: $it")
         }
+
         assertThat(total.sum()).isEqualTo(10)
 
-        val total2 = mutableListOf<Long>()
+        val total2 = mutableListOf<Map<Long, Long>>()
         val job2 = backgroundScope.launch {
             weeklyManager.walkDuration.collect {
-               it.onEach {
-                   it.onEach {
-                       println(it)
-                       total2.add(it.second)
-                   }
-               }
+                it.onEach {
+                    val day = it.map {
+                        it.first.toEpochDay() to it.second
+                    }.toMap()
+                   total2.add(day)
+                }
             }
         }
-        job2.join()
-        job2.cancel()
 
+        job2.cancelAndJoin()
 
-        assertThat(total2.sum()).isEqualTo(10)
+        println("_".repeat(50))
 
+        total2.onEach {
+            println(it)
+        }
+        val yesterdayTotal = total2.filter {
+            it.keys.any {
+                it == yesterday
+            }
+        }
+        assertThat(yesterdayTotal).isEqualTo(10)
+
+        return@runTest
     }
 
 }

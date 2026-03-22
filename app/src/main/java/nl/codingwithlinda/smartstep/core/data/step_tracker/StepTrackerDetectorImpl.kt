@@ -80,17 +80,15 @@ class StepTrackerDetectorImpl private constructor(
                 stepTrackerInstance = StepTrackerDetectorImpl(context, scope, repo, walkDurationRepo = walkDurationRepo)
 
                 return stepTrackerInstance!!
-
             }
         }
     }
     init {
         /*
-        when is started state, create a new session every minute
+        when in started state, create a new session every minute
          */
         scope.launch {
             launch(
-                start = CoroutineStart.ATOMIC
             ) {
                 minuteCounter.minuteCounter.collect {
                     if (state == StepTrackerState.STARTED) {
@@ -111,10 +109,9 @@ class StepTrackerDetectorImpl private constructor(
         scope.launch {
             walkDurationRepo.saveWalkDurationEnd(System.currentTimeMillis())
         }
-
     }
     override fun start() {
-
+        if (state == StepTrackerState.PAUSED) return
         try {
             motionSensor?.let {sensor ->
                 sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL).also {registered ->

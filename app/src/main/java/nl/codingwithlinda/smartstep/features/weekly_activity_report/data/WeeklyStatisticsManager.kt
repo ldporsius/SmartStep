@@ -1,7 +1,7 @@
 package nl.codingwithlinda.smartstep.features.weekly_activity_report.data
 
-import android.R.attr.duration
-import androidx.compose.ui.util.fastFilterNotNull
+import androidx.compose.ui.util.fastAny
+import androidx.compose.ui.util.fastSumBy
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -116,22 +116,14 @@ class WeeklyStatisticsManager(
     val walkDuration = weeklyCalendar.combine(walkDurationRepo.sessions) { weeks, sessions ->
         weeks.map { weekdays ->
             weekdays.map { date ->
-                val duration = sessions.filter {
+                val sessionsForDate = sessions.filter {
                     it.start.dateYYYYMMDD.dateEpochDay == date.toEpochDay()
                 }.let{ walkSessions ->
-                    val hasEnded = walkSessions.filter { it.end != null }
-                    val ongoing = walkSessions.maxByOrNull { it.start.timestamp }.takeIf { it?.end == null }
-
-                    if (ongoing == null) return@let hasEnded
-
-                    hasEnded.plus(ongoing).fastFilterNotNull()
+                    walkSessions.filter { it.end != null }
                 }.sumOf {
-                        val timeDiff =
-                            (it.end?.timestamp ?: System.currentTimeMillis()) - (it.start.timestamp)
-                        val duration = timeDiff.milliseconds.inWholeMinutes
-                        duration
-                    }
-                date to duration
+                    it.end!!.timestamp - it.start.timestamp
+                }
+                date to sessionsForDate.milliseconds.inWholeMinutes
             }
         }
     }

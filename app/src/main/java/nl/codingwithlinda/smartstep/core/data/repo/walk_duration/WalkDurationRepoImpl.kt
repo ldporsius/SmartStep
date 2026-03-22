@@ -18,14 +18,16 @@ class WalkDurationRepoImpl(
 
     override suspend fun saveWalkDurationStart(timestampMillis: Long) {
 
-        val previousSession = dao.getAllWalkSessions().maxByOrNull { it.startTimestampMillis } .takeIf { it?.endTimestampMillis == null }
+        val previousSession = dao.getAllWalkSessions().asSequence()
+            .maxByOrNull { it.startTimestampMillis } .takeIf { it?.endTimestampMillis == null }
 
         previousSession?.let {
             val entity = WalkSessionEntity(
                 startTimestampMillis = it.startTimestampMillis,
-                endTimestampMillis = timestampMillis
+                endTimestampMillis = it.startTimestampMillis
             )
             dao.insertWalkSession(entity)
+            saveWalkDurationStart(timestampMillis)
         }
         val entity = WalkSessionEntity(
             startTimestampMillis = timestampMillis,
@@ -36,10 +38,11 @@ class WalkDurationRepoImpl(
 
     override suspend fun saveWalkDurationEnd(timestampMillis: Long) {
 
-            val sessionToday = dao.getAllWalkSessions().map {
+            val sessionToday = dao.getAllWalkSessions().asSequence().map {
                     it.toDomain()
             }.maxByOrNull {
-                it.start.timestamp}
+                it.start.timestamp
+            }
 
             println("--- WalkDurationRepoImpl --- sessionToday: $sessionToday")
 

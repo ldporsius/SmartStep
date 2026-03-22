@@ -26,6 +26,7 @@ import nl.codingwithlinda.unit_conversion.data.distance.DistanceConverter
 import nl.codingwithlinda.unit_conversion.data.weight.GramsWeight
 import nl.codingwithlinda.unit_conversion.data.weight.WeightUnitConverter
 import nl.codingwithlinda.unit_conversion.domain.UnitSystems
+import java.time.LocalDate
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -100,14 +101,15 @@ class DailyStatisticsManager(
     }
 
 
-    override val timeWalked = walkDurationRepo.sessions.filter { sessions ->
-        sessions.any{
-            it.start.dateYYYYMMDD.dateEpochDay == today.dateEpochDay
+    override val timeWalked = walkDurationRepo.sessions.map{ sessions ->
+       sessions.filter {
+            it.start.dateYYYYMMDD.dateEpochDay == LocalDate.now().toEpochDay()
         }
     }.map {
-        it.filter { it.end != null  }
-            .dropLast(1)
-            .plus(it.maxBy { it.start.timestamp })
+        val currentActive = it.maxByOrNull { it.start.timestamp }?.takeIf { it.end == null  }
+        val history = it.filter { it.end != null }
+           val total = currentActive?.let { history.plus(it) } ?: history
+        total
     }.map { session ->
         val duration = session.sumOf {
             ( it.end?.timestamp ?: System.currentTimeMillis()) - it.start.timestamp
