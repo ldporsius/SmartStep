@@ -32,7 +32,7 @@ fun WeeklyBreakdownList(
         columns = GridCells.Fixed(numColumns),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
+        contentPadding = PaddingValues(vertical = 16.dp)
         ) {
         items(weekItems){item ->
             WeeklyBreakdownItem(

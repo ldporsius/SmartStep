@@ -1,15 +1,19 @@
 package nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -90,7 +94,6 @@ fun WeeklyActivityReportRoot(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeeklyActivityAdaptiveScreen(
-    modifier: Modifier = Modifier,
     targetUiState: ReportTargetUiState,
     onTargetAction: (ReportTargetAction) -> Unit,
     onNavBack:() -> Unit,
@@ -129,7 +132,10 @@ fun WeeklyActivityAdaptiveScreen(
     ) { paddingValues ->
         if (bottomBarPosition == 0) {
             Column(
-                modifier = modifier.padding(paddingValues),
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                ,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
@@ -143,9 +149,9 @@ fun WeeklyActivityAdaptiveScreen(
                     targetUiState = targetUiState,
                     onTargetAction = onTargetAction
                 )
-
             }
-        } else Column(modifier = modifier) {
+        } else Row(modifier = Modifier) {
+            //todo vertical menu
             content()
         }
     }
@@ -160,7 +166,14 @@ fun WeekReportTargetTabRow(
         selectedTabIndex = selectedTabIndex,
         modifier = Modifier.width(480.dp)
             .clip(RoundedCornerShape(16.dp)),
-
+        indicator = {
+            Box(
+                modifier = Modifier
+                    .tabIndicatorOffset(selectedTabIndex)
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.primary.copy(.1f))
+            )
+        }
 
     ) {
         ReportTarget.entries.forEach { target ->
@@ -174,7 +187,13 @@ fun WeekReportTargetTabRow(
                             )
                         )
                     },
-                    text = { Text(text) },
+                    text = {
+                        Text(text,
+                            modifier = Modifier,
+                            maxLines = 1,
+                            autoSize = TextAutoSize.StepBased(maxFontSize = MaterialTheme.typography.labelLarge.fontSize)
+                        )
+                           },
                     icon = {
                         Icon(painter = painterResource(icon), contentDescription = null)
                     }
@@ -191,16 +210,15 @@ fun WeeklyActivityReportScreen(
     onWeekPickerAction: (WeekPickerAction) -> Unit,
     weeklyBreakdownItems: List<WeeklyBreakdownUi>,
 ) {
-
-
         Column(
             modifier = Modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             TopSummaryCard(
                 modifier = Modifier
                     .width(480.dp)
-                    .padding(16.dp),
+                    ,
                 topSummaryUi = topSummaryUi
             )
             WeekPicker(
@@ -224,7 +242,6 @@ private fun PreviewWeeklyReport() {
     SmartStepTheme() {
 
         WeeklyActivityAdaptiveScreen(
-            modifier = Modifier,
             targetUiState = ReportTargetUiState(ReportTarget.STEPS),
             onTargetAction = {},
             onNavBack = {},

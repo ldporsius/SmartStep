@@ -65,7 +65,6 @@ fun MainScreen(
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     val permissionsViewModel = viewModel<PermissionsViewModel>()
 
@@ -82,7 +81,6 @@ fun MainScreen(
             }
 
             smartStepStateController.state.collect {
-                Toast.makeText(context, "${it.javaClass.simpleName}", Toast.LENGTH_SHORT).show()
                 it.startTracking()
             }
         }

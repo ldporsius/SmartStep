@@ -1,12 +1,16 @@
 package nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -23,12 +27,18 @@ fun WeeklyBreakdownItem(
 ) {
 
     val textColor = when(uiState.status){
-        WeeklyBreakdownStatus.FINISHED -> MaterialTheme.colorScheme.primary
+        WeeklyBreakdownStatus.FINISHED -> MaterialTheme.colorScheme.onBackground
         WeeklyBreakdownStatus.IN_PROGRESS -> MaterialTheme.colorScheme.primary
         WeeklyBreakdownStatus.NOT_STARTED -> MaterialTheme.colorScheme.surfaceDim
     }
+    val borderColor = when(uiState.status){
+        WeeklyBreakdownStatus.FINISHED -> MaterialTheme.colorScheme.surfaceDim
+        WeeklyBreakdownStatus.IN_PROGRESS -> MaterialTheme.colorScheme.primary
+        WeeklyBreakdownStatus.NOT_STARTED -> Color.Transparent
+    }
     OutlinedCard(
-        modifier = modifier
+        modifier = modifier,
+        border = BorderStroke(width = 1.dp, color = borderColor)
     ) {
         ConstraintLayout(
             modifier = Modifier.width(480.dp).padding(16.dp)
@@ -51,17 +61,19 @@ fun WeeklyBreakdownItem(
             )
 
             Text(uiState.value.asString(),
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.constrainAs(value){
-                    top.linkTo(day.bottom)
+                    top.linkTo(day.bottom, margin = 8.dp)
                     start.linkTo(parent.start)
+
                 },
                 color = textColor
             )
             Text(uiState.unit.asString(),
                 style = MaterialTheme.typography.labelLarge,
                 modifier = Modifier.constrainAs(unit){
-                    bottom.linkTo(value.baseline)
+
+                    baseline.linkTo(value.baseline)
                     start.linkTo(value.end, margin = 4.dp)
                 }
             )
@@ -75,7 +87,7 @@ fun WeeklyBreakdownItem(
             Text(uiState.label.asString(),
                 style = MaterialTheme.typography.labelLarge,
                 modifier = Modifier.constrainAs(label) {
-                    top.linkTo(state.bottom, margin = 4.dp)
+                    top.linkTo(state.bottom, margin = 8.dp)
                     end.linkTo(parent.end)
                 }
             )
