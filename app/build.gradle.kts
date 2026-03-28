@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -57,6 +56,9 @@ room {
 dependencies {
 
     implementation(project(":ai_integration"))
+    implementation(project(":core"))
+    implementation(project(":ai_firebase"))
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -76,15 +78,16 @@ dependencies {
     //room
     implementation(libs.room.ktx)
     implementation(libs.androidx.room.runtime)
-    implementation(project(":core"))
-    implementation(project(":ai_firebase"))
-
     ksp(libs.androidx.room.compiler)
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
     //constraint layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.1")
+
+    //formfactors
+    implementation("androidx.compose.material3.adaptive:adaptive:1.3.0-alpha09")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.3.0-alpha09")
 
     //ai
     implementation(platform("com.google.firebase:firebase-bom:34.9.0"))
@@ -96,14 +99,7 @@ dependencies {
     //instrumented/ui tests
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.bundles.android.test)
-//    androidTestImplementation(libs.androidx.junit)
-//    androidTestImplementation(libs.androidx.runner)
-//    androidTestImplementation(libs.androidx.espresso.core)
-    // Test rules and transitive dependencies:
-//    androidTestImplementation(libs.androidx.ui.test.junit4)
-//    androidTestImplementation(libs.androidx.uiautomator)
-//    androidTestImplementation(libs.androidx.rules)
-//    androidTestImplementation(libs.assertk)
+
     androidTestUtil(libs.androidx.orchestrator)
 
     // Needed for createComposeRule(), but not for createAndroidComposeRule<YourActivity>():

@@ -9,24 +9,34 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import nl.codingwithlinda.smartstep.design_system.form_factors.ScreenForm
+import nl.codingwithlinda.smartstep.design_system.form_factors.screenFormHelper
 import nl.codingwithlinda.smartstep.features.weekly_activity_report.presentation.model.WeeklyBreakdownUi
 
 @Composable
 fun WeeklyBreakdownList(
     modifier: Modifier = Modifier,
-    weekItems: List<WeeklyBreakdownUi>
+    weekItems: List<WeeklyBreakdownUi>,
 ) {
+
+    val screen = screenFormHelper()
+
+    val numColumns = when(screen.form) {
+        ScreenForm.PHONE -> 1
+        ScreenForm.TABLET -> 2
+        ScreenForm.DESKTOP -> 4
+    }
 
     LazyVerticalGrid(
         modifier = modifier,
-        columns = GridCells.Adaptive(minSize = 240.dp),
+        columns = GridCells.Fixed(numColumns),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
-        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 16.dp)
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
         ) {
         items(weekItems){item ->
             WeeklyBreakdownItem(
-                modifier = Modifier.width(240.dp),
+                modifier = Modifier.width(296.dp),
                 item
             )
         }

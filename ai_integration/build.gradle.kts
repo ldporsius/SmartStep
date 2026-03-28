@@ -1,4 +1,4 @@
-import java.util.Properties
+import org.jetbrains.kotlin.konan.properties.loadProperties
 
 plugins {
     alias(libs.plugins.android.library)
@@ -17,8 +17,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
-        val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
+        val properties = loadProperties("local.properties")
+        //properties.load(project.rootProject.file("local.properties").inputStream())
 
         buildConfigField("String", "GROQ_KEY", properties.getProperty("GROQ_KEY"))
 
